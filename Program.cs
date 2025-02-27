@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            //int mode = Initialisation();
+            int mode = Initialisation();
             string[] tab = new string[102];
             tab = File.ReadAllLines("soc-karate.mtx");
             int noeudMax = 0;
@@ -32,7 +32,47 @@
             }
             Test(listeLien, noeudMax, nbLiens);
 
-        Console.ReadKey();
+            Console.ReadKey();
+            if(mode == 1)
+            {
+                //Liste d'adjacence
+                Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
+                foreach (Lien lien in listeLien)
+                {
+                    if (adjacence.ContainsKey(lien.noeud1.numero))
+                    {
+                        adjacence[lien.noeud1.numero].Add(lien.noeud2.numero);
+                    }
+                    else
+                    {
+                        adjacence.Add(lien.noeud1.numero, new List<int> { lien.noeud2.numero });
+                    }
+                    if (adjacence.ContainsKey(lien.noeud2.numero))
+                    {
+                        adjacence[lien.noeud2.numero].Add(lien.noeud1.numero);
+                    }
+                    else
+                    {
+                        adjacence.Add(lien.noeud2.numero, new List<int> { lien.noeud1.numero });
+                    }
+                }
+                Graphe graphe = new Graphe(adjacence);
+                graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
+                graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
+            }
+            if (mode == 2)
+            {
+                //Matrice d'adjacence
+                int[,] matrice = new int[noeudMax, noeudMax];
+                foreach (Lien lien in listeLien)
+                {
+                    matrice[lien.noeud1.numero, lien.noeud2.numero] = 1;
+                    matrice[lien.noeud2.numero, lien.noeud1.numero] = 1;
+                }
+                Graphe graphe = new Graphe(matrice);
+                graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
+                graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
+            }
         }
         
         static void Main1(string[] args)

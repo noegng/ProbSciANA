@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pb_Sci_Etape_1
 {
-    internal class Graphe
+    public class Graphe
     {
         private Dictionary<int, List<int>> listeAdjacence;
 
