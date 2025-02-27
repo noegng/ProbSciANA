@@ -38,21 +38,21 @@
                 Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
                 foreach (Lien lien in listeLien)
                 {
-                    if (adjacence.ContainsKey(lien.Noeud1))
+                    if (adjacence.ContainsKey(lien.Noeud1.Noeuds))
                     {
-                        adjacence[lien.Noeud1].Add(lien.Noeud2);
+                        adjacence[lien.Noeud1.Noeuds].Add(lien.Noeud2.Noeuds);
                     }
                     else
                     {
-                        adjacence.Add(lien.Noeud1, new List<int> { lien.Noeud2 });
+                        adjacence.Add(lien.Noeud1.Noeuds, new List<int> { lien.Noeud2.Noeuds });
                     }
-                    if (adjacence.ContainsKey(lien.Noeud2))
+                    if (adjacence.ContainsKey(lien.Noeud2.Noeuds))
                     {
-                        adjacence[lien.Noeud2].Add(lien.Noeud1);
+                        adjacence[lien.Noeud2.Noeuds].Add(lien.Noeud1.Noeuds);
                     }
                     else
                     {
-                        adjacence.Add(lien.Noeud2, new List<int> { lien.Noeud1 });
+                        adjacence.Add(lien.Noeud2.Noeuds, new List<int> { lien.Noeud1.Noeuds });
                     }
                 }
                 Graphe graphe = new Graphe(adjacence);
@@ -62,11 +62,11 @@
             if (mode == 2)
             {
                 //Matrice d'adjacence
-                int[,] matrice = new int[noeudMax, noeudMax];
+                //int[,] matrice = new int[noeudMax, noeudMax];
                 foreach (Lien lien in listeLien)
                 {
-                    matrice[lien.noeud1.numero, lien.noeud2.numero] = 1;
-                    matrice[lien.noeud2.numero, lien.noeud1.numero] = 1;
+                    matrice[lien.Noeud1.Noeuds, lien.Noeud2.Noeuds] = 1;
+                    matrice[lien.Noeud2.Noeuds, lien.Noeud1.Noeuds] = 1;
                 }
                 Graphe graphe = new Graphe(matrice);
                 graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
