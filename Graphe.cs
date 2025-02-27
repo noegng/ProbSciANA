@@ -15,46 +15,11 @@ namespace Pb_Sci_Etape_1
         {
             listeAdjacence = adjacence;
         }
-        public Graphe(int[,] adjacence)
+        public Graphe(int[,] matriceAdjacence)
         {
-            matriceAdjacence = adjacence;
+            this.matriceAdjacence = matriceAdjacence;
         }
-        public void Afficher()
-        {
-            foreach (KeyValuePair<int, List<int>> sommet in listeAdjacence)
-            {
-                Console.Write(sommet.Key + ": ");
-                foreach (int voisin in sommet.Value)
-                {
-                    Console.Write(voisin + " ");
-                }
-                Console.WriteLine();
-            }
-        }
-        public void AfficherDansLordre()
-        {
-            foreach (KeyValuePair<int, List<int>> sommet in listeAdjacence.OrderBy(x => x.Key))
-            {
-                Console.Write(sommet.Key + ": ");
-                foreach (int voisin in sommet.Value.OrderBy(x => x))
-                {
-                    Console.Write(voisin + " ");
-                }
-                Console.WriteLine();
-            }
-        }
-        public void AfficherMatrice()
-        {
-            for (int i = 0; i < matriceAdjacence.GetLength(0); i++)
-            {
-                for (int j = 0; j < matriceAdjacence.GetLength(1); j++)
-                {
-                    Console.Write(matriceAdjacence[i, j] + " ");
-                }
-                Console.WriteLine();
-            }
-        }
-
+        
         // Parcours en Largeur (BFS)
         public void ParcoursLargeur(int sommetDepart)
         {
@@ -113,5 +78,32 @@ namespace Pb_Sci_Etape_1
             }
             Console.WriteLine();
         }
+        public void AfficherDansLordre()
+        {
+            Console.WriteLine("Liste d'adjacence: ");
+            foreach (KeyValuePair<int, List<int>> sommet in listeAdjacence.OrderBy(x => x.Key))
+            {
+                Console.Write(sommet.Key + ": ");
+                foreach (int voisin in sommet.Value.OrderBy(x => x))
+                {
+                    Console.Write(voisin + " ");
+                }
+                Console.WriteLine();
+            }
+        }
+        public void AfficherMatrice()
+        {
+            Console.WriteLine("Matrice d'adjacence: ");
+            Console.WriteLine("     1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34");
+            for (int i = 0; i < matriceAdjacence.GetLength(0); i++)
+            {
+                Console.Write($"{i+1,2}" + "| ");
+                for (int j = 0; j < matriceAdjacence.GetLength(1); j++)
+                {
+                    Console.Write($"{matriceAdjacence[i, j],2} ");
+                }
+                Console.WriteLine();
+            }
+        }
     }
 }
