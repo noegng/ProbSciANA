@@ -1,4 +1,4 @@
-﻿namespace Pb_Sci_Etape_1
+﻿namespace ProbSciAna
 {
     internal class Program
     {
