@@ -9,7 +9,7 @@ namespace Pb_Sci_Etape_1
     public class Noeud
     {
         private int noeud;
-        private int noeudMax = 100;
+        private int noeudMax = 34;
 
         public Noeud(int noeud)
         {

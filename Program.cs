@@ -15,7 +15,7 @@
             {
                 if (tab[i][0] != '%')
                 {
-                    if (a == 0)         //Pour avoir la 1ere ligne
+                    if (a == 0)         //Pour avoir seulement la 1ere ligne
                     {
                         noeudMax = Convert.ToInt32(tab[i].Substring(0,tab[i].IndexOf(' ')));
                         nbLiens = Convert.ToInt32(tab[i].Substring(tab[i].LastIndexOf(' ')+1));
@@ -58,11 +58,12 @@
                 Graphe graphe = new Graphe(adjacence);
                 graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
                 graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
+                graphe.Afficher();
             }
             if (mode == 2)
             {
                 //Matrice d'adjacence
-                //int[,] matrice = new int[noeudMax, noeudMax];
+                int[,] matrice = new int[noeudMax, noeudMax];
                 foreach (Lien lien in listeLien)
                 {
                     matrice[lien.Noeud1.Noeuds, lien.Noeud2.Noeuds] = 1;

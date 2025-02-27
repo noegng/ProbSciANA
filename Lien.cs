@@ -35,7 +35,7 @@ namespace Pb_Sci_Etape_1
         }
         public string toString()
         {
-            return $"{noeud1.toString(),2 } {noeud2.toString(),2}";
+            return $"{noeud2.toString(),2 } {noeud1.toString(),2}";
         }
     }
 }

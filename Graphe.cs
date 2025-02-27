@@ -9,10 +9,27 @@ namespace Pb_Sci_Etape_1
     public class Graphe
     {
         private Dictionary<int, List<int>> listeAdjacence;
+        private int[,] matriceAdjacence;
 
         public Graphe(Dictionary<int, List<int>> adjacence)
         {
             listeAdjacence = adjacence;
+        }
+        public Graphe(int[,] adjacence)
+        {
+            matriceAdjacence = adjacence;
+        }
+        public void Afficher()
+        {
+            foreach (KeyValuePair<int, List<int>> sommet in listeAdjacence)
+            {
+                Console.Write(sommet.Key + ": ");
+                foreach (int voisin in sommet.Value)
+                {
+                    Console.Write(voisin + " ");
+                }
+                Console.WriteLine();
+            }
         }
 
         // Parcours en Largeur (BFS)
@@ -24,7 +41,7 @@ namespace Pb_Sci_Etape_1
             file.Enqueue(sommetDepart);
             visite.Add(sommetDepart);
 
-            Console.Write("BFS: ");
+            Console.Write("Parcours en Largeur (BFS):  ");
 
             while (file.Count > 0)
             {
@@ -48,10 +65,6 @@ namespace Pb_Sci_Etape_1
         {
             Stack<int> pile = new Stack<int>();
             HashSet<int> visite = new HashSet<int>();
-
-            pile.Push(sommetDepart);
-
-            Console.Write("DFS: ");
 
             while (pile.Count > 0)
             {
