@@ -58,12 +58,12 @@
                 Graphe graphe = new Graphe(adjacence);
                 graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
                 graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
-                graphe.Afficher();
+                graphe.AfficherDansLordre();
             }
             if (mode == 2)
             {
                 //Matrice d'adjacence
-                int[,] matrice = new int[noeudMax, noeudMax];
+                int[,] matrice = new int[noeudMax+1, noeudMax+1];
                 foreach (Lien lien in listeLien)
                 {
                     matrice[lien.Noeud1.Noeuds, lien.Noeud2.Noeuds] = 1;

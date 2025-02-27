@@ -31,6 +31,29 @@ namespace Pb_Sci_Etape_1
                 Console.WriteLine();
             }
         }
+        public void AfficherDansLordre()
+        {
+            foreach (KeyValuePair<int, List<int>> sommet in listeAdjacence.OrderBy(x => x.Key))
+            {
+                Console.Write(sommet.Key + ": ");
+                foreach (int voisin in sommet.Value.OrderBy(x => x))
+                {
+                    Console.Write(voisin + " ");
+                }
+                Console.WriteLine();
+            }
+        }
+        public void AfficherMatrice()
+        {
+            for (int i = 0; i < matriceAdjacence.GetLength(0); i++)
+            {
+                for (int j = 0; j < matriceAdjacence.GetLength(1); j++)
+                {
+                    Console.Write(matriceAdjacence[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+        }
 
         // Parcours en Largeur (BFS)
         public void ParcoursLargeur(int sommetDepart)
@@ -66,6 +89,10 @@ namespace Pb_Sci_Etape_1
             Stack<int> pile = new Stack<int>();
             HashSet<int> visite = new HashSet<int>();
 
+            pile.Push(sommetDepart);
+
+            Console.Write("Parcours en Profondeur (DFS): ");
+
             while (pile.Count > 0)
             {
                 int sommet = pile.Pop();
@@ -85,6 +112,6 @@ namespace Pb_Sci_Etape_1
                 }
             }
             Console.WriteLine();
-        }
+        }
     }
 }
