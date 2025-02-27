@@ -32,28 +32,27 @@
             }
             Test(listeLien, noeudMax, nbLiens);
 
-            Console.ReadKey();
             if(mode == 1)
             {
                 //Liste d'adjacence
                 Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
                 foreach (Lien lien in listeLien)
                 {
-                    if (adjacence.ContainsKey(lien.noeud1.numero))
+                    if (adjacence.ContainsKey(lien.Noeud1))
                     {
-                        adjacence[lien.noeud1.numero].Add(lien.noeud2.numero);
+                        adjacence[lien.Noeud1].Add(lien.Noeud2);
                     }
                     else
                     {
-                        adjacence.Add(lien.noeud1.numero, new List<int> { lien.noeud2.numero });
+                        adjacence.Add(lien.Noeud1, new List<int> { lien.Noeud2 });
                     }
-                    if (adjacence.ContainsKey(lien.noeud2.numero))
+                    if (adjacence.ContainsKey(lien.Noeud2))
                     {
-                        adjacence[lien.noeud2.numero].Add(lien.noeud1.numero);
+                        adjacence[lien.Noeud2].Add(lien.Noeud1);
                     }
                     else
                     {
-                        adjacence.Add(lien.noeud2.numero, new List<int> { lien.noeud1.numero });
+                        adjacence.Add(lien.Noeud2, new List<int> { lien.Noeud1 });
                     }
                 }
                 Graphe graphe = new Graphe(adjacence);
@@ -73,8 +72,9 @@
                 graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
                 graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
             }
+            Console.ReadKey();
         }
-        
+
         static void Main1(string[] args)
         {
             

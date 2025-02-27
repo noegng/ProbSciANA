@@ -19,7 +19,7 @@ namespace Pb_Sci_Etape_1
             }
             else { Console.WriteLine("Erreur dans la saisie du noeud."); }
         }
-        public int Noeud1
+        public int Noeud
         {
             get { return noeud; }
             set { noeud = value; }
