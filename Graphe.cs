@@ -19,6 +19,60 @@ namespace Pb_Sci_Etape_1
         {
             this.matriceAdjacence = matriceAdjacence;
         }
+        public void ParcoursLargeurMatrice(int sommetDepart)
+        {
+            Queue<int> file = new Queue<int>();
+            HashSet<int> visite = new HashSet<int>();
+
+            file.Enqueue(sommetDepart);
+            visite.Add(sommetDepart);
+
+            Console.Write("Parcours en Largeur (BFS):  ");
+
+            while (file.Count > 0)
+            {
+                int sommet = file.Dequeue();
+                Console.Write(sommet + " ");
+                for (int i = 0; i < matriceAdjacence.GetLength(1); i++)
+                {
+                    if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
+                    {
+                        file.Enqueue(i);
+                        visite.Add(i);
+                    }
+                }
+            }
+            Console.WriteLine();
+        }
+        public void ParcoursProfondeurMatrice(int sommetDepart)
+        {
+            Stack<int> pile = new Stack<int>();
+            HashSet<int> visite = new HashSet<int>();
+
+            pile.Push(sommetDepart);
+
+            Console.Write("Parcours en Profondeur (DFS): ");
+
+            while (pile.Count > 0)
+            {
+                int sommet = pile.Pop();
+
+                if (!visite.Contains(sommet))
+                {
+                    Console.Write(sommet + " ");
+                    visite.Add(sommet);
+                }
+
+                for (int i = 0; i < matriceAdjacence.GetLength(1); i++)
+                {
+                    if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
+                    {
+                        pile.Push(i);
+                    }
+                }
+            }
+            Console.WriteLine();
+        }
         
         // Parcours en Largeur (BFS)
         public void ParcoursLargeur(int sommetDepart)
@@ -35,13 +89,24 @@ namespace Pb_Sci_Etape_1
             {
                 int sommet = file.Dequeue();
                 Console.Write(sommet + " ");
-
-                foreach (int voisin in listeAdjacence[sommet])
+                if(listeAdjacence != null)
                 {
-                    if (!visite.Contains(voisin))
+                    foreach (int voisin in listeAdjacence[sommet])
                     {
-                        file.Enqueue(voisin);
-                        visite.Add(voisin);
+                        if (!visite.Contains(voisin))
+                        {
+                            file.Enqueue(voisin);
+                            visite.Add(voisin);
+                        }
+                    }
+                }else{
+                    for (int i = 0; i < matriceAdjacence.GetLength(1); i++)
+                    {
+                        if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
+                        {
+                            file.Enqueue(i);
+                            visite.Add(i);
+                        }
                     }
                 }
             }
@@ -67,12 +132,22 @@ namespace Pb_Sci_Etape_1
                     Console.Write(sommet + " ");
                     visite.Add(sommet);
                 }
-
-                foreach (int voisin in listeAdjacence[sommet])
+                if(listeAdjacence != null)
                 {
-                    if (!visite.Contains(voisin))
+                    foreach (int voisin in listeAdjacence[sommet])
                     {
-                        pile.Push(voisin);
+                        if (!visite.Contains(voisin))
+                        {
+                            pile.Push(voisin);
+                        }
+                    }
+                }else{
+                    for (int i = matriceAdjacence.GetLength(1)-1; i >= 0; i--)
+                    {
+                        if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
+                        {
+                            pile.Push(i);
+                        }
                     }
                 }
             }

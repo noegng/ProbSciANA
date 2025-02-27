@@ -70,29 +70,13 @@
                     matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1;
                 }
                 Graphe graphe = new Graphe(matrice);
-                //graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
-                //graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
+                graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
+                graphe.ParcoursLargeurMatrice(1); // BFS depuis le sommet 1
+                graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
+                graphe.ParcoursProfondeurMatrice(1); // DFS depuis le sommet 1
                 graphe.AfficherMatrice(); // Affichage de la matrice d'adjacence
             }
             Console.ReadKey();
-        }
-
-        static void Main1(string[] args)
-        {
-            
-
-            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>()
-            {
-                {1, new List<int> {2, 3, 4, 5, 6}},
-                {2, new List<int> {1, 3, 4, 8, 14}},
-                {3, new List<int> {1, 2, 4, 8, 9}},
-                {4, new List<int> {1, 2, 3, 8, 13}},
-                {5, new List<int> {1, 7, 11}}
-            };
-
-            //Graphe graphe = new Graphe(adjacence);
-            //graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
-            //graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
         }
 
         /// <summary>
