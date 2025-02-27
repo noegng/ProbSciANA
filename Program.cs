@@ -32,6 +32,7 @@
             }
             Test(listeLien, noeudMax, nbLiens);
 
+        Console.ReadKey();
         }
         
         static void Main1(string[] args)
