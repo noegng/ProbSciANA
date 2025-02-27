@@ -4,10 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProbSciAna
+namespace Pb_Sci_Etape_1
 {
-    internal class Noeud
+    public class Noeud
     {
-        private (int,int) caca;
+        private int noeud;
+        private int noeudMax = 100;
+
+        public Noeud(int noeud)
+        {
+            if (noeud > 0 && noeud <= noeudMax)
+            {
+                this.noeud = noeud;
+            }
+            else { Console.WriteLine("Erreur dans la saisie du noeud."); }
+        }
+        public int Noeud1
+        {
+            get { return noeud; }
+            set { noeud = value; }
+        }
+        public string toString()
+        {
+            return Convert.ToString(noeud);
+        }
     }
 }

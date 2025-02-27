@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProbSciAna
+namespace Pb_Sci_Etape_1
 {
     internal class Graphe
     {
