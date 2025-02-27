@@ -89,9 +89,7 @@ namespace Pb_Sci_Etape_1
             {
                 int sommet = file.Dequeue();
                 Console.Write(sommet + " ");
-                if(listeAdjacence != null)
-                {
-                    foreach (int voisin in listeAdjacence[sommet])
+                foreach (int voisin in listeAdjacence[sommet])
                     {
                         if (!visite.Contains(voisin))
                         {
@@ -99,16 +97,6 @@ namespace Pb_Sci_Etape_1
                             visite.Add(voisin);
                         }
                     }
-                }else{
-                    for (int i = 0; i < matriceAdjacence.GetLength(1); i++)
-                    {
-                        if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
-                        {
-                            file.Enqueue(i);
-                            visite.Add(i);
-                        }
-                    }
-                }
             }
             Console.WriteLine();
         }
@@ -132,24 +120,13 @@ namespace Pb_Sci_Etape_1
                     Console.Write(sommet + " ");
                     visite.Add(sommet);
                 }
-                if(listeAdjacence != null)
-                {
-                    foreach (int voisin in listeAdjacence[sommet])
+                foreach (int voisin in listeAdjacence[sommet])
                     {
                         if (!visite.Contains(voisin))
                         {
                             pile.Push(voisin);
                         }
                     }
-                }else{
-                    for (int i = matriceAdjacence.GetLength(1)-1; i >= 0; i--)
-                    {
-                        if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
-                        {
-                            pile.Push(i);
-                        }
-                    }
-                }
             }
             Console.WriteLine();
         }
