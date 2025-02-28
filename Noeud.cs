@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProbSciAna
+namespace Pb_Sci_Etape_1
 {
     public class Noeud
     {
         private int noeud;
-        private int noeudMax = 100;
+        private int noeudMax = 34;
 
         public Noeud(int noeud)
         {
@@ -19,7 +19,7 @@ namespace ProbSciAna
             }
             else { Console.WriteLine("Erreur dans la saisie du noeud."); }
         }
-        public int Noeud1
+        public int Noeuds
         {
             get { return noeud; }
             set { noeud = value; }
