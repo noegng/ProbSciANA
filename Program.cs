@@ -1,6 +1,6 @@
 ﻿namespace Pb_Sci_Etape_1
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -32,32 +32,33 @@
             }
             Test(listeLien, noeudMax, nbLiens);
 
+            //Liste d'adjacence     (obligatoire pour le BFS et DFS)
+            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
+            foreach (Lien lien in listeLien)
+            {
+                if (adjacence.ContainsKey(lien.Noeud1.Noeuds))
+                {
+                    adjacence[lien.Noeud1.Noeuds].Add(lien.Noeud2.Noeuds);
+                }
+                else
+                {
+                    adjacence.Add(lien.Noeud1.Noeuds, new List<int> { lien.Noeud2.Noeuds });
+                }
+                if (adjacence.ContainsKey(lien.Noeud2.Noeuds))
+                {
+                    adjacence[lien.Noeud2.Noeuds].Add(lien.Noeud1.Noeuds);
+                }
+                else
+                {
+                    adjacence.Add(lien.Noeud2.Noeuds, new List<int> { lien.Noeud1.Noeuds });
+                }
+            }
+            Graphe graphe = new Graphe(adjacence);
+            graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
+            graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
+
             if(mode == 1)
             {
-                //Liste d'adjacence
-                Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
-                foreach (Lien lien in listeLien)
-                {
-                    if (adjacence.ContainsKey(lien.Noeud1.Noeuds))
-                    {
-                        adjacence[lien.Noeud1.Noeuds].Add(lien.Noeud2.Noeuds);
-                    }
-                    else
-                    {
-                        adjacence.Add(lien.Noeud1.Noeuds, new List<int> { lien.Noeud2.Noeuds });
-                    }
-                    if (adjacence.ContainsKey(lien.Noeud2.Noeuds))
-                    {
-                        adjacence[lien.Noeud2.Noeuds].Add(lien.Noeud1.Noeuds);
-                    }
-                    else
-                    {
-                        adjacence.Add(lien.Noeud2.Noeuds, new List<int> { lien.Noeud1.Noeuds });
-                    }
-                }
-                Graphe graphe = new Graphe(adjacence);
-                graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
-                graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
                 graphe.AfficherDansLordre(); // Affichage des listes d'adjacence
             }
             if (mode == 2)
@@ -69,13 +70,9 @@
                     matrice[lien.Noeud1.Noeuds-1, lien.Noeud2.Noeuds-1] = 1; // -1 car les noeuds commencent à 1
                     matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1;
                 }
-                Graphe graphe = new Graphe(matrice);
-                graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
-                graphe.ParcoursLargeurMatrice(1); // BFS depuis le sommet 1
-                graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
-                graphe.ParcoursProfondeurMatrice(1); // DFS depuis le sommet 1
-                graphe.AfficherMatrice(); // Affichage de la matrice d'adjacence
-            }
+                Graphe graphe2 = new Graphe(matrice);
+                graphe2.AfficherMatrice(); // Affichage de la matrice d'adjacence
+            }            
             Console.ReadKey();
         }
 
