@@ -38,7 +38,7 @@ namespace Pb_Sci_Etape_1
                     {
                         Noeud noeud1 = new Noeud(Convert.ToInt32(tab[i].Substring(0, tab[i].IndexOf(' '))));
                         Noeud noeud2 = new Noeud(Convert.ToInt32(tab[i].Substring(tab[i].IndexOf(' ')+1)));
-                        Lien lien = new Lien((noeud1, noeud2));
+                        Lien lien = new Lien(noeud1, noeud2);
                         listeLien.Add(lien);
                     }
                 }
@@ -100,6 +100,7 @@ namespace Pb_Sci_Etape_1
             foreach (Lien lien in listeLien)
             {
                 graph.AddEdge(new Edge<string>(lien.Noeud1.toString(), lien.Noeud2.toString()));
+                graph.AddEdge(new Edge<string>(lien.Noeud2.toString(), lien.Noeud1.toString())); // Pour un graphe non orienté
             }
 
             var app = new Application();
