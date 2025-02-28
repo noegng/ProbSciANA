@@ -67,12 +67,10 @@ namespace Pb_Sci_Etape_1
                 Graphe graphe2 = new Graphe(matrice);
                 graphe2.AfficherMatrice(); // Affichage de la matrice d'adjacence
             }     
-            
+            EstConnexe(adjacence, noeudMax, graphe1); // Test de connexité
             // Création du graphe orienté
             AfficherGraph(noeudMax, listeLien);
-            // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
             
-
             Console.ReadKey();
         }
 
@@ -207,11 +205,25 @@ namespace Pb_Sci_Etape_1
             // Lancement de l'application WPF
             app.Run(window);
         }
-        
-        static void EstConnexe(Dictionary<int, List<int>> adjacence, int noeudMax)
+        /// <summary>
+        /// Test de connexité
+        /// </summary>
+        /// <param name="adjacence"></param>
+        /// <param name="noeudMax"></param>
+        /// <param name="graphe"></param>
+        static void EstConnexe(Dictionary<int, List<int>> adjacence, int noeudMax, Graphe graphe)
         {
             // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
-            HashSet<int> visite = new HashSet<int>();    
+            HashSet<int> visite = new HashSet<int>();
+            visite = graphe.ParcoursLargeur(1);
+            if (visite.Count == noeudMax)
+            {
+                Console.WriteLine("Le graphe est connexe.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas connexe.");
+            }    
         } 
                   
     }
