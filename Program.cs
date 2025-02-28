@@ -13,7 +13,6 @@ namespace Pb_Sci_Etape_1
     public class Program
     {
          [STAThread]
-
         static void Main(string[] args)
         {
             
@@ -43,7 +42,7 @@ namespace Pb_Sci_Etape_1
                     }
                 }
             }
-            Test(listeLien, noeudMax, nbLiens);
+            //Test(listeLien, noeudMax, nbLiens);
             int départ = NoeudDépart(noeudMax);
             //Liste d'adjacence     (obligatoire pour le BFS et DFS)
             Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
@@ -71,6 +70,8 @@ namespace Pb_Sci_Etape_1
             
             // Création du graphe orienté
             AfficherGraph(noeudMax, listeLien);
+            // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
+            
 
             Console.ReadKey();
         }
@@ -206,5 +207,12 @@ namespace Pb_Sci_Etape_1
             // Lancement de l'application WPF
             app.Run(window);
         }
+        
+        static void EstConnexe(Dictionary<int, List<int>> adjacence, int noeudMax)
+        {
+            // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
+            HashSet<int> visite = new HashSet<int>();    
+        } 
+                  
     }
 }
