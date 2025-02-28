@@ -84,7 +84,52 @@ namespace Pb_Sci_Etape_1
             {
                 Console.WriteLine("Le graphe n'est pas un cycle.");
             }
-            
+            // Exemple de graphe avec et sans cycle
+            Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
+            {
+                { 1, new List<int> { 2, 3 } },
+                { 2, new List<int> { 1, 3 } },
+                { 3, new List<int> { 1, 2 } }
+            };
+            if(EstConnexe(grapheAvecCycle, graphe1))
+            {
+                Console.WriteLine("Le graphe 2 est connexe.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe 2 n'est pas connexe.");
+            }
+            if(EstCycle(grapheAvecCycle, graphe1))
+            {
+                Console.WriteLine("Le graphe 2 est un cycle.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe 2 n'est pas un cycle.");
+            }
+            Dictionary<int, List<int>> grapheSansCycle = new Dictionary<int, List<int>>()
+            {
+                { 1, new List<int> { 2 } },
+                { 2, new List<int> { 1, 3 } },
+                { 3, new List<int> { 2 } }
+            };
+            if (EstCycle(grapheSansCycle, graphe1))
+            {
+                Console.WriteLine("Le graphe 3 est un cycle.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe 3 n'est pas un cycle.");
+            }
+            if (EstConnexe(grapheSansCycle, graphe1))
+            {
+                Console.WriteLine("Le graphe 3 est connexe.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe 3 n'est pas connexe.");
+            }
+
             // Création du graphe orienté
             AfficherGraph(noeudMax, listeLien);
             
@@ -242,15 +287,22 @@ namespace Pb_Sci_Etape_1
 
             return estConnexe;
         } 
+        /// <summary>
+        /// Test de cycle
+        /// Pour savoir si un graphe est un cycle, il faut que tous les sommets aient un degré de 2 et que le graphe soit connexe  
+        /// </summary>
+        /// <param name="adjacence"></param>
+        /// <param name="graphe"></param>
+        /// <returns></returns>
         static bool EstCycle(Dictionary<int, List<int>> adjacence, Graphe graphe)
         {
         // Vérifier que tous les sommets ont un degré de 2
         foreach (var sommet in adjacence)
         {
-            if (sommet.Value.Count != 2)
+            if (sommet.Value.Count < 2)
                 return false;
         }
-
+        // Vérifier que le graphe est connexe
         return EstConnexe(adjacence, graphe);
         }        
     }
