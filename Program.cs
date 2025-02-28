@@ -69,7 +69,7 @@ namespace Pb_Sci_Etape_1
                 graphe2.AfficherMatrice(); // Affichage de la matrice d'adjacence
             }
 
-            if (EstConnexe(adjacence, graphe1))     // Test de connexité
+            if (EstConnexe(adjacence))     // Test de connexité
             {
                 Console.WriteLine("Le graphe est connexe.");
             }
@@ -77,7 +77,7 @@ namespace Pb_Sci_Etape_1
             {
                 Console.WriteLine("Le graphe n'est pas connexe.");
             }
-            if (EstCycle(adjacence, graphe1))      // Test de cycle
+            if (EstCycle(adjacence))      // Test de cycle
             {
                 Console.WriteLine("Le graphe est un cycle.");
             }else
@@ -91,7 +91,7 @@ namespace Pb_Sci_Etape_1
                 { 2, new List<int> { 1, 3 } },
                 { 3, new List<int> { 1, 2 } }
             };
-            if(EstConnexe(grapheAvecCycle, graphe1))
+            if(EstConnexe(grapheAvecCycle))
             {
                 Console.WriteLine("Le graphe 2 est connexe.");
             }
@@ -99,7 +99,7 @@ namespace Pb_Sci_Etape_1
             {
                 Console.WriteLine("Le graphe 2 n'est pas connexe.");
             }
-            if(EstCycle(grapheAvecCycle, graphe1))
+            if(EstCycle(grapheAvecCycle))
             {
                 Console.WriteLine("Le graphe 2 est un cycle.");
             }
@@ -113,7 +113,7 @@ namespace Pb_Sci_Etape_1
                 { 2, new List<int> { 1, 3 } },
                 { 3, new List<int> { 2 } }
             };
-            if (EstCycle(grapheSansCycle, graphe1))
+            if (EstCycle(grapheSansCycle))
             {
                 Console.WriteLine("Le graphe 3 est un cycle.");
             }
@@ -121,7 +121,7 @@ namespace Pb_Sci_Etape_1
             {
                 Console.WriteLine("Le graphe 3 n'est pas un cycle.");
             }
-            if (EstConnexe(grapheSansCycle, graphe1))
+            if (EstConnexe(grapheSansCycle))
             {
                 Console.WriteLine("Le graphe 3 est connexe.");
             }
@@ -273,11 +273,12 @@ namespace Pb_Sci_Etape_1
         /// <param name="adjacence"></param>
         /// <param name="noeudMax"></param>
         /// <param name="graphe"></param>
-        static bool EstConnexe(Dictionary<int, List<int>> adjacence, Graphe graphe)
+        static bool EstConnexe(Dictionary<int, List<int>> adjacence)
         {
             // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
             bool estConnexe = false;
             HashSet<int> visite = new HashSet<int>();
+            Graphe graphe = new Graphe(adjacence);
             visite = graphe.ParcoursLargeur(1);
             int noeudMax = adjacence.Count;
             if (visite.Count == noeudMax)
@@ -294,7 +295,7 @@ namespace Pb_Sci_Etape_1
         /// <param name="adjacence"></param>
         /// <param name="graphe"></param>
         /// <returns></returns>
-        static bool EstCycle(Dictionary<int, List<int>> adjacence, Graphe graphe)
+        static bool EstCycle(Dictionary<int, List<int>> adjacence)
         {
         // Vérifier que tous les sommets ont un degré de 2
         foreach (var sommet in adjacence)
@@ -303,7 +304,7 @@ namespace Pb_Sci_Etape_1
                 return false;
         }
         // Vérifier que le graphe est connexe
-        return EstConnexe(adjacence, graphe);
+        return EstConnexe(adjacence);
         }        
     }
 }
