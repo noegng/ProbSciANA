@@ -1,9 +1,22 @@
-﻿namespace Pb_Sci_Etape_1
+﻿using QuickGraph;
+using GraphSharp.Controls;
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.IO;
+
+
+
+namespace Pb_Sci_Etape_1
 {
     public class Program
     {
+         [STAThread]
+
         static void Main(string[] args)
         {
+            
             int mode = Initialisation();
             string[] tab = new string[102];
             tab = File.ReadAllLines("soc-karate.mtx");
