@@ -67,8 +67,24 @@ namespace Pb_Sci_Etape_1
                 }
                 Graphe graphe2 = new Graphe(matrice);
                 graphe2.AfficherMatrice(); // Affichage de la matrice d'adjacence
-            }     
-            EstConnexe(adjacence, noeudMax, graphe1); // Test de connexité
+            }
+
+            if (EstConnexe(adjacence, graphe1))     // Test de connexité
+            {
+                Console.WriteLine("Le graphe est connexe.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas connexe.");
+            }
+            if (EstCycle(adjacence, graphe1))      // Test de cycle
+            {
+                Console.WriteLine("Le graphe est un cycle.");
+            }else
+            {
+                Console.WriteLine("Le graphe n'est pas un cycle.");
+            }
+            
             // Création du graphe orienté
             AfficherGraph(noeudMax, listeLien);
             
@@ -212,20 +228,30 @@ namespace Pb_Sci_Etape_1
         /// <param name="adjacence"></param>
         /// <param name="noeudMax"></param>
         /// <param name="graphe"></param>
-        static void EstConnexe(Dictionary<int, List<int>> adjacence, int noeudMax, Graphe graphe)
+        static bool EstConnexe(Dictionary<int, List<int>> adjacence, Graphe graphe)
         {
             // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
+            bool estConnexe = false;
             HashSet<int> visite = new HashSet<int>();
             visite = graphe.ParcoursLargeur(1);
+            int noeudMax = adjacence.Count;
             if (visite.Count == noeudMax)
             {
-                Console.WriteLine("Le graphe est connexe.");
+                estConnexe = true;
             }
-            else
-            {
-                Console.WriteLine("Le graphe n'est pas connexe.");
-            }    
+
+            return estConnexe;
         } 
-                  
+        static bool EstCycle(Dictionary<int, List<int>> adjacence, Graphe graphe)
+        {
+        // Vérifier que tous les sommets ont un degré de 2
+        foreach (var sommet in adjacence)
+        {
+            if (sommet.Value.Count != 2)
+                return false;
+        }
+
+        return EstConnexe(adjacence, graphe);
+        }        
     }
 }
