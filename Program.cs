@@ -108,8 +108,8 @@ namespace Pb_Sci_Etape_1
         {
             Console.WriteLine("Quel noeud de départ voulez-vous choisir ?");
             string s = Console.ReadLine();
-            int départ = 0;
-            while (!int.TryParse(s, out départ) && (départ <= 0 || départ > noeudMax))
+            int départ = -1;
+            while (!int.TryParse(s, out départ) || (départ <= 0 || départ > noeudMax))
             {
                 Console.WriteLine("Saisie inadaptée veuillez rentrer un nombre entre 1 et " + noeudMax + ".");
                 s = Console.ReadLine();
