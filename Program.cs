@@ -44,7 +44,7 @@ namespace Pb_Sci_Etape_1
                 }
             }
             Test(listeLien, noeudMax, nbLiens);
-
+            int départ = NoeudDépart(noeudMax);
             //Liste d'adjacence     (obligatoire pour le BFS et DFS)
             Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
             foreach (Lien lien in listeLien)
@@ -66,10 +66,11 @@ namespace Pb_Sci_Etape_1
                     adjacence.Add(lien.Noeud2.Noeuds, new List<int> { lien.Noeud1.Noeuds });
                 }
             }
-            Graphe graphe = new Graphe(adjacence);
-            graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
-            graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
-
+            
+            Graphe graphe1 = new Graphe(adjacence);
+            graphe1.ParcoursLargeur(départ); // BFS depuis le sommet 1
+            graphe1.ParcoursProfondeur(départ); // DFS depuis le sommet 1
+            /*
             if(mode == 1)
             {
                 graphe.AfficherDansLordre(); // Affichage des listes d'adjacence
@@ -85,7 +86,47 @@ namespace Pb_Sci_Etape_1
                 }
                 Graphe graphe2 = new Graphe(matrice);
                 graphe2.AfficherMatrice(); // Affichage de la matrice d'adjacence
-            }            
+            }     
+            */
+            
+            // Création du graphe orienté
+            var graph = new BidirectionalGraph<string, Edge<string>>();
+
+            for(int i = 0; i < noeudMax; i++)
+            {
+                graph.AddVertex(Convert.ToString(i+1));
+            }
+
+            foreach (Lien lien in listeLien)
+            {
+                graph.AddEdge(new Edge<string>(lien.Noeud1.toString(), lien.Noeud2.toString()));
+            }
+
+            var app = new Application();
+            var window = new Window
+            {
+                Title = "Visualisation du Graphe",
+                Width = 800,
+                Height = 600
+            };
+
+            // Création du contrôle GraphSharp pour afficher le graphe
+            var graphLayout = new GraphLayout<string, Edge<string>, BidirectionalGraph<string, Edge<string>>>()
+            {
+                Graph = graph,
+                LayoutAlgorithmType = "Circular",  // Layout adapté aux graphes cycliques
+                HighlightAlgorithmType = "Simple"
+                // On peut omettre OverlapRemovalAlgorithmType pour éviter des problèmes éventuels
+            };
+
+            // Ajout du contrôle dans une grille et affectation à la fenêtre
+            var grid = new Grid();
+            grid.Children.Add(graphLayout);
+            window.Content = grid;
+
+            // Lancement de l'application WPF
+            app.Run(window);
+        
             Console.ReadKey();
         }
 
@@ -112,6 +153,18 @@ namespace Pb_Sci_Etape_1
                 Console.WriteLine("Mode 2 sélectionné");
             }
             return mode;
+        }
+        static int NoeudDépart(int noeudMax)
+        {
+            Console.WriteLine("Quel noeud de départ voulez-vous choisir ?");
+            string s = Console.ReadLine();
+            int départ = 0;
+            while (!int.TryParse(s, out départ) && (départ > 0 || départ <= noeudMax))
+            {
+                Console.WriteLine("Saisie inadaptée veuillez rentrer un nombre entre 1 et " + noeudMax + ".");
+                s = Console.ReadLine();
+            }
+            return départ;
         }
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
