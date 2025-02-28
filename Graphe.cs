@@ -19,60 +19,6 @@ namespace Pb_Sci_Etape_1
         {
             this.matriceAdjacence = matriceAdjacence;
         }
-        public void ParcoursLargeurMatrice(int sommetDepart)
-        {
-            Queue<int> file = new Queue<int>();
-            HashSet<int> visite = new HashSet<int>();
-
-            file.Enqueue(sommetDepart);
-            visite.Add(sommetDepart);
-
-            Console.Write("Parcours en Largeur (BFS):  ");
-
-            while (file.Count > 0)
-            {
-                int sommet = file.Dequeue();
-                Console.Write(sommet + " ");
-                for (int i = 0; i < matriceAdjacence.GetLength(1); i++)
-                {
-                    if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
-                    {
-                        file.Enqueue(i);
-                        visite.Add(i);
-                    }
-                }
-            }
-            Console.WriteLine();
-        }
-        public void ParcoursProfondeurMatrice(int sommetDepart)
-        {
-            Stack<int> pile = new Stack<int>();
-            HashSet<int> visite = new HashSet<int>();
-
-            pile.Push(sommetDepart);
-
-            Console.Write("Parcours en Profondeur (DFS): ");
-
-            while (pile.Count > 0)
-            {
-                int sommet = pile.Pop();
-
-                if (!visite.Contains(sommet))
-                {
-                    Console.Write(sommet + " ");
-                    visite.Add(sommet);
-                }
-
-                for (int i = 0; i < matriceAdjacence.GetLength(1); i++)
-                {
-                    if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
-                    {
-                        pile.Push(i);
-                    }
-                }
-            }
-            Console.WriteLine();
-        }
         
         // Parcours en Largeur (BFS)
         public void ParcoursLargeur(int sommetDepart)
