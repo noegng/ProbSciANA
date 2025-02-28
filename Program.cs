@@ -43,6 +43,7 @@ namespace Pb_Sci_Etape_1
                 }
             }
             //Test(listeLien, noeudMax, nbLiens);
+
             int départ = NoeudDépart(noeudMax);
             //Liste d'adjacence     (obligatoire pour le BFS et DFS)
             Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
@@ -83,7 +84,7 @@ namespace Pb_Sci_Etape_1
             Console.WriteLine("Quel mode voulez-vous utiliser ? \n1 - Listes d’adjacence \n2 - Matrice d’adjacence");
             string s = Console.ReadLine();
             int mode = 0;
-            while (!int.TryParse(s, out mode) && (mode != 1 || mode != 2))
+            while (!int.TryParse(s, out mode) || (mode != 1 && mode != 2))
             {
                 Console.WriteLine("Saisie inadaptée veuillez rentrer 1 ou 2.");
                 s = Console.ReadLine();
@@ -108,7 +109,7 @@ namespace Pb_Sci_Etape_1
             Console.WriteLine("Quel noeud de départ voulez-vous choisir ?");
             string s = Console.ReadLine();
             int départ = 0;
-            while (!int.TryParse(s, out départ) && (départ > 0 || départ <= noeudMax))
+            while (!int.TryParse(s, out départ) && (départ <= 0 || départ > noeudMax))
             {
                 Console.WriteLine("Saisie inadaptée veuillez rentrer un nombre entre 1 et " + noeudMax + ".");
                 s = Console.ReadLine();
