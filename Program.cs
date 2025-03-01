@@ -1,10 +1,23 @@
-﻿namespace ProbSciAna
+﻿using QuickGraph;
+using GraphSharp.Controls;
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.IO;
+
+
+
+namespace Pb_Sci_Etape_1
 {
-    internal class Program
+    public class Program
     {
+         [STAThread]
+
         static void Main(string[] args)
         {
-            //int mode = Initialisation();
+            
+            int mode = Initialisation();
             string[] tab = new string[102];
             tab = File.ReadAllLines("soc-karate.mtx");
             int noeudMax = 0;
@@ -15,7 +28,7 @@
             {
                 if (tab[i][0] != '%')
                 {
-                    if (a == 0)         //Pour avoir la 1ere ligne
+                    if (a == 0)         //Pour avoir seulement la 1ere ligne
                     {
                         noeudMax = Convert.ToInt32(tab[i].Substring(0,tab[i].IndexOf(' ')));
                         nbLiens = Convert.ToInt32(tab[i].Substring(tab[i].LastIndexOf(' ')+1));
@@ -25,32 +38,97 @@
                     {
                         Noeud noeud1 = new Noeud(Convert.ToInt32(tab[i].Substring(0, tab[i].IndexOf(' '))));
                         Noeud noeud2 = new Noeud(Convert.ToInt32(tab[i].Substring(tab[i].IndexOf(' ')+1)));
-                        Lien lien = new Lien((noeud1, noeud2));
+                        Lien lien = new Lien(noeud1, noeud2);
                         listeLien.Add(lien);
                     }
                 }
             }
             Test(listeLien, noeudMax, nbLiens);
-
-        Console.ReadKey();
-        }
-        
-        static void Main1(string[] args)
-        {
-            
-
-            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>()
+            int départ = NoeudDépart(noeudMax);
+            //Liste d'adjacence     (obligatoire pour le BFS et DFS)
+            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
+            foreach (Lien lien in listeLien)
             {
-                {1, new List<int> {2, 3, 4, 5, 6}},
-                {2, new List<int> {1, 3, 4, 8, 14}},
-                {3, new List<int> {1, 2, 4, 8, 9}},
-                {4, new List<int> {1, 2, 3, 8, 13}},
-                {5, new List<int> {1, 7, 11}}
+                if (adjacence.ContainsKey(lien.Noeud1.Noeuds))
+                {
+                    adjacence[lien.Noeud1.Noeuds].Add(lien.Noeud2.Noeuds);
+                }
+                else
+                {
+                    adjacence.Add(lien.Noeud1.Noeuds, new List<int> { lien.Noeud2.Noeuds });
+                }
+                if (adjacence.ContainsKey(lien.Noeud2.Noeuds))
+                {
+                    adjacence[lien.Noeud2.Noeuds].Add(lien.Noeud1.Noeuds);
+                }
+                else
+                {
+                    adjacence.Add(lien.Noeud2.Noeuds, new List<int> { lien.Noeud1.Noeuds });
+                }
+            }
+            
+            Graphe graphe1 = new Graphe(adjacence);
+            graphe1.ParcoursLargeur(départ); // BFS depuis le sommet 1
+            graphe1.ParcoursProfondeur(départ); // DFS depuis le sommet 1
+            /*
+            if(mode == 1)
+            {
+                graphe.AfficherDansLordre(); // Affichage des listes d'adjacence
+            }
+            if (mode == 2)
+            {
+                //Matrice d'adjacence
+                int[,] matrice = new int[noeudMax, noeudMax];
+                foreach (Lien lien in listeLien)
+                {
+                    matrice[lien.Noeud1.Noeuds-1, lien.Noeud2.Noeuds-1] = 1; // -1 car les noeuds commencent à 1
+                    matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1;
+                }
+                Graphe graphe2 = new Graphe(matrice);
+                graphe2.AfficherMatrice(); // Affichage de la matrice d'adjacence
+            }     
+            */
+            
+            // Création du graphe orienté
+            var graph = new BidirectionalGraph<string, Edge<string>>();
+
+            for(int i = 0; i < noeudMax; i++)
+            {
+                graph.AddVertex(Convert.ToString(i+1));
+            }
+
+            foreach (Lien lien in listeLien)
+            {
+                graph.AddEdge(new Edge<string>(lien.Noeud1.toString(), lien.Noeud2.toString()));
+                graph.AddEdge(new Edge<string>(lien.Noeud2.toString(), lien.Noeud1.toString())); // Pour un graphe non orienté
+            }
+
+            var app = new Application();
+            var window = new Window
+            {
+                Title = "Visualisation du Graphe",
+                Width = 800,
+                Height = 600
             };
 
-            //Graphe graphe = new Graphe(adjacence);
-            //graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
-            //graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
+            // Création du contrôle GraphSharp pour afficher le graphe
+            var graphLayout = new GraphLayout<string, Edge<string>, BidirectionalGraph<string, Edge<string>>>()
+            {
+                Graph = graph,
+                LayoutAlgorithmType = "Circular",  // Layout adapté aux graphes cycliques
+                HighlightAlgorithmType = "Simple"
+                // On peut omettre OverlapRemovalAlgorithmType pour éviter des problèmes éventuels
+            };
+
+            // Ajout du contrôle dans une grille et affectation à la fenêtre
+            var grid = new Grid();
+            grid.Children.Add(graphLayout);
+            window.Content = grid;
+
+            // Lancement de l'application WPF
+            app.Run(window);
+        
+            Console.ReadKey();
         }
 
         /// <summary>
@@ -76,6 +154,18 @@
                 Console.WriteLine("Mode 2 sélectionné");
             }
             return mode;
+        }
+        static int NoeudDépart(int noeudMax)
+        {
+            Console.WriteLine("Quel noeud de départ voulez-vous choisir ?");
+            string s = Console.ReadLine();
+            int départ = 0;
+            while (!int.TryParse(s, out départ) && (départ > 0 || départ <= noeudMax))
+            {
+                Console.WriteLine("Saisie inadaptée veuillez rentrer un nombre entre 1 et " + noeudMax + ".");
+                s = Console.ReadLine();
+            }
+            return départ;
         }
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
