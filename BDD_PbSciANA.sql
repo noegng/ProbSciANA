@@ -8,10 +8,10 @@ CREATE TABLE IF NOT EXISTS Utilisateur(
    nom VARCHAR(50),
    prenom VARCHAR(50),
    rue VARCHAR(50),
-   numéro TINYINT CHECK (numéro >=0),
+   numero TINYINT CHECK (numero >=0),
    code_postal VARCHAR(5),
    ville VARCHAR(50),
-   téléphone VARCHAR(10),
+   telephone VARCHAR(10),
    email VARCHAR(50) UNIQUE,
    station VARCHAR(50)
 );
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS Particulier(
 DROP TABLE IF EXISTS Entreprise;
 CREATE TABLE IF NOT EXISTS Entreprise(
    id_utilisateur INT PRIMARY KEY,
-   nom_référent VARCHAR(50),
+   nom_referent VARCHAR(50),
    FOREIGN KEY(id_utilisateur) REFERENCES Client_(id_utilisateur) ON DELETE CASCADE
 );
 
@@ -45,30 +45,30 @@ DROP TABLE IF EXISTS Plat;
 CREATE TABLE IF NOT EXISTS Plat(
    id_plat INT PRIMARY KEY AUTO_INCREMENT,
    nom VARCHAR(50) UNIQUE,
-   prix DECIMAL(3,2) CHECK (prix >=0),
+   prix DECIMAL(6,2) CHECK (prix >=0),
    nb_portions TINYINT CHECK (nb_portions >=0),
    type_ ENUM('entrée','plat','dessert'),
    regime VARCHAR(50),
-   nationalité VARCHAR(50),
-   date_péremption DATE,
+   nationalite VARCHAR(50),
+   date_peremption DATE,
    photo VARCHAR(50)
 );
 
-DROP TABLE IF EXISTS Ingrédient;
-CREATE TABLE IF NOT EXISTS Ingrédient(
-   id_ingrédient INT PRIMARY KEY AUTO_INCREMENT,
+DROP TABLE IF EXISTS Ingredient;
+CREATE TABLE IF NOT EXISTS Ingredient(
+   id_ingredient INT PRIMARY KEY AUTO_INCREMENT,
    nom VARCHAR(50) UNIQUE
 );
 
 DROP TABLE IF EXISTS Avis;
 CREATE TABLE IF NOT EXISTS Avis(
    id_avis INT PRIMARY KEY AUTO_INCREMENT,
-   note TINYINT CHECK (note >=0 && note <=5) NOT NULL,
+   note TINYINT NOT NULL CHECK (note >=0 AND note <=5),
    commentaire TEXT,
    date_avis DATE,
    id_Client_ INT NOT NULL,
    id_cuisinier INT NOT NULL,
-   FOREIGN KEY(id_Client_) REFERENCES Client_(id_utilisateur),
+   FOREIGN KEY(id_Client_) REFERENCES Client_(id_utilisateur) ON DELETE CASCADE,
    FOREIGN KEY(id_cuisinier) REFERENCES Cuisinier(id_utilisateur) ON DELETE CASCADE
 );
 
@@ -76,14 +76,14 @@ DROP TABLE IF EXISTS Commande;
 CREATE TABLE IF NOT EXISTS Commande(
    id_commande INT PRIMARY KEY AUTO_INCREMENT,
    nom VARCHAR(50),
-   prix DECIMAL(3,2) CHECK (prix >=0),
+   prix DECIMAL(6,2) CHECK (prix >=0),
    statut ENUM('en cours','faite','livrée'),
    date_commande DATE,
    id_client INT NOT NULL,
    id_cuisinier INT NOT NULL,
-   FOREIGN KEY(id_client) REFERENCES Client_(id_utilisateur),
-   FOREIGN KEY(id_cuisinier) REFERENCES Cuisinier(id_utilisateur),
-   CONSTRAINT diff_client_cuisinier CHECK (client_id <> cuisinier_id)
+   FOREIGN KEY(id_client) REFERENCES Client_(id_utilisateur) ON DELETE CASCADE,
+   FOREIGN KEY(id_cuisinier) REFERENCES Cuisinier(id_utilisateur) ON DELETE CASCADE,
+   CONSTRAINT diff_client_cuisinier CHECK (id_client <> id_cuisinier)
 );
 
 DROP TABLE IF EXISTS Trajet;
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS Trajet(
    chemin_optimal VARCHAR(50),
    temps_optimal INT CHECK (temps_optimal >=0),
    id_utilisateur INT NOT NULL,
-   FOREIGN KEY(id_utilisateur) REFERENCES Cuisinier(id_utilisateur)
+   FOREIGN KEY(id_utilisateur) REFERENCES Cuisinier(id_utilisateur) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS Livraison;
@@ -121,27 +121,18 @@ CREATE TABLE IF NOT EXISTS Cuisine(
 DROP TABLE IF EXISTS Compose;
 CREATE TABLE IF NOT EXISTS Compose(
    id_plat INT,
-   id_ingrédient INT,
-   quantité TINYINT CHECK(quantité >=0) NOT NULL,
-   PRIMARY KEY(id_plat, id_ingrédient),
+   id_ingredient INT,
+   quantite TINYINT CHECK(quantite > 0) NOT NULL,
+   PRIMARY KEY(id_plat, id_ingredient),
    FOREIGN KEY(id_plat) REFERENCES Plat(id_plat),
-   FOREIGN KEY(id_ingrédient) REFERENCES Ingrédient(id_ingrédient)
-);
-
-DROP TABLE IF EXISTS Prépare;
-CREATE TABLE IF NOT EXISTS Prépare(
-   id_cuisinier INT,
-   id_commande INT,
-   PRIMARY KEY(id_cuisinier, id_commande),
-   FOREIGN KEY(id_cuisinier) REFERENCES Cuisinier(id_utilisateur) ON DELETE CASCADE,
-   FOREIGN KEY(id_commande) REFERENCES Commande(id_commande) ON DELETE CASCADE
+   FOREIGN KEY(id_ingredient) REFERENCES Ingredient(id_ingredient)
 );
 
 DROP TABLE IF EXISTS Requiert;
 CREATE TABLE IF NOT EXISTS Requiert(
    id_plat INT,
    id_livraison INT,
-   quantité TINYINT CHECK(quantité >=0) NOT NULL,
+   quantite TINYINT CHECK(quantite > 0) NOT NULL,
    PRIMARY KEY(id_plat, id_livraison),
    FOREIGN KEY(id_plat) REFERENCES Plat(id_plat),
    FOREIGN KEY(id_livraison) REFERENCES Livraison(id_livraison) ON DELETE CASCADE
