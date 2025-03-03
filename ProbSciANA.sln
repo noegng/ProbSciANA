@@ -4,7 +4,7 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProbSciANA", "ProbSciANA.csproj", "{3C8FA959-28D7-35E0-3A83-D44A2748F4B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PbSciANATest", "..\PbSciANATest\PbSciANATest.csproj", "{5B1BC87B-6A28-400D-B052-AA18D5F11530}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProbSciANATest", "..\ProbSciANATest\ProbSciANATest.csproj", "{5B1BC87B-6A28-400D-B052-AA18D5F11530}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
