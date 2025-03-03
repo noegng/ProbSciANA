@@ -13,7 +13,7 @@ namespace Pb_Sci_Etape_1
     public class Program
     {
          [STAThread]
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             
             int mode = Initialisation();
@@ -132,7 +132,6 @@ namespace Pb_Sci_Etape_1
 
             // Création du graphe orienté
             AfficherGraph(noeudMax, listeLien);
-            
             Console.ReadKey();
         }
 
@@ -140,7 +139,7 @@ namespace Pb_Sci_Etape_1
         /// Choix du mode
         /// </summary>
         /// <returns></returns>
-        static int Initialisation()
+        public static int Initialisation()
         {
             Console.WriteLine("Quel mode voulez-vous utiliser ? \n1 - Listes d’adjacence \n2 - Matrice d’adjacence");
             string s = Console.ReadLine();
@@ -165,7 +164,7 @@ namespace Pb_Sci_Etape_1
         /// </summary>
         /// <param name="noeudMax"></param>
         /// <returns></returns>
-        static int NoeudDépart(int noeudMax)
+        public static int NoeudDépart(int noeudMax)
         {
             Console.WriteLine("Quel noeud de départ voulez-vous choisir ?");
             string s = Console.ReadLine();
@@ -183,7 +182,7 @@ namespace Pb_Sci_Etape_1
         /// <param name="listeLien"></param>
         /// <param name="noeudMax"></param>
         /// <param name="adjacence"></param>
-        static void ListeAdjacence(List<Lien> listeLien, int noeudMax,Dictionary<int, List<int>> adjacence)
+        public static void ListeAdjacence(List<Lien> listeLien, int noeudMax,Dictionary<int, List<int>> adjacence)
         {
             
             foreach (Lien lien in listeLien)
@@ -227,7 +226,7 @@ namespace Pb_Sci_Etape_1
         /// </summary>
         /// <param name="noeudMax"></param>
         /// <param name="listeLien"></param>
-        static void AfficherGraph(int noeudMax, List<Lien> listeLien)
+        public static void AfficherGraph(int noeudMax, List<Lien> listeLien)
         {
             var graph = new BidirectionalGraph<string, Edge<string>>();
 
@@ -273,7 +272,7 @@ namespace Pb_Sci_Etape_1
         /// <param name="adjacence"></param>
         /// <param name="noeudMax"></param>
         /// <param name="graphe"></param>
-        static bool EstConnexe(Dictionary<int, List<int>> adjacence)
+        public static bool EstConnexe(Dictionary<int, List<int>> adjacence)
         {
             // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
             bool estConnexe = false;
@@ -295,7 +294,7 @@ namespace Pb_Sci_Etape_1
         /// <param name="adjacence"></param>
         /// <param name="graphe"></param>
         /// <returns></returns>
-        static bool EstCycle(Dictionary<int, List<int>> adjacence)
+        public static bool EstCycle(Dictionary<int, List<int>> adjacence)
         {
         // Vérifier que tous les sommets ont un degré de 2
         foreach (var sommet in adjacence)
