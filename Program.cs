@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.IO;
-
+using MySql.Data.MySqlClient;
+using System.Data;
 
 
 namespace ProbSciANA
