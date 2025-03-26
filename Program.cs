@@ -8,7 +8,7 @@ using System.IO;
 
 
 
-namespace Pb_Sci_Etape_1
+namespace ProbSciANA
 {
     public class Program
     {
@@ -43,31 +43,36 @@ namespace Pb_Sci_Etape_1
                 }
             }
             //Test(listeLien, noeudMax, nbLiens);
-
             int départ = NoeudDépart(noeudMax);
-            //Liste d'adjacence     (obligatoire pour le BFS et DFS)
+            //Liste d'adjacence
             Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
-            ListeAdjacence(listeLien, noeudMax,adjacence);
-            Graphe graphe1 = new Graphe(adjacence);
-            graphe1.ParcoursLargeur(départ); // BFS depuis le sommet 1
-            graphe1.ParcoursProfondeur(départ); // DFS depuis le sommet 1
+            //Matrice d'adjacence
+            int[,] matrice = new int[noeudMax, noeudMax];
 
+            if(mode == 1)
+            {
+                ListeAdjacence(listeLien, noeudMax,adjacence);
+            }
+            if (mode == 2)
+            {
+                foreach (Lien lien in listeLien)
+                {
+                    matrice[lien.Noeud1.Noeuds-1, lien.Noeud2.Noeuds-1] = 1; // -1 car les noeuds commencent à 1
+                    matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1; // Pour un graphe non orienté car matrice symétrique
+                }
+            }
+            Graphe graphe1 = new Graphe(adjacence);
             if(mode == 1)
             {
                 graphe1.AfficherDansLordre(); // Affichage des listes d'adjacence
             }
-            if (mode == 2)
+            if(mode == 2)
             {
-                //Matrice d'adjacence
-                int[,] matrice = new int[noeudMax, noeudMax];
-                foreach (Lien lien in listeLien)
-                {
-                    matrice[lien.Noeud1.Noeuds-1, lien.Noeud2.Noeuds-1] = 1; // -1 car les noeuds commencent à 1
-                    matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1;
-                }
-                Graphe graphe2 = new Graphe(matrice);
-                graphe2.AfficherMatrice(); // Affichage de la matrice d'adjacence
+                graphe1.AfficherMatrice(); // Affichage de la matrice d'adjacence
             }
+            graphe1.BFStoString(départ); // BFS depuis le sommet départ
+            graphe1.ParcoursProfondeur(départ); // DFS depuis le sommet départ
+            graphe1.DFStoString(départ); // BFS depuis le sommet départ
 
             if (EstConnexe(adjacence))     // Test de connexité
             {
@@ -277,7 +282,7 @@ namespace Pb_Sci_Etape_1
         {
             // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
             bool estConnexe = false;
-            HashSet<int> visite = new HashSet<int>();
+            HashSet<Noeud> visite = new HashSet<Noeud>();
             Graphe graphe = new Graphe(adjacence);
             visite = graphe.ParcoursLargeur(1);
             int noeudMax = adjacence.Count;
@@ -300,11 +305,22 @@ namespace Pb_Sci_Etape_1
         // Vérifier que tous les sommets ont un degré de 2
         foreach (var sommet in adjacence)
         {
-            if (sommet.Value.Count < 2)
+            if (sommet.Value.Count == 2)
                 return false;
         }
         // Vérifier que le graphe est connexe
         return EstConnexe(adjacence);
-        }        
+        }
+        static bool ContientCycle(Dictionary<int, List<int>> adjacence)
+        {
+            // Vérifier que tous les sommets ont un degré de 2
+            foreach (var sommet in adjacence)
+            {
+                if (sommet.Value.Count != 2)
+                    return false;
+            }
+            // Vérifier que le graphe est connexe
+            return EstConnexe(adjacence);
+        }  
     }
 }
