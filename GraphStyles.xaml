@@ -1,9 +1,0 @@
-<DataTemplate DataType="{x:Type local:MyVertex}">
-  <Grid>
-    <Ellipse Fill="LightBlue" Stroke="DarkBlue" StrokeThickness="2" 
-             Width="40" Height="40"/> <!-- cercle bleu clair de 40px -->
-    <TextBlock Text="{Binding Name}" Foreground="DarkBlue" FontWeight="Bold"
-               HorizontalAlignment="Center" VerticalAlignment="Center"/>
-    <!-- Label du sommet en texte bleu foncé, centré dans le cercle -->
-  </Grid>
-</DataTemplate>
