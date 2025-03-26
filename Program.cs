@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.IO;
+using MySql.Data.MySqlClient;
+using System.Data;
 
 
-
-namespace Pb_Sci_Etape_1
+namespace ProbSciANA
 {
     public class Program
     {
          [STAThread]
-
         static void Main(string[] args)
         {
             
@@ -43,7 +43,8 @@ namespace Pb_Sci_Etape_1
                     }
                 }
             }
-            Test(listeLien, noeudMax, nbLiens);
+            //Test(listeLien, noeudMax, nbLiens);
+
             int départ = NoeudDépart(noeudMax);
             //Liste d'adjacence     (obligatoire pour le BFS et DFS)
             Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
@@ -67,11 +68,72 @@ namespace Pb_Sci_Etape_1
                 }
                 Graphe graphe2 = new Graphe(matrice);
                 graphe2.AfficherMatrice(); // Affichage de la matrice d'adjacence
-            }     
-            
+            }
+
+            if (EstConnexe(adjacence))     // Test de connexité
+            {
+                Console.WriteLine("Le graphe est connexe.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas connexe.");
+            }
+            if (EstCycle(adjacence))      // Test de cycle
+            {
+                Console.WriteLine("Le graphe est un cycle.");
+            }else
+            {
+                Console.WriteLine("Le graphe n'est pas un cycle.");
+            }
+            // Exemple de graphe avec et sans cycle
+            Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
+            {
+                { 1, new List<int> { 2, 3 } },
+                { 2, new List<int> { 1, 3 } },
+                { 3, new List<int> { 1, 2 } }
+            };
+            if(EstConnexe(grapheAvecCycle))
+            {
+                Console.WriteLine("Le graphe 2 est connexe.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe 2 n'est pas connexe.");
+            }
+            if(EstCycle(grapheAvecCycle))
+            {
+                Console.WriteLine("Le graphe 2 est un cycle.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe 2 n'est pas un cycle.");
+            }
+            Dictionary<int, List<int>> grapheSansCycle = new Dictionary<int, List<int>>()
+            {
+                { 1, new List<int> { 2 } },
+                { 2, new List<int> { 1, 3 } },
+                { 3, new List<int> { 2 } }
+            };
+            if (EstCycle(grapheSansCycle))
+            {
+                Console.WriteLine("Le graphe 3 est un cycle.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe 3 n'est pas un cycle.");
+            }
+            if (EstConnexe(grapheSansCycle))
+            {
+                Console.WriteLine("Le graphe 3 est connexe.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe 3 n'est pas connexe.");
+            }
+
             // Création du graphe orienté
             AfficherGraph(noeudMax, listeLien);
-
+            
             Console.ReadKey();
         }
 
@@ -84,7 +146,7 @@ namespace Pb_Sci_Etape_1
             Console.WriteLine("Quel mode voulez-vous utiliser ? \n1 - Listes d’adjacence \n2 - Matrice d’adjacence");
             string s = Console.ReadLine();
             int mode = 0;
-            while (!int.TryParse(s, out mode) && (mode != 1 || mode != 2))
+            while (!int.TryParse(s, out mode) || (mode != 1 && mode != 2))
             {
                 Console.WriteLine("Saisie inadaptée veuillez rentrer 1 ou 2.");
                 s = Console.ReadLine();
@@ -108,8 +170,8 @@ namespace Pb_Sci_Etape_1
         {
             Console.WriteLine("Quel noeud de départ voulez-vous choisir ?");
             string s = Console.ReadLine();
-            int départ = 0;
-            while (!int.TryParse(s, out départ) && (départ > 0 || départ <= noeudMax))
+            int départ = -1;
+            while (!int.TryParse(s, out départ) || (départ <= 0 || départ > noeudMax))
             {
                 Console.WriteLine("Saisie inadaptée veuillez rentrer un nombre entre 1 et " + noeudMax + ".");
                 s = Console.ReadLine();
@@ -206,7 +268,44 @@ namespace Pb_Sci_Etape_1
             // Lancement de l'application WPF
             app.Run(window);
         }
-    }
-    
-}
+        /// <summary>
+        /// Test de connexité
+        /// </summary>
+        /// <param name="adjacence"></param>
+        /// <param name="noeudMax"></param>
+        /// <param name="graphe"></param>
+        static bool EstConnexe(Dictionary<int, List<int>> adjacence)
+        {
+            // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
+            bool estConnexe = false;
+            HashSet<int> visite = new HashSet<int>();
+            Graphe graphe = new Graphe(adjacence);
+            visite = graphe.ParcoursLargeur(1);
+            int noeudMax = adjacence.Count;
+            if (visite.Count == noeudMax)
+            {
+                estConnexe = true;
+            }
 
+            return estConnexe;
+        } 
+        /// <summary>
+        /// Test de cycle
+        /// Pour savoir si un graphe est un cycle, il faut que tous les sommets aient un degré de 2 et que le graphe soit connexe  
+        /// </summary>
+        /// <param name="adjacence"></param>
+        /// <param name="graphe"></param>
+        /// <returns></returns>
+        static bool EstCycle(Dictionary<int, List<int>> adjacence)
+        {
+        // Vérifier que tous les sommets ont un degré de 2
+        foreach (var sommet in adjacence)
+        {
+            if (sommet.Value.Count < 2)
+                return false;
+        }
+        // Vérifier que le graphe est connexe
+        return EstConnexe(adjacence);
+        }        
+    }
+}
