@@ -8,6 +8,7 @@ using System.Globalization;
 
 namespace ProbSciANA
 {
+
     public static class ExcelHelper
     {
         /// <summary>
@@ -19,30 +20,46 @@ namespace ProbSciANA
         /// </summary>
         /// <param name="excelFilePath">Le chemin complet du fichier Excel.</param>
         /// <returns>Un dictionnaire associant l'identifiant du sommet à un tuple (longitude, latitude).</returns>
-        public static Dictionary<int, (decimal Longitude, decimal Latitude)> GetVertexPositions(string excelFilePath)
+        public static (List<Station> stations, List<Arete> aretes) GetVertexPositions(string excelFilePath)
         {
    
-            var positions = new Dictionary<int, (decimal, decimal)>();
+            var stations = new List<Station>();
 
             using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
             {
                 // On considère la première feuille
                 var worksheet = package.Workbook.Worksheets[1];
                 // Les données commencent à la ligne 2 (la ligne 1 contient les titres)
-                int row = 2;
-                while (worksheet.Cells[row, 1].Value != null)
+                int i = 2;
+                while (worksheet.Cells[i, 1].Value != null)
                 {
-                    int vertexId = Convert.ToInt32(worksheet.Cells[row, 1].Value);
+                    Station station = new Station();
+                    station.Id = Convert.ToInt32(worksheet.Cells[i, 1].Value);
 
-                    // Utilisation de decimal.Parse pour les conversions
-                    decimal longitude = decimal.Parse(worksheet.Cells[row, 3].Value.ToString());
-                    decimal latitude = decimal.Parse(worksheet.Cells[row, 4].Value.ToString());
-
-                    positions[vertexId] = (longitude, latitude);
-                    row++;
+                    station.Nom = worksheet.Cells[i, 2].Value.ToString();
+                    station.Longitude = decimal.Parse(worksheet.Cells[i, 3].Value.ToString());
+                    station.Latitude = decimal.Parse(worksheet.Cells[i, 4].Value.ToString());
+                    stations.Add(station);
+                    i++;
                 }
+                worksheet = package.Workbook.Worksheets[2];
+                i = 2;
+                var aretes = new List<Arete>();
+                while(worksheet.Cells[i, 1].Value != null)
+                {
+                    Arete arete = new Arete();
+                    arete.IdPrevious = Convert.ToInt32(worksheet.Cells[i, 2].Value);
+                    arete.IdNext = Convert.ToInt32(worksheet.Cells[i, 3].Value);
+                    arete.IdLigne = Convert.ToInt32(worksheet.Cells[i, 1].Value);
+                    //arete.Temps = Convert.ToInt32(worksheet.Cells[i, 4].Value);
+                    aretes.Add(arete);
+                    i++;
+
+                }
+
+
             }
-            return positions;
+            return (stations, aretes);
         }
     }
 
@@ -53,7 +70,7 @@ public static class MetroGraphHelper
     /// </summary>
     /// <param name="excelFilePath">Chemin complet vers le fichier Excel.</param>
     /// <returns>Une matrice d'adjacence binaire (1 = arête, 0 = aucune connexion)</returns>
-    public static int[,] MatriceAdjacenceExcel(string excelFilePath)
+    public static int[,] GetArete(string excelFilePath)
    {
           
             // Lire le fichier Excel et extraire les stations et liaisons
@@ -66,18 +83,18 @@ public static class MetroGraphHelper
     // Accéder à la deuxième feuille
     var worksheet = package.Workbook.Worksheets[2]; // ou Worksheets["NomFeuille2"]
 
-                int row = 2; // La première ligne contient les en-têtes
+                int i = 2; // La première ligne contient les en-têtes
 
-                while (worksheet.Cells[row, 1].Value != null)
+                while (worksheet.Cells[i, 1].Value != null)
                 {
-                    string station1 = worksheet.Cells[row, 2].Text.Trim();
-                    string station2 = worksheet.Cells[row, 3].Text.Trim();
+                    string station1 = worksheet.Cells[i, 2].Text.Trim();
+                    string station2 = worksheet.Cells[i, 3].Text.Trim();
 
                     stations.Add(station1);
                     stations.Add(station2);
 
                     liens.Add((station1, station2));
-                    row++;
+                    i++;
                 }
                 
             }
@@ -116,10 +133,11 @@ public static class MetroGraphHelper
         /// <param name="pngFilePath">Chemin pour générer l'image PNG.</param>
 
         public static void GenerateGraphImage(
-    int [,] adjacence,
+    List <Stations> stations,
+    List <Arete> aretes,
     string dotFilePath,
     string pngFilePath,
-    Dictionary<int, (decimal Longitude, decimal Latitude)> vertexPositions = null)
+    )
 {
     try
     {
@@ -177,7 +195,7 @@ public static class MetroGraphHelper
             string errorOutput = process.StandardError.ReadToEnd();
     Console.WriteLine("Erreur lors de l'exécution de dot.exe :");
     Console.WriteLine(errorOutput);
-    throw new Exception($"Le processus dot.exe a renvoyé le code {process.ExitCode}. Erreur : {errorOutput}");
+    thi new Exception($"Le processus dot.exe a renvoyé le code {process.ExitCode}. Erreur : {errorOutput}");
         }
 
         Console.WriteLine($"Image PNG générée : {pngFilePath}");
@@ -185,7 +203,7 @@ public static class MetroGraphHelper
     }
     catch (Exception ex)
     {
-        throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
+        thi new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
     }
 }
 

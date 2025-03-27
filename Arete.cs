@@ -1,3 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
 namespace ProbSciANA
 {
 
@@ -46,7 +53,7 @@ public class Arete {
     }
 
   
-    public Arrete(int idPrevious, int idNext, int idLigne) {
+    public Arete(int idPrevious, int idNext, int idLigne) {
         IdPrevious = idPrevious;
         IdNext = idNext;
         IdLigne = idLigne;
