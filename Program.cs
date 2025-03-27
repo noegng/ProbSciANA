@@ -15,8 +15,7 @@ namespace ProbSciANA
     {
          [STAThread]
         static void Main(string[] args)
-        {
-            
+        {            
             int mode = Initialisation();
             List<Lien> listeLien = new List<Lien>();
             (listeLien,int noeudMax,int nbLiens) = LectureFichier();
@@ -53,7 +52,7 @@ namespace ProbSciANA
             TestGraphe();
             
             // Création du graphe orienté
-            //AfficherGraph(noeudMax, listeLien);
+            AfficherGraph(noeudMax, listeLien);
             
             Console.ReadKey();
         }
