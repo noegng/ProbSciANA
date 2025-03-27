@@ -3,7 +3,6 @@ using GraphSharp.Controls;
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.IO;
 using System.Net;
 
@@ -11,7 +10,6 @@ using System.Net;
 
 namespace ProbSciANA
 {
-    public class Program
     public class Program
     {
          [STAThread]
