@@ -17,7 +17,7 @@ namespace ProbSciANA
             {
                 this.noeud = noeud;
             }
-            else { Console.WriteLine("Erreur dans la saisie du noeud."); }
+            else { Console.WriteLine("Erreur dans la saisie du noeud." + noeud); }
         }
         public int Noeuds
         {

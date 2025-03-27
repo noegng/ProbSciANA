@@ -21,18 +21,20 @@ namespace ProbSciANA
         public Graphe(int[,] matriceAdjacence)
         {
             this.matriceAdjacence = matriceAdjacence;
-            for(int i = 0; i < matriceAdjacence.GetLength(0); i++)
+            Dictionary<int, List<int>> listeAdjacencelocal = new Dictionary<int, List<int>>();
+            for(int i = 1; i <= matriceAdjacence.GetLength(0); i++)
             {
                 List<int> voisins = new List<int>();
-                for (int j = 0; j < matriceAdjacence.GetLength(1); j++)
+                for (int j = 1; j <= matriceAdjacence.GetLength(1); j++)
                 {
-                    if (matriceAdjacence[i, j] == 1)
+                    if (matriceAdjacence[i-1, j-1] == 1)
                     {
                         voisins.Add(j);
                     }
                 }
-                listeAdjacence.Add(i, voisins);
+                listeAdjacencelocal.Add(i, voisins);
             }
+            listeAdjacence = listeAdjacencelocal;
         }
         /// <summary>
         /// Parcours en largeur (BFS) avec file
@@ -44,18 +46,15 @@ namespace ProbSciANA
             Dictionary<int, int> couleurs = new Dictionary<int, int>();
             Queue<int> file = new Queue<int>();
             HashSet<Noeud> visite = new HashSet<Noeud>();
-            // Initialisation
             foreach (int sommet in listeAdjacence.Keys)
             {
                 couleurs[sommet] = 0; // blanc
             }
             file.Enqueue(sommetDepart);
             couleurs[sommetDepart] = 1; // jaune
-            //Console.Write("Parcours en Largeur (BFS):  ");
             while (file.Count > 0)
             {
                 int sommet = file.Dequeue();
-                //Console.Write(sommet + " ");
                 foreach (int voisin in listeAdjacence.Keys)
                 {
                  if (couleurs[voisin] == 0) // blanc
@@ -69,7 +68,8 @@ namespace ProbSciANA
             }
             return visite;
         }   
-        public HashSet<Noeud> DFS(int sommetDepart, bool rechercheCycle = false)
+        
+        public HashSet<Noeud> DFS(int sommetDepart)
         {
             Dictionary<int, int> couleurs = new Dictionary<int, int>();
             Stack<int> pile = new Stack<int>();
@@ -80,17 +80,10 @@ namespace ProbSciANA
             }
             pile.Push(sommetDepart);
             couleurs[sommetDepart] = 1; // jaune
-            bool cycle = false;
             while (pile.Count > 0)
             {
                 int sommet = pile.Peek();
                 bool aExploréUnVoisin = false;
-                if(rechercheCycle && couleurs[sommet] == 1)
-                {
-                Console.WriteLine("Cycle détecté.");
-                cycle = true;
-                break;
-                }
                 foreach (int voisin in listeAdjacence[sommet].OrderBy(x => x)) // Pour explorer dans l'ordre et avoit le même résultat que le parcours en largeur
                 {
                     if (couleurs[voisin] == 0)   // On cherche un voisin blanc
@@ -109,11 +102,54 @@ namespace ProbSciANA
                     visite.Add(new Noeud(sommet));
                 }
             }
-            if(!cycle && rechercheCycle)
-            {
-                Console.WriteLine("Pas de cycle détecté.");
-            }
             return visite;
+        }
+
+        public HashSet<Noeud> DFSRécursif(bool rechercheCycle = false)
+        {
+            Dictionary<int, int> couleurs = new Dictionary<int, int>();
+            HashSet<Noeud> visite = new HashSet<Noeud>();
+
+            // Initialisation : tous les sommets sont blancs
+            foreach (int sommet in listeAdjacence.Keys)
+            couleurs[sommet] = 0;
+
+            foreach (int sommet in listeAdjacence.Keys)
+            {
+            if (couleurs[sommet] == 0)
+                DFSrec(sommet, couleurs, visite, rechercheCycle);
+            }
+
+            return visite;
+        }
+        
+        public void DFSrec(int sommet, Dictionary<int, int> couleurs, HashSet<Noeud> visite, bool rechercheCycle = false)
+        {
+            couleurs[sommet] = 1; // jaune : en traitement
+            visite.Add(new Noeud(sommet)); // Ajouter le sommet visité
+
+            foreach (int successeur in listeAdjacence[sommet])
+            {
+                if (couleurs[successeur] == 0)
+                {
+                    couleurs[sommet] = 2;   // le sommet doit etre rouge ici pour ne pas être traité à nouveau dans la prochaine itération
+                    DFSrec(successeur, couleurs, visite, rechercheCycle);
+                }
+                else if (rechercheCycle && couleurs[successeur] == 1)
+                {
+                    Console.WriteLine("Cycle détecté.");
+                    return;
+                }
+            }
+        }
+        public void DFStoString(int sommetDepart)
+        {
+            Console.Write("Parcours en Profondeur (DFS): ");
+            foreach (Noeud sommet in DFS(sommetDepart))
+            {
+                Console.Write(sommet.toString() + " ");
+            }
+            Console.WriteLine();
         }
         public void BFStoString(int sommetDepart)
         {
@@ -124,10 +160,10 @@ namespace ProbSciANA
             }
             Console.WriteLine();
         }
-        public void DFStoString(int sommetDepart)
+        public void DFSRécursiftoString()
         {
-            Console.Write("Parcours en Profondeur (DFS): ");
-            foreach (Noeud sommet in DFS(sommetDepart))
+            Console.Write("Parcours en Profondeur (DFS récursif): ");
+            foreach (Noeud sommet in DFSRécursif())
             {
                 Console.Write(sommet.toString() + " ");
             }
@@ -184,7 +220,7 @@ namespace ProbSciANA
         }
         public void ContientCycle()
         {
-            DFS(1, true);
+            DFSRécursif(true);
         }
     }
     #region ancien code
@@ -245,6 +281,60 @@ namespace ProbSciANA
             }
             Console.WriteLine();
         }
+
+        // Parcours en Profondeur (DFS) récursif BON
+        public HashSet<Noeud> DFSRecursif(int sommetDepart, bool rechercheCycle = false)
+        {
+            Dictionary<int, int> couleurs = new Dictionary<int, int>();
+            HashSet<Noeud> visite = new HashSet<Noeud>();
+            bool cycle = false;
+            // Initialisation des couleurs (tous les sommets sont blancs)
+            foreach (int sommet in listeAdjacence.Keys)
+            {
+                couleurs[sommet] = 0; // blanc
+            }
+
+            void Explorer(int sommet)
+            {
+                if (rechercheCycle && couleurs[sommet] == 1)
+                {
+                    Console.WriteLine("Cycle détecté.");
+                    cycle = true;
+                    return;
+                }
+
+                couleurs[sommet] = 1; // jaune
+                foreach (int voisin in listeAdjacence[sommet].OrderBy(x => x))
+                {
+                    if (couleurs[voisin] == 0) // blanc
+                    {
+                        Explorer(voisin);
+                    }
+                }
+                couleurs[sommet] = 2; // rouge
+                visite.Add(new Noeud(sommet));
+            }
+
+            // Lancer l'exploration à partir du sommet de départ
+            Explorer(sommetDepart);
+
+            if (!cycle && rechercheCycle)
+            {
+                Console.WriteLine("Pas de cycle détecté.");
+            }
+
+            return visite;
+        }
+        //Affichage du parcours en profondeur récursif
+        public void DFSRecursiftoString()
+        {
+            Console.Write("Parcours en Profondeur (DFS recursif): ");
+            foreach (Noeud sommet in DFSRecursif(1))
+            {
+                Console.Write(sommet.toString() + " ");
+            }
+            Console.WriteLine();
+        }
     */
     #endregion
 }

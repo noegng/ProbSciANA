@@ -24,26 +24,28 @@ namespace ProbSciANA
             int départ = NoeudDépart(noeudMax);
             Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();    //Liste d'adjacence
             int[,] matrice = new int[noeudMax, noeudMax];    //Matrice d'adjacence
-
+            Graphe graphe1 = null;
             if(mode == 1)
             {
                 ListeAdjacence(listeLien, noeudMax,adjacence);  // Création d'un graph via une liste d'adjacence
+                graphe1 = new Graphe(adjacence);
             }
             if (mode == 2)
             {
                 MatriceAdjacence(listeLien, noeudMax, matrice); // Création d'un graph via une matrice d'adjacence
+                graphe1 = new Graphe(matrice);
             }
-            Graphe graphe1 = new Graphe(adjacence);
             if(mode == 1)
             {
-                graphe1.AfficherDansLordre(); // Affichage des listes d'adjacence
+                graphe1.AfficherDansLordre(); // Affichage de la liste d'adjacence
             }
             if(mode == 2)
             {
                 graphe1.AfficherMatrice(); // Affichage de la matrice d'adjacence
             }
             graphe1.BFStoString(départ); // BFS depuis le sommet départ
-            graphe1.DFStoString(départ); // BFS depuis le sommet départ
+            graphe1.DFStoString(départ); // DFS depuis le sommet départ
+            graphe1.DFSRécursiftoString();
             graphe1.EstConnexe(); // Test de connexité
             graphe1.ContientCycle(); // Test de cycle
             
@@ -241,9 +243,12 @@ namespace ProbSciANA
             
             Dictionary<int, List<int>> grapheSansCycle = new Dictionary<int, List<int>>()
             {
-                { 1, new List<int> { 2 } },
-                { 2, new List<int> { 1, 3 } },
-                { 3, new List<int> { 2 } }
+                { 1, new List<int> { 2, 3 } },
+                { 2, new List<int> { 1, 4 } },
+                { 3, new List<int> { 1, 5 } },
+                { 4, new List<int> { 2 } },
+                { 5, new List<int> { 3, 6 } },
+                { 6, new List<int> { 5 } }
             };
             Graphe graph3 = new Graphe(grapheSansCycle);
             graph3.EstConnexe();
