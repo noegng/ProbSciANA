@@ -13,8 +13,7 @@ public class Arete {
 
     Station idPrevious;
     Station idNext;
-    int idLigne;
-
+    string idLigne;
     int temps;
 
     
@@ -35,7 +34,7 @@ public class Arete {
             idNext = value;
         }
     }
-    public int IdLigne {
+    public string IdLigne {
         get {
             return idLigne;
         }
@@ -53,10 +52,12 @@ public class Arete {
     }
 
   
-    public Arete(int idPrevious, int idNext, int idLigne) {
+    public Arete(Station idPrevious, Station idNext, string idLigne) {
         IdPrevious = idPrevious;
         IdNext = idNext;
         IdLigne = idLigne;
     }
+
+
 }
 }
