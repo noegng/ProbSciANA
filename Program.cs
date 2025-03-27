@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.IO;
+using System.Net;
 
 
 
@@ -17,49 +18,20 @@ namespace ProbSciANA
         {
             
             int mode = Initialisation();
-            string[] tab = new string[102];
-            tab = File.ReadAllLines("soc-karate.mtx");
-            int noeudMax = 0;
-            int nbLiens = 0;
-            List <Lien> listeLien = new List<Lien> (78);
-            int a = 0;
-            for (int i = 0; i < tab.Length; i++)
-            {
-                if (tab[i][0] != '%')
-                {
-                    if (a == 0)         //Pour avoir seulement la 1ere ligne
-                    {
-                        noeudMax = Convert.ToInt32(tab[i].Substring(0,tab[i].IndexOf(' ')));
-                        nbLiens = Convert.ToInt32(tab[i].Substring(tab[i].LastIndexOf(' ')+1));
-                        a++;
-                    }
-                    else
-                    {
-                        Noeud noeud1 = new Noeud(Convert.ToInt32(tab[i].Substring(0, tab[i].IndexOf(' '))));
-                        Noeud noeud2 = new Noeud(Convert.ToInt32(tab[i].Substring(tab[i].IndexOf(' ')+1)));
-                        Lien lien = new Lien(noeud1, noeud2);
-                        listeLien.Add(lien);
-                    }
-                }
-            }
+            List<Lien> listeLien = new List<Lien>();
+            (listeLien,int noeudMax,int nbLiens) = LectureFichier();
             //Test(listeLien, noeudMax, nbLiens);
             int départ = NoeudDépart(noeudMax);
-            //Liste d'adjacence
-            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
-            //Matrice d'adjacence
-            int[,] matrice = new int[noeudMax, noeudMax];
+            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();    //Liste d'adjacence
+            int[,] matrice = new int[noeudMax, noeudMax];    //Matrice d'adjacence
 
             if(mode == 1)
             {
-                ListeAdjacence(listeLien, noeudMax,adjacence);
+                ListeAdjacence(listeLien, noeudMax,adjacence);  // Création d'un graph via une liste d'adjacence
             }
             if (mode == 2)
             {
-                foreach (Lien lien in listeLien)
-                {
-                    matrice[lien.Noeud1.Noeuds-1, lien.Noeud2.Noeuds-1] = 1; // -1 car les noeuds commencent à 1
-                    matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1; // Pour un graphe non orienté car matrice symétrique
-                }
+                MatriceAdjacence(listeLien, noeudMax, matrice); // Création d'un graph via une matrice d'adjacence
             }
             Graphe graphe1 = new Graphe(adjacence);
             if(mode == 1)
@@ -71,72 +43,15 @@ namespace ProbSciANA
                 graphe1.AfficherMatrice(); // Affichage de la matrice d'adjacence
             }
             graphe1.BFStoString(départ); // BFS depuis le sommet départ
-            graphe1.ParcoursProfondeur(départ); // DFS depuis le sommet départ
             graphe1.DFStoString(départ); // BFS depuis le sommet départ
-
-            if (EstConnexe(adjacence))     // Test de connexité
-            {
-                Console.WriteLine("Le graphe est connexe.");
-            }
-            else
-            {
-                Console.WriteLine("Le graphe n'est pas connexe.");
-            }
-            if (EstCycle(adjacence))      // Test de cycle
-            {
-                Console.WriteLine("Le graphe est un cycle.");
-            }else
-            {
-                Console.WriteLine("Le graphe n'est pas un cycle.");
-            }
+            graphe1.EstConnexe(); // Test de connexité
+            graphe1.ContientCycle(); // Test de cycle
+            
             // Exemple de graphe avec et sans cycle
-            Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
-            {
-                { 1, new List<int> { 2, 3 } },
-                { 2, new List<int> { 1, 3 } },
-                { 3, new List<int> { 1, 2 } }
-            };
-            if(EstConnexe(grapheAvecCycle))
-            {
-                Console.WriteLine("Le graphe 2 est connexe.");
-            }
-            else
-            {
-                Console.WriteLine("Le graphe 2 n'est pas connexe.");
-            }
-            if(EstCycle(grapheAvecCycle))
-            {
-                Console.WriteLine("Le graphe 2 est un cycle.");
-            }
-            else
-            {
-                Console.WriteLine("Le graphe 2 n'est pas un cycle.");
-            }
-            Dictionary<int, List<int>> grapheSansCycle = new Dictionary<int, List<int>>()
-            {
-                { 1, new List<int> { 2 } },
-                { 2, new List<int> { 1, 3 } },
-                { 3, new List<int> { 2 } }
-            };
-            if (EstCycle(grapheSansCycle))
-            {
-                Console.WriteLine("Le graphe 3 est un cycle.");
-            }
-            else
-            {
-                Console.WriteLine("Le graphe 3 n'est pas un cycle.");
-            }
-            if (EstConnexe(grapheSansCycle))
-            {
-                Console.WriteLine("Le graphe 3 est connexe.");
-            }
-            else
-            {
-                Console.WriteLine("Le graphe 3 n'est pas connexe.");
-            }
-
+            TestGraphe();
+            
             // Création du graphe orienté
-            AfficherGraph(noeudMax, listeLien);
+            //AfficherGraph(noeudMax, listeLien);
             
             Console.ReadKey();
         }
@@ -164,6 +79,35 @@ namespace ProbSciANA
                 Console.WriteLine("Mode 2 sélectionné");
             }
             return mode;
+        }
+        static (List<Lien>,int,int) LectureFichier()
+        {
+            string[] tab = new string[102];
+            tab = File.ReadAllLines("soc-karate.mtx");
+            int noeudMax = 0;
+            int nbLiens = 0;
+            List <Lien> listeLien = new List<Lien> (78);
+            int a = 0;
+            for (int i = 0; i < tab.Length; i++)
+            {
+                if (tab[i][0] != '%')
+                {
+                    if (a == 0)         //Pour avoir seulement la 1ere ligne
+                    {
+                        noeudMax = Convert.ToInt32(tab[i].Substring(0,tab[i].IndexOf(' ')));
+                        nbLiens = Convert.ToInt32(tab[i].Substring(tab[i].LastIndexOf(' ')+1));
+                        a++;
+                    }
+                    else
+                    {
+                        Noeud noeud1 = new Noeud(Convert.ToInt32(tab[i].Substring(0, tab[i].IndexOf(' '))));
+                        Noeud noeud2 = new Noeud(Convert.ToInt32(tab[i].Substring(tab[i].IndexOf(' ')+1)));
+                        Lien lien = new Lien(noeud1, noeud2);
+                        listeLien.Add(lien);
+                    }
+                }
+            }
+            return (listeLien, noeudMax, nbLiens);
         }
         /// <summary>
         /// Choix du noeud de départ
@@ -210,6 +154,14 @@ namespace ProbSciANA
                     adjacence.Add(lien.Noeud2.Noeuds, new List<int> { lien.Noeud1.Noeuds });
                 }
             }
+        }
+        static void MatriceAdjacence(List<Lien> listeLien, int noeudMax, int[,] matrice)
+        {
+            foreach (Lien lien in listeLien)
+                {
+                    matrice[lien.Noeud1.Noeuds-1, lien.Noeud2.Noeuds-1] = 1; // -1 car les noeuds commencent à 1
+                    matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1; // Pour un graphe non orienté car matrice symétrique
+                }
         }
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
@@ -273,54 +225,29 @@ namespace ProbSciANA
             app.Run(window);
         }
         /// <summary>
-        /// Test de connexité
+        /// Test des méthodes EstConnexe & ContientCycle la classe Graphe
         /// </summary>
-        /// <param name="adjacence"></param>
-        /// <param name="noeudMax"></param>
-        /// <param name="graphe"></param>
-        static bool EstConnexe(Dictionary<int, List<int>> adjacence)
+        static void TestGraphe()
         {
-            // Est connexe si le parcours en largeur (BFS) partant de n'importe quel sommet atteint tous les sommets
-            bool estConnexe = false;
-            HashSet<Noeud> visite = new HashSet<Noeud>();
-            Graphe graphe = new Graphe(adjacence);
-            visite = graphe.ParcoursLargeur(1);
-            int noeudMax = adjacence.Count;
-            if (visite.Count == noeudMax)
+            Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
             {
-                estConnexe = true;
-            }
-
-            return estConnexe;
-        } 
-        /// <summary>
-        /// Test de cycle
-        /// Pour savoir si un graphe est un cycle, il faut que tous les sommets aient un degré de 2 et que le graphe soit connexe  
-        /// </summary>
-        /// <param name="adjacence"></param>
-        /// <param name="graphe"></param>
-        /// <returns></returns>
-        static bool EstCycle(Dictionary<int, List<int>> adjacence)
-        {
-        // Vérifier que tous les sommets ont un degré de 2
-        foreach (var sommet in adjacence)
-        {
-            if (sommet.Value.Count == 2)
-                return false;
-        }
-        // Vérifier que le graphe est connexe
-        return EstConnexe(adjacence);
-        }
-        static bool ContientCycle(Dictionary<int, List<int>> adjacence)
-        {
-            // Vérifier que tous les sommets ont un degré de 2
-            foreach (var sommet in adjacence)
+                { 1, new List<int> { 2, 3 } },
+                { 2, new List<int> { 1, 3 } },
+                { 3, new List<int> { 1, 2 } }
+            };
+            Graphe graph2 = new Graphe(grapheAvecCycle);
+            graph2.EstConnexe();
+            graph2.ContientCycle();
+            
+            Dictionary<int, List<int>> grapheSansCycle = new Dictionary<int, List<int>>()
             {
-                if (sommet.Value.Count != 2)
-                    return false;
-            }
-            // Vérifier que le graphe est connexe
-            return EstConnexe(adjacence);
-        }  
+                { 1, new List<int> { 2 } },
+                { 2, new List<int> { 1, 3 } },
+                { 3, new List<int> { 2 } }
+            };
+            Graphe graph3 = new Graphe(grapheSansCycle);
+            graph3.EstConnexe();
+            graph3.ContientCycle();
+        }
     }
 }

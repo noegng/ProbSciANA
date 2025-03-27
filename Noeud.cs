@@ -24,6 +24,21 @@ namespace ProbSciANA
             get { return noeud; }
             set { noeud = value; }
         }
+        public override bool Equals(object obj)
+        {
+            if (obj is Noeud autre)
+            {
+                return this.noeud == autre.noeud;
+            }
+                
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return noeud.GetHashCode();
+        }
+
         public string toString()
         {
             return Convert.ToString(noeud);
