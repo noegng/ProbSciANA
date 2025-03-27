@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pb_Sci_Etape_1
+namespace ProbSciANA
 {
     public class Noeud
     {
@@ -17,13 +17,28 @@ namespace Pb_Sci_Etape_1
             {
                 this.noeud = noeud;
             }
-            else { Console.WriteLine("Erreur dans la saisie du noeud."); }
+            else { Console.WriteLine("Erreur dans la saisie du noeud." + noeud); }
         }
         public int Noeuds
         {
             get { return noeud; }
             set { noeud = value; }
         }
+        public override bool Equals(object obj)
+        {
+            if (obj is Noeud autre)
+            {
+                return this.noeud == autre.noeud;
+            }
+                
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return noeud.GetHashCode();
+        }
+
         public string toString()
         {
             return Convert.ToString(noeud);

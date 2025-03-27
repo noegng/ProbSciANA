@@ -4,24 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pb_Sci_Etape_1
+namespace ProbSciANA
 {
     public class Lien
     {
-        private (Noeud noeud1, Noeud noeud2) lien;
         private Noeud noeud1;
         private Noeud noeud2;
 
-        public Lien ((Noeud neud1, Noeud neud2) lien)
+        public Lien (Noeud neud1, Noeud neud2)
         {
-            this.lien = lien;
-            this.noeud1 = lien.neud1;
-            this.noeud2 = lien.neud2;
+            
+            this.noeud1 = neud1;
+            this.noeud2 = neud2;
         }
-        public (Noeud noeud1, Noeud noeud2) Lien1
+        public Noeud Noeud1
         {
-            get { return lien; }
-            set { lien = value; }
+            get { return noeud1; }
+            set { noeud1 = value; }
+        }
+        public Noeud Noeud2
+        {
+            get { return noeud2; }
+            set { noeud2 = value; }
         }
         public Noeud Noeud1
         {
