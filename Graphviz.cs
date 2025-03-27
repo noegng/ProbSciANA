@@ -13,17 +13,16 @@ namespace ProbSciANA
         /// <summary>
         /// Lit un fichier Excel afin de récupérer les positions (longitude, latitude) de chaque sommet.
         /// La colonne 1 correspond à l'identifiant du sommet,
-        /// la colonne 4 correspond à la longitude,
-        /// et la colonne 5 correspond à la latitude.
+        /// la colonne 3 correspond à la longitude,
+        /// et la colonne 4 correspond à la latitude.
         /// La première ligne est supposée contenir les en-têtes.
         /// </summary>
         /// <param name="excelFilePath">Le chemin complet du fichier Excel.</param>
         /// <returns>Un dictionnaire associant l'identifiant du sommet à un tuple (longitude, latitude).</returns>
-        public static Dictionary<int, (double Longitude, double Latitude)> GetVertexPositions(string excelFilePath)
+        public static Dictionary<int, (decimal Longitude, decimal Latitude)> GetVertexPositions(string excelFilePath)
         {
-        
-
-            var positions = new Dictionary<int, (double, double)>();
+   
+            var positions = new Dictionary<int, (decimal, decimal)>();
 
             using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
             {
@@ -33,22 +32,11 @@ namespace ProbSciANA
                 int row = 2;
                 while (worksheet.Cells[row, 1].Value != null)
                 {
-                    var cellValue = worksheet.Cells[row, 1].Value.ToString();
-                    if (string.IsNullOrWhiteSpace(cellValue))
-                    {
-                        break; // Arrêtez la boucle si la cellule est vide ou contient uniquement des espaces
-                    }
+                    int vertexId = Convert.ToInt32(worksheet.Cells[row, 1].Value);
 
-                    int vertexId = Convert.ToInt32(cellValue);
-
-                    // Vérifiez également les colonnes 3 et 4 pour longitude et latitude
-                    if (worksheet.Cells[row, 3].Value == null || worksheet.Cells[row, 4].Value == null)
-                    {
-                        throw new Exception($"Les colonnes 3 ou 4 sont vides à la ligne {row}. Vérifiez le fichier Excel.");
-                    }
-
-                    double longitude = double.Parse(worksheet.Cells[row, 3].Value.ToString(), CultureInfo.InvariantCulture);
-                    double latitude = double.Parse(worksheet.Cells[row, 4].Value.ToString(), CultureInfo.InvariantCulture);
+                    // Utilisation de decimal.Parse pour les conversions
+                    decimal longitude = decimal.Parse(worksheet.Cells[row, 3].Value.ToString());
+                    decimal latitude = decimal.Parse(worksheet.Cells[row, 4].Value.ToString());
 
                     positions[vertexId] = (longitude, latitude);
                     row++;
@@ -143,6 +131,7 @@ public static class MetroGraphHelper
 }
 
     public static class Graphviz
+
     {
         /// <summary>
         /// Génère un fichier DOT en incluant la position de chaque sommet (si disponible),
@@ -153,148 +142,80 @@ public static class MetroGraphHelper
         /// <param name="pngFilePath">Chemin pour générer l'image PNG.</param>
 
         public static void GenerateGraphImage(
-            Dictionary<int, List<int>> adjacence, 
-            string dotFilePath, 
-            string pngFilePath,
-            Dictionary<int, (double Longitude, double Latitude)> vertexPositions = null)
+    int [,] adjacence,
+    string dotFilePath,
+    string pngFilePath,
+    Dictionary<int, (decimal Longitude, decimal Latitude)> vertexPositions = null)
+{
+    try
+    {
+        // Création du fichier DOT
+        StringBuilder dot = new StringBuilder();
+        dot.AppendLine("graph G {");
+        dot.AppendLine("    layout=neato;"); // Utilise le moteur neato
+        dot.AppendLine("    overlap=false;");
+
+        // Pour chaque sommet, ajoutez l'attribut pos si disponible
+        foreach (var vertex in vertexPositions)
         {
-            try
-            {
-                // Création du fichier DOT
-                StringBuilder dot = new StringBuilder();
-                dot.AppendLine("graph G {");
-                dot.AppendLine("    layout=neato;"); // Utilise le moteur neato
-                dot.AppendLine("    overlap=false;");
-                // Pour chaque sommet, s'il existe une position, on ajoute l'attribut pos.
-                foreach (var vertex in adjacence.Keys)
-                {
-                    if (vertexPositions != null && vertexPositions.ContainsKey(vertex))
-                    {
-                        var pos = vertexPositions[vertex];
-                        dot.AppendLine($"    \"{vertex}\" [pos=\"{pos.Longitude},{pos.Latitude}!\"];");
-                    }
-                    else
-                    {
-                        // Sommet sans position spécifiée
-                         dot.AppendLine($"    \"{vertex}\";");
-                    }
-                }
-                // Ajout des arêtes sans doublons (pour graphe non orienté, n'écrire que si vertex < voisin)
-                foreach (var pair in adjacence)
-                {
-                    foreach (var voisin in pair.Value)
-                    {
-                        if (pair.Key < voisin)
-                        {
-                            dot.AppendLine($"    \"{pair.Key}\" -- \"{voisin}\";");
-                        }
-                    }
-                }
-                dot.AppendLine("}");
-                File.WriteAllText(dotFilePath, dot.ToString());
-                Console.WriteLine($"Fichier DOT généré : {dotFilePath}");
-
-                // Préparer et démarrer le processus dot.exe (chemin complet requis)
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = @"C:\Users\Noe\Documents\GitHub\ProbSciANA\Graphviz\bin\dot.exe",
-                        Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    }
-                };
-
-                process.Start();
-                process.WaitForExit();
-
-                if (process.ExitCode != 0)
-                {
-                    string errorOutput = process.StandardError.ReadToEnd();
-                    throw new Exception($"Le processus dot.exe a renvoyé le code {process.ExitCode}. Erreur : {errorOutput}");
-                }
-                Console.WriteLine($"Image PNG générée : {pngFilePath}");
-                // Ouvrir l'image PNG dans le visualiseur par défaut
-                Process.Start(new ProcessStartInfo(pngFilePath) { UseShellExecute = true });
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
-            }
+            var pos = vertex.Value;
+            string longitude = pos.Longitude.ToString(CultureInfo.InvariantCulture);
+            string latitude = pos.Latitude.ToString(CultureInfo.InvariantCulture);
+            dot.AppendLine($"    \"{vertex.Key}\" [pos=\"{longitude},{latitude}!\"];");
         }
 
-        public static void GenerateGraphImage(
-            int[,] matrix,
-            Dictionary<int, (double Longitude, double Latitude)> vertexPositions,
-            string dotFilePath,
-            string pngFilePath)
+        // Ajout des arêtes sans doublons
+    /*    for (int i = 0; i < adjacence.GetLength(0); i++)
+{
+    for (int j = i + 1; j < adjacence.GetLength(1); j++) // Parcourt uniquement la moitié supérieure pour éviter les doublons
+    {
+        if (adjacence[i, j] == 1) // Vérifie s'il existe une arête entre i et j
         {
-            try
-            {
-                // Création du fichier DOT
-                StringBuilder dot = new StringBuilder();
-                dot.AppendLine("graph G {");
-                dot.AppendLine("    layout=neato;"); // Utilise le moteur neato
-                dot.AppendLine("    overlap=false;");
-
-                // Ajout des sommets avec leurs positions
-                foreach (var vertex in vertexPositions)
-                {
-                    var pos = vertex.Value;
-                    dot.AppendLine($"    \"{vertex.Key}\" [pos=\"{pos.Longitude},{pos.Latitude}!\"];");
-                }
-
-                // Ajout des arêtes à partir de la matrice d'adjacence
-                int size = matrix.GetLength(0);
-                for (int i = 0; i < size; i++)
-                {
-                    for (int j = i + 1; j < size; j++) // Évite les doublons en ne parcourant que la moitié supérieure
-                    {
-                        if (matrix[i, j] == 1)
-                        {
-                            dot.AppendLine($"    \"{i + 1}\" -- \"{j + 1}\";");
-                        }
-                    }
-                }
-
-                dot.AppendLine("}");
-                File.WriteAllText(dotFilePath, dot.ToString());
-                Console.WriteLine($"Fichier DOT généré : {dotFilePath}");
-
-                // Préparer et démarrer le processus dot.exe (chemin complet requis)
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = @"C:\Users\Noe\Documents\GitHub\ProbSciANA\Graphviz\bin\dot.exe",
-                        Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    }
-                };
-
-                process.Start();
-                process.WaitForExit();
-
-                if (process.ExitCode != 0)
-                {
-                    string errorOutput = process.StandardError.ReadToEnd();
-                    throw new Exception($"Le processus dot.exe a renvoyé le code {process.ExitCode}. Erreur : {errorOutput}");
-                }
-                Console.WriteLine($"Image PNG générée : {pngFilePath}");
-                // Ouvrir l'image PNG dans le visualiseur par défaut
-                Process.Start(new ProcessStartInfo(pngFilePath) { UseShellExecute = true });
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
-            }
+            dot.AppendLine($"    \"{i + 1}\" -- \"{j + 1}\";");
         }
     }
+}*/
+
+        dot.AppendLine("}");
+        File.WriteAllText(dotFilePath, dot.ToString());
+        Console.WriteLine("Contenu du fichier DOT :");
+        Console.WriteLine(dot.ToString());
+
+        // Exécuter dot.exe pour générer l'image PNG
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = @"C:\Users\Noe\Documents\GitHub\ProbSciANA\Graphviz\bin\dot.exe",
+                Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            }
+        };
+
+        process.Start();
+        process.WaitForExit();
+
+        if (process.ExitCode != 0)
+        {
+            string errorOutput = process.StandardError.ReadToEnd();
+    Console.WriteLine("Erreur lors de l'exécution de dot.exe :");
+    Console.WriteLine(errorOutput);
+    throw new Exception($"Le processus dot.exe a renvoyé le code {process.ExitCode}. Erreur : {errorOutput}");
+        }
+
+        Console.WriteLine($"Image PNG générée : {pngFilePath}");
+        Process.Start(new ProcessStartInfo(pngFilePath) { UseShellExecute = true });
+    }
+    catch (Exception ex)
+    {
+        throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
+    }
+}
+
+    }
+
 }
 
