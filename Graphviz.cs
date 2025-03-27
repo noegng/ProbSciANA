@@ -54,82 +54,56 @@ public static class MetroGraphHelper
     /// <param name="excelFilePath">Chemin complet vers le fichier Excel.</param>
     /// <returns>Une matrice d'adjacence binaire (1 = arête, 0 = aucune connexion)</returns>
     public static int[,] MatriceAdjacenceExcel(string excelFilePath)
-    {
- 
-        var stations = new HashSet<int>();
-        var adjacencyDict = new Dictionary<int, HashSet<int>>();
+   {
+          
+            // Lire le fichier Excel et extraire les stations et liaisons
+            var stations = new HashSet<string>();
+            var liens = new List<(string, string)>();
 
-        using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
-        {
-            var worksheet = package.Workbook.Worksheets[1];
-            int row = 2;
-
-            // Identifier les colonnes de voisinage
-            var totalColumns = worksheet.Dimension.Columns;
-            var neighborColumns = new List<int>();
-            for (int col = 1; col <= totalColumns; col++)
+            using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
             {
-                var header = worksheet.Cells[1, col].Text;
-                if (header.StartsWith("LIGNE") && (header.Contains("PRECEDENT") || header.Contains("SUIVANT")))
+
+    // Accéder à la deuxième feuille
+    var worksheet = package.Workbook.Worksheets[2]; // ou Worksheets["NomFeuille2"]
+
+                int row = 2; // La première ligne contient les en-têtes
+
+                while (worksheet.Cells[row, 1].Value != null)
                 {
-                    neighborColumns.Add(col);
+                    string station1 = worksheet.Cells[row, 2].Text.Trim();
+                    string station2 = worksheet.Cells[row, 3].Text.Trim();
+
+                    stations.Add(station1);
+                    stations.Add(station2);
+
+                    liens.Add((station1, station2));
+                    row++;
                 }
+                
             }
 
-            // Lire chaque ligne pour construire le dictionnaire d’adjacence
-            while (worksheet.Cells[row, 1].Value != null)
+            // Créer une correspondance entre nom de station et index de matrice
+            var stationList = stations.OrderBy(s => s).ToList();
+            var stationIndex = stationList.Select((station, index) => new { station, index })
+                                          .ToDictionary(x => x.station, x => x.index);
+
+            int n = stationList.Count;
+            var matrice = new int[n, n];
+
+            
+            // Remplir la matrice d'adjacence
+            foreach (var (s1, s2) in liens)
             {
-                int stationId = Convert.ToInt32(worksheet.Cells[row, 1].Value);
-                stations.Add(stationId);
+                int i = stationIndex[s1];
+                int j = stationIndex[s2];
 
-                if (!adjacencyDict.ContainsKey(stationId))
-                    adjacencyDict[stationId] = new HashSet<int>();
-
-                foreach (var col in neighborColumns)
-                {
-                    var cell = worksheet.Cells[row, col].Value?.ToString();
-                    if (int.TryParse(cell, out int neighborId))
-                    {
-                        stations.Add(neighborId);
-
-                        // Ajout symétrique (graphe non orienté)
-                        adjacencyDict[stationId].Add(neighborId);
-
-                        if (!adjacencyDict.ContainsKey(neighborId))
-                            adjacencyDict[neighborId] = new HashSet<int>();
-
-                        adjacencyDict[neighborId].Add(stationId);
-                    }
-                }
-
-                row++;
+                matrice[i, j] = 1;
+                matrice[j, i] = 1; // Graphe non orienté
             }
+
+            return matrice;
         }
-
-        // Mapping : stationId -> index dans la matrice
-        var stationList = stations.OrderBy(x => x).ToList();
-        var idToIndex = stationList
-            .Select((id, idx) => new { id, idx })
-            .ToDictionary(x => x.id, x => x.idx);
-
-        int n = stationList.Count;
-        int[,] matrix = new int[n, n];
-
-        foreach (var kvp in adjacencyDict)
-        {
-            int fromIdx = idToIndex[kvp.Key];
-            foreach (var neighbor in kvp.Value)
-            {
-                int toIdx = idToIndex[neighbor];
-                matrix[fromIdx, toIdx] = 1;
-                matrix[toIdx, fromIdx] = 1; // non orienté
-            }
-        }
-
-        return matrix;
-    }
 }
-
     public static class Graphviz
 
     {
@@ -165,8 +139,8 @@ public static class MetroGraphHelper
         }
 
         // Ajout des arêtes sans doublons
-    /*    for (int i = 0; i < adjacence.GetLength(0); i++)
-{
+       for (int i = 0; i < adjacence.GetLength(0); i++)
+    {
     for (int j = i + 1; j < adjacence.GetLength(1); j++) // Parcourt uniquement la moitié supérieure pour éviter les doublons
     {
         if (adjacence[i, j] == 1) // Vérifie s'il existe une arête entre i et j
@@ -174,7 +148,7 @@ public static class MetroGraphHelper
             dot.AppendLine($"    \"{i + 1}\" -- \"{j + 1}\";");
         }
     }
-}*/
+}
 
         dot.AppendLine("}");
         File.WriteAllText(dotFilePath, dot.ToString());

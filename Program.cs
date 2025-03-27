@@ -128,7 +128,7 @@ namespace ProbSciANA
     string pngFile = "graphe.png";
 
     // Générer le fichier DOT et l'image PNG
-    Graphviz.GenerateGraphImage(matrice, pngFile, dotFile, vertexPositions);
+    Graphviz.GenerateGraphImage(matrice, dotFile, pngFile, vertexPositions);
 
 // Exemple : afficher les 10 premières lignes
 for (int i = 0; i < Math.Min(10, matrice.GetLength(0)); i++)
