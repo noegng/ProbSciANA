@@ -11,6 +11,8 @@ namespace ProbSciANA
     {
         private Dictionary<int, List<int>> listeAdjacence;
         private int[,] matriceAdjacence;
+        List<Noeud> noeuds = new List<Noeud>();
+
 
         public Graphe(Dictionary<int, List<int>> adjacence)
         {
@@ -19,64 +21,27 @@ namespace ProbSciANA
         public Graphe(int[,] matriceAdjacence)
         {
             this.matriceAdjacence = matriceAdjacence;
-        }
-        public void ParcoursLargeurMatrice(int sommetDepart)
-        {
-            Queue<int> file = new Queue<int>();
-            HashSet<int> visite = new HashSet<int>();
-
-            file.Enqueue(sommetDepart);
-            visite.Add(sommetDepart);
-
-            Console.Write("Parcours en Largeur (BFS):  ");
-
-            while (file.Count > 0)
+            Dictionary<int, List<int>> listeAdjacencelocal = new Dictionary<int, List<int>>();
+            for(int i = 1; i <= matriceAdjacence.GetLength(0); i++)
             {
-                int sommet = file.Dequeue();
-                Console.Write(sommet + " ");
-                for (int i = 0; i < matriceAdjacence.GetLength(1); i++)
+                List<int> voisins = new List<int>();
+                for (int j = 1; j <= matriceAdjacence.GetLength(1); j++)
                 {
-                    if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
+                    if (matriceAdjacence[i-1, j-1] == 1)
                     {
-                        file.Enqueue(i);
-                        visite.Add(i);
+                        voisins.Add(j);
                     }
                 }
+                listeAdjacencelocal.Add(i, voisins);
             }
-            Console.WriteLine();
+            listeAdjacence = listeAdjacencelocal;
         }
-        public void ParcoursProfondeurMatrice(int sommetDepart)
-        {
-            Stack<int> pile = new Stack<int>();
-            HashSet<int> visite = new HashSet<int>();
-
-            pile.Push(sommetDepart);
-
-            Console.Write("Parcours en Profondeur (DFS): ");
-
-            while (pile.Count > 0)
-            {
-                int sommet = pile.Pop();
-
-                if (!visite.Contains(sommet))
-                {
-                    Console.Write(sommet + " ");
-                    visite.Add(sommet);
-                }
-
-                for (int i = 0; i < matriceAdjacence.GetLength(1); i++)
-                {
-                    if (matriceAdjacence[sommet, i] == 1 && !visite.Contains(i))
-                    {
-                        pile.Push(i);
-                    }
-                }
-            }
-            Console.WriteLine();
-        }
-        
-        // Parcours en Largeur (BFS)
-        public void ParcoursLargeur(int sommetDepart)
+        /// <summary>
+        /// Parcours en largeur (BFS) avec file
+        /// 0 = blanc, 1 = jaune, 2 = rouge
+        /// </summary>
+        /// <param name="sommetDepart"></param>
+        public HashSet<Noeud> BFS(int sommetDepart)
         {
             Dictionary<int, int> couleurs = new Dictionary<int, int>();
             Queue<int> file = new Queue<int>();
@@ -86,10 +51,7 @@ namespace ProbSciANA
                 couleurs[sommet] = 0; // blanc
             }
             file.Enqueue(sommetDepart);
-            visite.Add(sommetDepart);
-
-            Console.Write("Parcours en Largeur (BFS):  ");
-
+            couleurs[sommetDepart] = 1; // jaune
             while (file.Count > 0)
             {
                 int sommet = file.Dequeue();
@@ -282,7 +244,7 @@ namespace ProbSciANA
                     {
                         if (!visite.Contains(voisin))
                         {
-                            file.Enqueue(voisin);
+                         queue.Enqueue(voisin);
                             visite.Add(voisin);
                         }
                     }
@@ -298,7 +260,6 @@ namespace ProbSciANA
 
             pile.Push(sommetDepart);
 
-            Console.Write("Parcours en Profondeur (DFS): ");
             Console.Write("Parcours en Profondeur (DFS): ");
 
             while (pile.Count > 0)
@@ -317,41 +278,63 @@ namespace ProbSciANA
                             pile.Push(voisin);
                         }
                     }
-                    {
-                        if (!visite.Contains(voisin))
-                        {
-                            pile.Push(voisin);
-                        }
-                    }
             }
             Console.WriteLine();
         }
-        public void AfficherDansLordre()
+
+        // Parcours en Profondeur (DFS) récursif BON
+        public HashSet<Noeud> DFSRecursif(int sommetDepart, bool rechercheCycle = false)
         {
-            Console.WriteLine("Liste d'adjacence: ");
-            foreach (KeyValuePair<int, List<int>> sommet in listeAdjacence.OrderBy(x => x.Key))
+            Dictionary<int, int> couleurs = new Dictionary<int, int>();
+            HashSet<Noeud> visite = new HashSet<Noeud>();
+            bool cycle = false;
+            // Initialisation des couleurs (tous les sommets sont blancs)
+            foreach (int sommet in listeAdjacence.Keys)
             {
-                Console.Write(sommet.Key + ": ");
-                foreach (int voisin in sommet.Value.OrderBy(x => x))
-                {
-                    Console.Write(voisin + " ");
-                }
-                Console.WriteLine();
+                couleurs[sommet] = 0; // blanc
             }
+
+            void Explorer(int sommet)
+            {
+                if (rechercheCycle && couleurs[sommet] == 1)
+                {
+                    Console.WriteLine("Cycle détecté.");
+                    cycle = true;
+                    return;
+                }
+
+                couleurs[sommet] = 1; // jaune
+                foreach (int voisin in listeAdjacence[sommet].OrderBy(x => x))
+                {
+                    if (couleurs[voisin] == 0) // blanc
+                    {
+                        Explorer(voisin);
+                    }
+                }
+                couleurs[sommet] = 2; // rouge
+                visite.Add(new Noeud(sommet));
+            }
+
+            // Lancer l'exploration à partir du sommet de départ
+            Explorer(sommetDepart);
+
+            if (!cycle && rechercheCycle)
+            {
+                Console.WriteLine("Pas de cycle détecté.");
+            }
+
+            return visite;
         }
-        public void AfficherMatrice()
+        //Affichage du parcours en profondeur récursif
+        public void DFSRecursiftoString()
         {
-            Console.WriteLine("Matrice d'adjacence: ");
-            Console.WriteLine("     1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34");
-            for (int i = 0; i < matriceAdjacence.GetLength(0); i++)
+            Console.Write("Parcours en Profondeur (DFS recursif): ");
+            foreach (Noeud sommet in DFSRecursif(1))
             {
-                Console.Write($"{i+1,2}" + "| ");
-                for (int j = 0; j < matriceAdjacence.GetLength(1); j++)
-                {
-                    Console.Write($"{matriceAdjacence[i, j],2} ");
-                }
-                Console.WriteLine();
+                Console.Write(sommet.toString() + " ");
             }
+            Console.WriteLine();
         }
-    }
+    */
+    #endregion
 }
