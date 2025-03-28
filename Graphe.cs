@@ -117,30 +117,33 @@ namespace ProbSciANA
             foreach (int sommet in listeAdjacence.Keys)
             {
             if (couleurs[sommet] == 0)
-                DFSrec(sommet, couleurs, visite, rechercheCycle);
+                DFSrec(sommet,sommet, couleurs, visite, rechercheCycle);
             }
 
             return visite;
         }
         
-        public void DFSrec(int sommet, Dictionary<int, int> couleurs, HashSet<Noeud> visite, bool rechercheCycle = false)
+        public void DFSrec(int sommet,int sommetPré, Dictionary<int, int> couleurs, HashSet<Noeud> visite, bool rechercheCycle = false)
         {
             couleurs[sommet] = 1; // jaune : en traitement
-            visite.Add(new Noeud(sommet)); // Ajouter le sommet visité
+            
 
             foreach (int successeur in listeAdjacence[sommet])
             {
                 if (couleurs[successeur] == 0)
                 {
-                    // le sommet doit etre rouge ici pour ne pas être traité à nouveau dans la prochaine itération
-                    DFSrec(successeur, couleurs, visite, rechercheCycle);
+                    DFSrec(successeur,sommet, couleurs, visite, rechercheCycle);
                 }
-                else if (rechercheCycle && couleurs[successeur] == 1)
+                else if (rechercheCycle && sommet != successeur && sommetPré != successeur && couleurs[successeur] == 1)
                 {
+                    // Si on trouve un sommet jaune, cela signifie qu'il y a un cycle
+                    // On ne traite pas le sommet lui-même pour éviter de détecter un cycle trivial
+                    // (un sommet qui se pointe lui-même)
                     Console.WriteLine("Cycle détecté.");
                     return;
                 }
-                couleurs[sommet] = 2;   
+                visite.Add(new Noeud(sommet)); // Ajouter le sommet visité
+                couleurs[sommet] = 2;
             }
         }
         public void DFStoString(int sommetDepart)
