@@ -132,7 +132,7 @@ namespace ProbSciANA
             {
                 if (couleurs[successeur] == 0)
                 {
-                    couleurs[sommet] = 2;   // le sommet doit etre rouge ici pour ne pas être traité à nouveau dans la prochaine itération
+                    // le sommet doit etre rouge ici pour ne pas être traité à nouveau dans la prochaine itération
                     DFSrec(successeur, couleurs, visite, rechercheCycle);
                 }
                 else if (rechercheCycle && couleurs[successeur] == 1)
@@ -140,6 +140,7 @@ namespace ProbSciANA
                     Console.WriteLine("Cycle détecté.");
                     return;
                 }
+                couleurs[sommet] = 2;   
             }
         }
         public void DFStoString(int sommetDepart)
