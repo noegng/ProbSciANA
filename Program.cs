@@ -59,9 +59,9 @@ namespace ProbSciANA
     // Chemins pour le fichier DOT et l'image PNG
     string dotFile = "graphe.dot";
     string pngFile = "graphe.png";
-
+    string backgroundFile = "background.png";
     // Générer le fichier DOT et l'image PNG
-    Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
+    Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile, backgroundFile);
 
 
 

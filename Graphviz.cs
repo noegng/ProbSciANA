@@ -87,7 +87,8 @@ namespace ProbSciANA
     List <Station> stations,
     List <Arete> aretes,
     string dotFilePath,
-    string pngFilePath
+    string pngFilePath,
+     string backgroundImagePath = null
     )
 {
     try
@@ -97,6 +98,11 @@ namespace ProbSciANA
         dot.AppendLine("graph G {");
         dot.AppendLine("    layout=neato;"); // Utilise le moteur neato
         dot.AppendLine("    overlap=false;");
+
+        if (!string.IsNullOrEmpty(backgroundImagePath))
+        {
+            dot.AppendLine($"    background=\"{backgroundImagePath}\";");
+        }
 
         // Creation de chaque sommet avec sa position   
         foreach (Station vertex in stations)
@@ -121,9 +127,9 @@ namespace ProbSciANA
 
         dot.AppendLine("}");
         File.WriteAllText(dotFilePath, dot.ToString());
-        Console.WriteLine("Contenu du fichier DOT :");
-        Console.WriteLine(dot.ToString());
+      
 
+    
         // Exécuter dot.exe pour générer l'image PNG
         var process = new Process
         {
