@@ -1,9 +1,7 @@
-﻿using QuickGraph;
-using GraphSharp.Controls;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.IO;
 using System.Net;
 
@@ -65,15 +63,7 @@ namespace ProbSciANA
     // Générer le fichier DOT et l'image PNG
     Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
 
-// Exemple : afficher les 10 premières lignes
-for (int i = 0; i < Math.Min(10, matrice.GetLength(0)); i++)
-{
-    for (int j = 0; j < Math.Min(10, matrice.GetLength(1)); j++)
-    {
-        Console.Write(matrice[i, j] + " ");
-    }
-    Console.WriteLine();
-}
+
 
             Console.ReadKey();
         }

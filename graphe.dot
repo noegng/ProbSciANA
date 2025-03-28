@@ -1,6 +1,7 @@
 graph G {
     layout=neato;
     overlap=false;
+    background="@Users/Noe/Documents/GitHub/ProbSciANA/background.png";
     "1" [pos="2.28258384736155,48.8781626526965!"];
     "2" [pos="2.28943541854221,48.8756673756517!"];
     "3" [pos="2.29581177523576,48.874994575223!"];

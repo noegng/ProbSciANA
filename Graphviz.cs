@@ -129,7 +129,7 @@ namespace ProbSciANA
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = @"C:\Users\Noe\Documents\GitHub\ProbSciANA\Graphviz\bin\dot.exe",
+                FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Graphviz", "bin", "dot.exe"),
                 Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
