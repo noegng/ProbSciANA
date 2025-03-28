@@ -13,10 +13,10 @@ namespace ProbSciANA
 
         public Lien (Noeud noeud1, Noeud noeud2)
         {
+            
             this.noeud1 = noeud1;
             this.noeud2 = noeud2;
         }
-
         public Noeud Noeud1
         {
             get { return noeud1; }
