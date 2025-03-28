@@ -108,7 +108,7 @@ namespace ProbSciANA
         public HashSet<Noeud> DFSRécursif(bool rechercheCycle = false)
         {
             Dictionary<int, int> couleurs = new Dictionary<int, int>();
-            HashSet<Noeud> visite = new HashSet<Noeud>();
+            HashSet<Noeud> sommetTerminé = new HashSet<Noeud>();
 
             // Initialisation : tous les sommets sont blancs
             foreach (int sommet in listeAdjacence.Keys)
@@ -117,13 +117,13 @@ namespace ProbSciANA
             foreach (int sommet in listeAdjacence.Keys)
             {
             if (couleurs[sommet] == 0)
-                DFSrec(sommet,sommet, couleurs, visite, rechercheCycle);
+                DFSrec(sommet,sommet, couleurs, sommetTerminé, rechercheCycle);
             }
 
-            return visite;
+            return sommetTerminé;
         }
         
-        public void DFSrec(int sommet,int sommetPré, Dictionary<int, int> couleurs, HashSet<Noeud> visite, bool rechercheCycle = false)
+        public void DFSrec(int sommet,int sommetPré, Dictionary<int, int> couleurs, HashSet<Noeud> sommetTerminé, bool rechercheCycle = false)
         {
             couleurs[sommet] = 1; // jaune : en traitement
             
@@ -133,17 +133,16 @@ namespace ProbSciANA
                 if (couleurs[successeur] == 0)
                 {
                        // le sommet doit etre rouge ici pour ne pas être traité à nouveau dans la prochaine itération
-                    DFSrec(successeur,sommet, couleurs, visite, rechercheCycle);
+                    DFSrec(successeur,sommet, couleurs, sommetTerminé, rechercheCycle);
                 }
                 else if (rechercheCycle && sommet != successeur && sommetPré != successeur && couleurs[successeur] == 1)
                 {
                     // Si on trouve un sommet jaune, cela signifie qu'il y a un cycle
-                    // On ne traite pas le sommet lui-même pour éviter de détecter un cycle trivial
-                    // (un sommet qui se pointe lui-même)
+                    // On ne traite pas le sommet lui-même ni son prédécesseur pour éviter de détecter un cycle trivial
                     Console.WriteLine("Cycle détecté.");
                     return;
                 }
-                visite.Add(new Noeud(sommet)); // Ajouter le sommet visité
+                sommetTerminé.Add(new Noeud(sommet)); // Ajouter le sommet visité
                 couleurs[sommet] = 2;
             }
         }
