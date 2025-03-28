@@ -1,9 +1,6 @@
-﻿using QuickGraph;
-using GraphSharp.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.IO;
 using System.Net;
 
@@ -49,20 +46,25 @@ namespace ProbSciANA
             graphe1.ContientCycle(); // Test de cycle
             
             // Exemple de graphe avec et sans cycle
-            TestGraphe();
+            //TestGraphe();
       
-// Chemin vers le fichier Excel contenant les positions des sommets.
-            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
-// Appel de GetVertexPositions pour récupérer les positions
-            (List<Station> stations, List<Arete> aretes) = ExcelHelper.GetVertexPositions(excelFilePath);
-    // Chemins pour le fichier DOT et l'image PNG
-    string dotFile = "graphe.dot";
-    string pngFile = "graphe.png";
-
-    // Générer le fichier DOT et l'image PNG
-    Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
-
+            AffichageImage(); // Affichage de l'image du graphe
+            Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
+        }
+
+        static void AffichageImage()
+        {
+            // Chemins pour le fichier DOT et l'image PNG
+            string dotFile = "graphe.dot";
+            string pngFile = "graphe.png";
+            // Chemin vers le fichier Excel contenant les positions des sommets.
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
+            // Appel de GetVertexPositions pour récupérer les positions
+            (List<Station> stations, List<Arete> aretes) = ExcelHelper.GetVertexPositions(excelFilePath);
+            
+            // Générer le fichier DOT et l'image PNG
+            Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
         }
 
         /// <summary>
@@ -172,6 +174,7 @@ namespace ProbSciANA
                     matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1; // Pour un graphe non orienté car matrice symétrique
                 }
         }
+        #region Test
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
         /// </summary>
@@ -216,5 +219,6 @@ namespace ProbSciANA
             graph3.EstConnexe();
             graph3.ContientCycle();
         }
+        #endregion
     }
 }

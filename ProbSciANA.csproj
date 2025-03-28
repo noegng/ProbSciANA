@@ -2,18 +2,14 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="4.0.1.1" />
-    <PackageReference Include="GraphSharp" Version="1.1.0" />
     <PackageReference Include="MySql.Data" Version="9.2.0" />
-    <PackageReference Include="QuickGraph" Version="3.6.61119.7" />
-   
   </ItemGroup>
 
 </Project>

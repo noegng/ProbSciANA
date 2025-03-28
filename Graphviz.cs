@@ -121,15 +121,17 @@ namespace ProbSciANA
 
         dot.AppendLine("}");
         File.WriteAllText(dotFilePath, dot.ToString());
+        /*  Pour déboguer, afficher le contenu du fichier DOT
         Console.WriteLine("Contenu du fichier DOT :");
         Console.WriteLine(dot.ToString());
+        */
 
         // Exécuter dot.exe pour générer l'image PNG
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = @"C:\Users\Noe\Documents\GitHub\ProbSciANA\Graphviz\bin\dot.exe",
+                FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Graphviz", "bin", "dot.exe"),
                 Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
