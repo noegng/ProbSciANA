@@ -13,9 +13,9 @@ namespace ProbSciANA
 {
     public class Program
     {
-         [STAThread]
         static void Main(string[] args)
-        {            
+        {   
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);         
             int mode = Initialisation();
             List<Lien> listeLien = new List<Lien>();
             (listeLien,int noeudMax,int nbLiens) = LectureFichier();
@@ -50,10 +50,18 @@ namespace ProbSciANA
             
             // Exemple de graphe avec et sans cycle
             TestGraphe();
-            
-            // Création du graphe orienté
-            AfficherGraph(noeudMax, listeLien);
-            
+      
+// Chemin vers le fichier Excel contenant les positions des sommets.
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
+// Appel de GetVertexPositions pour récupérer les positions
+            (List<Station> stations, List<Arete> aretes) = ExcelHelper.GetVertexPositions(excelFilePath);
+    // Chemins pour le fichier DOT et l'image PNG
+    string dotFile = "graphe.dot";
+    string pngFile = "graphe.png";
+
+    // Générer le fichier DOT et l'image PNG
+    Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
+
             Console.ReadKey();
         }
 
@@ -179,51 +187,6 @@ namespace ProbSciANA
             {
                 Console.WriteLine(lien.toString());
             }
-        }
-        /// <summary>
-        /// Affichage du graphe
-        /// </summary>
-        /// <param name="noeudMax"></param>
-        /// <param name="listeLien"></param>
-        static void AfficherGraph(int noeudMax, List<Lien> listeLien)
-        {
-            var graph = new BidirectionalGraph<string, Edge<string>>();
-
-            for(int i = 0; i < noeudMax; i++)
-            {
-                graph.AddVertex(Convert.ToString(i+1));
-            }
-
-            foreach (Lien lien in listeLien)
-            {
-                graph.AddEdge(new Edge<string>(lien.Noeud1.toString(), lien.Noeud2.toString()));
-                graph.AddEdge(new Edge<string>(lien.Noeud2.toString(), lien.Noeud1.toString())); // Pour un graphe non orienté
-            }
-
-            var app = new Application();
-            var window = new Window
-            {
-                Title = "Visualisation du Graphe",
-                Width = 800,
-                Height = 600
-            };
-
-            // Création du contrôle GraphSharp pour afficher le graphe
-            var graphLayout = new GraphLayout<string, Edge<string>, BidirectionalGraph<string, Edge<string>>>()
-            {
-                Graph = graph,
-                LayoutAlgorithmType = "Circular",  // Layout adapté aux graphes cycliques
-                HighlightAlgorithmType = "Simple"
-                // On peut omettre OverlapRemovalAlgorithmType pour éviter des problèmes éventuels
-            };
-
-            // Ajout du contrôle dans une grille et affectation à la fenêtre
-            var grid = new Grid();
-            grid.Children.Add(graphLayout);
-            window.Content = grid;
-            
-            // Lancement de l'application WPF
-            app.Run(window);
         }
         /// <summary>
         /// Test des méthodes EstConnexe & ContientCycle la classe Graphe
