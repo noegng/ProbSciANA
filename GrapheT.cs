@@ -9,30 +9,13 @@ namespace ProbSciANA
 {
     public class Graphe<T>
     {
+        //Pas de matrice d'adjacence car on ne peut pas garantir que les sommets soient numérotés de 0 à n-1
         private Dictionary<T, List<T>> listeAdjacence;
         private Dictionary<T, int> couleurs;
 
         public Graphe(Dictionary<T, List<T>> adjacence)
         {
             listeAdjacence = adjacence;
-        }
-        public Graphe(T[,] matriceAdjacence)
-        {
-            this.matriceAdjacence = matriceAdjacence;
-            Dictionary<T, List<T>> listeAdjacencelocal = new Dictionary<T, List<T>>();
-            for(int i = 1; i <= matriceAdjacence.GetLength(0); i++)
-            {
-                List<int> voisins = new List<int>();
-                for (int j = 1; j <= matriceAdjacence.GetLength(1); j++)
-                {
-                    if (matriceAdjacence[i-1, j-1] == 1)
-                    {
-                        voisins.Add(j);
-                    }
-                }
-                listeAdjacencelocal.Add(i, voisins);
-            }
-            listeAdjacence = listeAdjacencelocal;
         }
 
         public HashSet<T> BFS(T sommetDepart)
