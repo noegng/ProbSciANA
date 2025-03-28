@@ -12,78 +12,45 @@ namespace ProbSciANA
 {
     public class Program
     {
-         [STAThread]
+        
         static void Main(string[] args)
-        {
+        {            
             int mode = Initialisation();
-            string[] tab = new string[102];
-            tab = File.ReadAllLines("soc-karate.mtx");
-            int noeudMax = 0;
-            int nbLiens = 0;
-            List <Lien> listeLien = new List<Lien> (78);
-            int a = 0;
-            for (int i = 0; i < tab.Length; i++)
-            {
-                if (tab[i][0] != '%')
-                {
-                    if (a == 0)         //Pour avoir seulement la 1ere ligne
-                    {
-                        noeudMax = Convert.ToInt32(tab[i].Substring(0,tab[i].IndexOf(' ')));
-                        nbLiens = Convert.ToInt32(tab[i].Substring(tab[i].LastIndexOf(' ')+1));
-                        a++;
-                    }
-                    else
-                    {
-                        Noeud noeud1 = new Noeud(Convert.ToInt32(tab[i].Substring(0, tab[i].IndexOf(' '))));
-                        Noeud noeud2 = new Noeud(Convert.ToInt32(tab[i].Substring(tab[i].IndexOf(' ')+1)));
-                        Lien lien = new Lien((noeud1, noeud2));
-                        listeLien.Add(lien);
-                    }
-                }
-            }
-            Test(listeLien, noeudMax, nbLiens);
-
-            //Liste d'adjacence     (obligatoire pour le BFS et DFS)
-            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();
-            foreach (Lien lien in listeLien)
-            {
-                if (adjacence.ContainsKey(lien.Noeud1.Noeuds))
-                {
-                    adjacence[lien.Noeud1.Noeuds].Add(lien.Noeud2.Noeuds);
-                }
-                else
-                {
-                    adjacence.Add(lien.Noeud1.Noeuds, new List<int> { lien.Noeud2.Noeuds });
-                }
-                if (adjacence.ContainsKey(lien.Noeud2.Noeuds))
-                {
-                    adjacence[lien.Noeud2.Noeuds].Add(lien.Noeud1.Noeuds);
-                }
-                else
-                {
-                    adjacence.Add(lien.Noeud2.Noeuds, new List<int> { lien.Noeud1.Noeuds });
-                }
-            }
-            Graphe graphe = new Graphe(adjacence);
-            graphe.ParcoursLargeur(1); // BFS depuis le sommet 1
-            graphe.ParcoursProfondeur(1); // DFS depuis le sommet 1
-
+            List<Lien> listeLien = new List<Lien>();
+            (listeLien,int noeudMax,int nbLiens) = LectureFichier();
+            //Test(listeLien, noeudMax, nbLiens);
+            int départ = NoeudDépart(noeudMax);
+            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();    //Liste d'adjacence
+            int[,] matrice = new int[noeudMax, noeudMax];    //Matrice d'adjacence
+            Graphe graphe1 = null;
             if(mode == 1)
             {
-                graphe.AfficherDansLordre(); // Affichage des listes d'adjacence
+                ListeAdjacence(listeLien, noeudMax,adjacence);  // Création d'un graph via une liste d'adjacence
+                graphe1 = new Graphe(adjacence);
             }
             if (mode == 2)
             {
-                //Matrice d'adjacence
-                int[,] matrice = new int[noeudMax, noeudMax];
-                foreach (Lien lien in listeLien)
-                {
-                    matrice[lien.Noeud1.Noeuds-1, lien.Noeud2.Noeuds-1] = 1; // -1 car les noeuds commencent à 1
-                    matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1;
-                }
-                Graphe graphe2 = new Graphe(matrice);
-                graphe2.AfficherMatrice(); // Affichage de la matrice d'adjacence
-            }            
+                MatriceAdjacence(listeLien, noeudMax, matrice); // Création d'un graph via une matrice d'adjacence
+                graphe1 = new Graphe(matrice);
+            }
+            if(mode == 1)
+            {
+                graphe1.AfficherDansLordre(); // Affichage de la liste d'adjacence
+            }
+            if(mode == 2)
+            {
+                graphe1.AfficherMatrice(); // Affichage de la matrice d'adjacence
+            }
+            graphe1.BFStoString(départ); // BFS depuis le sommet départ
+            graphe1.DFStoString(départ); // DFS depuis le sommet départ
+            graphe1.DFSRécursiftoString();
+            graphe1.EstConnexe(); // Test de connexité
+            graphe1.ContientCycle(); // Test de cycle
+            
+            // Exemple de graphe avec et sans cycle
+            TestGraphe();
+            
+       
             Console.ReadKey();
         }
 
@@ -210,54 +177,7 @@ namespace ProbSciANA
                 Console.WriteLine(lien.toString());
             }
         }
-        /// <summary>
-        /// Affichage du graphe
-        /// </summary>
-        /// <param name="noeudMax"></param>
-        /// <param name="listeLien"></param>
-        static void AfficherGraph(int noeudMax, List<Lien> listeLien)
-        {
-            var graph = new BidirectionalGraph<string, Edge<string>>();
-
-            for(int i = 0; i < noeudMax; i++)
-            {
-                graph.AddVertex(Convert.ToString(i+1));
-            }
-
-            foreach (Lien lien in listeLien)
-            {
-                graph.AddEdge(new Edge<string>(lien.Noeud1.toString(), lien.Noeud2.toString()));
-                graph.AddEdge(new Edge<string>(lien.Noeud2.toString(), lien.Noeud1.toString())); // Pour un graphe non orienté
-            }
-
-            var app = new Application();
-            var window = new Window
-            {
-                Title = "Visualisation du Graphe",
-                Width = 800,
-                Height = 600
-            };
-
-            // Création du contrôle GraphSharp pour afficher le graphe
-            var graphLayout = new GraphLayout<string, Edge<string>, BidirectionalGraph<string, Edge<string>>>()
-            {
-                Graph = graph,
-                LayoutAlgorithmType = "Circular",  // Layout adapté aux graphes cycliques
-                HighlightAlgorithmType = "Simple"
-                // On peut omettre OverlapRemovalAlgorithmType pour éviter des problèmes éventuels
-            };
-
-            // Ajout du contrôle dans une grille et affectation à la fenêtre
-            var grid = new Grid();
-            grid.Children.Add(graphLayout);
-            window.Content = grid;
-            
-            // Lancement de l'application WPF
-            app.Run(window);
-        }
-        /// <summary>
-        /// Test des méthodes EstConnexe & ContientCycle la classe Graphe
-        /// </summary>
+       
         static void TestGraphe()
         {
             Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
