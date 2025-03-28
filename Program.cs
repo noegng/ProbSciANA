@@ -46,7 +46,7 @@ namespace ProbSciANA
             graphe1.ContientCycle(); // Test de cycle
             
             // Exemple de graphe avec et sans cycle
-            //TestGraphe();
+            TestGraphe();
 
             AffichageImage(); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
