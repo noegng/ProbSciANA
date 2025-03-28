@@ -9,7 +9,7 @@ using System.Globalization;
 namespace ProbSciANA
 {
 
-    public static class ExcelHelper
+    public class ExcelHelper
     {
         /// <summary>
         /// Lit un fichier Excel afin de récupérer les positions (longitude, latitude) de chaque sommet.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.IO;
 using System.Net;
-
+using OfficeOpenXml;
 
 
 namespace ProbSciANA
@@ -47,13 +47,21 @@ namespace ProbSciANA
             
             // Exemple de graphe avec et sans cycle
             //TestGraphe();
-      
-            AffichageImage(); // Affichage de l'image du graphe
+      string dotFile = "graphe.dot";
+            string pngFile = "graphe.png";
+            // Chemin vers le fichier Excel contenant les positions des sommets.
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
+            // Appel de GetVertexPositions pour récupérer les positions
+            (List<Station> stations, List<Arete> aretes) = ExcelHelper.GetVertexPositions(excelFilePath);
+            
+            // Générer le fichier DOT et l'image PNG
+            Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
+            //AffichageImage(); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
 
-        static void AffichageImage()
+        public static void AffichageImage()
         {
             // Chemins pour le fichier DOT et l'image PNG
             string dotFile = "graphe.dot";
