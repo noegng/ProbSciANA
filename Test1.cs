@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using Pb_Sci_Etape_1;
+using ProbSciANA;
 
 namespace ProbSciANATests
 {
@@ -10,74 +10,60 @@ namespace ProbSciANATests
         [TestMethod]
         public void TestEstConnexe()
         {
-            // Arrange
-            var adjacence = new Dictionary<int, List<int>>()
+            Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
             {
                 { 1, new List<int> { 2, 3 } },
                 { 2, new List<int> { 1, 3 } },
                 { 3, new List<int> { 1, 2 } }
             };
-
-            // Act
-            bool result = Program.EstConnexe(adjacence);
-
-            // Assert
-            Assert.IsTrue(result);
+            Graphe graph2 = new Graphe(grapheAvecCycle);
+            graph2.EstConnexe();
         }
 
         [TestMethod]
         public void TestEstCycle()
         {
-            // Arrange
-            var adjacence = new Dictionary<int, List<int>>()
+             Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
             {
                 { 1, new List<int> { 2, 3 } },
                 { 2, new List<int> { 1, 3 } },
                 { 3, new List<int> { 1, 2 } }
             };
+            Graphe graph2 = new Graphe(grapheAvecCycle);
+            graph2.ContientCycle();
 
-            // Act
-            bool result = Program.EstCycle(adjacence);
-
-            // Assert
-            Assert.IsTrue(result);
         }
 
         [TestMethod]
         public void TestEstPasConnexe()
         {
-            // Arrange
-            var adjacence = new Dictionary<int, List<int>>()
+            Dictionary<int, List<int>> grapheSansCycle = new Dictionary<int, List<int>>()
             {
-                { 1, new List<int> { 2 } },
-                { 2, new List<int> { 1 } },
-                { 3, new List<int> { 4 } },
-                { 4, new List<int> { 3 } }
+                { 1, new List<int> { 2, 3 } },
+                { 2, new List<int> { 1, 4 } },
+                { 3, new List<int> { 1} },
+                { 4, new List<int> { 2 } },
+                { 5, new List<int> { 6 } },
+                { 6, new List<int> { 5 } }
             };
-
-            // Act
-            bool result = Program.EstConnexe(adjacence);
-
-            // Assert
-            Assert.IsFalse(result);
+            Graphe graph3 = new Graphe(grapheSansCycle);
+            graph3.EstConnexe();
         }
 
         [TestMethod]
         public void TestEstPasCycle()
-        {
-            // Arrange
-            var adjacence = new Dictionary<int, List<int>>()
+        {        
+            Dictionary<int, List<int>> grapheSansCycle = new Dictionary<int, List<int>>()
             {
-                { 1, new List<int> { 2 } },
-                { 2, new List<int> { 1, 3 } },
-                { 3, new List<int> { 2 } }
+                { 1, new List<int> { 2, 3 } },
+                { 2, new List<int> { 1, 4 } },
+                { 3, new List<int> { 1, 5 } },
+                { 4, new List<int> { 2 } },
+                { 5, new List<int> { 3, 6 } },
+                { 6, new List<int> { 5 } }
             };
-
-            // Act
-            bool result = Program.EstCycle(adjacence);
-
-            // Assert
-            Assert.IsFalse(result);
+            Graphe graph3 = new Graphe(grapheSansCycle);
+            graph3.ContientCycle();
         }
     }
 }
