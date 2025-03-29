@@ -59,8 +59,7 @@ namespace ProbSciANA
             string dotFile = "graphe.dot";
             string pngFile = "graphe.png";
             // Chemin vers le fichier Excel contenant les positions des sommets.
-            //string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
-            string excelFilePath = "Stations_Avec_Lignes_Et_Suivantes.xlsx";
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
             // Appel de GetVertexPositions pour récupérer les positions
             (List<Station> stations, List<Arete> aretes) = ExcelHelper.GetVertexPositions(excelFilePath);
             
