@@ -134,7 +134,7 @@ graph G {
     "Chaussée d'Antin - La Fayette" [pos="2.3337385944087,48.8731342048266!"];
     "Pyramides" [pos="2.33462360600492,48.8657555264287!"];
     "Pont Neuf" [pos="2.34177674914854,48.8585463383202!"];
-    "Pont Marie (Cité des Arts)" [pos="2.3573766690444,48.8534598594796!"];
+    "Pont Marie" [pos="2.3573766690444,48.8534598594796!"];
     "Sully - Morland" [pos="2.36185316969725,48.8512714074456!"];
     "Jussieu" [pos="2.35493167182323,48.8461978906888!"];
     "Place Monge" [pos="2.35215486857877,48.8426663846946!"];
@@ -266,6 +266,7 @@ graph G {
     "Nation" -- "Porte de Vincennes";
     "Porte de Vincennes" -- "Château de Vincennes";
     "Porte Dauphine" -- "Victor Hugo";
+    "Charles de Gaulle - Etoile" -- "Ternes";
     "Ternes" -- "Courcelles";
     "Courcelles" -- "Monceau";
     "Monceau" -- "Villiers";
@@ -293,6 +294,8 @@ graph G {
     "Malesherbes" -- "Villiers";
     "Villiers" -- "Europe";
     "Europe" -- "Saint-Lazare";
+    "Opéra" -- "Quatre Septembre";
+    "Quatre Septembre" -- "Bourse";
     "Bourse" -- "Sentier";
     "Sentier" -- "Réaumur - Sébastopol";
     "Réaumur - Sébastopol" -- "Arts et Métiers";
@@ -312,6 +315,8 @@ graph G {
     "Gare de l'Est" -- "Château d'Eau";
     "Château d'Eau" -- "Strasbourg - Saint-Denis";
     "Strasbourg - Saint-Denis" -- "Réaumur - Sébastopol";
+    "Réaumur - Sébastopol" -- "Etienne Marcel";
+    "Etienne Marcel" -- "Les Halles";
     "Les Halles" -- "Châtelet";
     "Châtelet" -- "Cité";
     "Cité" -- "Saint-Michel";
@@ -336,6 +341,8 @@ graph G {
     "Jacques Bonsergent" -- "République";
     "République" -- "Oberkampf";
     "Oberkampf" -- "Richard-Lenoir";
+    "Richard-Lenoir" -- "Bréguet-Sabin";
+    "Bréguet-Sabin" -- "Bastille";
     "Bastille" -- "Quai de la Rapée";
     "Quai de la Rapée" -- "Gare d'Austerlitz";
     "Gare d'Austerlitz" -- "Saint-Marcel";
@@ -344,6 +351,7 @@ graph G {
     "Gambetta" -- "Pelleport";
     "Pelleport" -- "Saint-Fargeau";
     "Saint-Fargeau" -- "Porte des Lilas";
+    "Charles de Gaulle - Etoile" -- "Kléber";
     "Kléber" -- "Boissière";
     "Boissière" -- "Trocadéro";
     "Trocadéro" -- "Passy";
@@ -375,6 +383,8 @@ graph G {
     "Crimée" -- "Riquet";
     "Riquet" -- "Stalingrad";
     "Stalingrad" -- "Louis Blanc";
+    "Louis Blanc" -- "Château Landon";
+    "Château Landon" -- "Gare de l'Est";
     "Gare de l'Est" -- "Poissonnière";
     "Poissonnière" -- "Cadet";
     "Cadet" -- "Le Peletier";
@@ -384,6 +394,8 @@ graph G {
     "Pyramides" -- "Palais Royal - Musée du Louvre";
     "Palais Royal - Musée du Louvre" -- "Pont Neuf";
     "Pont Neuf" -- "Châtelet";
+    "Châtelet" -- "Pont Marie";
+    "Pont Marie" -- "Sully - Morland";
     "Sully - Morland" -- "Jussieu";
     "Jussieu" -- "Place Monge";
     "Place Monge" -- "Censier - Daubenton";
@@ -407,6 +419,8 @@ graph G {
     "Boucicaut" -- "Félix Faure";
     "Félix Faure" -- "Commerce";
     "Commerce" -- "La Motte-Picquet - Grenelle";
+    "La Motte-Picquet - Grenelle" -- "Ecole Militaire";
+    "Ecole Militaire" -- "La Tour-Maubourg";
     "La Tour-Maubourg" -- "Invalides";
     "Invalides" -- "Concorde";
     "Concorde" -- "Madeleine";
@@ -442,6 +456,8 @@ graph G {
     "Franklin D. Roosevelt" -- "Saint-Philippe du Roule";
     "Saint-Philippe du Roule" -- "Miromesnil";
     "Miromesnil" -- "Saint-Augustin";
+    "Saint-Augustin" -- "Havre-Caumartin";
+    "Havre-Caumartin" -- "Chaussée d'Antin - La Fayette";
     "Chaussée d'Antin - La Fayette" -- "Richelieu - Drouot";
     "Richelieu - Drouot" -- "Grands Boulevards";
     "Grands Boulevards" -- "Bonne Nouvelle";
@@ -463,6 +479,8 @@ graph G {
     "Eglise d'Auteuil" -- "Michel-Ange - Auteuil";
     "Mirabeau" -- "Javel - André Citroën";
     "Javel - André Citroën" -- "Charles Michels";
+    "Charles Michels" -- "Avenue Emile Zola";
+    "Avenue Emile Zola" -- "La Motte-Picquet - Grenelle";
     "La Motte-Picquet - Grenelle" -- "Ségur";
     "Ségur" -- "Duroc";
     "Duroc" -- "Vaneau";
@@ -504,6 +522,8 @@ graph G {
     "Solférino" -- "Rue du Bac";
     "Rue du Bac" -- "Sèvres - Babylone";
     "Sèvres - Babylone" -- "Rennes";
+    "Rennes" -- "Notre-Dame des Champs";
+    "Notre-Dame des Champs" -- "Montparnasse Bienvenue";
     "Montparnasse Bienvenue" -- "Falguière";
     "Falguière" -- "Pasteur";
     "Pasteur" -- "Volontaires";
@@ -532,5 +552,6 @@ graph G {
     "Pyramides" -- "Châtelet";
     "Châtelet" -- "Gare de Lyon";
     "Gare de Lyon" -- "Bercy";
+    "Bercy" -- "Cour Saint-Emilion";
     "Olympiades" -- "Maison Blanche";
 }
