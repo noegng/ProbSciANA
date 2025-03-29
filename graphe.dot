@@ -266,6 +266,7 @@ graph G {
     "Nation" -- "Porte de Vincennes";
     "Porte de Vincennes" -- "Château de Vincennes";
     "Porte Dauphine" -- "Victor Hugo";
+    "Victor Hugo" -- "Charles de Gaulle - Etoile";
     "Charles de Gaulle - Etoile" -- "Ternes";
     "Ternes" -- "Courcelles";
     "Courcelles" -- "Monceau";
@@ -492,8 +493,6 @@ graph G {
     "Maubert - Mutualité" -- "Cardinal Lemoine";
     "Cardinal Lemoine" -- "Jussieu";
     "Jussieu" -- "Gare d'Austerlitz";
-    "Gare d'Austerlitz" -- "Quai de la Gare";
-    "Quai de la Gare" -- "Bibliothèque François Mitterrand";
     "Châtelet" -- "Hôtel de Ville";
     "Hôtel de Ville" -- "Rambuteau";
     "Rambuteau" -- "Arts et Métiers";
@@ -553,5 +552,7 @@ graph G {
     "Châtelet" -- "Gare de Lyon";
     "Gare de Lyon" -- "Bercy";
     "Bercy" -- "Cour Saint-Emilion";
+    "Cour Saint-Emilion" -- "Bibliothèque François Mitterrand";
+    "Bibliothèque François Mitterrand" -- "Olympiades";
     "Olympiades" -- "Maison Blanche";
 }
