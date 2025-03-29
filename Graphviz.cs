@@ -101,7 +101,7 @@ namespace ProbSciANA
         // Creation de chaque sommet avec sa position   
         foreach (Station vertex in stations)
         {
-            var pos = vertex.Id;
+            var pos = vertex.Nom;
             string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
             string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
             dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\"];");
@@ -113,8 +113,8 @@ namespace ProbSciANA
             {
                 continue;
             }
-            var idPrevious = edge.IdPrevious.Id;
-            var idNext = edge.IdNext.Id;
+            var idPrevious = edge.IdPrevious.Nom;
+            var idNext = edge.IdNext.Nom;
             dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\";");
         }
        
