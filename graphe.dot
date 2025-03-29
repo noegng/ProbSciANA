@@ -351,6 +351,8 @@ graph G {
     "Bir-Hakeim" -- "Dupleix";
     "Dupleix" -- "La Motte-Picquet - Grenelle";
     "La Motte-Picquet - Grenelle" -- "Cambronne";
+    "Cambronne" -- "Sèvres-Lecourbe";
+    "Sèvres-Lecourbe" -- "Pasteur";
     "Pasteur" -- "Montparnasse Bienvenue";
     "Montparnasse Bienvenue" -- "Edgar Quinet";
     "Edgar Quinet" -- "Raspail";
