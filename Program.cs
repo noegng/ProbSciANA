@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.IO;
 using System.Net;
-
+using OfficeOpenXml;
 
 
 namespace ProbSciANA
@@ -46,14 +46,14 @@ namespace ProbSciANA
             graphe1.ContientCycle(); // Test de cycle
             
             // Exemple de graphe avec et sans cycle
-            //TestGraphe();
-      
+            TestGraphe();
+
             AffichageImage(); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
 
-        static void AffichageImage()
+        public static void AffichageImage()
         {
             // Chemins pour le fichier DOT et l'image PNG
             string dotFile = "graphe.dot";

@@ -105,7 +105,7 @@ namespace ProbSciANA
             return visite;
         }
 
-        public HashSet<Noeud> DFSRécursif(bool rechercheCycle = false)
+         public HashSet<Noeud> DFSRécursif(bool rechercheCycle = false)
         {
             Dictionary<int, int> couleurs = new Dictionary<int, int>();
             HashSet<Noeud> visite = new HashSet<Noeud>();
