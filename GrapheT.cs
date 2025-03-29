@@ -1,0 +1,168 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProbSciANA
+{
+    public class Graphe<T>
+    {
+        //Pas de matrice d'adjacence car on ne peut pas garantir que les sommets soient numérotés de 0 à n-1
+        private Dictionary<T, List<T>> listeAdjacence;
+        private Dictionary<T, int> couleurs;
+
+        public Graphe(Dictionary<T, List<T>> adjacence)
+        {
+            listeAdjacence = adjacence;
+        }
+
+        public HashSet<T> BFS(T sommetDepart)
+        {
+            couleurs = new Dictionary<T, int>();
+            Queue<T> file = new Queue<T>();
+            HashSet<T> visite = new HashSet<T>();
+
+            foreach (T sommet in listeAdjacence.Keys)
+            {
+                couleurs[sommet] = 0; // blanc
+            }
+
+            file.Enqueue(sommetDepart);
+            couleurs[sommetDepart] = 1; // jaune
+
+            while (file.Count > 0)
+            {
+                T sommet = file.Dequeue();
+                foreach (T voisin in listeAdjacence[sommet])
+                {
+                    if (couleurs[voisin] == 0) // blanc
+                    {
+                        file.Enqueue(voisin);
+                        couleurs[voisin] = 1; // jaune
+                    }
+                }
+                couleurs[sommet] = 2; // rouge
+                visite.Add(sommet);
+            }
+
+            return visite;
+        }
+
+        public HashSet<T> DFS(T sommetDepart)
+        {
+            couleurs = new Dictionary<T, int>();
+            Stack<T> pile = new Stack<T>();
+            HashSet<T> visite = new HashSet<T>();
+
+            foreach (T sommet in listeAdjacence.Keys)
+            {
+                couleurs[sommet] = 0; // blanc
+            }
+
+            pile.Push(sommetDepart);
+            couleurs[sommetDepart] = 1; // jaune
+
+            while (pile.Count > 0)
+            {
+                T sommet = pile.Peek();
+                bool aExploréUnVoisin = false;
+
+                foreach (T voisin in listeAdjacence[sommet].OrderBy(x => x))
+                {
+                    if (couleurs[voisin] == 0) // blanc
+                    {
+                        pile.Push(voisin);
+                        couleurs[voisin] = 1; // jaune
+                        aExploréUnVoisin = true;
+                        break;
+                    }
+                }
+
+                if (!aExploréUnVoisin)
+                {
+                    couleurs[sommet] = 2; // rouge
+                    pile.Pop();
+                    visite.Add(sommet);
+                }
+            }
+
+            return visite;
+        }
+
+        public HashSet<T> DFSRécursif(bool rechercheCycle = false)
+        {
+            couleurs = new Dictionary<T, int>();
+            HashSet<T> visite = new HashSet<T>();
+
+            foreach (T sommet in listeAdjacence.Keys)
+            {
+                couleurs[sommet] = 0; // blanc
+            }
+
+            foreach (T sommet in listeAdjacence.Keys)
+            {
+                if (couleurs[sommet] == 0)
+                {
+                    DFSrec(sommet, visite, rechercheCycle);
+                }
+            }
+
+            return visite;
+        }
+
+        private void DFSrec(T sommet, HashSet<T> visite, bool rechercheCycle)
+        {
+            couleurs[sommet] = 1; // jaune
+            visite.Add(sommet);
+
+            foreach (T voisin in listeAdjacence[sommet])
+            {
+                if (couleurs[voisin] == 0)
+                {
+                    DFSrec(voisin, visite, rechercheCycle);
+                }
+                else if (rechercheCycle && couleurs[voisin] == 1)
+                {
+                    Console.WriteLine("Cycle détecté.");
+                    return;
+                }
+            }
+
+            couleurs[sommet] = 2; // rouge
+        }
+
+        public void AfficherListeAdjacence()
+        {
+            Console.WriteLine("Liste d'adjacence:");
+            foreach (var sommet in listeAdjacence.OrderBy(x => x.Key))
+            {
+                Console.Write($"{sommet.Key}: ");
+                foreach (var voisin in sommet.Value.OrderBy(x => x))
+                {
+                    Console.Write($"{voisin} ");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        public void EstConnexe()
+        {
+            var visite = BFS(listeAdjacence.Keys.First());
+            if (visite.Count == listeAdjacence.Count)
+            {
+                Console.WriteLine("Le graphe est connexe.");
+            }
+            else
+            {
+                Console.WriteLine("Le graphe n'est pas connexe.");
+            }
+        }
+
+        public void ContientCycle()
+        {
+            DFSRécursif(true);
+        }
+    }
+}

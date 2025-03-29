@@ -1,19 +1,18 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.IO;
 using System.Net;
-
+using OfficeOpenXml;
 
 
 namespace ProbSciANA
 {
     public class Program
     {
-    static void Main(string[] args)
-        {
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        static void Main(string[] args)
+        {   
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);         
             int mode = Initialisation();
             List<Lien> listeLien = new List<Lien>();
             (listeLien,int noeudMax,int nbLiens) = LectureFichier();
@@ -40,7 +39,7 @@ namespace ProbSciANA
             {
                 graphe1.AfficherMatrice(); // Affichage de la matrice d'adjacence
             }
-          /*  graphe1.BFStoString(départ); // BFS depuis le sommet départ
+            graphe1.BFStoString(départ); // BFS depuis le sommet départ
             graphe1.DFStoString(départ); // DFS depuis le sommet départ
             graphe1.DFSRécursiftoString();
             graphe1.EstConnexe(); // Test de connexité
@@ -48,24 +47,24 @@ namespace ProbSciANA
             
             // Exemple de graphe avec et sans cycle
             TestGraphe();
-            */
-         
 
-
-// Chemin vers le fichier Excel contenant les positions des sommets.
-            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
-// Appel de GetVertexPositions pour récupérer les positions
-            (List<Station> stations, List<Arete> aretes) = ExcelHelper.GetVertexPositions(excelFilePath);
-    // Chemins pour le fichier DOT et l'image PNG
-    string dotFile = "graphe.dot";
-    string pngFile = "graphe.png";
-    string backgroundFile = "background.png";
-    // Générer le fichier DOT et l'image PNG
-    Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile, backgroundFile);
-
-
-
+            AffichageImage(); // Affichage de l'image du graphe
+            Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
+        }
+
+        public static void AffichageImage()
+        {
+            // Chemins pour le fichier DOT et l'image PNG
+            string dotFile = "graphe.dot";
+            string pngFile = "graphe.png";
+            // Chemin vers le fichier Excel contenant les positions des sommets.
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
+            // Appel de GetVertexPositions pour récupérer les positions
+            (List<Station> stations, List<Arete> aretes) = ExcelHelper.GetVertexPositions(excelFilePath);
+            
+            // Générer le fichier DOT et l'image PNG
+            Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
         }
 
         /// <summary>
@@ -175,6 +174,7 @@ namespace ProbSciANA
                     matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1; // Pour un graphe non orienté car matrice symétrique
                 }
         }
+        #region Test
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
         /// </summary>
@@ -191,12 +191,10 @@ namespace ProbSciANA
                 Console.WriteLine(lien.toString());
             }
         }
-       
-        }
         /// <summary>
         /// Test des méthodes EstConnexe & ContientCycle la classe Graphe
         /// </summary>
-    /*    static void TestGraphe()
+        static void TestGraphe()
         {
             Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
             {
@@ -221,5 +219,6 @@ namespace ProbSciANA
             graph3.EstConnexe();
             graph3.ContientCycle();
         }
-    }*/
+        #endregion
+    }
 }

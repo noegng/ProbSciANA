@@ -9,7 +9,7 @@ using System.Globalization;
 namespace ProbSciANA
 {
 
-    public static class ExcelHelper
+    public class ExcelHelper
     {
         /// <summary>
         /// Lit un fichier Excel afin de récupérer les positions (longitude, latitude) de chaque sommet.
@@ -87,8 +87,7 @@ namespace ProbSciANA
     List <Station> stations,
     List <Arete> aretes,
     string dotFilePath,
-    string pngFilePath,
-     string backgroundImagePath = null
+    string pngFilePath
     )
 {
     try
@@ -99,15 +98,10 @@ namespace ProbSciANA
         dot.AppendLine("    layout=neato;"); // Utilise le moteur neato
         dot.AppendLine("    overlap=false;");
 
-        if (!string.IsNullOrEmpty(backgroundImagePath))
-        {
-            dot.AppendLine($"    background=\"{backgroundImagePath}\";");
-        }
-
         // Creation de chaque sommet avec sa position   
         foreach (Station vertex in stations)
         {
-            var pos = vertex.Id;
+            var pos = vertex.Nom;
             string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
             string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
             dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\"];");
@@ -119,17 +113,19 @@ namespace ProbSciANA
             {
                 continue;
             }
-            var idPrevious = edge.IdPrevious.Id;
-            var idNext = edge.IdNext.Id;
+            var idPrevious = edge.IdPrevious.Nom;
+            var idNext = edge.IdNext.Nom;
             dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\";");
         }
        
 
         dot.AppendLine("}");
         File.WriteAllText(dotFilePath, dot.ToString());
-      
+        /*  Pour déboguer, afficher le contenu du fichier DOT
+        Console.WriteLine("Contenu du fichier DOT :");
+        Console.WriteLine(dot.ToString());
+        */
 
-    
         // Exécuter dot.exe pour générer l'image PNG
         var process = new Process
         {
