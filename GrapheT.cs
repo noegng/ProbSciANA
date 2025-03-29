@@ -17,7 +17,11 @@ namespace ProbSciANA
         {
             listeAdjacence = adjacence;
         }
-
+        public Dictionary<T, List<T>> ListeAdjacence
+        {
+            get { return listeAdjacence; }
+            set { listeAdjacence = value; }
+        }
         public HashSet<T> BFS(T sommetDepart)
         {
             couleurs = new Dictionary<T, int>();

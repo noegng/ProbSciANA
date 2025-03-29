@@ -12,7 +12,40 @@ namespace ProbSciANA
     {
         static void Main(string[] args)
         {   
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);         
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  
+            // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel       
+            Etape1(); // Appel de la méthode principale
+
+            AffichageImage(); // Affichage de l'image du graphe
+            Console.WriteLine("Appuyez sur une touche pour quitter...");
+            Console.ReadKey();
+        }
+        static Dictionary<string, int> LigneVitesseMoyenne()
+        {
+            // Vitesse moyenne des lignes de métro
+            Dictionary<string, int> LigneVitesseMoyenne = new Dictionary<string, int>()
+            {
+                { "1", 30 },
+                { "2", 30 },
+                { "3", 30 },
+                { "3bis", 30 },
+                { "4", 30 },
+                { "5", 30 },
+                { "6", 30 },
+                { "7", 30 },
+                { "7bis", 30 },
+                { "8", 30 },
+                { "9", 30 },
+                { "10", 30 },
+                { "11", 30 },
+                { "12", 30 },
+                { "13", 30 },
+                { "14", 30 },
+            };
+            return LigneVitesseMoyenne;
+        }
+        static void Etape1()
+        {
             int mode = Initialisation();
             List<Lien> listeLien = new List<Lien>();
             (listeLien,int noeudMax,int nbLiens) = LectureFichier();
@@ -47,12 +80,7 @@ namespace ProbSciANA
             
             // Exemple de graphe avec et sans cycle
             TestGraphe();
-
-            AffichageImage(); // Affichage de l'image du graphe
-            Console.WriteLine("Appuyez sur une touche pour quitter...");
-            Console.ReadKey();
         }
-
         public static void AffichageImage()
         {
             // Chemins pour le fichier DOT et l'image PNG

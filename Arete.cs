@@ -15,7 +15,7 @@ public class Arete {
     Station idNext;
     string idLigne;
     int temps;
-
+    
     
     public Station IdPrevious {
         get {
@@ -57,6 +57,7 @@ public class Arete {
         IdNext = idNext;
         IdLigne = idLigne;
     }
+
 
 
 }

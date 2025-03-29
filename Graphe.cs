@@ -36,6 +36,17 @@ namespace ProbSciANA
             }
             listeAdjacence = listeAdjacencelocal;
         }
+
+        public Dictionary<int, List<int>> ListeAdjacence
+        {
+            get { return listeAdjacence; }
+            set { listeAdjacence = value; }
+        }
+        public int[,] MatriceAdjacence
+        {
+            get { return matriceAdjacence; }
+            set { matriceAdjacence = value; }
+        }
         /// <summary>
         /// Parcours en largeur (BFS) avec file
         /// 0 = blanc, 1 = jaune, 2 = rouge
