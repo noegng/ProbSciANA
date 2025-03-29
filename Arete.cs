@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Org.BouncyCastle.Asn1.Tsp;
 
 
 namespace ProbSciANA
@@ -11,10 +12,10 @@ namespace ProbSciANA
 public class Arete {
 
 
-    Station idPrevious;
-    Station idNext;
-    string idLigne;
-    int temps;
+    private Station idPrevious;
+    private Station idNext;
+    private string idLigne;
+    private int temps;
     
     
     public Station IdPrevious {
@@ -56,6 +57,21 @@ public class Arete {
         IdPrevious = idPrevious;
         IdNext = idNext;
         IdLigne = idLigne;
+    }
+    //Calculer la distance entre deux stations avec la formule de Haversine
+    public double CalculerDistance() {
+        double R = 6371; // Rayon de la Terre en km
+        double dLat = Convert.ToDouble((idNext.Latitude - idPrevious.Latitude) * Convert.ToDecimal(Math.PI) / (decimal)180.0);
+        double dLon = Convert.ToDouble((idNext.Longitude - idPrevious.Longitude) * Convert.ToDecimal(Math.PI) / (decimal)180.0);
+        double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                   Math.Cos(Convert.ToDouble(idPrevious.Latitude * Convert.ToDecimal(Math.PI) / (decimal)180.0)) * Math.Cos(Convert.ToDouble(idNext.Latitude * Convert.ToDecimal(Math.PI)/ (decimal)180.0)) *
+                   Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        return R * c; // Distance en km
+    }
+    //Calcul du temps de trajet entre deux stations
+    public void CalculerTemps(){
+
     }
 
 
