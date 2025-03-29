@@ -12,7 +12,8 @@ namespace ProbSciANA
     {
         static void Main(string[] args)
         {   
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);         
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  
+                   
             int mode = Initialisation();
             List<Lien> listeLien = new List<Lien>();
             (listeLien,int noeudMax,int nbLiens) = LectureFichier();
@@ -53,6 +54,32 @@ namespace ProbSciANA
             Console.ReadKey();
         }
 
+        public Dictionary<string, int> GetVitesseMoyenne(string excelFilePath)
+        {
+            // Créer un dictionnaire pour stocker les vitesses moyennes
+            Dictionary<string, int> vitesseMoyenne = new Dictionary<string, int>();
+
+            // Lire le fichier Excel
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(excelFilePath)))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[2]; // Sélectionner la deuxième feuille
+                int i=2;
+                // Parcourir les lignes du fichier Excel
+                while(worksheet.Cells[i, 5].Value != null)
+                {
+                    string idLigne = worksheet.Cells[i, 5].Text;
+                    int vitesse = int.Parse(worksheet.Cells[i, 6].Text); // Vitesse moyenne en km/h
+                    // Ajouter la vitesse au dictionnaire
+                    if (!vitesseMoyenne.ContainsKey(idLigne))
+                    {
+                        vitesseMoyenne.Add(idLigne, vitesse);
+                    }
+                    i++;
+                }
+            }    
+             return vitesseMoyenne;
+        }
+
         public static void AffichageImage()
         {
             // Chemins pour le fichier DOT et l'image PNG
@@ -61,7 +88,7 @@ namespace ProbSciANA
             // Chemin vers le fichier Excel contenant les positions des sommets.
             string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
             // Appel de GetVertexPositions pour récupérer les positions
-            (List<Station> stations, List<Arete> aretes) = ExcelHelper.GetVertexPositions(excelFilePath);
+            (List<Station> stations, List<Arete> aretes, Dictionary<string,int> VitessesMoyennes) = ExcelHelper.GetVertexPositions(excelFilePath);
             
             // Générer le fichier DOT et l'image PNG
             Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);

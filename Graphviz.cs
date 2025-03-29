@@ -20,11 +20,12 @@ namespace ProbSciANA
         /// </summary>
         /// <param name="excelFilePath">Le chemin complet du fichier Excel.</param>
         /// <returns>Un dictionnaire associant l'identifiant du sommet à un tuple (longitude, latitude).</returns>
-        public static (List<Station> stations, List<Arete> aretes) GetVertexPositions(string excelFilePath)
+        public static (List<Station> stations, List<Arete> aretes, Dictionary<string,int> VitessesMoyennes) GetVertexPositions(string excelFilePath)
         {
    
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
+            var VitessesMoyennes = new Dictionary<string, int>();
             using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
             {
                 // On considère la première feuille
@@ -37,7 +38,12 @@ namespace ProbSciANA
                     string Nom = worksheet.Cells[i, 2].Value.ToString();
                     decimal Longitude = decimal.Parse(worksheet.Cells[i, 3].Value.ToString());
                     decimal Latitude = decimal.Parse(worksheet.Cells[i, 4].Value.ToString());
-                    Station station = new Station(Id, Nom, Longitude, Latitude);
+                    int temps=0;
+                if (worksheet.Cells[i, 5].Value != null)
+                    {
+                        temps = int.Parse(worksheet.Cells[i, 5].Value.ToString());
+                    }
+                    Station station = new Station(Id, Nom, Longitude, Latitude, temps);
                     stations.Add(station);
                     i++;
                 }
@@ -66,9 +72,17 @@ namespace ProbSciANA
                     aretes.Add(arete);
                     i++;
                 }
+                i=2;
+                while(worksheet.Cells[i, 5].Value != null)
+                {
+                    string IdLigne = worksheet.Cells[i, 5].Value.ToString();
+                    int VitesseMoyenne = int.Parse(worksheet.Cells[i, 6].Value.ToString());
+                    VitessesMoyennes.Add(IdLigne, VitesseMoyenne);
+                    i++;
+                }
 
             }
-            return (stations, aretes);
+            return (stations, aretes, VitessesMoyennes);
         }
     }
 
