@@ -59,6 +59,40 @@ public class Arete {
         IdNext = idNext;
         IdLigne = idLigne;
     }
+    public Arete(Station idPrevious, Station idNext)
+    {
+        IdPrevious = idPrevious;
+        IdNext = idNext;
+    }
+    public bool Equals(Arete other)
+    {
+        if (other == null) return false;
+        return IdPrevious == other.IdPrevious && IdNext == other.IdNext;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as Arete);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(IdPrevious, IdNext);
+    }
+    /*
+    public override bool Equals(object obj)
+    {
+        if (obj is Arete autre)
+        {
+            return this.IdPrevious.Equals(autre.IdPrevious) && this.IdNext.Equals(autre.IdNext);
+        }
+        return false;
+    }
+    public override int GetHashCode()
+    {
+        return IdPrevious.GetHashCode() ^ IdNext.GetHashCode();
+    }
+    */
     //Calculer la distance entre deux stations avec la formule de Haversine
     public double CalculerDistance()
     {

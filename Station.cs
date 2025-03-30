@@ -28,5 +28,15 @@ public class Station
         Latitude = latitude;
         TempsChangement = temps;
     }
+    public override bool Equals(object obj)
+        {
+            if (obj is Station autre)
+            {
+                return this.Id == autre.Id && this.Nom == autre.Nom && this.Longitude == autre.Longitude && this.Latitude == autre.Latitude;
+            }
+                
+            return false;
+        }
+        
 }
 }

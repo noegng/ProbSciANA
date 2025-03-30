@@ -19,14 +19,31 @@ namespace ProbSciANA
             var aretes = new List<Arete>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
             (stations, aretes, VitessesMoyennes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
+            Dictionary<Arete, int> poidsAretes = new Dictionary<Arete, int>(); // Dictionnaire pour stocker les poids des arêtes
+            poidsAretes = PoidsAretes(aretes, VitessesMoyennes); // Calcul des poids des arêtes
+            //TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
 
-            TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
+            Graphe<Station> graphePondéré = new Graphe<Station>(stations); // Création d'un graphe à partir des stations
 
-            //AffichageImage(stations, aretes); // Affichage de l'image du graphe
+            TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
+
+            AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
-
+        static Dictionary<Arete, int> PoidsAretes(List<Arete> aretes, Dictionary<string, double> VitessesMoyennes)
+        {
+            Dictionary<Arete, int> poidsAretes = new Dictionary<Arete, int>();
+            foreach (Arete arete in aretes) // Calcul des poids des arêtes
+            {
+                if (arete.IdPrevious != null && arete.IdNext != null) // Ignore les arêtes sans stations
+                {
+                    arete.CalculerTempsTrajet(VitessesMoyennes); // Calcul du temps de trajet entre deux stations  
+                    poidsAretes.Add(arete, arete.Temps); // Ajout de l'arête et de son poids au dictionnaire
+                }
+            }
+            return poidsAretes;
+        }
         static (List<Station>, List<Arete>, Dictionary<string,double>) LectureFichierExcel(string excelFilePath){
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
@@ -43,12 +60,12 @@ namespace ProbSciANA
                     string Nom = worksheet.Cells[i, 2].Value.ToString();
                     double Longitude = double.Parse(worksheet.Cells[i, 3].Value.ToString());
                     double Latitude = double.Parse(worksheet.Cells[i, 4].Value.ToString());
-                    int temps=0;
+                    int tempsChamgement=0;
                 if (worksheet.Cells[i, 5].Value != null)
                     {
-                        temps = int.Parse(worksheet.Cells[i, 5].Value.ToString());
+                        tempsChamgement = int.Parse(worksheet.Cells[i, 5].Value.ToString());
                     }
-                    Station station = new Station(Id, Nom, Longitude, Latitude, temps);
+                    Station station = new Station(Id, Nom, Longitude, Latitude, tempsChamgement);
                     stations.Add(station);
                     i++;
                 }
@@ -89,7 +106,7 @@ namespace ProbSciANA
             }
             return (stations, aretes, VitessesMoyennes);
         }
-        public static void AffichageImage(List<Station> stations, List<Arete> aretes)
+        static void AffichageImage(List<Station> stations, List<Arete> aretes)
         {
             // Chemins pour le fichier DOT et l'image PNG
             string dotFile = "graphe.dot";
@@ -97,22 +114,7 @@ namespace ProbSciANA
             // Générer le fichier DOT et l'image PNG
             Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
         }
-        static void TestDistanceTemps(List<Arete> aretes , Dictionary<string, double> VitessesMoyennes)
-        // Test de la distance et du temps de trajet entre deux stations
-        {
-            foreach (Arete arete in aretes)
-            {
-                if (arete.IdPrevious == null || arete.IdNext == null)
-                {
-                    continue;   // Ignore les arêtes sans stations
-                }
-                // Calcul de la distance entre deux stations
-                double distance = arete.CalculerDistance();
-                arete.CalculerTempsTrajet(VitessesMoyennes); // Calcul du temps de trajet entre deux stations
-                // Affichage de la distance et du temps de trajet
-                Console.WriteLine($"Distance 1 entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
-            }
-        }
+        
         #region Etape 1
         static void Etape1()
         {
@@ -260,6 +262,33 @@ namespace ProbSciANA
         }
         #endregion
         #region Test
+        static void TestDijkstra(Graphe<Station> graphePondéré, List<Station> stations, Dictionary<Arete, int> poidsAretes)
+        {
+            // Test de l'algorithme de Dijkstra
+            Station depart = stations[0]; // Station de départ
+            Station arrivee = stations[10]; // Station d'arrivée
+            List<Arete> chemin = graphePondéré.Dijkstra(depart, poidsAretes); // Calcul du chemin le plus court
+            Console.WriteLine("Chemin le plus court entre " + depart.Nom + " et " + arrivee.Nom + " : ");
+            foreach (Arete arete in chemin)
+            {
+                Console.WriteLine(arete.IdPrevious.Nom + " -> " + arete.IdNext.Nom);
+            }
+        }
+        static void TestDistanceTemps(List<Arete> aretes , Dictionary<string, double> VitessesMoyennes)
+        // Test de la distance et du temps de trajet entre deux stations
+        {
+            foreach (Arete arete in aretes)
+            {
+                if (arete.IdPrevious == null || arete.IdNext == null)
+                {
+                    continue;   // Ignore les arêtes sans stations
+                }
+                // Calcul de la distance entre deux stations
+                double distance = arete.CalculerDistance();
+                // Affichage de la distance et du temps de trajet
+                Console.WriteLine($"Distance 1 entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
+            }
+        }
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
         /// </summary>
