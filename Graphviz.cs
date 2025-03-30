@@ -19,6 +19,33 @@ namespace ProbSciANA
         /// <param name="dotFilePath">Chemin pour enregistrer le fichier DOT.</param>
         /// <param name="pngFilePath">Chemin pour générer l'image PNG.</param>
 
+
+
+    private static string GetColorForLine(string idLigne)
+    {
+        // Définir les couleurs pour chaque ligne
+        return idLigne switch
+        {
+        "1" => "gold",
+        "2" => "deepskyblue",
+        "3" => "limegreen",
+        "3bis" => "lightskyblue",
+        "4" => "magenta",
+        "5" => "orange",
+        "6" => "springgreen",
+        "7" => "hotpink",
+        "7bis" => "lightpink",
+        "8" => "cyan",
+        "9" => "yellow",
+        "10" => "darkorange",
+        "11" => "brown",
+        "12" => "chartreuse",
+        "13" => "mediumorchid",
+        "14" => "violet",
+            _ => "black", // Couleur par défaut
+        };
+    }
+
         public static void GenerateGraphImage(
     List <Station> stations,
     List <Arete> aretes,
@@ -40,7 +67,7 @@ namespace ProbSciANA
             var pos = vertex.Nom;
             string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
             string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
-            dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\"];");
+            dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\", label=\"{pos}\", fontsize=8];");
         }
 
         foreach (Arete edge in aretes)
@@ -51,7 +78,8 @@ namespace ProbSciANA
             }
             var idPrevious = edge.IdPrevious.Nom;
             var idNext = edge.IdNext.Nom;
-            dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\";");
+            var color = GetColorForLine(edge.IdLigne);
+            dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\" [color=\"{color}\"];");
         }
        
 

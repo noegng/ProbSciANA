@@ -21,8 +21,8 @@ namespace ProbSciANA
             (stations, aretes, VitessesMoyennes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
 
             TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
-
-            //AffichageImage(stations, aretes); // Affichage de l'image du graphe
+            AffichageImage(stations, aretes); // Affichage de l'image du graphe
+           
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
