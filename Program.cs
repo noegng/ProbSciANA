@@ -12,14 +12,90 @@ namespace ProbSciANA
     {
         static void Main(string[] args)
         {   
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  
-            // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel       
-            Etape1(); // Appel de la méthode principale
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
+            //Etape1(); // Appel de la méthode principale
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
+            var stations = new List<Station>();
+            var aretes = new List<Arete>(); 
+            var VitessesMoyennes = new Dictionary<string, int>();
+            (stations, aretes, VitessesMoyennes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
 
-            AffichageImage(); // Affichage de l'image du graphe
+            AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
+
+        static (List<Station>, List<Arete>, Dictionary<string,int>) LectureFichierExcel(string excelFilePath){
+            var stations = new List<Station>();
+            var aretes = new List<Arete>(); 
+            var VitessesMoyennes = new Dictionary<string, int>();
+            using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
+            {
+                // On considère la première feuille
+                var worksheet = package.Workbook.Worksheets[1];
+                // Les données commencent à la ligne 2 (la ligne 1 contient les titres)
+                int i = 2;
+                while (worksheet.Cells[i, 1].Value != null)
+                {
+                    string Id = worksheet.Cells[i, 1].Value.ToString();
+                    string Nom = worksheet.Cells[i, 2].Value.ToString();
+                    decimal Longitude = decimal.Parse(worksheet.Cells[i, 3].Value.ToString());
+                    decimal Latitude = decimal.Parse(worksheet.Cells[i, 4].Value.ToString());
+                    int temps=0;
+                if (worksheet.Cells[i, 5].Value != null)
+                    {
+                        temps = int.Parse(worksheet.Cells[i, 5].Value.ToString());
+                    }
+                    Station station = new Station(Id, Nom, Longitude, Latitude, temps);
+                    stations.Add(station);
+                    i++;
+                }
+                worksheet = package.Workbook.Worksheets[2];
+                i = 2;
+                
+                while(worksheet.Cells[i, 1].Value != null)
+                {
+                    string IdPrevious = worksheet.Cells[i, 2].Value.ToString();
+                    string IdNext = worksheet.Cells[i, 3].Value.ToString();
+                    string IdLigne = worksheet.Cells[i, 1].Value.ToString();
+                    Station memoire1 = null;
+                    Station memoire2 = null;
+                    foreach(Station var in stations)
+                    {
+                        if(var.Nom == IdPrevious)
+                        {
+                            memoire1 = var;
+                        }
+                        if (var.Nom == IdNext)
+                        {
+                            memoire2 = var;
+                        }
+                    }
+                    Arete arete = new Arete(memoire1, memoire2, IdLigne);
+                    aretes.Add(arete);
+                    i++;
+                }
+                i=2;
+                while(worksheet.Cells[i, 5].Value != null)
+                {
+                    string IdLigne = worksheet.Cells[i, 5].Value.ToString();
+                    int VitesseMoyenne = int.Parse(worksheet.Cells[i, 6].Value.ToString());
+                    VitessesMoyennes.Add(IdLigne, VitesseMoyenne);
+                    i++;
+                }
+
+            }
+            return (stations, aretes, VitessesMoyennes);
+        }
+        public static void AffichageImage(List<Station> stations, List<Arete> aretes)
+        {
+            // Chemins pour le fichier DOT et l'image PNG
+            string dotFile = "graphe.dot";
+            string pngFile = "graphe.png";                        
+            // Générer le fichier DOT et l'image PNG
+            Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
+        }
+        #region Etape 1
         static void Etape1()
         {
             int mode = Initialisation();
@@ -57,47 +133,6 @@ namespace ProbSciANA
             // Exemple de graphe avec et sans cycle
             TestGraphe();
         }
-
-        public Dictionary<string, int> GetVitesseMoyenne(string excelFilePath)
-        {
-            // Créer un dictionnaire pour stocker les vitesses moyennes
-            Dictionary<string, int> vitesseMoyenne = new Dictionary<string, int>();
-
-            // Lire le fichier Excel
-            using (ExcelPackage package = new ExcelPackage(new FileInfo(excelFilePath)))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[2]; // Sélectionner la deuxième feuille
-                int i=2;
-                // Parcourir les lignes du fichier Excel
-                while(worksheet.Cells[i, 5].Value != null)
-                {
-                    string idLigne = worksheet.Cells[i, 5].Text;
-                    int vitesse = int.Parse(worksheet.Cells[i, 6].Text); // Vitesse moyenne en km/h
-                    // Ajouter la vitesse au dictionnaire
-                    if (!vitesseMoyenne.ContainsKey(idLigne))
-                    {
-                        vitesseMoyenne.Add(idLigne, vitesse);
-                    }
-                    i++;
-                }
-            }    
-             return vitesseMoyenne;
-        }
-
-        public static void AffichageImage()
-        {
-            // Chemins pour le fichier DOT et l'image PNG
-            string dotFile = "graphe.dot";
-            string pngFile = "graphe.png";
-            // Chemin vers le fichier Excel contenant les positions des sommets.
-            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; 
-            // Appel de GetVertexPositions pour récupérer les positions
-            (List<Station> stations, List<Arete> aretes, Dictionary<string,int> VitessesMoyennes) = ExcelHelper.GetVertexPositions(excelFilePath);
-            
-            // Générer le fichier DOT et l'image PNG
-            Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
-        }
-
         /// <summary>
         /// Choix du mode
         /// </summary>
@@ -205,6 +240,7 @@ namespace ProbSciANA
                     matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1; // Pour un graphe non orienté car matrice symétrique
                 }
         }
+        #endregion
         #region Test
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
