@@ -25,7 +25,8 @@ namespace ProbSciANA
 
             Graphe<Station> graphePondéré = new Graphe<Station>(stations); // Création d'un graphe à partir des stations
 
-            TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
+            TestDijkstra(graphePondéré, stations, poidsAretes); // Test de l'algorithme de Dijkstra
+            TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
 
             AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
@@ -40,6 +41,8 @@ namespace ProbSciANA
                 {
                     arete.CalculerTempsTrajet(VitessesMoyennes); // Calcul du temps de trajet entre deux stations  
                     poidsAretes.Add(arete, arete.Temps); // Ajout de l'arête et de son poids au dictionnaire
+                    //Il faut faire attention a la ligne de metro car 2 stations peuvent etre sur 2 lignes de metro differentes
+                    // et donc avoir des vitesses moyennes differentes
                 }
             }
             return poidsAretes;
@@ -267,13 +270,18 @@ namespace ProbSciANA
             // Test de l'algorithme de Dijkstra
             Station depart = stations[0]; // Station de départ
             Station arrivee = stations[10]; // Station d'arrivée
-            List<Arete> chemin = graphePondéré.Dijkstra(depart, poidsAretes); // Calcul du chemin le plus court
-            Console.WriteLine("Chemin le plus court entre " + depart.Nom + " et " + arrivee.Nom + " : ");
-            foreach (Arete arete in chemin)
-            {
-                Console.WriteLine(arete.IdPrevious.Nom + " -> " + arete.IdNext.Nom);
-            }
+            int plusPetiteDistance = graphePondéré.Dijkstra(depart, poidsAretes)[arrivee]; // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
         }
+        static void TestDijkstra2(Graphe<Station> graphePondéré, List<Station> stations, Dictionary<string, double> VitessesMoyennes)
+        {
+            // Test de l'algorithme de Dijkstra
+            Station depart = stations[0]; // Station de départ
+            Station arrivee = stations[10]; // Station d'arrivée
+            int plusPetiteDistance = graphePondéré.Dijkstra2(depart, VitessesMoyennes)[arrivee]; // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
+        }
+
         static void TestDistanceTemps(List<Arete> aretes , Dictionary<string, double> VitessesMoyennes)
         // Test de la distance et du temps de trajet entre deux stations
         {
