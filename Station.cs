@@ -16,17 +16,17 @@ public class Station
     public string Nom { get; set; } // Nom de la station
     public decimal Longitude { get; set; } // Longitude de la station
     public decimal Latitude { get; set; } // Latitude de la station
-
     public int TempsChangement;
 
-  
-    public Station(string id, string nom, decimal longitude, decimal latitude)
+    // Constructeur de la classe Station
+
+    public Station(string id, string nom, decimal longitude, decimal latitude, int temps)
     {
         Id = id;
         Nom = nom;
         Longitude = longitude;
         Latitude = latitude;
+        TempsChangement = temps;
     }
 }
-
 }
