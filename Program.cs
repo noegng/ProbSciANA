@@ -40,9 +40,21 @@ namespace ProbSciANA
                 if (arete.IdPrevious != null && arete.IdNext != null) // Ignore les arêtes sans stations
                 {
                     arete.CalculerTempsTrajet(VitessesMoyennes); // Calcul du temps de trajet entre deux stations  
-                    poidsAretes.Add(arete, arete.Temps); // Ajout de l'arête et de son poids au dictionnaire
+
                     //Il faut faire attention a la ligne de metro car 2 stations peuvent etre sur 2 lignes de metro differentes
                     // et donc avoir des vitesses moyennes differentes
+                    // Le if eles fait fonctionner le code mais a modifier car il faut que 2 aretes puissent relier 2 stations avec des poids differents
+
+                    if (poidsAretes.ContainsKey(arete)) // Si l'arête existe déjà dans le dictionnaire, on met à jour son poids
+                    {
+                        poidsAretes[arete] = arete.Temps; // Met à jour le poids de l'arête
+                    }
+                    else // Sinon, on l'ajoute au dictionnaire
+                    {
+                        poidsAretes.Add(arete, arete.Temps); // Calcul du temps de trajet entre deux stations  
+                    }
+                     // Ajout de l'arête et de son poids au dictionnaire
+                    
                 }
             }
             return poidsAretes;
