@@ -14,13 +14,13 @@ public class Station
 {
     public string Id { get; set; } // Identifiant unique de la station
     public string Nom { get; set; } // Nom de la station
-    public decimal Longitude { get; set; } // Longitude de la station
-    public decimal Latitude { get; set; } // Latitude de la station
+    public double Longitude { get; set; } // Longitude de la station
+    public double Latitude { get; set; } // Latitude de la station
     public int TempsChangement;
 
     // Constructeur de la classe Station
 
-    public Station(string id, string nom, decimal longitude, decimal latitude, int temps)
+    public Station(string id, string nom, double longitude, double latitude, int temps)
     {
         Id = id;
         Nom = nom;
