@@ -158,6 +158,7 @@ namespace ProbSciANA
     {
         throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
     }
+    
 }
 
     }
