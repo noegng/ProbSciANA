@@ -61,7 +61,7 @@ namespace ProbSciANA
         dot.AppendLine("graph G {");
         dot.AppendLine("    layout=neato;"); // Utilise le moteur neato
         dot.AppendLine("    overlap=false;");
-        dot.AppendLine("    graph [dpi=1000];");
+        dot.AppendLine("    graph [dpi=300];");
 
         // Creation de chaque sommet avec sa position   
         foreach (Station vertex in stations)
@@ -69,7 +69,7 @@ namespace ProbSciANA
             var pos = vertex.Nom;
             string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
             string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
-            dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\",shape =\"point\", label=\"{pos}\", fontsize=12];");
+            dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\", label=\"{pos}\", fontsize=12];");
         }
 
         foreach (Arete edge in aretes)
