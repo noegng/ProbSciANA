@@ -8,7 +8,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net9.0/ProbSciANA.dll",
+            "program": "${workspaceFolder}/bin/Debug/net9.0-windows/ProbSciANA.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "externalTerminal", 
