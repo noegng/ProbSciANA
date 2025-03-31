@@ -17,6 +17,7 @@ namespace ProbSciANA
         public Graphe2(List<Arete> aretes) //Graphe non pondéré
         {
             this.aretes = aretes;
+            listeAdjacence = new Dictionary<Station, List<Station>>();
             RemplissageListeAdjacence(aretes);
         }
         #region Propriétés
