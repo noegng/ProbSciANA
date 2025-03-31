@@ -11,7 +11,10 @@ namespace ProbSciANA
     public class Program
     {
         static void Main(string[] args)
-        {   
+        { 
+             Lancement(); // Lancement de l'application console
+            
+            
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
             //Etape1(); // Appel de la méthode principale
             string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
@@ -26,6 +29,88 @@ namespace ProbSciANA
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
+
+
+#region UI 
+        static void Lancement(){
+            Console.Title = "Liv'In Paris - Application Console";
+             bool continuer = true;
+
+            while (continuer)
+            {
+                Console.Clear();
+                Console.WriteLine("===== Liv'In Paris =====\n");
+                Console.WriteLine("1. Gestion des Clients");
+                Console.WriteLine("2. Gestion des Cuisiniers");
+                Console.WriteLine("3. Gestion des Commandes");
+                Console.WriteLine("4. Gestion des Trajets");
+                Console.WriteLine("5. Statistiques");
+                Console.WriteLine("6. Quitter\n");
+                Console.Write("Sélectionnez une option : ");
+
+                switch (Console.ReadLine())
+                {
+                    case "1": GestionClients(); break;
+                    case "2": GestionCuisiniers(); break;
+                    case "3": GestionCommandes(); break;
+                    case "4": GestionTrajets(); break;
+                    case "5": AfficherStatistiques(); break;
+                    case "6": continuer = false; break;
+                    default:
+                        Console.WriteLine("Option invalide, appuyez sur Entrée pour réessayer.");
+                        Console.ReadLine();
+                        break;  
+                }
+        }
+        }
+        static void GestionClients()
+        {
+            Console.Clear();
+            Console.WriteLine("== Gestion des Clients ==");
+            // [ESPACE RÉSERVÉ] Fonctions de gestion des clients (ajout, modification, suppression)
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+        static void GestionCuisiniers()
+        {
+            Console.Clear();
+            Console.WriteLine("== Gestion des Cuisiniers ==");
+            // [ESPACE RÉSERVÉ] Fonctions de gestion des cuisiniers et notation
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+        static void GestionCommandes()
+        {
+            Console.Clear();
+            Console.WriteLine("== Gestion des Commandes ==");
+            // [ESPACE RÉSERVÉ] Fonctions de gestion des commandes (création, modification, évaluation)
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+        static void GestionTrajets()
+        {
+            Console.Clear();
+            Console.WriteLine("== Gestion des Trajets ==");
+            // [ESPACE RÉSERVÉ] Fonctions complexes : Algorithmes et affichage textuel des trajets
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+        static void AfficherStatistiques()
+        {
+            Console.Clear();
+            Console.WriteLine("== Statistiques ==");
+            // [ESPACE RÉSERVÉ] Fonctions statistiques et export des données
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+   #endregion
+
+
 
         static (List<Station>, List<Arete>, Dictionary<string,double>) LectureFichierExcel(string excelFilePath){
             var stations = new List<Station>();
