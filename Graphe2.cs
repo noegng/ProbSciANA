@@ -148,20 +148,6 @@ namespace ProbSciANA
             couleurs[sommet] = 2; // rouge
         }
 
-        public void AfficherListeAdjacence()
-        {
-            Console.WriteLine("Liste d'adjacence:");
-            foreach (var sommet in listeAdjacence)
-            {
-                Console.Write($"{sommet.Key.Nom + " -> ",36} ");
-                foreach (var voisin in sommet.Value)
-                {
-                    Console.Write(voisin.Nom + "   ");
-                }
-                Console.WriteLine();
-            }
-        }
-
         public void EstConnexe()
         {
             var visite = BFS(listeAdjacence.Keys.First());
@@ -200,6 +186,19 @@ namespace ProbSciANA
                 {
                     listeAdjacence.Add(arete.IdPrevious, new List<Station> { arete.IdNext });
                 }
+            }
+        }
+        public void AfficherListeAdjacence()
+        {
+            Console.WriteLine("Liste d'adjacence:");
+            foreach (var sommet in listeAdjacence)
+            {
+                Console.Write($"{sommet.Key.Nom + " -> ",36} ");
+                foreach (var voisin in sommet.Value)
+                {
+                    Console.Write(voisin.Nom + "   ");
+                }
+                Console.WriteLine();
             }
         }
         public void RemplissageMatriceAdjacence()
@@ -263,11 +262,12 @@ namespace ProbSciANA
                         // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
                         // et la valeur étant le poids de l'arête entre ces deux sommets
 
-                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete(sommetActuel, voisin)]; // On cast les sommets en Station pour utiliser la classe Arete
+                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete(sommetActuel, voisin,"1")]; // On cast les sommets en Station pour utiliser la classe Arete
                         // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
                         // Il faut identifier le poids de l'arête entre sommetActuel et voisin
                         //int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete(sommetActuel, voisin)]; // On cast les sommets en Station pour utiliser la classe Arete
 
+                        // il faut savoir comment identifier une arete deja existante entre sommetActuel et voisin et identifier la ligne de l'arete
                         if (nouvelleDistance < distances[voisin])
                         {
                             distances[voisin] = nouvelleDistance;
