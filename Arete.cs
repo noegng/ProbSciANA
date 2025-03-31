@@ -79,6 +79,14 @@ public class Arete {
     {
         return HashCode.Combine(IdPrevious, IdNext);
     }
+    public string ToStringLong()
+    {
+        return $"Arete: {IdPrevious.Nom} -> {IdNext.Nom}, Ligne: {IdLigne}, Temps: {temps} minutes";
+    }
+    public string toString()
+    {
+        return $"Arete: {IdPrevious.Nom} -> {IdNext.Nom}, Ligne: {IdLigne}";
+    }
     /*
     public override bool Equals(object obj)
     {

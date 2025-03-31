@@ -29,14 +29,26 @@ public class Station
         TempsChangement = temps;
     }
     public override bool Equals(object obj)
+    {
+        if (obj is Station autre)
         {
-            if (obj is Station autre)
-            {
-                return this.Id == autre.Id && this.Nom == autre.Nom && this.Longitude == autre.Longitude && this.Latitude == autre.Latitude;
-            }
-                
-            return false;
+            return this.Id == autre.Id && this.Nom == autre.Nom && this.Longitude == autre.Longitude && this.Latitude == autre.Latitude;
         }
+                
+        return false;
+    }
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode() ^ Nom.GetHashCode() ^ Longitude.GetHashCode() ^ Latitude.GetHashCode();
+    }
+    public string ToStringLong()
+    {
+        return $"Station: {Nom} (ID: {Id}), Longitude: {Longitude}, Latitude: {Latitude}, Temps de changement: {TempsChangement} minutes";
+    }
+    public string toString()
+    {
+        return "Station : " + this.Nom;
+    }
         
 }
 }

@@ -24,9 +24,10 @@ namespace ProbSciANA
             //TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
 
             Graphe2 graphePondéré = new Graphe2(aretes); // Création d'un graphe à partir des stations
-
-            TestDijkstra(graphePondéré, stations, poidsAretes); // Test de l'algorithme de Dijkstra
-            TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+            graphePondéré.AfficherListeAdjacence(); // Affichage de la liste d'adjacence
+            graphePondéré.AfficherMatriceAdjacence(); // Affichage de la matrice d'adjacence
+            //TestDijkstra(graphePondéré, stations, poidsAretes); // Test de l'algorithme de Dijkstra
+            //TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
 
             //AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");

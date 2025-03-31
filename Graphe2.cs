@@ -10,7 +10,7 @@ namespace ProbSciANA
     public class Graphe2
     {
         private Dictionary<Station, List<Station>> listeAdjacence;
-        
+        private int[,] matriceAdjacence;
         private Dictionary<Station, int> couleurs;
         private List<Arete> aretes;
 
@@ -19,6 +19,8 @@ namespace ProbSciANA
             this.aretes = aretes;
             listeAdjacence = new Dictionary<Station, List<Station>>();
             RemplissageListeAdjacence(aretes);
+            matriceAdjacence = new int[listeAdjacence.Count, listeAdjacence.Count];
+            RemplissageMatriceAdjacence();
         }
         #region Propriétés
         public Dictionary<Station, List<Station>> ListeAdjacence
@@ -182,7 +184,15 @@ namespace ProbSciANA
         {
             foreach (Arete arete in aretes)
             {
-                if (listeAdjacence.ContainsKey(arete.IdPrevious))
+                if (arete.IdPrevious == null || arete.IdNext == null)
+                {
+                    continue; // Ignore les arêtes avec des sommets nuls
+                }
+                else if (listeAdjacence.Count == 0)
+                {
+                    listeAdjacence.Add(arete.IdPrevious, new List<Station> { arete.IdNext });
+                }
+                else if (listeAdjacence.ContainsKey(arete.IdPrevious))
                 {
                     listeAdjacence[arete.IdPrevious].Add(arete.IdNext);
                 }
@@ -190,6 +200,34 @@ namespace ProbSciANA
                 {
                     listeAdjacence.Add(arete.IdPrevious, new List<Station> { arete.IdNext });
                 }
+            }
+        }
+        public void RemplissageMatriceAdjacence()
+        {
+           
+            foreach (Arete arete in aretes)
+            {
+                if ( arete.IdPrevious != null && arete.IdNext != null)
+                {
+                    matriceAdjacence[Convert.ToInt32(arete.IdPrevious.Id)-1, Convert.ToInt32(arete.IdNext.Id)-1] = 1; // -1 car les station commencent à 1
+                }
+            }
+        }
+        public void AfficherMatriceAdjacence()
+        {
+            Console.WriteLine("Matrice d'adjacence:");
+            foreach (var sommet in listeAdjacence.Keys.OrderBy(x => x))
+            {
+                Console.Write($"{sommet.Id,3} ");
+            }
+            for (int i = 0; i < matriceAdjacence.GetLength(0); i++)
+            {
+                Console.Write($"{i + 1,3} | " );
+                for (int j = 0; j < matriceAdjacence.GetLength(1); j++)
+                {
+                    Console.Write(matriceAdjacence[i, j] + " ");
+                }
+                Console.WriteLine();
             }
         }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
