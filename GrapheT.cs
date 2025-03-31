@@ -23,7 +23,7 @@ namespace ProbSciANA
         {
             this.poidsAretes = poidsAretes;
         }
-        public Graphe(List<T> stationss) // Graphe pondéré
+        public Graphe(List<T> stations) // Graphe pondéré
         {
             this.stations = stations;           // On ne peut pas avoir poidsAretes et stations en même temps car ce sont deux types de graphes différents
         }
@@ -366,5 +366,44 @@ namespace ProbSciANA
 
             return distances;
         }
+        /*
+        public Dictionary<T, int> DijkstraAlex(T sommetDepart)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        {
+            Dictionary<T, int> distances = new Dictionary<T, int>();
+            HashSet<T> visites = new HashSet<T>();
+            PriorityQueue<T, int> filePriorite = new PriorityQueue<T, int>(); // On utilise une priority queue pour gérer les sommets à explorer
+
+            foreach (T sommet in stations)
+            {
+                distances[sommet] = int.MaxValue; // On initialise les distances à l'infini
+            }
+
+            distances[sommetDepart] = 0;
+            filePriorite.Enqueue(sommetDepart, 0);
+
+            while (filePriorite.Count > 0)
+            {
+                T sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
+                visites.Add(sommetActuel); 
+
+                foreach (T voisin in listeAdjacence[sommetActuel]) // On parcourt les voisins du sommet actuel
+                {
+                    if (!visites.Contains(voisin))
+                    {
+                        // On met à jour la distance si on trouve un chemin plus court
+                        // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
+                        // et la valeur étant le poids de l'arête entre ces deux sommets
+                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete((Station)(object)sommetActuel, (Station)(object)voisin)]; // On cast les sommets en Station pour utiliser la classe Arete
+                        // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
+                        if (nouvelleDistance < distances[voisin])
+                        {
+                            distances[voisin] = nouvelleDistance;
+                            filePriorite.Enqueue(voisin, nouvelleDistance);
+                        }
+                    }
+                }
+            }
+            return distances;
+        }*/
     }
 }
