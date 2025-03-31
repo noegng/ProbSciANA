@@ -19,7 +19,7 @@ namespace ProbSciANA
             this.aretes = aretes;
             listeAdjacence = new Dictionary<Station, List<Station>>();
             RemplissageListeAdjacence(aretes);
-            matriceAdjacence = new int[listeAdjacence.Count, listeAdjacence.Count];
+            matriceAdjacence = new int[246,246]; //246 est le nombre de stations
             RemplissageMatriceAdjacence();
         }
         #region Propriétés
@@ -151,12 +151,12 @@ namespace ProbSciANA
         public void AfficherListeAdjacence()
         {
             Console.WriteLine("Liste d'adjacence:");
-            foreach (var sommet in listeAdjacence.OrderBy(x => x.Key))
+            foreach (var sommet in listeAdjacence)
             {
-                Console.Write($"{sommet.Key}: ");
-                foreach (var voisin in sommet.Value.OrderBy(x => x))
+                Console.Write($"{sommet.Key.Nom + " -> ",36} ");
+                foreach (var voisin in sommet.Value)
                 {
-                    Console.Write($"{voisin} ");
+                    Console.Write(voisin.Nom + "   ");
                 }
                 Console.WriteLine();
             }
@@ -204,28 +204,33 @@ namespace ProbSciANA
         }
         public void RemplissageMatriceAdjacence()
         {
-           
+           int i = 0;
             foreach (Arete arete in aretes)
             {
                 if ( arete.IdPrevious != null && arete.IdNext != null)
                 {
-                    matriceAdjacence[Convert.ToInt32(arete.IdPrevious.Id)-1, Convert.ToInt32(arete.IdNext.Id)-1] = 1; // -1 car les station commencent à 1
+                    matriceAdjacence[Convert.ToInt32(arete.IdPrevious.Id)-1, Convert.ToInt32(arete.IdNext.Id)-1] = 1; // -1 car les station commencent à 1                   
                 }
             }
         }
         public void AfficherMatriceAdjacence()
         {
             Console.WriteLine("Matrice d'adjacence:");
-            foreach (var sommet in listeAdjacence.Keys.OrderBy(x => x))
+            foreach (var sommet in listeAdjacence.Keys)
             {
                 Console.Write($"{sommet.Id,3} ");
             }
+            foreach (var sommet in listeAdjacence.Keys)
+            {
+                Console.Write($"{"---",3} ");
+            }
+            Console.WriteLine();
             for (int i = 0; i < matriceAdjacence.GetLength(0); i++)
             {
                 Console.Write($"{i + 1,3} | " );
                 for (int j = 0; j < matriceAdjacence.GetLength(1); j++)
                 {
-                    Console.Write(matriceAdjacence[i, j] + " ");
+                    Console.Write($"{matriceAdjacence[i, j],3}");
                 }
                 Console.WriteLine();
             }
@@ -262,6 +267,7 @@ namespace ProbSciANA
                         // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
                         // Il faut identifier le poids de l'arête entre sommetActuel et voisin
                         //int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete(sommetActuel, voisin)]; // On cast les sommets en Station pour utiliser la classe Arete
+
                         if (nouvelleDistance < distances[voisin])
                         {
                             distances[voisin] = nouvelleDistance;

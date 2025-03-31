@@ -22,10 +22,9 @@ namespace ProbSciANA
             Dictionary<Arete, int> poidsAretes = new Dictionary<Arete, int>(); // Dictionnaire pour stocker les poids des arêtes
             poidsAretes = PoidsAretes(aretes, VitessesMoyennes); // Calcul des poids des arêtes
             //TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
-
             Graphe2 graphePondéré = new Graphe2(aretes); // Création d'un graphe à partir des stations
             graphePondéré.AfficherListeAdjacence(); // Affichage de la liste d'adjacence
-            graphePondéré.AfficherMatriceAdjacence(); // Affichage de la matrice d'adjacence
+            //graphePondéré.AfficherMatriceAdjacence(); // Affichage de la matrice d'adjacence
             //TestDijkstra(graphePondéré, stations, poidsAretes); // Test de l'algorithme de Dijkstra
             //TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
 
