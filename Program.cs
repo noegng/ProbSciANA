@@ -1,20 +1,138 @@
-﻿using QuickGraph;
-using GraphSharp.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.IO;
 using System.Net;
-
+using OfficeOpenXml;
 
 
 namespace ProbSciANA
 {
     public class Program
     {
-        
         static void Main(string[] args)
-        {            
+        {   
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
+            //Etape1(); // Appel de la méthode principale
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
+            var stations = new List<Station>();
+            var aretes = new List<Arete>(); 
+            var VitessesMoyennes = new Dictionary<string, double>();
+            (stations, aretes, VitessesMoyennes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
+            Dictionary<Arete, int> poidsAretes = new Dictionary<Arete, int>(); // Dictionnaire pour stocker les poids des arêtes
+            poidsAretes = PoidsAretes(aretes, VitessesMoyennes); // Calcul des poids des arêtes
+            //TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
+
+            Graphe<Station> graphePondéré = new Graphe<Station>(stations); // Création d'un graphe à partir des stations
+
+            TestDijkstra(graphePondéré, stations, poidsAretes); // Test de l'algorithme de Dijkstra
+            //TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+
+            AffichageImage(stations, aretes); // Affichage de l'image du graphe
+            Console.WriteLine("Appuyez sur une touche pour quitter...");
+            Console.ReadKey();
+        }
+        static Dictionary<Arete, int> PoidsAretes(List<Arete> aretes, Dictionary<string, double> VitessesMoyennes)
+        {
+            Dictionary<Arete, int> poidsAretes = new Dictionary<Arete, int>();
+            foreach (Arete arete in aretes) // Calcul des poids des arêtes
+            {
+                if (arete.IdPrevious != null && arete.IdNext != null) // Ignore les arêtes sans stations
+                {
+                    arete.CalculerTempsTrajet(VitessesMoyennes); // Calcul du temps de trajet entre deux stations  
+
+                    //Il faut faire attention a la ligne de metro car 2 stations peuvent etre sur 2 lignes de metro differentes
+                    // et donc avoir des vitesses moyennes differentes
+                    // Le if eles fait fonctionner le code mais a modifier car il faut que 2 aretes puissent relier 2 stations avec des poids differents
+
+                    if (poidsAretes.ContainsKey(arete)) // Si l'arête existe déjà dans le dictionnaire, on met à jour son poids
+                    {
+                        poidsAretes[arete] = arete.Temps; // Met à jour le poids de l'arête
+                    }
+                    else // Sinon, on l'ajoute au dictionnaire
+                    {
+                        poidsAretes.Add(arete, arete.Temps); // Calcul du temps de trajet entre deux stations  
+                    }
+                     // Ajout de l'arête et de son poids au dictionnaire
+                    
+                }
+            }
+            return poidsAretes;
+        }
+        static (List<Station>, List<Arete>, Dictionary<string,double>) LectureFichierExcel(string excelFilePath){
+            var stations = new List<Station>();
+            var aretes = new List<Arete>(); 
+            var VitessesMoyennes = new Dictionary<string, double>();
+            using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
+            {
+                // On considère la première feuille
+                var worksheet = package.Workbook.Worksheets[1];
+                // Les données commencent à la ligne 2 (la ligne 1 contient les titres)
+                int i = 2;
+                while (worksheet.Cells[i, 1].Value != null)
+                {
+                    string Id = worksheet.Cells[i, 1].Value.ToString();
+                    string Nom = worksheet.Cells[i, 2].Value.ToString();
+                    double Longitude = double.Parse(worksheet.Cells[i, 3].Value.ToString());
+                    double Latitude = double.Parse(worksheet.Cells[i, 4].Value.ToString());
+                    int tempsChamgement=0;
+                if (worksheet.Cells[i, 5].Value != null)
+                    {
+                        tempsChamgement = int.Parse(worksheet.Cells[i, 5].Value.ToString());
+                    }
+                    Station station = new Station(Id, Nom, Longitude, Latitude, tempsChamgement);
+                    stations.Add(station);
+                    i++;
+                }
+                worksheet = package.Workbook.Worksheets[2];
+                i = 2;
+                
+                while(worksheet.Cells[i, 1].Value != null)
+                {
+                    string IdPrevious = worksheet.Cells[i, 2].Value.ToString();
+                    string IdNext = worksheet.Cells[i, 3].Value.ToString();
+                    string IdLigne = worksheet.Cells[i, 1].Value.ToString();
+                    Station memoire1 = null;
+                    Station memoire2 = null;
+                    foreach(Station var in stations)
+                    {
+                        if(var.Nom == IdPrevious)
+                        {
+                            memoire1 = var;
+                        }
+                        if (var.Nom == IdNext)
+                        {
+                            memoire2 = var;
+                        }
+                    }
+                    Arete arete = new Arete(memoire1, memoire2, IdLigne);
+                    aretes.Add(arete);
+                    i++;
+                }
+                i=2;
+                while(worksheet.Cells[i, 5].Value != null)
+                {
+                    string IdLigne = worksheet.Cells[i, 5].Value.ToString();
+                    double VitesseMoyenne = double.Parse(worksheet.Cells[i, 6].Value.ToString());
+                    VitessesMoyennes.Add(IdLigne, VitesseMoyenne);
+                    i++;
+                }
+
+            }
+            return (stations, aretes, VitessesMoyennes);
+        }
+        static void AffichageImage(List<Station> stations, List<Arete> aretes)
+        {
+            // Chemins pour le fichier DOT et l'image PNG
+            string dotFile = "graphe.dot";
+            string pngFile = "graphe.png";                        
+            // Générer le fichier DOT et l'image PNG
+            Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
+        }
+        
+        #region Etape 1
+        static void Etape1()
+        {
             int mode = Initialisation();
             List<Lien> listeLien = new List<Lien>();
             (listeLien,int noeudMax,int nbLiens) = LectureFichier();
@@ -49,11 +167,7 @@ namespace ProbSciANA
             
             // Exemple de graphe avec et sans cycle
             TestGraphe();
-            
-       
-            Console.ReadKey();
         }
-
         /// <summary>
         /// Choix du mode
         /// </summary>
@@ -161,6 +275,40 @@ namespace ProbSciANA
                     matrice[lien.Noeud2.Noeuds-1, lien.Noeud1.Noeuds-1] = 1; // Pour un graphe non orienté car matrice symétrique
                 }
         }
+        #endregion
+        #region Test
+        static void TestDijkstra(Graphe<Station> graphePondéré, List<Station> stations, Dictionary<Arete, int> poidsAretes)
+        {
+            // Test de l'algorithme de Dijkstra
+            Station depart = stations[0]; // Station de départ
+            Station arrivee = stations[10]; // Station d'arrivée
+            int plusPetiteDistance = graphePondéré.Dijkstra(depart, poidsAretes)[arrivee]; // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
+        }
+        static void TestDijkstra2(Graphe<Station> graphePondéré, List<Station> stations, Dictionary<string, double> VitessesMoyennes)
+        {
+            // Test de l'algorithme de Dijkstra
+            Station depart = stations[0]; // Station de départ
+            Station arrivee = stations[10]; // Station d'arrivée
+            int plusPetiteDistance = graphePondéré.Dijkstra2(depart, VitessesMoyennes)[arrivee]; // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
+        }
+
+        static void TestDistanceTemps(List<Arete> aretes , Dictionary<string, double> VitessesMoyennes)
+        // Test de la distance et du temps de trajet entre deux stations
+        {
+            foreach (Arete arete in aretes)
+            {
+                if (arete.IdPrevious == null || arete.IdNext == null)
+                {
+                    continue;   // Ignore les arêtes sans stations
+                }
+                // Calcul de la distance entre deux stations
+                double distance = arete.CalculerDistance();
+                // Affichage de la distance et du temps de trajet
+                Console.WriteLine($"Distance 1 entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
+            }
+        }
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
         /// </summary>
@@ -177,7 +325,9 @@ namespace ProbSciANA
                 Console.WriteLine(lien.toString());
             }
         }
-       
+        /// <summary>
+        /// Test des méthodes EstConnexe & ContientCycle la classe Graphe
+        /// </summary>
         static void TestGraphe()
         {
             Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
@@ -203,5 +353,6 @@ namespace ProbSciANA
             graph3.EstConnexe();
             graph3.ContientCycle();
         }
+        #endregion
     }
 }
