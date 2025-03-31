@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ProbSciANA": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

@@ -13,6 +13,7 @@ namespace ProbSciANA
         static void Main(string[] args)
         {   
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
+            
             //Etape1(); // Appel de la méthode principale
             string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
             var stations = new List<Station>();
@@ -33,6 +34,7 @@ namespace ProbSciANA
             var VitessesMoyennes = new Dictionary<string, double>();
             using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
             {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // Utilisation de la version gratuite d'EPPlus
                 // On considère la première feuille
                 var worksheet = package.Workbook.Worksheets[1];
                 // Les données commencent à la ligne 2 (la ligne 1 contient les titres)
