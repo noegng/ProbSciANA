@@ -67,7 +67,7 @@ public class Arete {
     public bool Equals(Arete other)
     {
         if (other == null) return false;
-        return IdPrevious == other.IdPrevious && IdNext == other.IdNext;
+        return IdPrevious == other.IdPrevious && IdNext == other.IdNext && IdLigne == other.IdLigne;
     }
 
     public override bool Equals(object obj)

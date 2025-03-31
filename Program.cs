@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.IO;
@@ -26,7 +26,7 @@ namespace ProbSciANA
             Graphe<Station> graphePondéré = new Graphe<Station>(stations); // Création d'un graphe à partir des stations
 
             TestDijkstra(graphePondéré, stations, poidsAretes); // Test de l'algorithme de Dijkstra
-            TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+            //TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
 
             AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
