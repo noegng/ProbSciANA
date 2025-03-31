@@ -10,6 +10,7 @@ namespace ProbSciANA
     public class Graphe<T>
     {
         private Dictionary<T, List<T>> listeAdjacence;
+        
         private Dictionary<T, int> couleurs;
         private List<T> stations;
         private Dictionary<T, int> poidsAretes;
@@ -190,6 +191,28 @@ namespace ProbSciANA
         }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
         // 
+        public void RemplissageListeAdjacence(List<Arete> aretes)
+        {
+            foreach (Arete arete in aretes)
+            {
+                if (listeAdjacence.ContainsKey(arete.IdPrevious))
+                {
+                    listeAdjacence[arete.IdPrevious].Add(arete.IdNext);
+                }
+                else
+                {
+                    listeAdjacence.Add(arete.IdPrevious, new List<T> { arete.IdNext });
+                }
+                if (listeAdjacence.ContainsKey(arete.IdNext))
+                {
+                    listeAdjacence[arete.IdNext].Add(arete.IdPrevious);
+                }
+                else
+                {
+                    listeAdjacence.Add(arete.IdNext, new List<T> { arete.IdPrevious });
+                }
+            }
+        }
         public Dictionary<T, int> Dijkstra(T sommetDepart, Dictionary<Arete, int> poidsAretes )   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<T, int> distances = new Dictionary<T, int>();
