@@ -36,6 +36,17 @@ namespace ProbSciANA
             }
             listeAdjacence = listeAdjacencelocal;
         }
+
+        public Dictionary<int, List<int>> ListeAdjacence
+        {
+            get { return listeAdjacence; }
+            set { listeAdjacence = value; }
+        }
+        public int[,] MatriceAdjacence
+        {
+            get { return matriceAdjacence; }
+            set { matriceAdjacence = value; }
+        }
         /// <summary>
         /// Parcours en largeur (BFS) avec file
         /// 0 = blanc, 1 = jaune, 2 = rouge
@@ -105,7 +116,7 @@ namespace ProbSciANA
             return visite;
         }
 
-        public HashSet<Noeud> DFSRécursif(bool rechercheCycle = false)
+         public HashSet<Noeud> DFSRécursif(bool rechercheCycle = false)
         {
             Dictionary<int, int> couleurs = new Dictionary<int, int>();
             HashSet<Noeud> visite = new HashSet<Noeud>();
@@ -226,6 +237,8 @@ namespace ProbSciANA
         {
             DFSRécursif(true);
         }
+        
+
     }
     #region ancien code
     /* 

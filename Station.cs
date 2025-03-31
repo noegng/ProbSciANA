@@ -14,19 +14,29 @@ public class Station
 {
     public string Id { get; set; } // Identifiant unique de la station
     public string Nom { get; set; } // Nom de la station
-    public decimal Longitude { get; set; } // Longitude de la station
-    public decimal Latitude { get; set; } // Latitude de la station
-
+    public double Longitude { get; set; } // Longitude de la station
+    public double Latitude { get; set; } // Latitude de la station
     public int TempsChangement;
 
-  
-    public Station(string id, string nom, decimal longitude, decimal latitude)
+    // Constructeur de la classe Station
+
+    public Station(string id, string nom, double longitude, double latitude, int temps)
     {
         Id = id;
         Nom = nom;
         Longitude = longitude;
         Latitude = latitude;
+        TempsChangement = temps;
     }
+    public override bool Equals(object obj)
+        {
+            if (obj is Station autre)
+            {
+                return this.Id == autre.Id && this.Nom == autre.Nom && this.Longitude == autre.Longitude && this.Latitude == autre.Latitude;
+            }
+                
+            return false;
+        }
+        
 }
-
 }

@@ -8,70 +8,6 @@ using System.Globalization;
 
 namespace ProbSciANA
 {
-
-    public static class ExcelHelper
-    {
-        /// <summary>
-        /// Lit un fichier Excel afin de récupérer les positions (longitude, latitude) de chaque sommet.
-        /// La colonne 1 correspond à l'identifiant du sommet,
-        /// la colonne 3 correspond à la longitude,
-        /// et la colonne 4 correspond à la latitude.
-        /// La première ligne est supposée contenir les en-têtes.
-        /// </summary>
-        /// <param name="excelFilePath">Le chemin complet du fichier Excel.</param>
-        /// <returns>Un dictionnaire associant l'identifiant du sommet à un tuple (longitude, latitude).</returns>
-        public static (List<Station> stations, List<Arete> aretes) GetVertexPositions(string excelFilePath)
-        {
-   
-            var stations = new List<Station>();
-            var aretes = new List<Arete>(); 
-            using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
-            {
-                // On considère la première feuille
-                var worksheet = package.Workbook.Worksheets[1];
-                // Les données commencent à la ligne 2 (la ligne 1 contient les titres)
-                int i = 2;
-                while (worksheet.Cells[i, 1].Value != null)
-                {
-                    string Id = worksheet.Cells[i, 1].Value.ToString();
-                    string Nom = worksheet.Cells[i, 2].Value.ToString();
-                    decimal Longitude = decimal.Parse(worksheet.Cells[i, 3].Value.ToString());
-                    decimal Latitude = decimal.Parse(worksheet.Cells[i, 4].Value.ToString());
-                    Station station = new Station(Id, Nom, Longitude, Latitude);
-                    stations.Add(station);
-                    i++;
-                }
-                worksheet = package.Workbook.Worksheets[2];
-                i = 2;
-                
-                while(worksheet.Cells[i, 1].Value != null)
-                {
-                    string IdPrevious = worksheet.Cells[i, 2].Value.ToString();
-                    string IdNext = worksheet.Cells[i, 3].Value.ToString();
-                    string IdLigne = worksheet.Cells[i, 1].Value.ToString();
-                    Station memoire1 = null;
-                    Station memoire2 = null;
-                    foreach(Station var in stations)
-                    {
-                        if(var.Nom == IdPrevious)
-                        {
-                            memoire1 = var;
-                        }
-                        if (var.Nom == IdNext)
-                        {
-                            memoire2 = var;
-                        }
-                    }
-                    Arete arete = new Arete(memoire1, memoire2, IdLigne);
-                    aretes.Add(arete);
-                    i++;
-                }
-
-            }
-            return (stations, aretes);
-        }
-    }
-
     public static class Graphviz
 
     {
@@ -101,7 +37,7 @@ namespace ProbSciANA
         // Creation de chaque sommet avec sa position   
         foreach (Station vertex in stations)
         {
-            var pos = vertex.Id;
+            var pos = vertex.Nom;
             string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
             string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
             dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\"];");
@@ -113,8 +49,8 @@ namespace ProbSciANA
             {
                 continue;
             }
-            var idPrevious = edge.IdPrevious.Id;
-            var idNext = edge.IdNext.Id;
+            var idPrevious = edge.IdPrevious.Nom;
+            var idNext = edge.IdNext.Nom;
             dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\";");
         }
        
