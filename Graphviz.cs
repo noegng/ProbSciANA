@@ -19,6 +19,32 @@ namespace ProbSciANA
         /// <param name="dotFilePath">Chemin pour enregistrer le fichier DOT.</param>
         /// <param name="pngFilePath">Chemin pour générer l'image PNG.</param>
 
+        private static string GetColorForLine(string idLigne)
+    {
+        // Définir les couleurs pour chaque ligne
+        return idLigne switch
+        {
+        "1" => "#F2C931", // Bouton d'Or
+        "2" => "#216EB4", // Azur
+        "3" => "#9A9940", // Olive
+        "3bis" => "#89C7D6", // Pervenche
+        "4" => "#BB4D98", // Parme
+        "5" => "#DE5D29", // Orange
+        "6" => "#79BB92", // Menthe
+        "7" => "#DF9AB1", // Rose
+        "7bis" => "#79BB92", // Menthe
+        "8" => "#C5A3CA", // Lilas
+        "9" => "#CDC83F", // Acacia
+        "10" => "#DFB039", // Ocre
+        "11" => "#8E6538", // Marron
+        "12" => "#328E5B", // Sapin
+        "13" => "#89C7D6", // Pervenche
+        "14" => "#67328E", // Iris
+        "A" => "#D35E3C", // Coquelicot
+        _ => "black", // Couleur par défaut
+        };
+    }
+
         public static void GenerateGraphImage(
     List <Station> stations,
     List <Arete> aretes,
@@ -30,9 +56,10 @@ namespace ProbSciANA
     {
         // Création du fichier DOT
         StringBuilder dot = new StringBuilder();
-        dot.AppendLine("graph G {");
+        dot.AppendLine("digraph G {");
         dot.AppendLine("    layout=neato;"); // Utilise le moteur neato
         dot.AppendLine("    overlap=false;");
+        dot.AppendLine("    graph [dpi=400];");
 
         // Creation de chaque sommet avec sa position   
         foreach (Station vertex in stations)
@@ -40,19 +67,26 @@ namespace ProbSciANA
             var pos = vertex.Nom;
             string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
             string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
-            dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\"];");
+            dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\",label=\"{pos}\", fontsize=12];");
+        }
+        for (int i = 0; i < aretes.Count; i= i+2) 
+        {
+            var idPrevious = aretes[i].IdPrevious.Nom;
+            var idNext = aretes[i].IdNext.Nom;
+            var color = GetColorForLine(aretes[i].IdLigne);
+            string nonSensUnique = "";
+            if (!aretes[i].SensUnique)
+            {
+                nonSensUnique = "dir=\"both\",";
+            }
+            dot.AppendLine($"    \"{idPrevious}\" -> \"{idNext}\" [{nonSensUnique} color=\"{color}\", penwidth=3, style=bold];");
+            if(aretes[i].SensUnique){
+                i--;
+            }
         }
 
-        foreach (Arete edge in aretes)
-        {
-            if (edge.IdPrevious == null || edge.IdNext == null)
-            {
-                continue;
-            }
-            var idPrevious = edge.IdPrevious.Nom;
-            var idNext = edge.IdNext.Nom;
-            dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\";");
-        }
+
+        
        
 
         dot.AppendLine("}");
