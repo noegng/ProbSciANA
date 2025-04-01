@@ -19,7 +19,7 @@ namespace ProbSciANA
             this.aretes = aretes;
             listeAdjacence = new Dictionary<Station, List<Station>>();
             RemplissageListeAdjacence(aretes);
-            matriceAdjacence = new int[246,246]; //246 est le nombre de stations
+            matriceAdjacence = new int[listeAdjacence.Count, listeAdjacence.Count]; 
             RemplissageMatriceAdjacence();
         }
         #region Propriétés
@@ -170,6 +170,7 @@ namespace ProbSciANA
         
         public void RemplissageListeAdjacence(List<Arete> aretes)
         {
+            //460
             foreach (Arete arete in aretes)
             {
                 if (listeAdjacence.Count == 0)
@@ -262,30 +263,29 @@ namespace ProbSciANA
 
                 foreach (Arete voisin in aretes) // On parcourt les voisins du sommet actuel
                 {
-                    if (voisin.IdPrevious != sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
+                    if (voisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
                     {
-                        continue; // Si ce n'est pas le cas, on passe au voisin suivant
-                    }
-                    else if (!visites.Contains(voisin.IdNext)) // On vérifie si le voisin n'a pas déjà été visité
-                    {
+                        if (!visites.Contains(voisin.IdNext)) // On vérifie si le voisin n'a pas déjà été visité
+                        {
                         // On met à jour la distance si on trouve un chemin plus court
                         int nouvelleDistance = distances[sommetActuel] + voisin.Temps; 
-
+                        //Console.WriteLine($"Distance entre {sommetActuel.Nom} et {voisin.IdNext.Nom} : {nouvelleDistance} minutes"); // Affichage de la distance entre le sommet actuel et le voisin
+                        //Console.WriteLine(distances[voisin.IdNext]);
                         // il faut savoir comment identifier une arete deja existante entre sommetActuel et voisin et identifier la ligne de l'arete
                         if (nouvelleDistance < distances[voisin.IdNext])
                         {
                             distances[voisin.IdNext] = nouvelleDistance;
                             filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
                         }
+                        }
                     }
+                    
                 }
             }
 
             return distances;
         }
         //Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
-        // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
-        // et la valeur étant le poids de l'arête entre ces deux sommets
         public (List<Station>, int) DijkstraChemin(Station sommetDepart, Station sommetArrivee, Dictionary<Arete, int> poidsAretes)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<Station, int> distances = new Dictionary<Station, int>();

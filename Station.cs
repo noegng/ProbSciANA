@@ -32,7 +32,7 @@ public class Station
     {
         if (obj is Station autre)
         {
-            return this.Id == autre.Id && this.Nom == autre.Nom && this.Longitude == autre.Longitude && this.Latitude == autre.Latitude;
+            return this.Id == autre.Id || this.Nom == autre.Nom ;
         }
                 
         return false;
