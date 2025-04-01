@@ -17,8 +17,16 @@ public class Arete {
     private Station idNext;
     private string idLigne;
     private int temps;
+    private static Dictionary<string, double> vitesseMoyenne = new Dictionary<string, double>();
     
-    
+        public Arete(Station idPrevious, Station idNext, string idLigne) {
+        IdPrevious = idPrevious;
+        IdNext = idNext;
+        IdLigne = idLigne;
+        temps = CalculerTempsTrajet(vitesseMoyenne);
+    }
+
+    #region Propriétés
     public Station IdPrevious {
         get {
             return idPrevious;
@@ -52,18 +60,15 @@ public class Arete {
             temps = value;
         }
     }
-
-  
-    public Arete(Station idPrevious, Station idNext, string idLigne) {
-        IdPrevious = idPrevious;
-        IdNext = idNext;
-        IdLigne = idLigne;
+    public static Dictionary<string, double> VitesseMoyenne {
+        get {
+            return vitesseMoyenne;
+        }
+        set {
+            vitesseMoyenne = value;
+        }
     }
-    public Arete(Station idPrevious, Station idNext)
-    {
-        IdPrevious = idPrevious;
-        IdNext = idNext;
-    }
+    #endregion
     public bool Equals(Arete other)
     {
         if (other == null) return false;
@@ -114,7 +119,7 @@ public class Arete {
         return R * c; // Distance en km
     }
     //Calcul et met a jour la variabl temps ( temps de trajet entre deux stations)
-    public void CalculerTempsTrajet(Dictionary<string, double> VitesseMoyenne)
+    public int CalculerTempsTrajet(Dictionary<string, double> VitesseMoyenne)
     {
         // calcul de la distance entre idPrevious et idNext avec la formule de Haversine
         // puis conversion en temps de trajet (en minutes) en fonction de la vitesse moyenne du train
@@ -124,6 +129,7 @@ public class Arete {
         double distance = CalculerDistance();
         double t = distance / VitesseMoyenne[idLigne];
         temps =  (int)t + 1; // +1 pour eviter d'avoir un temps de trajet nul et pour arrondir a l'entier superieur
+        return temps;
     }
 
 

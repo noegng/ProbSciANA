@@ -33,6 +33,8 @@ namespace ProbSciANA
             get { return couleurs; }
         }
         #endregion
+        #region Méthodes de parcours
+
         public HashSet<Station> BFS(Station sommetDepart)
         {
             couleurs = new Dictionary<Station, int>();
@@ -234,6 +236,8 @@ namespace ProbSciANA
                 Console.WriteLine();
             }
         }
+        #endregion
+        #region Méthodes de recherche de chemin
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
         public Dictionary<Station, int> Dijkstra(Station sommetDepart, Dictionary<Arete, int> poidsAretes)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
@@ -252,32 +256,85 @@ namespace ProbSciANA
             while (filePriorite.Count > 0)
             {
                 Station sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
-                visites.Add(sommetActuel); 
+                visites.Add(sommetActuel);
 
-                foreach (Station voisin in listeAdjacence[sommetActuel]) // On parcourt les voisins du sommet actuel
+                foreach (Arete voisin in aretes) // On parcourt les voisins du sommet actuel
                 {
-                    if (!visites.Contains(voisin))
+                    if (voisin.IdPrevious != sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
+                    {
+                        continue; // Si ce n'est pas le cas, on passe au voisin suivant
+                    }
+                    else if (!visites.Contains(voisin.IdNext)) // On vérifie si le voisin n'a pas déjà été visité
                     {
                         // On met à jour la distance si on trouve un chemin plus court
-                        // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
-                        // et la valeur étant le poids de l'arête entre ces deux sommets
-
-                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete(sommetActuel, voisin,"1")]; // On cast les sommets en Station pour utiliser la classe Arete
-                        // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
-                        // Il faut identifier le poids de l'arête entre sommetActuel et voisin
-                        //int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete(sommetActuel, voisin)]; // On cast les sommets en Station pour utiliser la classe Arete
+                        int nouvelleDistance = distances[sommetActuel] + voisin.Temps; 
 
                         // il faut savoir comment identifier une arete deja existante entre sommetActuel et voisin et identifier la ligne de l'arete
-                        if (nouvelleDistance < distances[voisin])
+                        if (nouvelleDistance < distances[voisin.IdNext])
                         {
-                            distances[voisin] = nouvelleDistance;
-                            filePriorite.Enqueue(voisin, nouvelleDistance);
+                            distances[voisin.IdNext] = nouvelleDistance;
+                            filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
                         }
                     }
                 }
             }
 
             return distances;
+        }
+        //Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
+        // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
+        // et la valeur étant le poids de l'arête entre ces deux sommets
+        public (List<Station>, int) DijkstraChemin(Station sommetDepart, Station sommetArrivee, Dictionary<Arete, int> poidsAretes)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        {
+            Dictionary<Station, int> distances = new Dictionary<Station, int>();
+            HashSet<Station> visites = new HashSet<Station>();
+            PriorityQueue<Station, int> filePriorite = new PriorityQueue<Station, int>(); // On utilise une priority queue pour gérer les sommets à explorer
+            Dictionary<Station, Station> predecesseurs = new Dictionary<Station, Station>(); // Pour reconstruire le chemin
+
+            foreach (Station sommet in listeAdjacence.Keys)
+            {
+                distances[sommet] = int.MaxValue; // On initialise les distances à l'infini
+                predecesseurs[sommet] = null; // On initialise les prédécesseurs à null
+            }
+
+            distances[sommetDepart] = 0;
+            filePriorite.Enqueue(sommetDepart, 0);
+
+            while (filePriorite.Count > 0)
+            {
+                Station sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
+                visites.Add(sommetActuel); 
+
+                if (sommetActuel.Equals(sommetArrivee)) // Si on a atteint le sommet d'arrivée
+                {
+                    break;
+                }
+
+                foreach (Station voisin in listeAdjacence[sommetActuel]) // On parcourt les voisins du sommet actuel
+                {
+                    if (!visites.Contains(voisin))
+                    {
+                        // On met à jour la distance si on trouve un chemin plus court
+                        Arete IdentifierArete = new Arete(sommetActuel, voisin,"1");
+                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[IdentifierArete]; // On cast les sommets en Station pour utiliser la classe Arete
+
+                        if (nouvelleDistance < distances[voisin])
+                        {
+                            distances[voisin] = nouvelleDistance;
+                            predecesseurs[voisin] = sommetActuel; // On met à jour le prédécesseur
+                            filePriorite.Enqueue(voisin, nouvelleDistance);
+                        }
+                    }
+                }
+            }
+            // Reconstruire le chemin
+            List<Station> chemin = new List<Station>();
+            for (Station sommet = sommetArrivee; sommet != null; sommet = predecesseurs[sommet])
+            {
+                chemin.Add(sommet);
+            }
+            chemin.Reverse(); // On inverse le chemin pour avoir l'ordre correct
+            return (chemin,distances[sommetArrivee]); // On renvoie le chemin et la distance totale
         }
         public Dictionary<Station, int> Dijkstra2(Station sommetDepart)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
@@ -393,6 +450,7 @@ namespace ProbSciANA
 
             return distances;
         }
+        #endregion
         /*
         public Dictionary<T, int> DijkstraAlex(T sommetDepart)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
