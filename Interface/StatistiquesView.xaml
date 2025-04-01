@@ -1,0 +1,12 @@
+<Page x:Class="ProbSciANA.Interface.StatistiquesView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="StatistiquesView">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock Text="Statistiques" FontSize="20" Margin="0,0,0,20"/>
+        <Button Content="Top clients" Width="200" Margin="5"/>
+        <Button Content="Top cuisiniers" Width="200" Margin="5"/>
+        <Button Content="Prix moyen des commandes" Width="200" Margin="5"/>
+        <Button Content="Retour" Width="200" Margin="20,20,0,0"/>
+    </StackPanel>
+</Page>

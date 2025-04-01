@@ -1,14 +1,10 @@
-<Window x:Class="ProbSciANA.MainWindow"
+<Window x:Class="ProbSciANA.Interface.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Liv'In Paris" Height="450" Width="800" Background="#FFFDF6F0">
-
-    <StackPanel VerticalAlignment="Center">
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Gestion des Clients" Click="Clients_Click"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Gestion des Cuisiniers" Click="Cuisiniers_Click"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Gestion des Commandes" Click="Commandes_Click"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Gestion des Trajets" Click="Trajets_Click"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Statistiques" Click="Statistiques_Click"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Quitter" Click="Quitter_Click"/>
-    </StackPanel>
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Liv'In Paris" Height="600" Width="900"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+    </Grid>
 </Window>
