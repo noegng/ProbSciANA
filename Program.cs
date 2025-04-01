@@ -4,6 +4,7 @@ using System.Windows;
 using System.IO;
 using System.Net;
 using OfficeOpenXml;
+using System.Net.Sockets;
 
 
 namespace ProbSciANA
@@ -18,51 +19,15 @@ namespace ProbSciANA
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
             (stations, aretes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
-            
-
-
-            //Dictionary<Arete, int> poidsAretes = new Dictionary<Arete, int>(); // Dictionnaire pour stocker les poids des arêtes
-            //poidsAretes = PoidsAretes(aretes, VitessesMoyennes); // Calcul des poids des arêtes
-
-
-            TestDistanceTemps(aretes); // Test de la distance et du temps de trajet entre deux stations
-            //Graphe2 graphePondéré = new Graphe2(aretes); // Création d'un graphe à partir des stations
-            //graphePondéré.AfficherListeAdjacence(); // Affichage de la liste d'adjacence
-            //graphePondéré.AfficherMatriceAdjacence(); // Affichage de la matrice d'adjacence
-            //TestDijkstra(graphePondéré, stations, poidsAretes); // Test de l'algorithme de Dijkstra
+            Graphe2 graphePondéré = new Graphe2(aretes); // Création d'un graphe à partir des arêtes
+            //TestDistanceTemps(aretes); // Test de la distance et du temps de trajet entre deux stations
+            //TestListeEtMatrice(aretes); // Test de la liste d'adjacence et de la matrice d'adjacence
+            //TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
             //TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
 
             //AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
-        }
-        
-        static Dictionary<Arete, int> PoidsAretes(List<Arete> aretes, Dictionary<string, double> VitessesMoyennes)
-        {
-            Dictionary<Arete, int> poidsAretes = new Dictionary<Arete, int>();
-            foreach (Arete arete in aretes) // Calcul des poids des arêtes
-            {
-                if (arete.IdPrevious != null && arete.IdNext != null) // Ignore les arêtes sans stations
-                {
-                    arete.CalculerTempsTrajet(VitessesMoyennes); // Calcul du temps de trajet entre deux stations  
-
-                    //Il faut faire attention a la ligne de metro car 2 stations peuvent etre sur 2 lignes de metro differentes
-                    // et donc avoir des vitesses moyennes differentes
-                    // Le if eles fait fonctionner le code mais a modifier car il faut que 2 aretes puissent relier 2 stations avec des poids differents
-
-                    if (poidsAretes.ContainsKey(arete)) // Si l'arête existe déjà dans le dictionnaire, on met à jour son poids
-                    {
-                        poidsAretes[arete] = arete.Temps; // Met à jour le poids de l'arête
-                    }
-                    else // Sinon, on l'ajoute au dictionnaire
-                    {
-                        poidsAretes.Add(arete, arete.Temps); // Calcul du temps de trajet entre deux stations  
-                    }
-                     // Ajout de l'arête et de son poids au dictionnaire
-                    
-                }
-            }
-            return poidsAretes;
         }
         static (List<Station>, List<Arete>) LectureFichierExcel(string excelFilePath){
             var stations = new List<Station>();
@@ -287,12 +252,12 @@ namespace ProbSciANA
         }
         #endregion
         #region Test
-        static void TestDijkstra(Graphe2 graphePondéré, List<Station> stations, Dictionary<Arete, int> poidsAretes)
+        static void TestDijkstra(Graphe2 graphePondéré, List<Station> stations)
         {
             // Test de l'algorithme de Dijkstra
             Station depart = stations[0]; // Station de départ
             Station arrivee = stations[10]; // Station d'arrivée
-            int plusPetitTemps = graphePondéré.Dijkstra(depart, poidsAretes)[arrivee]; // Calcul du chemin le plus court
+            int plusPetitTemps = graphePondéré.Dijkstra(depart)[arrivee]; // Calcul du chemin le plus court
             Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetitTemps + " min.");
         }
         static void TestDijkstra2(Graphe2 graphePondéré, List<Station> stations, Dictionary<string, double> VitessesMoyennes)
@@ -302,6 +267,11 @@ namespace ProbSciANA
             Station arrivee = stations[10]; // Station d'arrivée
             int plusPetiteDistance = graphePondéré.Dijkstra2(depart)[arrivee]; // Calcul du chemin le plus court
             Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
+        }
+        static void TestListeEtMatrice(Graphe2 graphePondéré)
+        {
+            graphePondéré.AfficherListeAdjacence(); // Affichage de la liste d'adjacence
+            graphePondéré.AfficherMatriceAdjacence(); // Affichage de la matrice d'adjacence
         }
 
         static void TestDistanceTemps(List<Arete> aretes)
@@ -316,7 +286,7 @@ namespace ProbSciANA
                 // Calcul de la distance entre deux stations
                 double distance = arete.CalculerDistance();
                 // Affichage de la distance et du temps de trajet
-                Console.WriteLine($"Distance 1 entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
+                Console.WriteLine($"Distance entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
             }
         }
         /// <summary>

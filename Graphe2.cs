@@ -172,11 +172,11 @@ namespace ProbSciANA
         {
             foreach (Arete arete in aretes)
             {
-                if (arete.IdPrevious == null || arete.IdNext == null)
-                {
-                    continue; // Ignore les arêtes avec des sommets nuls
-                }
-                else if (listeAdjacence.Count == 0)
+                // if (arete.IdPrevious == null || arete.IdNext == null)
+                // {
+                //     continue; // Ignore les arêtes avec des sommets nuls
+                // }
+                if (listeAdjacence.Count == 0)
                 {
                     listeAdjacence.Add(arete.IdPrevious, new List<Station> { arete.IdNext });
                 }
@@ -196,9 +196,15 @@ namespace ProbSciANA
             foreach (var sommet in listeAdjacence)
             {
                 Console.Write($"{sommet.Key.Nom + " -> ",36} ");
+                int i = 0;
                 foreach (var voisin in sommet.Value)
                 {
-                    Console.Write(voisin.Nom + "   ");
+                    if (i != 0)
+                    {
+                        Console.Write(", ");
+                    }
+                    i++;
+                    Console.Write(voisin.Nom);
                 }
                 Console.WriteLine();
             }
@@ -239,7 +245,7 @@ namespace ProbSciANA
         #endregion
         #region Méthodes de recherche de chemin
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
-        public Dictionary<Station, int> Dijkstra(Station sommetDepart, Dictionary<Arete, int> poidsAretes)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        public Dictionary<Station, int> Dijkstra(Station sommetDepart)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<Station, int> distances = new Dictionary<Station, int>();
             HashSet<Station> visites = new HashSet<Station>();
