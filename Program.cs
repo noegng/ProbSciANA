@@ -418,6 +418,7 @@ namespace ProbSciANA
                 command.Parameters.AddWithValue("@Role", role);
                 command.ExecuteNonQuery();
             }
+            connection.Close();
         }
     }
 
