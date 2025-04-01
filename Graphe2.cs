@@ -352,46 +352,6 @@ namespace ProbSciANA
             chemin.Reverse(); // On inverse le chemin pour avoir l'ordre correct
             return (chemin,distances[sommetArrivee]); // On renvoie le chemin et la distance totale
         }
-        public Dictionary<Station, int> Dijkstra2(Station sommetDepart)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
-        {
-            Dictionary<Station, int> distances = new Dictionary<Station, int>();
-            HashSet<Station> visites = new HashSet<Station>();
-            PriorityQueue<Station, int> filePriorite = new PriorityQueue<Station, int>(); // On utilise une priority queue pour gérer les sommets à explorer
-
-            foreach (Station sommet in listeAdjacence.Keys)
-            {
-                distances[sommet] = int.MaxValue; // On initialise les distances à l'infini
-            }
-
-            distances[sommetDepart] = 0;
-            filePriorite.Enqueue(sommetDepart, 0);
-
-            while (filePriorite.Count > 0)
-            {
-                Station sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
-                visites.Add(sommetActuel); 
-
-                foreach (Arete voisin in aretes) // On parcourt les voisins du sommet actuel
-                {
-                    if (!visites.Contains(voisin.IdNext))
-                    {
-                        // On met à jour la distance si on trouve un chemin plus court
-                        // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
-                        // et la valeur étant le poids de l'arête entre ces deux sommets
-
-                        int nouvelleDistance = distances[sommetActuel] + voisin.Temps; // On cast les sommets en Station pour utiliser la classe Arete
-                        // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
-                        if (nouvelleDistance < distances[voisin.IdNext])
-                        {
-                            distances[voisin.IdNext] = nouvelleDistance;
-                            filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
-                        }
-                    }
-                }
-            }
-
-            return distances;
-        }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
         public Dictionary<Station, int> BellmanFord(Station sommetDepart)
         {
@@ -407,19 +367,52 @@ namespace ProbSciANA
 
             for (int i = 0; i < listeAdjacence.Count - 1; i++)
             {
-                foreach (var sommet in listeAdjacence.Keys)
+                foreach (Arete arete in aretes)
                 {
-                    foreach (var voisin in listeAdjacence[sommet])
+                    if ((distances[arete.IdPrevious] != int.MaxValue) && (distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement < distances[arete.IdNext]))
                     {
-                        if (distances[sommet] != int.MaxValue && distances[sommet] + 1 < distances[voisin])
-                        {
-                            distances[voisin] = distances[sommet] + 1;
-                        }
+                        distances[arete.IdNext] = distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement;
                     }
                 }
             }
 
             return distances;
+        }
+        //Calculer et Renvoie le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
+        public (List<Station>, int) BellmanFordChemin(Station sommetDepart, Station sommetArrivee)
+        {
+            Dictionary<Station, int> distances = new Dictionary<Station, int>();
+            HashSet<Station> visites = new HashSet<Station>();
+            Dictionary<Station, Station> predecesseurs = new Dictionary<Station, Station>(); // Pour reconstruire le chemin
+
+            foreach (Station sommet in listeAdjacence.Keys)
+            {
+                distances[sommet] = int.MaxValue;
+                predecesseurs[sommet] = null; // On initialise les prédécesseurs à null
+            }
+
+            distances[sommetDepart] = 0;
+
+
+            for (int i = 0; i < listeAdjacence.Count - 1; i++)
+            {
+                foreach (Arete arete in aretes)
+                {
+                    if ((distances[arete.IdPrevious] != int.MaxValue) && (distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement < distances[arete.IdNext]))
+                    {
+                        distances[arete.IdNext] = distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement;
+                        predecesseurs[arete.IdNext] = arete.IdPrevious; // On met à jour le prédécesseur
+                    }
+                }
+            }
+            // Reconstruire le chemin
+            List<Station> chemin = new List<Station>();
+            for (Station sommet = sommetArrivee; sommet != null; sommet = predecesseurs[sommet])
+            {
+                chemin.Add(sommet);
+            }
+            chemin.Reverse(); // On inverse le chemin pour avoir l'ordre correct
+            return (chemin,distances[sommetArrivee]); // On renvoie le chemin et la distance totale
         }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Floyd-Warshall
         public Dictionary<Station, Dictionary<Station, int>> FloydWarshall()
@@ -465,6 +458,15 @@ namespace ProbSciANA
             }
 
             return distances;
+        }
+        //Calculer et Renvoie le chemin le plus court entre deux sommets avec l'algorithme de Floyd-Warshall
+        public (List<Station>, int) FloydWarshallChemin(Station sommetDepart, Station sommetArrivee)
+        {
+            Dictionary<Station, Dictionary<Station, int>> distances = FloydWarshall();
+            List<Station> chemin = new List<Station>();
+            chemin.Add(sommetDepart);
+            chemin.Add(sommetArrivee);
+            return (chemin, distances[sommetDepart][sommetArrivee]); // On renvoie le chemin et la distance totale
         }
         #endregion
         /*
