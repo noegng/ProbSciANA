@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+  <ItemGroup>
+  <Content Include="Graphviz\**\*">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
     <PackageReference Include="EPPlus" Version="4.0.1.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
     <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
