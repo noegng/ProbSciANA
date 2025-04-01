@@ -83,9 +83,10 @@ namespace ProbSciANA
                 }
                 Arete.VitesseMoyenne = VitessesMoyennes; // Initialisation de la vitesse moyenne obligatoire pour le calcul du temps de trajet et la création de l'arête
                 worksheet = package.Workbook.Worksheets[1]; // On considère la premiere feuille
+                i = 2;
                 while (worksheet.Cells[i, 1].Value != null)
                 {
-                    string Id = worksheet.Cells[i, 1].Value.ToString();
+                    int Id = int.Parse(worksheet.Cells[i, 1].Value.ToString());
                     string Nom = worksheet.Cells[i, 2].Value.ToString();
                     double Longitude = double.Parse(worksheet.Cells[i, 3].Value.ToString());
                     double Latitude = double.Parse(worksheet.Cells[i, 4].Value.ToString());
@@ -98,28 +99,33 @@ namespace ProbSciANA
                     stations.Add(station);
                     i++;
                 }
+                stations.Sort((s1, s2) => s1.Id.CompareTo(s2.Id)); // Tri des stations par Id pour que les Id correspondent aux indices de la liste
                 worksheet = package.Workbook.Worksheets[2]; // On considère la deuxième feuille
-                
+                i = 2;
                 while(worksheet.Cells[i, 1].Value != null)
                 {
                     string IdPrevious = worksheet.Cells[i, 2].Value.ToString();
                     string IdNext = worksheet.Cells[i, 3].Value.ToString();
                     string IdLigne = worksheet.Cells[i, 1].Value.ToString();
-                    Station memoire1 = null;
-                    Station memoire2 = null;
+                    int idStationPrevious = 0;
+                    int idStationNext = 0;
                     foreach(Station var in stations)
                     {
                         if(var.Nom == IdPrevious)
                         {
-                            memoire1 = var;
+                            idStationPrevious = var.Id;
                         }
                         if (var.Nom == IdNext)
                         {
-                            memoire2 = var;
+                            idStationNext = var.Id;
                         }
+
                     }
-                    Arete arete = new Arete(memoire1, memoire2, IdLigne);
-                    aretes.Add(arete);
+                    if (idStationPrevious != 0 && idStationNext != 0) // Aucune station a un id = 0 donc on ne peut pas créer l'arête
+                    {
+                        Arete arete = new Arete(stations[idStationPrevious-1], stations[idStationNext-1], IdLigne); // Création de l'arête avec les stations correspondantes (on faut cela pour consever toutes les informations des stations dans arete et les -1 car les id commencent à 1)
+                        aretes.Add(arete);
+                    }
                     i++;
                 }
             }

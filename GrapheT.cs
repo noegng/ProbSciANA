@@ -241,7 +241,7 @@ namespace ProbSciANA
                         // On met à jour la distance si on trouve un chemin plus court
                         // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
                         // et la valeur étant le poids de l'arête entre ces deux sommets
-                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete((Station)(object)sommetActuel, (Station)(object)voisin)]; // On cast les sommets en Station pour utiliser la classe Arete
+                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete((Station)(object)sommetActuel, (Station)(object)voisin, "1")]; // On cast les sommets en Station pour utiliser la classe Arete
                         // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
                         if (nouvelleDistance < distances[voisin])
                         {
@@ -279,7 +279,7 @@ namespace ProbSciANA
                     {
                         // On met à jour la distance si on trouve un chemin plus court
                         // On recalcule la distance entre sommetActuel et voisin avec la méthode CalculerTempsTrajet de la classe Arete
-                        Arete arete = new Arete((Station)(object)sommetActuel, (Station)(object)voisin); // On cast les sommets en Station pour utiliser la classe Arete
+                        Arete arete = new Arete((Station)(object)sommetActuel, (Station)(object)voisin, "1"); // On cast les sommets en Station pour utiliser la classe Arete
                         arete.CalculerTempsTrajet(VitesseMoyenne); // On calcule le temps de trajet entre les deux stations
                         int nouvelleDistance = distances[sommetActuel] + arete.Temps; // On cast les sommets en Station pour utiliser la classe Arete
                         // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
