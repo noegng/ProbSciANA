@@ -15,7 +15,7 @@
     <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
     <PackageReference Include="MySql.Data" Version="9.2.0" />
     <PackageReference Include="System.IO.Packaging" Version="9.0.3" />
-      <ApplicationDefinition Include="Interface\App.xaml" />
+    <ApplicationDefinition Include="Interface\App.xaml" />
   </ItemGroup>
 
 </Project>
