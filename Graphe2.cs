@@ -19,7 +19,7 @@ namespace ProbSciANA
             this.aretes = aretes;
             listeAdjacence = new Dictionary<Station, List<Station>>();
             RemplissageListeAdjacence(aretes);
-            matriceAdjacence = new int[listeAdjacence.Count, listeAdjacence.Count]; 
+            matriceAdjacence = new int[listeAdjacence.Count,listeAdjacence.Count]; // 248 stations
             RemplissageMatriceAdjacence();
         }
         #region Propriétés
@@ -170,12 +170,11 @@ namespace ProbSciANA
         
         public void RemplissageListeAdjacence(List<Arete> aretes)
         {
-            //460
             foreach (Arete arete in aretes)
             {
                 if (listeAdjacence.Count == 0)
                 {
-                    listeAdjacence.Add(arete.IdPrevious, new List<Station> { arete.IdNext });
+                    listeAdjacence.Add(arete.IdPrevious, new List<Station> { arete.IdNext }); //on fait arete.IdPrevious.Id pour avoir le nom de la station (après vérification toutes les stations se trouvent dans arete.IdPrevious.Id)
                 }
                 else if (listeAdjacence.ContainsKey(arete.IdPrevious))
                 {
@@ -247,6 +246,7 @@ namespace ProbSciANA
             Dictionary<Station, int> distances = new Dictionary<Station, int>();
             HashSet<Station> visites = new HashSet<Station>();
             PriorityQueue<Station, int> filePriorite = new PriorityQueue<Station, int>(); // On utilise une priority queue pour gérer les sommets à explorer
+            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
 
             foreach (Station sommet in listeAdjacence.Keys)
             {
@@ -264,20 +264,24 @@ namespace ProbSciANA
                 foreach (Arete voisin in aretes) // On parcourt les voisins du sommet actuel
                 {
                     if (voisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
-                    {
+                    { 
+                        int tempsChangement = 0;
+                        if (idLignePrécédent != voisin.IdLigne) // On vérifie si on change de ligne
+                        {
+                            tempsChangement = voisin.IdPrevious.TempsChangement; // On met à jour le temps de changement
+                        }
+
                         if (!visites.Contains(voisin.IdNext)) // On vérifie si le voisin n'a pas déjà été visité
                         {
-                        // On met à jour la distance si on trouve un chemin plus court
-                        int nouvelleDistance = distances[sommetActuel] + voisin.Temps; 
-                        //Console.WriteLine($"Distance entre {sommetActuel.Nom} et {voisin.IdNext.Nom} : {nouvelleDistance} minutes"); // Affichage de la distance entre le sommet actuel et le voisin
-                        //Console.WriteLine(distances[voisin.IdNext]);
-                        // il faut savoir comment identifier une arete deja existante entre sommetActuel et voisin et identifier la ligne de l'arete
-                        if (nouvelleDistance < distances[voisin.IdNext])
-                        {
-                            distances[voisin.IdNext] = nouvelleDistance;
-                            filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
+                            // On met à jour la distance si on trouve un chemin plus court
+                            int nouvelleDistance = distances[sommetActuel] + voisin.Temps + tempsChangement; // On cast les sommets en Station pour utiliser la classe Arete
+                            if (nouvelleDistance < distances[voisin.IdNext])
+                            {
+                                distances[voisin.IdNext] = nouvelleDistance;
+                                filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
+                            }
                         }
-                        }
+                        idLignePrécédent = voisin.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
                     }
                     
                 }
@@ -286,12 +290,13 @@ namespace ProbSciANA
             return distances;
         }
         //Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
-        public (List<Station>, int) DijkstraChemin(Station sommetDepart, Station sommetArrivee, Dictionary<Arete, int> poidsAretes)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        public (List<Station>, int) DijkstraChemin(Station sommetDepart, Station sommetArrivee)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<Station, int> distances = new Dictionary<Station, int>();
             HashSet<Station> visites = new HashSet<Station>();
             PriorityQueue<Station, int> filePriorite = new PriorityQueue<Station, int>(); // On utilise une priority queue pour gérer les sommets à explorer
             Dictionary<Station, Station> predecesseurs = new Dictionary<Station, Station>(); // Pour reconstruire le chemin
+            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
 
             foreach (Station sommet in listeAdjacence.Keys)
             {
@@ -312,21 +317,30 @@ namespace ProbSciANA
                     break;
                 }
 
-                foreach (Station voisin in listeAdjacence[sommetActuel]) // On parcourt les voisins du sommet actuel
+                foreach (Arete voisin in aretes) // On parcourt les voisins du sommet actuel
                 {
-                    if (!visites.Contains(voisin))
-                    {
-                        // On met à jour la distance si on trouve un chemin plus court
-                        Arete IdentifierArete = new Arete(sommetActuel, voisin,"1");
-                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[IdentifierArete]; // On cast les sommets en Station pour utiliser la classe Arete
-
-                        if (nouvelleDistance < distances[voisin])
+                    if (voisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
+                    { 
+                        int tempsChangement = 0;
+                        if (idLignePrécédent != voisin.IdLigne) // On vérifie si on change de ligne
                         {
-                            distances[voisin] = nouvelleDistance;
-                            predecesseurs[voisin] = sommetActuel; // On met à jour le prédécesseur
-                            filePriorite.Enqueue(voisin, nouvelleDistance);
+                            tempsChangement = voisin.IdPrevious.TempsChangement; // On met à jour le temps de changement
                         }
+
+                        if (!visites.Contains(voisin.IdNext)) // On vérifie si le voisin n'a pas déjà été visité
+                        {
+                            // On met à jour la distance si on trouve un chemin plus court
+                            int nouvelleDistance = distances[sommetActuel] + voisin.Temps + tempsChangement; // On cast les sommets en Station pour utiliser la classe Arete
+                            if (nouvelleDistance < distances[voisin.IdNext])
+                            {
+                                distances[voisin.IdNext] = nouvelleDistance;
+                                predecesseurs[voisin.IdNext] = sommetActuel; // On met à jour le prédécesseur
+                                filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
+                            }
+                        }
+                        idLignePrécédent = voisin.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
                     }
+                    
                 }
             }
             // Reconstruire le chemin

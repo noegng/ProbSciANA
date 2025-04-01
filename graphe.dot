@@ -207,12 +207,13 @@ digraph G {
     "Eglise d'Auteuil" [pos="2.26911138902189,48.8471433605089!",label="Eglise d'Auteuil", fontsize=12];
     "Porte d'Auteuil" [pos="2.25828074459554,48.847904122681!",label="Porte d'Auteuil", fontsize=12];
     "Chardon Lagache" [pos="2.26690547594029,48.8450882982306!",label="Chardon Lagache", fontsize=12];
+    "Boulogne - Pont de Saint-Cloud" [pos="2.228331,48.840684!",label="Boulogne - Pont de Saint-Cloud", fontsize=12];
+    "Boulogne - Jean Jaurès" [pos="2.23887742,48.84068401!",label="Boulogne - Jean Jaurès", fontsize=12];
     "Mirabeau" [pos="2.27306412637283,48.8470775063978!",label="Mirabeau", fontsize=12];
     "Rambuteau" [pos="2.35327394859477,48.8611901560022!",label="Rambuteau", fontsize=12];
     "Goncourt" [pos="2.3707644347484,48.8700070168905!",label="Goncourt", fontsize=12];
     "Pyrénées" [pos="2.38520291556953,48.8738187892325!",label="Pyrénées", fontsize=12];
     "Jourdain" [pos="2.3893253789101,48.8752473476934!",label="Jourdain", fontsize=12];
-    "Place des Fêtes" [pos="2.3931393703605,48.8767236610252!",label="Place des Fêtes", fontsize=12];
     "Télégraphe" [pos="2.39864808996059,48.8755103832327!",label="Télégraphe", fontsize=12];
     "Porte de la Chapelle" [pos="2.35924854231036,48.8974024217225!",label="Porte de la Chapelle", fontsize=12];
     "Marx Dormoy" [pos="2.35980847808402,48.8905795776193!",label="Marx Dormoy", fontsize=12];
@@ -474,6 +475,9 @@ digraph G {
     "Buzenval" -> "Nation" [dir="both", color="#CDC83F", penwidth=3, style=bold];
     "Maraîchers" -> "Buzenval" [dir="both", color="#CDC83F", penwidth=3, style=bold];
     "Porte de Montreuil" -> "Maraîchers" [dir="both", color="#CDC83F", penwidth=3, style=bold];
+    "Boulogne - Jean Jaurès" -> "Boulogne - Pont de Saint-Cloud" [dir="both", color="#DFB039", penwidth=3, style=bold];
+    "Boulogne - Jean Jaurès" -> "Michel-Ange - Molitor" [ color="#DFB039", penwidth=3, style=bold];
+    "Porte d'Auteuil" -> "Boulogne - Jean Jaurès" [ color="#DFB039", penwidth=3, style=bold];
     "Michel-Ange - Auteuil" -> "Porte d'Auteuil" [ color="#DFB039", penwidth=3, style=bold];
     "Michel-Ange - Molitor" -> "Chardon Lagache" [ color="#DFB039", penwidth=3, style=bold];
     "Chardon Lagache" -> "Mirabeau" [ color="#DFB039", penwidth=3, style=bold];
