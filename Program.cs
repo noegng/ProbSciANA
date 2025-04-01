@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.IO;
@@ -10,28 +10,28 @@ namespace ProbSciANA
 {
     public class Program
     {
-        static void Main(string[] args)
+      /*  static void Main(string[] args)
         { 
              Lancement(); // Lancement de l'application console
             
             
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
+            
             //Etape1(); // Appel de la méthode principale
-            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
+             // Chemin vers le fichier Excel contenant les positions des sommets.
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
-            (stations, aretes, VitessesMoyennes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
+            (stations, aretes, VitessesMoyennes) = LectureFichierExcel(); // Lecture du fichier Excel
 
             TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
             AffichageImage(stations, aretes); // Affichage de l'image du graphe
            
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
-        }
+        }*/
 
 
-#region UI 
+#region UI Console
         static void Lancement(){
             Console.Title = "Liv'In Paris - Application Console";
              bool continuer = true;
@@ -112,7 +112,9 @@ namespace ProbSciANA
 
 
 
-        static (List<Station>, List<Arete>, Dictionary<string,double>) LectureFichierExcel(string excelFilePath){
+      public static (List<Station>, List<Arete>, Dictionary<string,double>) LectureFichierExcel(){
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx";
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
@@ -181,6 +183,7 @@ namespace ProbSciANA
             string pngFile = "graphe.png";                        
             // Générer le fichier DOT et l'image PNG
             Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
+            
         }
         static void TestDistanceTemps(List<Arete> aretes , Dictionary<string, double> VitessesMoyennes)
         // Test de la distance et du temps de trajet entre deux stations
