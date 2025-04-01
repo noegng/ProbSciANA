@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-  <ItemGroup>
   <Content Include="Graphviz\**\*">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </Content>
