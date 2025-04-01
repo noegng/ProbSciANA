@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -31,9 +32,42 @@ namespace ProbSciANA.Interface
 
         private void BtnValider_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Ajouter logique de validation du rôle client ou cuisinier
-            // Pour l'instant, redirige vers UserDashboardView générique
-            NavigationService?.Navigate(new UserDashboardView());
+            // Récupération des champs d'identité
+            string nom = NomTextBox.Text;
+            string prenom = PrenomTextBox.Text;
+            string email = EmailTextBox.Text;
+            string adresse = AdresseTextBox.Text;
+
+            var selectedItem = RoleComboBox.SelectedItem as ComboBoxItem;
+            string role = selectedItem?.Content.ToString();
+
+    if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(prenom) ||
+        string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(adresse) || string.IsNullOrWhiteSpace(role))
+    {
+        MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
+        return;
+    }
+
+    try
+    {
+        SqlQueries.SqlAddUser(nom, prenom, email, adresse, role);
+        MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
+        if (role == "Client")  // Redirection selon le rôle
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
+            else if (role == "Cuisinier")
+            {
+                NavigationService?.Navigate(new UserDashboardView()); // À remplacer par une vue cuisinier
+            }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show("Erreur lors de l'enregistrement : " + ex.Message);
+    }
+
+            
+            
         }
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
