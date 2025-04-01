@@ -17,12 +17,14 @@ public class Arete {
     private Station idNext;
     private string idLigne;
     private int temps;
+    private bool sensUnique;
     private static Dictionary<string, double> vitesseMoyenne = new Dictionary<string, double>();
     
-        public Arete(Station idPrevious, Station idNext, string idLigne) {
-        IdPrevious = idPrevious;
-        IdNext = idNext;
-        IdLigne = idLigne;
+        public Arete(Station idPrevious, Station idNext, string idLigne, bool sensUnique = false) {
+        this.idPrevious = idPrevious;
+        this.idNext = idNext;
+        this.idLigne = idLigne;
+        this.sensUnique = sensUnique;
         temps = CalculerTempsTrajet(vitesseMoyenne);
     }
 
@@ -66,6 +68,14 @@ public class Arete {
         }
         set {
             vitesseMoyenne = value;
+        }
+    }
+    public bool SensUnique {
+        get {
+            return sensUnique;
+        }
+        set {
+            sensUnique = value;
         }
     }
     #endregion

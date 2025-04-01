@@ -172,10 +172,6 @@ namespace ProbSciANA
         {
             foreach (Arete arete in aretes)
             {
-                // if (arete.IdPrevious == null || arete.IdNext == null)
-                // {
-                //     continue; // Ignore les arêtes avec des sommets nuls
-                // }
                 if (listeAdjacence.Count == 0)
                 {
                     listeAdjacence.Add(arete.IdPrevious, new List<Station> { arete.IdNext });

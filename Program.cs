@@ -21,11 +21,11 @@ namespace ProbSciANA
             (stations, aretes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
             Graphe2 graphePondéré = new Graphe2(aretes); // Création d'un graphe à partir des arêtes
             //TestDistanceTemps(aretes); // Test de la distance et du temps de trajet entre deux stations
-            //TestListeEtMatrice(aretes); // Test de la liste d'adjacence et de la matrice d'adjacence
+            //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
             //TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
             //TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
 
-            //AffichageImage(stations, aretes); // Affichage de l'image du graphe
+            AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
@@ -72,6 +72,11 @@ namespace ProbSciANA
                     string IdPrevious = worksheet.Cells[i, 2].Value.ToString();
                     string IdNext = worksheet.Cells[i, 3].Value.ToString();
                     string IdLigne = worksheet.Cells[i, 1].Value.ToString();
+                    bool sensUnique = false;
+                    if (worksheet.Cells[i, 4].Value != null)
+                    {
+                        sensUnique = true;
+                    }
                     int idStationPrevious = 0;
                     int idStationNext = 0;
                     foreach(Station var in stations)
@@ -88,8 +93,13 @@ namespace ProbSciANA
                     }
                     if (idStationPrevious != 0 && idStationNext != 0) // Aucune station a un id = 0 donc on ne peut pas créer l'arête
                     {
-                        Arete arete = new Arete(stations[idStationPrevious-1], stations[idStationNext-1], IdLigne); // Création de l'arête avec les stations correspondantes (on faut cela pour consever toutes les informations des stations dans arete et les -1 car les id commencent à 1)
-                        aretes.Add(arete);
+                        Arete areteAllé = new Arete(stations[idStationPrevious-1], stations[idStationNext-1], IdLigne, sensUnique); // Création de l'arête avec les stations correspondantes (on faut cela pour consever toutes les informations des stations dans arete et les -1 car les id commencent à 1)
+                        if (!sensUnique) // Si l'arête n'est pas sens unique, on crée l'arête retour
+                        {
+                            Arete areteRetour = new Arete(stations[idStationNext-1], stations[idStationPrevious-1], IdLigne, sensUnique); // Création de l'arête retour
+                            aretes.Add(areteRetour); // Ajout de l'arête retour à la liste des arêtes
+                        }
+                        aretes.Add(areteAllé); // Ajout de l'arête à la liste des arêtes
                     }
                     i++;
                 }
