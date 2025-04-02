@@ -1,0 +1,12 @@
+<Page x:Class="ProbSciANA.Interface.ClientsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="ClientsView">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock Text="Gestion des Clients" FontSize="20" Margin="0,0,0,20"/>
+        <Button Content="Ajouter un client" Width="200" Margin="5"/>
+        <Button Content="Modifier un client" Width="200" Margin="5"/>
+        <Button Content="Supprimer un client" Width="200" Margin="5"/>
+        <Button Content="Retour" Width="200" Margin="20,20,0,0"/>
+    </StackPanel>
+</Page>

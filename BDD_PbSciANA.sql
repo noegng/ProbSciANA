@@ -79,11 +79,10 @@ CREATE TABLE IF NOT EXISTS Commande(
    prix DECIMAL(6,2) CHECK (prix >=0),
    statut ENUM('en cours','faite','livrée'),
    date_commande DATE,
-   id_client INT NOT NULL,
-   id_cuisinier INT NOT NULL,
-   FOREIGN KEY(id_client) REFERENCES Client_(id_utilisateur) ON DELETE CASCADE,
-   FOREIGN KEY(id_cuisinier) REFERENCES Cuisinier(id_utilisateur) ON DELETE CASCADE,
-   CONSTRAINT diff_client_cuisinier CHECK (id_client <> id_cuisinier)
+   id_client INT NULL,
+   id_cuisinier INT NULL,
+   FOREIGN KEY(id_client) REFERENCES Client_(id_utilisateur) ON DELETE SET NULL,
+   FOREIGN KEY(id_cuisinier) REFERENCES Cuisinier(id_utilisateur) ON DELETE SET NULL
 );
 
 DROP TABLE IF EXISTS Trajet;
@@ -101,9 +100,9 @@ CREATE TABLE IF NOT EXISTS Livraison(
    station VARCHAR(50),
    date_livraison DATE,
    statut ENUM('à faire', 'en cours', 'finie'),
-   id_trajet INT NOT NULL,
+   id_trajet INT NULL,
    id_commande INT NOT NULL,
-   FOREIGN KEY(id_trajet) REFERENCES Trajet(id_trajet),
+   FOREIGN KEY(id_trajet) REFERENCES Trajet(id_trajet) ON DELETE SET NULL,
    FOREIGN KEY(id_commande) REFERENCES Commande(id_commande) ON DELETE CASCADE
 );
 

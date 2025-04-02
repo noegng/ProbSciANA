@@ -1,3 +1,5 @@
+#****************** MODULE AUTRE *****************#
+
 SELECT * FROM Client_;
 
 SELECT * FROM Utilisateur;
@@ -46,3 +48,33 @@ WHERE id_utilisateur = 2;
 
 SELECT * FROM Client_ WHERE id_utilisateur = 2;
 
+#****************** MODULE CLIENT *****************#
+
+SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.numero, u.rue, u.code_postal, u.ville, u.station, SUM(cmd.prix) AS total_achats
+FROM client_ c
+JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
+LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
+GROUP BY u.id_utilisateur
+ORDER BY u.nom ASC, u.numero ASC;
+
+SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.numero, u.rue, u.code_postal, u.ville, u.station, SUM(cmd.prix) AS total_achats
+FROM client_ c
+JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
+LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
+GROUP BY u.id_utilisateur
+ORDER BY u.nom DESC, u.numero ASC;
+
+SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.numero, u.rue, u.code_postal, u.ville, u.station, SUM(cmd.prix) AS total_achats
+FROM client_ c
+JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
+LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
+GROUP BY u.id_utilisateur
+ORDER BY total_achats DESC;
+
+#****************** MODULE CUISINIER *****************#
+
+
+#****************** MODULE COMMANDES *****************#
+
+
+#****************** MODULE STATISTIQUES *****************#

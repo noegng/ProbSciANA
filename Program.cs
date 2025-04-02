@@ -4,62 +4,118 @@ using System.Windows;
 using System.IO;
 using System.Net;
 using OfficeOpenXml;
+using MySql.Data.MySqlClient;
 
 
 namespace ProbSciANA
 {
     public class Program
     {
-        static void Main(string[] args)
-        {   
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
+     /*   static void Main(string[] args)
+        { 
+             Lancement(); // Lancement de l'application console
+            
+            
+            
             //Etape1(); // Appel de la méthode principale
-            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
+             // Chemin vers le fichier Excel contenant les positions des sommets.
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
-            (stations, aretes, VitessesMoyennes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
-            Dictionary<Arete, int> poidsAretes = new Dictionary<Arete, int>(); // Dictionnaire pour stocker les poids des arêtes
-            poidsAretes = PoidsAretes(aretes, VitessesMoyennes); // Calcul des poids des arêtes
-            //TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
+            (stations, aretes, VitessesMoyennes) = LectureFichierExcel(); // Lecture du fichier Excel
 
-            Graphe<Station> graphePondéré = new Graphe<Station>(stations); // Création d'un graphe à partir des stations
-
-            TestDijkstra(graphePondéré, stations, poidsAretes); // Test de l'algorithme de Dijkstra
-            //TestDijkstra2(graphePondéré, stations, VitessesMoyennes); // Test de l'algorithme de Dijkstra avec vitesses moyennes
-
+            TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
             AffichageImage(stations, aretes); // Affichage de l'image du graphe
+           
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
-        }
-        static Dictionary<Arete, int> PoidsAretes(List<Arete> aretes, Dictionary<string, double> VitessesMoyennes)
-        {
-            Dictionary<Arete, int> poidsAretes = new Dictionary<Arete, int>();
-            foreach (Arete arete in aretes) // Calcul des poids des arêtes
+        }*/
+
+
+#region UI Console
+        static void Lancement(){
+            Console.Title = "Liv'In Paris - Application Console";
+             bool continuer = true;
+
+            while (continuer)
             {
-                if (arete.IdPrevious != null && arete.IdNext != null) // Ignore les arêtes sans stations
+                Console.Clear();
+                Console.WriteLine("===== Liv'In Paris =====\n");
+                Console.WriteLine("1. Gestion des Clients");
+                Console.WriteLine("2. Gestion des Cuisiniers");
+                Console.WriteLine("3. Gestion des Commandes");
+                Console.WriteLine("4. Gestion des Trajets");
+                Console.WriteLine("5. Statistiques");
+                Console.WriteLine("6. Quitter\n");
+                Console.Write("Sélectionnez une option : ");
+
+                switch (Console.ReadLine())
                 {
-                    arete.CalculerTempsTrajet(VitessesMoyennes); // Calcul du temps de trajet entre deux stations  
-
-                    //Il faut faire attention a la ligne de metro car 2 stations peuvent etre sur 2 lignes de metro differentes
-                    // et donc avoir des vitesses moyennes differentes
-                    // Le if eles fait fonctionner le code mais a modifier car il faut que 2 aretes puissent relier 2 stations avec des poids differents
-
-                    if (poidsAretes.ContainsKey(arete)) // Si l'arête existe déjà dans le dictionnaire, on met à jour son poids
-                    {
-                        poidsAretes[arete] = arete.Temps; // Met à jour le poids de l'arête
-                    }
-                    else // Sinon, on l'ajoute au dictionnaire
-                    {
-                        poidsAretes.Add(arete, arete.Temps); // Calcul du temps de trajet entre deux stations  
-                    }
-                     // Ajout de l'arête et de son poids au dictionnaire
-                    
+                    case "1": GestionClients(); break;
+                    case "2": GestionCuisiniers(); break;
+                    case "3": GestionCommandes(); break;
+                    case "4": GestionTrajets(); break;
+                    case "5": AfficherStatistiques(); break;
+                    case "6": continuer = false; break;
+                    default:
+                        Console.WriteLine("Option invalide, appuyez sur Entrée pour réessayer.");
+                        Console.ReadLine();
+                        break;  
                 }
-            }
-            return poidsAretes;
         }
-        static (List<Station>, List<Arete>, Dictionary<string,double>) LectureFichierExcel(string excelFilePath){
+        }
+        static void GestionClients()
+        {
+            Console.Clear();
+            Console.WriteLine("== Gestion des Clients ==");
+            // [ESPACE RÉSERVÉ] Fonctions de gestion des clients (ajout, modification, suppression)
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+        static void GestionCuisiniers()
+        {
+            Console.Clear();
+            Console.WriteLine("== Gestion des Cuisiniers ==");
+            // [ESPACE RÉSERVÉ] Fonctions de gestion des cuisiniers et notation
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+        static void GestionCommandes()
+        {
+            Console.Clear();
+            Console.WriteLine("== Gestion des Commandes ==");
+            // [ESPACE RÉSERVÉ] Fonctions de gestion des commandes (création, modification, évaluation)
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+        static void GestionTrajets()
+        {
+            Console.Clear();
+            Console.WriteLine("== Gestion des Trajets ==");
+            // [ESPACE RÉSERVÉ] Fonctions complexes : Algorithmes et affichage textuel des trajets
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+        static void AfficherStatistiques()
+        {
+            Console.Clear();
+            Console.WriteLine("== Statistiques ==");
+            // [ESPACE RÉSERVÉ] Fonctions statistiques et export des données
+            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
+            Console.ReadLine();
+        }
+
+   #endregion
+
+
+
+      public static (List<Station>, List<Arete>, Dictionary<string,double>) LectureFichierExcel(){
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx";
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
@@ -128,8 +184,24 @@ namespace ProbSciANA
             string pngFile = "graphe.png";                        
             // Générer le fichier DOT et l'image PNG
             Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
+            
         }
-        
+        static void TestDistanceTemps(List<Arete> aretes , Dictionary<string, double> VitessesMoyennes)
+        // Test de la distance et du temps de trajet entre deux stations
+        {
+            foreach (Arete arete in aretes)
+            {
+                if (arete.IdPrevious == null || arete.IdNext == null)
+                {
+                    continue;   // Ignore les arêtes sans stations
+                }
+                // Calcul de la distance entre deux stations
+                double distance = arete.CalculerDistance();
+                arete.CalculerTempsTrajet(VitessesMoyennes); // Calcul du temps de trajet entre deux stations
+                // Affichage de la distance et du temps de trajet
+                Console.WriteLine($"Distance 1 entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
+            }
+        }
         #region Etape 1
         static void Etape1()
         {
@@ -354,5 +426,37 @@ namespace ProbSciANA
             graph3.ContientCycle();
         }
         #endregion
+    }
+
+
+    public static class SqlQueries{
+
+            public static void SqlAddUser(string nom, string prenom, string email, string adresse, string role)
+    {
+        string connectionString = "server=localhost;user=root;password=ton_mot_de_passe;database=livinparis;";
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string query = @"INSERT INTO utilisateurs (Nom, Prenom, Email, Adresse, Role)
+                             VALUES (@Nom, @Prenom, @Email, @Adresse, @Role);";
+
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@Nom", nom);
+                command.Parameters.AddWithValue("@Prenom", prenom);
+                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@Adresse", adresse);
+                command.Parameters.AddWithValue("@Role", role);
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
+    }
+
+
+
+
+
     }
 }
