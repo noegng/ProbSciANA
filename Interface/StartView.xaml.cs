@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using MySql.Data.MySqlClient;
 
 namespace ProbSciANA.Interface
 {
+
     public partial class StartView : Page
     {
         public StartView()
@@ -69,12 +72,60 @@ namespace ProbSciANA.Interface
             
             
         }
+      
+      private void BtnSeConnecter_Click(object sender, RoutedEventArgs e)
+        {
+    NavigationService?.Navigate(new ConnexionView());
+        }
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
         }
     }
 
+public partial class ConnexionView : Page
+{
+
+
+    public ConnexionView()
+    {
+        InitializeComponent();
+        SqlQueries.ChargerUtilisateurs();
+    }
+
+    
+    private void BtnConnexion_Click(object sender, RoutedEventArgs e)
+    {
+        if (UserComboBox.SelectedItem == null || string.IsNullOrWhiteSpace(PasswordBox.Password))
+        {
+            MessageBox.Show("Veuillez sélectionner un utilisateur et saisir le mot de passe.");
+            return;
+        }
+
+        string nomUtilisateur = UserComboBox.SelectedItem.ToString();
+        string motDePasseEntre = PasswordBox.Password;
+
+        if (utilisateurs.TryGetValue(nomUtilisateur, out var infos)
+            && motDePasseEntre == infos.motDePasse)
+        {
+            MessageBox.Show($"Connexion réussie : {nomUtilisateur} ({infos.role})");
+
+            if (infos.role == "Admin")
+                NavigationService?.Navigate(new AdminDashboardView());
+            else
+                NavigationService?.Navigate(new UserDashboardView());
+        }
+        else
+        {
+            MessageBox.Show("Mot de passe incorrect.");
+        }
+    }
+
+    private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+    {
+        NavigationService?.Navigate(new StartView());
+    }
+}
     public partial class UserDashboardView : Page
     {
         public UserDashboardView()

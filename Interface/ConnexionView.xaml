@@ -1,0 +1,12 @@
+<Page x:Class="ProbSciANA.Interface.ConnexionView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="ConnexionView">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock Text="Connexion à un compte" FontSize="20" Margin="0,0,0,20"/>
+        <ComboBox x:Name="UserComboBox" Width="250" Margin="5"/>
+        <PasswordBox x:Name="PasswordBox" Width="250" Margin="5" PlaceholderText="Mot de passe"/>
+        <Button Content="Connexion" Width="250" Click="BtnConnexion_Click" Margin="5"/>
+        <Button Content="Retour à l'accueil" Width="250" Margin="20,10,0,0" Click="BtnRetourAccueil_Click"/>
+    </StackPanel>
+</Page>

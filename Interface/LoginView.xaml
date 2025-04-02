@@ -38,6 +38,8 @@
             <Button Style="{StaticResource MenuButtonStyle}" Content="Valider" Width="200" Height="35" Margin="5" Click="BtnValider_Click"/>
             </StackPanel>
 
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Se connecter" Width="200" Height="35" Margin="10"
+                Click="BtnSeConnecter_Click"/>
         <!-- Bouton en bas de page -->
         <Button Style="{StaticResource MenuButtonStyle}" DockPanel.Dock="Bottom" Content="Retour à l'accueil"
                 HorizontalAlignment="Center" Margin="0,20" Click="BtnRetourAccueil_Click"/>
