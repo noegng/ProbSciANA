@@ -12,7 +12,7 @@ namespace ProbSciANA
 
 public class Station
 {
-    public string Id { get; set; } // Identifiant unique de la station
+    public int Id { get; set; } // Identifiant unique de la station
     public string Nom { get; set; } // Nom de la station
     public double Longitude { get; set; } // Longitude de la station
     public double Latitude { get; set; } // Latitude de la station
@@ -20,7 +20,7 @@ public class Station
 
     // Constructeur de la classe Station
 
-    public Station(string id, string nom, double longitude, double latitude, int temps)
+    public Station(int id, string nom, double longitude, double latitude, int temps)
     {
         Id = id;
         Nom = nom;
@@ -28,5 +28,27 @@ public class Station
         Latitude = latitude;
         TempsChangement = temps;
     }
+    public override bool Equals(object obj)
+    {
+        if (obj is Station autre)
+        {
+            return this.Id == autre.Id || this.Nom == autre.Nom ;
+        }
+                
+        return false;
+    }
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode() ^ Nom.GetHashCode() ^ Longitude.GetHashCode() ^ Latitude.GetHashCode();
+    }
+    public string ToStringLong()
+    {
+        return $"Station: {Nom} (ID: {Id}), Longitude: {Longitude}, Latitude: {Latitude}, Temps de changement: {TempsChangement} minutes";
+    }
+    public string toString()
+    {
+        return "Station : " + this.Nom;
+    }
+        
 }
 }
