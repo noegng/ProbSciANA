@@ -31,7 +31,7 @@ namespace ProbSciANA
             //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
             //TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
             //TestBellmanFord(graphePondéré, stations);
-            //TestDijkstraChemin(graphePondéré, stations); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+            TestDijkstraChemin(graphePondéré, stations); // Test de l'algorithme de Dijkstra avec vitesses moyennes
             TestBellmanFordChemin(graphePondéré, stations);
 
             //AffichageImage(stations, aretes); // Affichage de l'image du graphe

@@ -14,25 +14,20 @@ namespace ProbSciANA
         private Dictionary<T, int> couleurs;
         private List<Arete> aretes;
         private int nbCycles = -1; //Détecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
-        //private Dictionary<T, int> poidsAretes;
+
         public Graphe(List<Arete> aretes) //Graphe non pondéré
         {
             this.aretes = aretes;
             listeAdjacence = new Dictionary<T, List<T>>();
-            RemplissageListeAdjacence(aretes);
+            //RemplissageListeAdjacence(aretes);
             matriceAdjacence = new int[listeAdjacence.Count,listeAdjacence.Count]; // 248 stations
-            RemplissageMatriceAdjacence();
+            //RemplissageMatriceAdjacence();
         }
         #region Propriétés
         public Dictionary<T, List<T>> ListeAdjacence
         {
             get { return listeAdjacence; }
             set { listeAdjacence = value; }
-        }
-        public Dictionary<T, int> PoidsAretes
-        {
-            get { return poidsAretes; }
-            set { poidsAretes = value; }
         }
         public Dictionary<T, int> Couleurs
         {
@@ -47,6 +42,7 @@ namespace ProbSciANA
             set { aretes = value; }
         }
         #endregion
+        /*
         #region Méthodes de parcours
         public HashSet<T> BFS(T sommetDepart)
         {
@@ -277,21 +273,21 @@ namespace ProbSciANA
 
                 foreach (Arete voisin in aretes) // On parcourt les voisins du sommet actuel
                 {
-                    /*
-                    if (!visites.Contains(voisin))
-                    {
-                        // On met à jour la distance si on trouve un chemin plus court
-                        // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
-                        // et la valeur étant le poids de l'arête entre ces deux sommets
-                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete((Station)(object)sommetActuel, (Station)(object)voisin, "1")]; // On cast les sommets en Station pour utiliser la classe Arete
-                        // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
-                        if (nouvelleDistance < distances[voisin])
-                        {
-                            distances[voisin] = nouvelleDistance;
-                            filePriorite.Enqueue(voisin, nouvelleDistance);
-                        }
-                    }
-                    */
+                    
+                    // if (!visites.Contains(voisin))
+                    // {
+                    //     // On met à jour la distance si on trouve un chemin plus court
+                    //     // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
+                    //     // et la valeur étant le poids de l'arête entre ces deux sommets
+                    //     int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete((Station)(object)sommetActuel, (Station)(object)voisin, "1")]; // On cast les sommets en Station pour utiliser la classe Arete
+                    //     // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
+                    //     if (nouvelleDistance < distances[voisin])
+                    //     {
+                    //         distances[voisin] = nouvelleDistance;
+                    //         filePriorite.Enqueue(voisin, nouvelleDistance);
+                    //     }
+                    // }
+                    
                     if (voisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
                     { 
                         int tempsChangement = 0;
@@ -431,5 +427,9 @@ namespace ProbSciANA
 
             return distances;
         }
+        #endregion
+        
+        */
     }
+    
 }
