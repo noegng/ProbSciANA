@@ -102,20 +102,7 @@ public class Arete {
     {
         return $"Arete: {IdPrevious.Nom} -> {IdNext.Nom}, Ligne: {IdLigne}";
     }
-    /*
-    public override bool Equals(object obj)
-    {
-        if (obj is Arete autre)
-        {
-            return this.IdPrevious.Equals(autre.IdPrevious) && this.IdNext.Equals(autre.IdNext);
-        }
-        return false;
-    }
-    public override int GetHashCode()
-    {
-        return IdPrevious.GetHashCode() ^ IdNext.GetHashCode();
-    }
-    */
+    
     //Calculer la distance entre deux stations avec la formule de Haversine
     public double CalculerDistance()
     {

@@ -10,22 +10,18 @@ namespace ProbSciANA
     public class Graphe<T> // Graphe non orienté
     {
         private Dictionary<T, List<T>> listeAdjacence;
-        
+        private int[,] matriceAdjacence;
         private Dictionary<T, int> couleurs;
-        private List<T> stations;
-        private Dictionary<T, int> poidsAretes;
-
-        public Graphe(Dictionary<T, List<T>> adjacence) //Graphe non pondéré
+        private List<Arete> aretes;
+        private int nbCycles = -1; //Détecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
+        //private Dictionary<T, int> poidsAretes;
+        public Graphe(List<Arete> aretes) //Graphe non pondéré
         {
-            listeAdjacence = adjacence;
-        }
-        public Graphe(Dictionary<T, int> poidsAretes) // Graphe pondéré
-        {
-            this.poidsAretes = poidsAretes;
-        }
-        public Graphe(List<T> stations) // Graphe pondéré
-        {
-            this.stations = stations;           // On ne peut pas avoir poidsAretes et stations en même temps car ce sont deux types de graphes différents
+            this.aretes = aretes;
+            listeAdjacence = new Dictionary<T, List<T>>();
+            RemplissageListeAdjacence(aretes);
+            matriceAdjacence = new int[listeAdjacence.Count,listeAdjacence.Count]; // 248 stations
+            RemplissageMatriceAdjacence();
         }
         #region Propriétés
         public Dictionary<T, List<T>> ListeAdjacence
@@ -42,7 +38,16 @@ namespace ProbSciANA
         {
             get { return couleurs; }
         }
+        public int[,] MatriceAdjacence{
+            get { return matriceAdjacence; }
+            set { matriceAdjacence = value; }
+        }
+        public List<Arete> Aretes{
+            get { return aretes; }
+            set { aretes = value; }
+        }
         #endregion
+        #region Méthodes de parcours
         public HashSet<T> BFS(T sommetDepart)
         {
             couleurs = new Dictionary<T, int>();
@@ -120,7 +125,7 @@ namespace ProbSciANA
         {
             couleurs = new Dictionary<T, int>();
             HashSet<T> visite = new HashSet<T>();
-
+            nbCycles = 0;
             foreach (T sommet in listeAdjacence.Keys)
             {
                 couleurs[sommet] = 0; // blanc
@@ -150,26 +155,12 @@ namespace ProbSciANA
                 }
                 else if (rechercheCycle && couleurs[voisin] == 1)
                 {
-                    Console.WriteLine("Cycle détecté.");
+                    nbCycles = nbCycles + 1;
                     return;
                 }
             }
 
             couleurs[sommet] = 2; // rouge
-        }
-
-        public void AfficherListeAdjacence()
-        {
-            Console.WriteLine("Liste d'adjacence:");
-            foreach (var sommet in listeAdjacence.OrderBy(x => x.Key))
-            {
-                Console.Write($"{sommet.Key}: ");
-                foreach (var voisin in sommet.Value.OrderBy(x => x))
-                {
-                    Console.Write($"{voisin} ");
-                }
-                Console.WriteLine();
-            }
         }
 
         public void EstConnexe()
@@ -188,40 +179,90 @@ namespace ProbSciANA
         public void ContientCycle()
         {
             DFSRécursif(true);
+            Console.WriteLine(nbCycles + " cycles trouvés dans le graphe.");
         }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
         // 
-        /*
+        
         public void RemplissageListeAdjacence(List<Arete> aretes)
         {
             foreach (Arete arete in aretes)
             {
-                if (listeAdjacence.ContainsKey(arete.IdPrevious))
+                if (listeAdjacence.Count == 0)
+                {
+                    listeAdjacence.Add(arete.IdPrevious, new List<Station> { arete.IdNext }); //on fait arete.IdPrevious.Id pour avoir le nom de la station (après vérification toutes les stations se trouvent dans arete.IdPrevious.Id)
+                }
+                else if (listeAdjacence.ContainsKey(arete.IdPrevious))
                 {
                     listeAdjacence[arete.IdPrevious].Add(arete.IdNext);
                 }
                 else
                 {
-                    listeAdjacence.Add(arete.IdPrevious, new List<T> { arete.IdNext });
-                }
-                if (listeAdjacence.ContainsKey(arete.IdNext))
-                {
-                    listeAdjacence[arete.IdNext].Add(arete.IdPrevious);
-                }
-                else
-                {
-                    listeAdjacence.Add(arete.IdNext, new List<T> { arete.IdPrevious });
+                    listeAdjacence.Add(arete.IdPrevious, new List<Station> { arete.IdNext });
                 }
             }
         }
-        */
+        public void AfficherListeAdjacence()
+        {
+            Console.WriteLine("Liste d'adjacence:");
+            foreach (var sommet in listeAdjacence)
+            {
+                Console.Write($"{sommet.Key.ToString() + " -> ",36} ");
+                int i = 0;
+                foreach (var voisin in sommet.Value)
+                {
+                    if (i != 0)
+                    {
+                        Console.Write(", ");
+                    }
+                    i++;
+                    Console.Write(voisin.ToString());
+                }
+                Console.WriteLine();
+            }
+        }
+        public void RemplissageMatriceAdjacence()
+        {
+            foreach (Arete arete in aretes)
+            {
+                if ( arete.IdPrevious != null && arete.IdNext != null)
+                {
+                    matriceAdjacence[Convert.ToInt32(arete.IdPrevious.Id)-1, Convert.ToInt32(arete.IdNext.Id)-1] = 1; // -1 car les station commencent à 1                   
+                }
+            }
+        }
+        public void AfficherMatriceAdjacence()
+        {
+            Console.WriteLine("Matrice d'adjacence:");
+            foreach (var sommet in listeAdjacence.Keys)
+            {
+                Console.Write($"{sommet.Id,3} ");
+            }
+            foreach (var sommet in listeAdjacence.Keys)
+            {
+                Console.Write($"{"---",3} ");
+            }
+            Console.WriteLine();
+            for (int i = 0; i < matriceAdjacence.GetLength(0); i++)
+            {
+                Console.Write($"{i + 1,3} | " );
+                for (int j = 0; j < matriceAdjacence.GetLength(1); j++)
+                {
+                    Console.Write($"{matriceAdjacence[i, j],3}");
+                }
+                Console.WriteLine();
+            }
+        }
+        #endregion
+        #region Méthodes de recherche de chemin
         public Dictionary<T, int> Dijkstra(T sommetDepart, Dictionary<Arete, int> poidsAretes )   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<T, int> distances = new Dictionary<T, int>();
             HashSet<T> visites = new HashSet<T>();
             PriorityQueue<T, int> filePriorite = new PriorityQueue<T, int>(); // On utilise une priority queue pour gérer les sommets à explorer
+            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
 
-            foreach (T sommet in stations)
+            foreach (T sommet in listeAdjacence.Keys)
             {
                 distances[sommet] = int.MaxValue; // On initialise les distances à l'infini
             }
@@ -234,8 +275,9 @@ namespace ProbSciANA
                 T sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
                 visites.Add(sommetActuel); 
 
-                foreach (T voisin in listeAdjacence[sommetActuel]) // On parcourt les voisins du sommet actuel
+                foreach (Arete voisin in aretes) // On parcourt les voisins du sommet actuel
                 {
+                    /*
                     if (!visites.Contains(voisin))
                     {
                         // On met à jour la distance si on trouve un chemin plus court
@@ -248,6 +290,27 @@ namespace ProbSciANA
                             distances[voisin] = nouvelleDistance;
                             filePriorite.Enqueue(voisin, nouvelleDistance);
                         }
+                    }
+                    */
+                    if (voisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
+                    { 
+                        int tempsChangement = 0;
+                        if (idLignePrécédent != voisin.IdLigne) // On vérifie si on change de ligne
+                        {
+                            tempsChangement = voisin.IdPrevious.TempsChangement; // On met à jour le temps de changement
+                        }
+
+                        if (!visites.Contains(voisin.IdNext)) // On vérifie si le voisin n'a pas déjà été visité
+                        {
+                            // On met à jour la distance si on trouve un chemin plus court
+                            int nouvelleDistance = distances[sommetActuel] + voisin.Temps + tempsChangement; // On cast les sommets en Station pour utiliser la classe Arete
+                            if (nouvelleDistance < distances[voisin.IdNext])
+                            {
+                                distances[voisin.IdNext] = nouvelleDistance;
+                                filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
+                            }
+                        }
+                        idLignePrécédent = voisin.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
                     }
                 }
             }
@@ -368,44 +431,5 @@ namespace ProbSciANA
 
             return distances;
         }
-        /*
-        public Dictionary<T, int> DijkstraAlex(T sommetDepart)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
-        {
-            Dictionary<T, int> distances = new Dictionary<T, int>();
-            HashSet<T> visites = new HashSet<T>();
-            PriorityQueue<T, int> filePriorite = new PriorityQueue<T, int>(); // On utilise une priority queue pour gérer les sommets à explorer
-
-            foreach (T sommet in stations)
-            {
-                distances[sommet] = int.MaxValue; // On initialise les distances à l'infini
-            }
-
-            distances[sommetDepart] = 0;
-            filePriorite.Enqueue(sommetDepart, 0);
-
-            while (filePriorite.Count > 0)
-            {
-                T sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
-                visites.Add(sommetActuel); 
-
-                foreach (T voisin in listeAdjacence[sommetActuel]) // On parcourt les voisins du sommet actuel
-                {
-                    if (!visites.Contains(voisin))
-                    {
-                        // On met à jour la distance si on trouve un chemin plus court
-                        // On suppose que les poids des arêtes sont stockés dans un dictionnaire avec la clé étant le couple (sommetActuel, voisin)
-                        // et la valeur étant le poids de l'arête entre ces deux sommets
-                        int nouvelleDistance = distances[sommetActuel] + poidsAretes[new Arete((Station)(object)sommetActuel, (Station)(object)voisin)]; // On cast les sommets en Station pour utiliser la classe Arete
-                        // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
-                        if (nouvelleDistance < distances[voisin])
-                        {
-                            distances[voisin] = nouvelleDistance;
-                            filePriorite.Enqueue(voisin, nouvelleDistance);
-                        }
-                    }
-                }
-            }
-            return distances;
-        }*/
     }
 }

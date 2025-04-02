@@ -6,6 +6,7 @@ using System.Net;
 using OfficeOpenXml;
 using System.Net.Sockets;
 using System.Diagnostics;
+using OfficeOpenXml.Utils;
 
 
 namespace ProbSciANA
@@ -47,7 +48,7 @@ namespace ProbSciANA
                 var worksheet = package.Workbook.Worksheets[2]; // On prend la deuxième feuille
                 // Les données commencent à la ligne 2 (la ligne 1 contient les titres)
                 int i=2;
-                while(worksheet.Cells[i, 5].Value != null)
+                while(worksheet.Cells[i, 5].Value != null) //On commence par les vitesses moyennes
                 {
                     string IdLigne = worksheet.Cells[i, 5].Value.ToString();
                     double VitesseMoyenne = double.Parse(worksheet.Cells[i, 6].Value.ToString());

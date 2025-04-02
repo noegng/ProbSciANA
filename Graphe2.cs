@@ -33,6 +33,14 @@ namespace ProbSciANA
         {
             get { return couleurs; }
         }
+        public int[,] MatriceAdjacence{
+            get { return matriceAdjacence; }
+            set { matriceAdjacence = value; }
+        }
+        public List<Arete> Aretes{
+            get { return aretes; }
+            set { aretes = value; }
+        }
         #endregion
         #region Méthodes de parcours
 
@@ -236,7 +244,6 @@ namespace ProbSciANA
         }
         public void RemplissageMatriceAdjacence()
         {
-           int i = 0;
             foreach (Arete arete in aretes)
             {
                 if ( arete.IdPrevious != null && arete.IdNext != null)

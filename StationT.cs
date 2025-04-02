@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ProbSciANA
 {
@@ -44,11 +45,8 @@ namespace ProbSciANA
         {
             if (obj is Station<T> autre)
             {
-                return EqualityComparer<T>.Default.Equals(this.Info, autre.Info) &&
-                       this.Longitude == autre.Longitude &&
-                       this.Latitude == autre.Latitude;
+                return EqualityComparer<T>.Default.Equals(this.Info, autre.Info);
             }
-
             return false;
         }
 
