@@ -61,7 +61,7 @@ namespace ProbSciANA.Interface
             }
             else if (role == "Cuisinier")
             {
-                NavigationService?.Navigate(new UserDashboardView()); // À remplacer par une vue cuisinier
+                NavigationService?.Navigate(new CuisinierDashboardView());
             }
     }
     catch (Exception ex)
@@ -114,8 +114,8 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
         {
             MessageBox.Show($"Connexion réussie : {nomUtilisateur} ({infos.role})");
 
-            if (infos.role == "Admin")
-                NavigationService?.Navigate(new AdminDashboardView());
+            if (infos.role == "Cuisinier")
+                NavigationService?.Navigate(new CuisinierDashboardView());
             else
                 NavigationService?.Navigate(new UserDashboardView());
         }
@@ -152,7 +152,39 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
         }
     }
 
-    public partial class AdminDashboardView : Page
+
+    public partial class CuisinierDashboardView : Page
+    {
+
+
+        public CuisinierDashboardView()
+        {
+            InitializeComponent();
+        }
+
+        private void AjouterPlat_Click(object sender, RoutedEventArgs e)
+        {
+            // Logique pour ajouter un plat
+            MessageBox.Show("Ajouter un plat");
+        }
+
+        private void VoirLivraisons_Click(object sender, RoutedEventArgs e)
+        {
+            // Logique pour voir les livraisons
+            MessageBox.Show("Voir les livraisons");
+        }
+
+        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.GoBack();
+        }
+        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+
+    }
+        public partial class AdminDashboardView : Page
     {
         public AdminDashboardView()
         {
@@ -205,6 +237,8 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
             InitializeComponent();
         }
 
+
+        
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.GoBack();
