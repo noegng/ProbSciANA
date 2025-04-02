@@ -85,12 +85,16 @@ namespace ProbSciANA.Interface
 
 public partial class ConnexionView : Page
 {
-
+private Dictionary<string, (int id, string motDePasse, string role)> utilisateurs;
 
     public ConnexionView()
     {
         InitializeComponent();
-        SqlQueries.ChargerUtilisateurs();
+        utilisateurs = SqlQueries.ChargerUtilisateurs();
+        foreach (var utilisateur in utilisateurs.Keys)
+    {
+        UserComboBox.Items.Add(utilisateur);
+    }
     }
 
     
