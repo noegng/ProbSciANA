@@ -412,11 +412,11 @@ namespace ProbSciANA
             return distances;
         }
         //Calculer et Renvoie le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
-        public (List<Station>, int) BellmanFordChemin(Station sommetDepart, Station sommetArrivee)
+        public (List<Arete>, int) BellmanFordChemin(Station sommetDepart, Station sommetArrivee)
         {
             Dictionary<Station, int> distances = new Dictionary<Station, int>();
             HashSet<Station> visites = new HashSet<Station>();
-            Dictionary<Station, Station> predecesseurs = new Dictionary<Station, Station>(); // Pour reconstruire le chemin
+            Dictionary<Station, Arete> predecesseurs = new Dictionary<Station, Arete>(); // Pour reconstruire le chemin
 
             foreach (Station sommet in listeAdjacence.Keys)
             {
@@ -434,18 +434,22 @@ namespace ProbSciANA
                     if ((distances[arete.IdPrevious] != int.MaxValue) && (distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement < distances[arete.IdNext]))
                     {
                         distances[arete.IdNext] = distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement;
-                        predecesseurs[arete.IdNext] = arete.IdPrevious; // On met à jour le prédécesseur
+                        predecesseurs[arete.IdNext] = arete; // On met à jour le prédécesseur
                     }
                 }
             }
             // Reconstruire le chemin
-            List<Station> chemin = new List<Station>();
-            for (Station sommet = sommetArrivee; sommet != null; sommet = predecesseurs[sommet])
+            List<Arete> cheminAretes = new List<Arete>();
+            Station courant = sommetArrivee;
+
+            while (predecesseurs[courant] != null)
             {
-                chemin.Add(sommet);
+                    Arete arete = predecesseurs[courant];
+                    cheminAretes.Add(arete);
+                    courant = arete.IdPrevious;
             }
-            chemin.Reverse(); // On inverse le chemin pour avoir l'ordre correct
-            return (chemin,distances[sommetArrivee]); // On renvoie le chemin et la distance totale
+            cheminAretes.Reverse(); // Important pour avoir le chemin dans le bon sens
+            return (cheminAretes, distances[sommetArrivee]);
         }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Floyd-Warshall
         public Dictionary<Station, Dictionary<Station, int>> FloydWarshall()

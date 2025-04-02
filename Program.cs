@@ -30,8 +30,8 @@ namespace ProbSciANA
             //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
             //TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
             //TestBellmanFord(graphePondéré, stations);
-            TestDijkstraChemin(graphePondéré, stations); // Test de l'algorithme de Dijkstra avec vitesses moyennes
-            //TestBellmanFordChemin(graphePondéré, stations);
+            //TestDijkstraChemin(graphePondéré, stations); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+            TestBellmanFordChemin(graphePondéré, stations);
 
             //AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
@@ -319,6 +319,7 @@ namespace ProbSciANA
                 Console.Write(arete.IdPrevious.Nom + " -> "); // Affichage du chemin
             }
             Console.WriteLine(arrivee.Nom);
+            Graphviz.GenerateChemin(chemin, stations);
         }
 
         static void TestBellmanFord(Graphe2 graphePondéré,List<Station> stations)
@@ -335,22 +336,32 @@ namespace ProbSciANA
         static void TestBellmanFordChemin(Graphe2 graphePondéré,List<Station> stations)
         {
             Station depart = stations[0]; // Station de départ
-            Station arrivee = stations[10]; // Station d'arrivée
-            (List<Station> chemin , int plusPetiteDistance) = graphePondéré.BellmanFordChemin(depart, arrivee); // Calcul du chemin le plus court
+            Station arrivee = stations[174]; // Station d'arrivée
+            var sw = Stopwatch.StartNew();
+            (List<Arete> chemin , int plusPetiteDistance) = graphePondéré.BellmanFordChemin(depart, arrivee); // Calcul du chemin le plus court
+            sw.Stop();
+            Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
-            foreach (Station station in chemin)
+            Console.Write("Chemin : ");
+            foreach (Arete arete in chemin)
             {
-                Console.WriteLine(station.Nom); // Affichage du chemin
+                Console.Write(arete.IdPrevious.Nom + " -> "); // Affichage du chemin
             }
+            Graphviz.GenerateChemin(chemin, stations);
             Console.WriteLine("--------------------------------------------------");
             depart = stations[0]; // Station de départ
             arrivee = stations[246]; // Station d'arrivée
+            sw = Stopwatch.StartNew();
             (chemin , plusPetiteDistance) = graphePondéré.BellmanFordChemin(depart, arrivee); // Calcul du chemin le plus court
+            sw.Stop();
+            Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
-            foreach (Station station in chemin)
+            Console.Write("Chemin : ");
+            foreach (Arete arete in chemin)
             {
-                Console.WriteLine(station.Nom); // Affichage du chemin
+                Console.Write(arete.IdPrevious.Nom + " -> "); // Affichage du chemin
             }
+            Graphviz.GenerateChemin(chemin, stations);
         }
         static void TestListeEtMatrice(Graphe2 graphePondéré)
         {
