@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using OfficeOpenXml;
 using System.Net.Sockets;
+using System.Diagnostics;
 
 
 namespace ProbSciANA
@@ -271,33 +272,31 @@ namespace ProbSciANA
         #region Test
         static void TestDijkstra(Graphe2 graphePondéré, List<Station> stations)
         {
+            var sw = Stopwatch.StartNew();
             // Test de l'algorithme de Dijkstra
             Station depart = stations[0]; // Station de départ
             Station arrivee = stations[10]; // Station d'arrivée
             int plusPetitTemps = graphePondéré.Dijkstra(depart)[arrivee]; // Calcul du chemin le plus court
+            sw.Stop();
+            Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetitTemps + " min.");
+            sw = Stopwatch.StartNew();
             depart = stations[0]; // Station de départ
             arrivee = stations[246]; // Station d'arrivée
             plusPetitTemps = graphePondéré.Dijkstra(depart)[arrivee]; // Calcul du chemin le plus court
+            sw.Stop();
+            Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetitTemps + " min.");
         }
         static void TestDijkstraChemin(Graphe2 graphePondéré, List<Station> stations)
         {
             // Test de l'algorithme de Dijkstra
+            var sw = Stopwatch.StartNew();
             Station depart = stations[0]; // Station de départ
-            Station arrivee = stations[10]; // Station d'arrivée
+            Station arrivee = stations[174]; // Station d'arrivée
             (List<Arete> chemin , int plusPetiteDistance) = graphePondéré.DijkstraChemin(depart, arrivee); // Calcul du chemin le plus court
-            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
-            Console.Write("Chemin : ");
-            foreach (Arete arete in chemin)
-            {
-                Console.Write(arete.IdPrevious.Nom + " -> "); // Affichage du chemin
-            }
-            Console.WriteLine(arrivee.Nom);
-            Console.WriteLine("--------------------------------------------------");
-            depart = stations[0]; // Station de départ
-            arrivee = stations[246]; // Station d'arrivée
-            (chemin , plusPetiteDistance) = graphePondéré.DijkstraChemin(depart, arrivee); // Calcul du chemin le plus court
+            sw.Stop();
+            Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
             Console.Write("Chemin : ");
             foreach (Arete arete in chemin)
@@ -306,8 +305,22 @@ namespace ProbSciANA
             }
             Console.WriteLine(arrivee.Nom);
             Graphviz.GenerateChemin(chemin, stations);
+            Console.WriteLine("--------------------------------------------------");
+            depart = stations[0]; // Station de départ
+            arrivee = stations[246]; // Station d'arrivée
+            sw = Stopwatch.StartNew();
+            (chemin , plusPetiteDistance) = graphePondéré.DijkstraChemin(depart, arrivee); // Calcul du chemin le plus court
+            sw.Stop();
+            Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
+            Console.Write("Chemin : ");
+            foreach (Arete arete in chemin)
+            {
+                Console.Write(arete.IdPrevious.Nom + " -> "); // Affichage du chemin
+            }
+            Console.WriteLine(arrivee.Nom);
         }
-        
+
         static void TestBellmanFord(Graphe2 graphePondéré,List<Station> stations)
         {
             Station depart = stations[0]; // Station de départ
