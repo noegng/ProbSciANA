@@ -20,13 +20,17 @@ namespace ProbSciANA
             var aretes = new List<Arete>(); 
             (stations, aretes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
             Graphe2 graphePondéré = new Graphe2(aretes); // Création d'un graphe à partir des arêtes
-            // Ajout d'une station à la liste d'adjacence
+            //graphePondéré.BFStoString(stations[0]); 
+            //graphePondéré.DFStoString(stations[0]);
+            //graphePondéré.DFSRécursiftoString();
+            graphePondéré.EstConnexe();
+            graphePondéré.ContientCycle();
             //TestDistanceTemps(aretes); // Test de la distance et du temps de trajet entre deux stations
             //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
-            TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
-            TestBellmanFord(graphePondéré, stations);
-            TestDijkstraChemin(graphePondéré, stations); // Test de l'algorithme de Dijkstra avec vitesses moyennes
-            TestBellmanFordChemin(graphePondéré, stations);
+            //TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
+            //TestBellmanFord(graphePondéré, stations);
+            //TestDijkstraChemin(graphePondéré, stations); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+            //TestBellmanFordChemin(graphePondéré, stations);
 
             //AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");

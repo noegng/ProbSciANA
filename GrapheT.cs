@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProbSciANA
 {
-    public class Graphe<T> where T : ProbSciANA.Station // Graphe non orienté
+    public class Graphe<T> // Graphe non orienté
     {
         private Dictionary<T, List<T>> listeAdjacence;
         
@@ -280,7 +280,7 @@ namespace ProbSciANA
                         // On met à jour la distance si on trouve un chemin plus court
                         // On recalcule la distance entre sommetActuel et voisin avec la méthode CalculerTempsTrajet de la classe Arete
                         Arete arete = new Arete((Station)(object)sommetActuel, (Station)(object)voisin, "1"); // On cast les sommets en Station pour utiliser la classe Arete
-                        arete.CalculerTempsTrajet(VitesseMoyenne); // On calcule le temps de trajet entre les deux stations
+                        arete.CalculerTempsTrajet(); // On calcule le temps de trajet entre les deux stations
                         int nouvelleDistance = distances[sommetActuel] + arete.Temps; // On cast les sommets en Station pour utiliser la classe Arete
                         // On peut aussi utiliser la méthode CalculerDistance() de la classe Arete si on a besoin de calculer la distance entre deux stations
                         if (nouvelleDistance < distances[voisin])

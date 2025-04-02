@@ -2,6 +2,10 @@ digraph G {
     layout=neato;
     overlap=false;
     graph [dpi=400];
+    "La Défense" [pos="2.238539,48.891852!",label="La Défense", fontsize=12];
+    "Esplanade de la Défense" [pos="2.25,48.88833!",label="Esplanade de la Défense", fontsize=12];
+    "Pont de Neuilly" [pos="2.257692,48.885661!",label="Pont de Neuilly", fontsize=12];
+    "Les Sablons" [pos="2.27223,48.88094!",label="Les Sablons", fontsize=12];
     "Porte Maillot" [pos="2.28258384736155,48.8781626526965!",label="Porte Maillot", fontsize=12];
     "Argentine" [pos="2.28943541854221,48.8756673756517!",label="Argentine", fontsize=12];
     "Charles de Gaulle - Etoile" [pos="2.29581177523576,48.874994575223!",label="Charles de Gaulle - Etoile", fontsize=12];
@@ -249,6 +253,10 @@ digraph G {
     "Cour Saint-Emilion" [pos="2.38661785021406,48.8333193028951!",label="Cour Saint-Emilion", fontsize=12];
     "Bibliothèque François Mitterrand" [pos="2.3764873711683,48.8299257649806!",label="Bibliothèque François Mitterrand", fontsize=12];
     "Olympiades" [pos="2.36692312153081,48.827123440481!",label="Olympiades", fontsize=12];
+    "Esplanade de la Défense" -> "La Défense" [dir="both", color="#F2C931", penwidth=3, style=bold];
+    "Pont de Neuilly" -> "Esplanade de la Défense" [dir="both", color="#F2C931", penwidth=3, style=bold];
+    "Les Sablons" -> "Pont de Neuilly" [dir="both", color="#F2C931", penwidth=3, style=bold];
+    "Porte Maillot" -> "Les Sablons" [dir="both", color="#F2C931", penwidth=3, style=bold];
     "Argentine" -> "Porte Maillot" [dir="both", color="#F2C931", penwidth=3, style=bold];
     "Charles de Gaulle - Etoile" -> "Argentine" [dir="both", color="#F2C931", penwidth=3, style=bold];
     "George V" -> "Charles de Gaulle - Etoile" [dir="both", color="#F2C931", penwidth=3, style=bold];

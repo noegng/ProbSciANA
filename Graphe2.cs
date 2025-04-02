@@ -13,6 +13,7 @@ namespace ProbSciANA
         private int[,] matriceAdjacence;
         private Dictionary<Station, int> couleurs;
         private List<Arete> aretes;
+        private int nbCycles = -1; //Détecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
 
         public Graphe2(List<Arete> aretes) //Graphe non pondéré
         {
@@ -86,7 +87,7 @@ namespace ProbSciANA
                 Station sommet = pile.Peek();
                 bool aExploréUnVoisin = false;
 
-                foreach (Station voisin in listeAdjacence[sommet].OrderBy(x => x))
+                foreach (Station voisin in listeAdjacence[sommet])
                 {
                     if (couleurs[voisin] == 0) // blanc
                     {
@@ -112,7 +113,7 @@ namespace ProbSciANA
         {
             couleurs = new Dictionary<Station, int>();
             HashSet<Station> visite = new HashSet<Station>();
-
+            nbCycles = 0;
             foreach (Station sommet in listeAdjacence.Keys)
             {
                 couleurs[sommet] = 0; // blanc
@@ -142,7 +143,7 @@ namespace ProbSciANA
                 }
                 else if (rechercheCycle && couleurs[voisin] == 1)
                 {
-                    Console.WriteLine("Cycle détecté.");
+                    nbCycles = nbCycles + 1;
                     return;
                 }
             }
@@ -166,6 +167,34 @@ namespace ProbSciANA
         public void ContientCycle()
         {
             DFSRécursif(true);
+            Console.WriteLine(nbCycles + " cycles trouvés dans le graphe.");
+        }
+        public void DFStoString(Station sommetDepart)
+        {
+            Console.Write("Parcours en Profondeur (DFS): ");
+            foreach (Station sommet in DFS(sommetDepart))
+            {
+                Console.Write(sommet.Nom + " ; ");
+            }
+            Console.WriteLine();
+        }
+        public void BFStoString(Station sommetDepart)
+        {
+            Console.Write("Parcours en Largeur (BFS):  ");
+            foreach (Station sommet in BFS(sommetDepart))
+            {
+                Console.Write(sommet.Nom + " ; ");
+            }
+            Console.WriteLine();
+        }
+        public void DFSRécursiftoString()
+        {
+            Console.Write("Parcours en Profondeur (DFS récursif): ");
+            foreach (Station sommet in DFSRécursif())
+            {
+                Console.Write(sommet.Nom + " ; ");
+            }
+            Console.WriteLine();
         }
         
         public void RemplissageListeAdjacence(List<Arete> aretes)

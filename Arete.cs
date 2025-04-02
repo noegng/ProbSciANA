@@ -25,7 +25,7 @@ public class Arete {
         this.idNext = idNext;
         this.idLigne = idLigne;
         this.sensUnique = sensUnique;
-        temps = CalculerTempsTrajet(vitesseMoyenne);
+        temps = CalculerTempsTrajet();
     }
 
     #region Propriétés
@@ -129,7 +129,7 @@ public class Arete {
         return R * c; // Distance en km
     }
     //Calcul et met a jour la variabl temps ( temps de trajet entre deux stations)
-    public int CalculerTempsTrajet(Dictionary<string, double> VitesseMoyenne)
+    public int CalculerTempsTrajet()
     {
         // calcul de la distance entre idPrevious et idNext avec la formule de Haversine
         // puis conversion en temps de trajet (en minutes) en fonction de la vitesse moyenne du train
