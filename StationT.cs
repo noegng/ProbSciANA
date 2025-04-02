@@ -2,30 +2,49 @@ using System;
 
 namespace ProbSciANA
 {
-    public class Station<TId, TNom>
+    public class Station<T>
     {
-        public TId Id { get; set; } // Identifiant unique de la station
-        public TNom Nom { get; set; } // Nom de la station
-        public double Longitude { get; set; } // Longitude de la station
-        public double Latitude { get; set; } // Latitude de la station
-        public int TempsChangement { get; set; } // Temps de changement
+        private T info;  // Identifiant unique de la station
+        private double longitude; // Longitude de la station
+        private double latitude;  // Latitude de la station
+        private int tempsChangement; // Temps de changement
 
         // Constructeur de la classe Station
-        public Station(TId id, TNom nom, double longitude, double latitude, int temps)
+        public Station(T info, double longitude, double latitude, int temps)
         {
-            Id = id;
-            Nom = nom;
-            Longitude = longitude;
-            Latitude = latitude;
-            TempsChangement = temps;
+            this.info = info;
+            this.longitude = longitude;
+            this.latitude = latitude;
+            tempsChangement = temps;
         }
+        #region Propriétés
+        public T Info
+        {
+            get { return info; }
+            set { info = value; }
+        }
+        public double Longitude
+        {
+            get { return longitude; }
+            set { longitude = value; }
+        }
+        public double Latitude
+        {
+            get { return latitude; }
+            set { latitude = value; }
+        }
+        public int TempsChangement
+        {
+            get { return tempsChangement; }
+            set { tempsChangement = value; }
+        }
+        #endregion
 
         public override bool Equals(object obj)
         {
-            if (obj is Station<TId, TNom> autre)
+            if (obj is Station<T> autre)
             {
-                return EqualityComparer<TId>.Default.Equals(this.Id, autre.Id) &&
-                       EqualityComparer<TNom>.Default.Equals(this.Nom, autre.Nom) &&
+                return EqualityComparer<T>.Default.Equals(this.Info, autre.Info) &&
                        this.Longitude == autre.Longitude &&
                        this.Latitude == autre.Latitude;
             }
@@ -35,7 +54,11 @@ namespace ProbSciANA
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Nom, Longitude, Latitude, TempsChangement);
+            return HashCode.Combine(Info, Longitude, Latitude, TempsChangement);
+        }
+        public string ToStringLong()
+        {
+            return $"Station: {Info}, Longitude: {Longitude}, Latitude: {Latitude}, Temps de changement: {TempsChangement} minutes";
         }
     }
 }
