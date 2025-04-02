@@ -9,163 +9,39 @@ using MySql.Data.MySqlClient;
 
 namespace ProbSciANA
 {
-    public class Program
+     public class Program
     {
-     /*   static void Main(string[] args)
-        { 
-             Lancement(); // Lancement de l'application console
-            
-            
-            
+        static void Main(string[] args)
+        {   
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
             //Etape1(); // Appel de la méthode principale
-             // Chemin vers le fichier Excel contenant les positions des sommets.
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
-            var VitessesMoyennes = new Dictionary<string, double>();
-            (stations, aretes, VitessesMoyennes) = LectureFichierExcel(); // Lecture du fichier Excel
+            (stations, aretes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
+            Graphe2 graphePondéré = new Graphe2(aretes); // Création d'un graphe à partir des arêtes
+            // Ajout d'une station à la liste d'adjacence
+            //TestDistanceTemps(aretes); // Test de la distance et du temps de trajet entre deux stations
+            //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
+            TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
+            TestBellmanFord(graphePondéré, stations);
+            TestDijkstraChemin(graphePondéré, stations); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+            TestBellmanFordChemin(graphePondéré, stations);
 
-            TestDistanceTemps(aretes, VitessesMoyennes); // Test de la distance et du temps de trajet entre deux stations
-            AffichageImage(stations, aretes); // Affichage de l'image du graphe
-           
+            //AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
-        }*/
-
-
-#region UI Console
-        static void Lancement(){
-            Console.Title = "Liv'In Paris - Application Console";
-             bool continuer = true;
-
-            while (continuer)
-            {
-                Console.Clear();
-                Console.WriteLine("===== Liv'In Paris =====\n");
-                Console.WriteLine("1. Gestion des Clients");
-                Console.WriteLine("2. Gestion des Cuisiniers");
-                Console.WriteLine("3. Gestion des Commandes");
-                Console.WriteLine("4. Gestion des Trajets");
-                Console.WriteLine("5. Statistiques");
-                Console.WriteLine("6. Quitter\n");
-                Console.Write("Sélectionnez une option : ");
-
-                switch (Console.ReadLine())
-                {
-                    case "1": GestionClients(); break;
-                    case "2": GestionCuisiniers(); break;
-                    case "3": GestionCommandes(); break;
-                    case "4": GestionTrajets(); break;
-                    case "5": AfficherStatistiques(); break;
-                    case "6": continuer = false; break;
-                    default:
-                        Console.WriteLine("Option invalide, appuyez sur Entrée pour réessayer.");
-                        Console.ReadLine();
-                        break;  
-                }
         }
-        }
-        static void GestionClients()
-        {
-            Console.Clear();
-            Console.WriteLine("== Gestion des Clients ==");
-            // [ESPACE RÉSERVÉ] Fonctions de gestion des clients (ajout, modification, suppression)
-            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
-            Console.ReadLine();
-        }
-
-        static void GestionCuisiniers()
-        {
-            Console.Clear();
-            Console.WriteLine("== Gestion des Cuisiniers ==");
-            // [ESPACE RÉSERVÉ] Fonctions de gestion des cuisiniers et notation
-            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
-            Console.ReadLine();
-        }
-
-        static void GestionCommandes()
-        {
-            Console.Clear();
-            Console.WriteLine("== Gestion des Commandes ==");
-            // [ESPACE RÉSERVÉ] Fonctions de gestion des commandes (création, modification, évaluation)
-            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
-            Console.ReadLine();
-        }
-
-        static void GestionTrajets()
-        {
-            Console.Clear();
-            Console.WriteLine("== Gestion des Trajets ==");
-            // [ESPACE RÉSERVÉ] Fonctions complexes : Algorithmes et affichage textuel des trajets
-            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
-            Console.ReadLine();
-        }
-
-        static void AfficherStatistiques()
-        {
-            Console.Clear();
-            Console.WriteLine("== Statistiques ==");
-            // [ESPACE RÉSERVÉ] Fonctions statistiques et export des données
-            Console.WriteLine("Fonctionnalité à venir... (appuyez sur Entrée)");
-            Console.ReadLine();
-        }
-
-   #endregion
-
-
-
-      public static (List<Station>, List<Arete>, Dictionary<string,double>) LectureFichierExcel(){
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
-            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx";
+        static (List<Station>, List<Arete>) LectureFichierExcel(string excelFilePath){
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
             using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
             {
                 // On considère la première feuille
-                var worksheet = package.Workbook.Worksheets[1];
+                var worksheet = package.Workbook.Worksheets[2]; // On prend la deuxième feuille
                 // Les données commencent à la ligne 2 (la ligne 1 contient les titres)
-                int i = 2;
-                while (worksheet.Cells[i, 1].Value != null)
-                {
-                    string Id = worksheet.Cells[i, 1].Value.ToString();
-                    string Nom = worksheet.Cells[i, 2].Value.ToString();
-                    double Longitude = double.Parse(worksheet.Cells[i, 3].Value.ToString());
-                    double Latitude = double.Parse(worksheet.Cells[i, 4].Value.ToString());
-                    int temps=0;
-                if (worksheet.Cells[i, 5].Value != null)
-                    {
-                        temps = int.Parse(worksheet.Cells[i, 5].Value.ToString());
-                    }
-                    Station station = new Station(Id, Nom, Longitude, Latitude, temps);
-                    stations.Add(station);
-                    i++;
-                }
-                worksheet = package.Workbook.Worksheets[2];
-                i = 2;
-                
-                while(worksheet.Cells[i, 1].Value != null)
-                {
-                    string IdPrevious = worksheet.Cells[i, 2].Value.ToString();
-                    string IdNext = worksheet.Cells[i, 3].Value.ToString();
-                    string IdLigne = worksheet.Cells[i, 1].Value.ToString();
-                    Station memoire1 = null;
-                    Station memoire2 = null;
-                    foreach(Station var in stations)
-                    {
-                        if(var.Nom == IdPrevious)
-                        {
-                            memoire1 = var;
-                        }
-                        if (var.Nom == IdNext)
-                        {
-                            memoire2 = var;
-                        }
-                    }
-                    Arete arete = new Arete(memoire1, memoire2, IdLigne);
-                    aretes.Add(arete);
-                    i++;
-                }
-                i=2;
+                int i=2;
                 while(worksheet.Cells[i, 5].Value != null)
                 {
                     string IdLigne = worksheet.Cells[i, 5].Value.ToString();
@@ -173,35 +49,75 @@ namespace ProbSciANA
                     VitessesMoyennes.Add(IdLigne, VitesseMoyenne);
                     i++;
                 }
+                Arete.VitesseMoyenne = VitessesMoyennes; // Initialisation de la vitesse moyenne obligatoire pour le calcul du temps de trajet et la création de l'arête
+                worksheet = package.Workbook.Worksheets[1]; // On considère la premiere feuille
+                i = 2;
+                while (worksheet.Cells[i, 1].Value != null)
+                {
+                    int Id = int.Parse(worksheet.Cells[i, 1].Value.ToString());
+                    string Nom = worksheet.Cells[i, 2].Value.ToString();
+                    double Longitude = double.Parse(worksheet.Cells[i, 3].Value.ToString());
+                    double Latitude = double.Parse(worksheet.Cells[i, 4].Value.ToString());
+                    int tempsChamgement=0;
+                if (worksheet.Cells[i, 5].Value != null)
+                    {
+                        tempsChamgement = int.Parse(worksheet.Cells[i, 5].Value.ToString());
+                    }
+                    Station station = new Station(Id, Nom, Longitude, Latitude, tempsChamgement);
+                    stations.Add(station);
+                    i++;
+                }
+                stations.Sort((s1, s2) => s1.Id.CompareTo(s2.Id)); // Tri des stations par Id pour que les Id correspondent aux indices de la liste
+                worksheet = package.Workbook.Worksheets[2]; // On considère la deuxième feuille
+                i = 2;
+                while(worksheet.Cells[i, 1].Value != null)
+                {
+                    string IdPrevious = worksheet.Cells[i, 2].Value.ToString();
+                    string IdNext = worksheet.Cells[i, 3].Value.ToString();
+                    string IdLigne = worksheet.Cells[i, 1].Value.ToString();
+                    bool sensUnique = false;
+                    if (worksheet.Cells[i, 4].Value != null)
+                    {
+                        sensUnique = true;
+                    }
+                    int idStationPrevious = 0;
+                    int idStationNext = 0;
+                    foreach(Station var in stations)
+                    {
+                        if(var.Nom == IdPrevious)
+                        {
+                            idStationPrevious = var.Id;
+                        }
+                        if (var.Nom == IdNext)
+                        {
+                            idStationNext = var.Id;
+                        }
 
+                    }
+                    if (idStationPrevious != 0 && idStationNext != 0) // Aucune station a un id = 0 donc on ne peut pas créer l'arête
+                    {
+                        Arete areteAllé = new Arete(stations[idStationPrevious-1], stations[idStationNext-1], IdLigne, sensUnique); // Création de l'arête avec les stations correspondantes (on faut cela pour consever toutes les informations des stations dans arete et les -1 car les id commencent à 1)
+                        if (!sensUnique) // Si l'arête n'est pas sens unique, on crée l'arête retour
+                        {
+                            Arete areteRetour = new Arete(stations[idStationNext-1], stations[idStationPrevious-1], IdLigne, sensUnique); // Création de l'arête retour
+                            aretes.Add(areteRetour); // Ajout de l'arête retour à la liste des arêtes
+                        }
+                        aretes.Add(areteAllé); // Ajout de l'arête à la liste des arêtes
+                    }
+                    i++;
+                }
             }
-            return (stations, aretes, VitessesMoyennes);
+            return (stations, aretes);
         }
-        public static void AffichageImage(List<Station> stations, List<Arete> aretes)
+        static void AffichageImage(List<Station> stations, List<Arete> aretes)
         {
             // Chemins pour le fichier DOT et l'image PNG
             string dotFile = "graphe.dot";
             string pngFile = "graphe.png";                        
             // Générer le fichier DOT et l'image PNG
             Graphviz.GenerateGraphImage(stations, aretes, dotFile, pngFile);
-            
         }
-        static void TestDistanceTemps(List<Arete> aretes , Dictionary<string, double> VitessesMoyennes)
-        // Test de la distance et du temps de trajet entre deux stations
-        {
-            foreach (Arete arete in aretes)
-            {
-                if (arete.IdPrevious == null || arete.IdNext == null)
-                {
-                    continue;   // Ignore les arêtes sans stations
-                }
-                // Calcul de la distance entre deux stations
-                double distance = arete.CalculerDistance();
-                arete.CalculerTempsTrajet(VitessesMoyennes); // Calcul du temps de trajet entre deux stations
-                // Affichage de la distance et du temps de trajet
-                Console.WriteLine($"Distance 1 entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
-            }
-        }
+        
         #region Etape 1
         static void Etape1()
         {
@@ -349,6 +265,91 @@ namespace ProbSciANA
         }
         #endregion
         #region Test
+        static void TestDijkstra(Graphe2 graphePondéré, List<Station> stations)
+        {
+            // Test de l'algorithme de Dijkstra
+            Station depart = stations[0]; // Station de départ
+            Station arrivee = stations[10]; // Station d'arrivée
+            int plusPetitTemps = graphePondéré.Dijkstra(depart)[arrivee]; // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetitTemps + " min.");
+            depart = stations[0]; // Station de départ
+            arrivee = stations[246]; // Station d'arrivée
+            plusPetitTemps = graphePondéré.Dijkstra(depart)[arrivee]; // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetitTemps + " min.");
+        }
+        static void TestDijkstraChemin(Graphe2 graphePondéré, List<Station> stations)
+        {
+            // Test de l'algorithme de Dijkstra
+            Station depart = stations[0]; // Station de départ
+            Station arrivee = stations[10]; // Station d'arrivée
+            (List<Station> chemin , int plusPetiteDistance) = graphePondéré.DijkstraChemin(depart, arrivee); // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
+            foreach (Station station in chemin)
+            {
+                Console.WriteLine(station.Nom); // Affichage du chemin
+            }
+            Console.WriteLine("--------------------------------------------------");
+            depart = stations[0]; // Station de départ
+            arrivee = stations[246]; // Station d'arrivée
+            (chemin , plusPetiteDistance) = graphePondéré.DijkstraChemin(depart, arrivee); // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
+            foreach (Station station in chemin)
+            {
+                Console.WriteLine(station.Nom); // Affichage du chemin
+            }
+        }
+        static void TestBellmanFord(Graphe2 graphePondéré,List<Station> stations)
+        {
+            Station depart = stations[0]; // Station de départ
+            Station arrivee = stations[10]; // Station d'arrivée
+            int plusPetitTemps = graphePondéré.BellmanFord(depart)[arrivee]; // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetitTemps + " min.");
+            depart = stations[0]; // Station de départ
+            arrivee = stations[246]; // Station d'arrivée
+            plusPetitTemps = graphePondéré.BellmanFord(depart)[arrivee]; // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetitTemps + " min.");
+        }
+        static void TestBellmanFordChemin(Graphe2 graphePondéré,List<Station> stations)
+        {
+            Station depart = stations[0]; // Station de départ
+            Station arrivee = stations[10]; // Station d'arrivée
+            (List<Station> chemin , int plusPetiteDistance) = graphePondéré.BellmanFordChemin(depart, arrivee); // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
+            foreach (Station station in chemin)
+            {
+                Console.WriteLine(station.Nom); // Affichage du chemin
+            }
+            Console.WriteLine("--------------------------------------------------");
+            depart = stations[0]; // Station de départ
+            arrivee = stations[246]; // Station d'arrivée
+            (chemin , plusPetiteDistance) = graphePondéré.BellmanFordChemin(depart, arrivee); // Calcul du chemin le plus court
+            Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
+            foreach (Station station in chemin)
+            {
+                Console.WriteLine(station.Nom); // Affichage du chemin
+            }
+        }
+        static void TestListeEtMatrice(Graphe2 graphePondéré)
+        {
+            graphePondéré.AfficherListeAdjacence(); // Affichage de la liste d'adjacence
+            graphePondéré.AfficherMatriceAdjacence(); // Affichage de la matrice d'adjacence
+        }
+
+        static void TestDistanceTemps(List<Arete> aretes)
+        // Test de la distance et du temps de trajet entre deux stations
+        {
+            foreach (Arete arete in aretes)
+            {
+                if (arete.IdPrevious == null || arete.IdNext == null)
+                {
+                    continue;   // Ignore les arêtes sans stations
+                }
+                // Calcul de la distance entre deux stations
+                double distance = arete.CalculerDistance();
+                // Affichage de la distance et du temps de trajet
+                Console.WriteLine($"Distance entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
+            }
+        }
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
         /// </summary>
@@ -395,7 +396,6 @@ namespace ProbSciANA
         }
         #endregion
     }
-
 
     public static class SqlQueries{
 

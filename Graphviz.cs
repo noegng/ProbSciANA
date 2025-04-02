@@ -19,9 +19,7 @@ namespace ProbSciANA
         /// <param name="dotFilePath">Chemin pour enregistrer le fichier DOT.</param>
         /// <param name="pngFilePath">Chemin pour générer l'image PNG.</param>
 
-
-
-    private static string GetColorForLine(string idLigne)
+        private static string GetColorForLine(string idLigne)
     {
         // Définir les couleurs pour chaque ligne
         return idLigne switch
@@ -58,7 +56,7 @@ namespace ProbSciANA
     {
         // Création du fichier DOT
         StringBuilder dot = new StringBuilder();
-        dot.AppendLine("graph G {");
+        dot.AppendLine("digraph G {");
         dot.AppendLine("    layout=neato;"); // Utilise le moteur neato
         dot.AppendLine("    overlap=false;");
         dot.AppendLine("    graph [dpi=400];");
@@ -69,20 +67,26 @@ namespace ProbSciANA
             var pos = vertex.Nom;
             string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
             string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
-            dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\",shape=\"point\", label=\"{pos}\", fontsize=12];");
+            dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\",label=\"{pos}\", fontsize=12];");
+        }
+        for (int i = 0; i < aretes.Count; i= i+2) 
+        {
+            var idPrevious = aretes[i].IdPrevious.Nom;
+            var idNext = aretes[i].IdNext.Nom;
+            var color = GetColorForLine(aretes[i].IdLigne);
+            string nonSensUnique = "";
+            if (!aretes[i].SensUnique)
+            {
+                nonSensUnique = "dir=\"both\",";
+            }
+            dot.AppendLine($"    \"{idPrevious}\" -> \"{idNext}\" [{nonSensUnique} color=\"{color}\", penwidth=3, style=bold];");
+            if(aretes[i].SensUnique){
+                i--;
+            }
         }
 
-        foreach (Arete edge in aretes)
-        {
-            if (edge.IdPrevious == null || edge.IdNext == null)
-            {
-                continue;
-            }
-            var idPrevious = edge.IdPrevious.Nom;
-            var idNext = edge.IdNext.Nom;
-            var color = GetColorForLine(edge.IdLigne);
-            dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\" [color=\"{color}\"];");
-        }
+
+        
        
 
         dot.AppendLine("}");
