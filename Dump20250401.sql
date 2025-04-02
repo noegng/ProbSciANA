@@ -400,16 +400,15 @@ CREATE TABLE `utilisateur` (
   `id_utilisateur` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(50) DEFAULT NULL,
   `prenom` varchar(50) DEFAULT NULL,
-  `rue` varchar(50) DEFAULT NULL,
-  `numero` tinyint DEFAULT NULL,
-  `code_postal` varchar(5) DEFAULT NULL,
-  `ville` varchar(50) DEFAULT NULL,
-  `telephone` varchar(10) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
+  `adresse` varchar(100) DEFAULT NULL,
+  `role` varchar(50) DEFAULT NULL,
+  `MotDePasse` varchar(50) DEFAULT NULL,
   `station` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_utilisateur`),
   UNIQUE KEY `email` (`email`),
   CONSTRAINT `utilisateur_chk_1` CHECK ((`numero` >= 0))
+  
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

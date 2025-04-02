@@ -37,7 +37,7 @@ namespace ProbSciANA.Interface
             string prenom = PrenomTextBox.Text;
             string email = EmailTextBox.Text;
             string adresse = AdresseTextBox.Text;
-
+            string mdp = MdpTextBox.Password;
             var selectedItem = RoleComboBox.SelectedItem as ComboBoxItem;
             string role = selectedItem?.Content.ToString();
 
@@ -50,7 +50,7 @@ namespace ProbSciANA.Interface
 
     try
     {
-        SqlQueries.SqlAddUser(nom, prenom, email, adresse, role);
+        SqlQueries.SqlAddUser(nom, prenom, email, adresse, role, mdp);
         MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
         if (role == "Client")  // Redirection selon le rôle
             {

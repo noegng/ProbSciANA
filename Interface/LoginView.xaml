@@ -28,11 +28,7 @@
 
             <!-- Champ pour l'email -->
             <TextBlock Text="Email :" Margin="5,10,0,5"/>
-            <TextBox x:Name="EmailTextBox" Width="200" Height="30" Margin="5"/>
-
-            <!-- Champ pour le téléphone -->
-            <TextBlock Text="Téléphone :" Margin="5,10,0,5"/>
-            <TextBox x:Name="TelephoneTextBox" Width="200" Height="30" Margin="5"/>
+            <TextBox x:Name="EmailTextBox" Width="200" Height="30" Margin="5"/> 
 
             <!-- Champ pour le mot de passe -->
             <TextBlock Text="Mot de passe :" Margin="5,10,0,5"/>
@@ -40,7 +36,7 @@
 
             <!-- Bouton Valider -->
             <Button Style="{StaticResource MenuButtonStyle}" Content="Valider" Width="200" Height="35" Margin="5" Click="BtnValider_Click"/>
-        </StackPanel>
+            </StackPanel>
 
         <!-- Bouton en bas de page -->
         <Button Style="{StaticResource MenuButtonStyle}" DockPanel.Dock="Bottom" Content="Retour à l'accueil"
