@@ -12,7 +12,7 @@ namespace ProbSciANA
 {
      public class Program
     {
-        static void Main(string[] args)
+      /* static void Main(string[] args)
         {   
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
             //Etape1(); // Appel de la méthode principale
@@ -32,7 +32,7 @@ namespace ProbSciANA
             //AffichageImage(stations, aretes); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
-        }
+        }*/
         static (List<Station>, List<Arete>) LectureFichierExcel(string excelFilePath){
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
@@ -398,34 +398,5 @@ namespace ProbSciANA
         #endregion
     }
 
-    public static class SqlQueries{
-
-            public static void SqlAddUser(string nom, string prenom, string email, string adresse, string role)
-    {
-        string connectionString = "server=localhost;user=root;password=ton_mot_de_passe;database=livinparis;";
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
-        {
-            connection.Open();
-
-            string query = @"INSERT INTO utilisateurs (Nom, Prenom, Email, Adresse, Role)
-                             VALUES (@Nom, @Prenom, @Email, @Adresse, @Role);";
-
-            using (MySqlCommand command = new MySqlCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@Nom", nom);
-                command.Parameters.AddWithValue("@Prenom", prenom);
-                command.Parameters.AddWithValue("@Email", email);
-                command.Parameters.AddWithValue("@Adresse", adresse);
-                command.Parameters.AddWithValue("@Role", role);
-                command.ExecuteNonQuery();
-            }
-            connection.Close();
-        }
-    }
-
-
-
-
-
-    }
+   
 }
