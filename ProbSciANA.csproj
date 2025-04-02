@@ -7,18 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-  <Content Include="Graphviz\**\*">
-    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-  </Content>
-  <Compile Remove="obj\**" />
-  <EmbeddedResource Remove="obj\**" />
-  <None Remove="obj\**" />
-  <Page Remove="obj\**" />
+    <Content Include="Graphviz\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
     <PackageReference Include="EPPlus" Version="4.0.1.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
     <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
     <PackageReference Include="MySql.Data" Version="9.2.0" />
     <PackageReference Include="System.IO.Packaging" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="Interface\App.xaml" />
   </ItemGroup>
 
 </Project>
