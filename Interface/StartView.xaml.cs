@@ -1,18 +1,23 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using MySql.Data.MySqlClient;
 
 namespace ProbSciANA.Interface
 {
-
+    
+#region Page Accueil
     public partial class StartView : Page
     {
+        
         public StartView()
         {
             InitializeComponent();
+            
         }
 
         private void BtnModeUtilisateur_Click(object sender, RoutedEventArgs e)
@@ -25,7 +30,9 @@ namespace ProbSciANA.Interface
             NavigationService?.Navigate(new AdminDashboardView());
         }
     }
+#endregion
 
+#region Page Login
     public partial class LoginView : Page
     {
         public LoginView()
@@ -53,7 +60,7 @@ namespace ProbSciANA.Interface
 
     try
     {
-        SqlQueries.SqlAddUser(nom, prenom, email, adresse, role, mdp);
+        SqlQueries.SqlAddUser(Program.ConnectionString, nom, prenom, email, adresse, role, mdp);
         MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
         if (role == "Client")  // Redirection selon le rôle
             {
@@ -83,6 +90,9 @@ namespace ProbSciANA.Interface
         }
     }
 
+#endregion
+
+#region Page Connexion
 public partial class ConnexionView : Page
 {
 private Dictionary<string, (int id, string motDePasse, string role)> utilisateurs;
@@ -90,7 +100,7 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
     public ConnexionView()
     {
         InitializeComponent();
-        utilisateurs = SqlQueries.ChargerUtilisateurs();
+        utilisateurs = SqlQueries.ChargerUtilisateurs(Program.ConnectionString);
         foreach (var utilisateur in utilisateurs.Keys)
     {
         UserComboBox.Items.Add(utilisateur);
@@ -130,6 +140,10 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
         NavigationService?.Navigate(new StartView());
     }
 }
+
+#endregion
+
+#region Page Vue Client
     public partial class UserDashboardView : Page
     {
         public UserDashboardView()
@@ -152,27 +166,46 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
         }
     }
 
+#endregion
 
+#region Page Vue Cuisinier
     public partial class CuisinierDashboardView : Page
     {
 
+        public ObservableCollection<Livraison> Livraisons { get; set; }
+        public ICommand LivrerCommandeCommand { get; }
 
         public CuisinierDashboardView()
         {
             InitializeComponent();
+
+             Livraisons = new ObservableCollection<Livraison>
+            {
+                new Livraison { NomPlat = "Pizza", NomClient = "Jean Dupont", AdresseLivraison = "123 Rue de Paris" },
+                new Livraison { NomPlat = "Sushi", NomClient = "Marie Curie", AdresseLivraison = "456 Avenue Einstein" },
+                new Livraison { NomPlat = "Burger", NomClient = "Albert Einstein", AdresseLivraison = "789 Boulevard Newton" }
+            };
+
+            LivrerCommandeCommand = new RelayCommand<Livraison>(LivrerCommande);
+            DataContext = this;
         }
 
+        private void LivrerCommande(Livraison livraison)
+        {
+            if (livraison == null) return;
+
+            // Appeler votre algorithme de plus court chemin ici
+            MessageBox.Show($"Calcul du trajet pour livrer {livraison.NomPlat} à {livraison.NomClient} ({livraison.AdresseLivraison})");
+
+          
+            Program.AffichageImage(Program.Stations,Program.Aretes);
+        }
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
             // Logique pour ajouter un plat
             MessageBox.Show("Ajouter un plat");
         }
 
-        private void VoirLivraisons_Click(object sender, RoutedEventArgs e)
-        {
-            // Logique pour voir les livraisons
-            MessageBox.Show("Voir les livraisons");
-        }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
         {
@@ -183,7 +216,12 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
             NavigationService?.Navigate(new StartView());
         }
 
+
     }
+
+#endregion
+
+#region Page Vue Admin
         public partial class AdminDashboardView : Page
     {
         public AdminDashboardView()
@@ -216,20 +254,60 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
             NavigationService?.Navigate(new StartView());
         }
     }
+#endregion
 
+#region Page Gestion Clients (admin)
     public partial class ClientsView : Page
     {
-        public ClientsView()
-        {
-            InitializeComponent();
-        }
-
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.GoBack();
-        }
+    public ClientsView()
+    {
+        InitializeComponent();
+        LoadClients();
     }
 
+    private void LoadClients(string orderBy = "nom")
+    {
+        var clients = SqlQueries.GetAllClients(Program.ConnectionString, orderBy);
+        ClientsListView.ItemsSource = clients;
+
+    }
+
+    private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+    {
+        if (ClientsListView.SelectedItem is Client client)
+    {
+        SqlQueries.DeleteClient(Program.ConnectionString, client.Id);
+        LoadClients();
+    }
+    }
+
+    private void BtnModifier_Click(object sender, RoutedEventArgs e)
+    {
+        
+        if (ClientsListView.SelectedItem is Client client)
+    {
+        SqlQueries.UpdateClient(Program.ConnectionString, client.Id, client.Nom, client.Prenom, client.Email, client.Adresse);
+        LoadClients();
+    }
+    }
+
+    private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+    {
+        NavigationService?.Navigate(new LoginView());
+    }
+
+    private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadClients("nom");
+    private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadClients("adresse");
+
+    private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+{
+    NavigationService?.Navigate(new StartView());
+}
+}
+
+#endregion
+
+#region Page Gestion Cuisiniers (admin)
     public partial class CuisiniersView : Page
     {
         public CuisiniersView()
@@ -245,6 +323,10 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
         }
     }
 
+#endregion
+
+#region Page Gestion Commandes (admin)
+
     public partial class CommandesView : Page
     {
         public CommandesView()
@@ -258,6 +340,10 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
         }
     }
 
+#endregion
+
+#region Page Statistiques (admin)
+
     public partial class StatistiquesView : Page
     {
         public StatistiquesView()
@@ -270,4 +356,35 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
             NavigationService?.GoBack();
         }
     }
+
+#endregion
+
+public class Livraison
+    {
+        public string NomPlat { get; set; }
+        public string NomClient { get; set; }
+        public string AdresseLivraison { get; set; }
+    }
+
+    public class RelayCommand<T> : ICommand
+    {
+        private readonly Action<T> _execute;
+        private readonly Func<T, bool> _canExecute;
+
+        public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)
+        {
+            _execute = execute;
+            _canExecute = canExecute;
+        }
+public bool CanExecute(object parameter) => _canExecute == null || _canExecute((T)parameter);
+
+        public void Execute(object parameter) => _execute((T)parameter);
+
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+    }
+
 }

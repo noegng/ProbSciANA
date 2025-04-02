@@ -12,6 +12,23 @@ namespace ProbSciANA
 {
      public class Program
     {
+         // Chaîne de connexion SQL
+         
+        public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
+
+        // Liste des stations et des arêtes
+        public static List<Station> Stations { get; private set; }
+        public static List<Arete> Aretes { get; private set; }
+
+        // Méthode pour initialiser les données
+        public static void InitializeData(string excelFilePath)
+        {
+            // Charger les données depuis le fichier Excel
+            (Stations, Aretes) = LectureFichierExcel(excelFilePath);
+        }
+
+
+        
       /* static void Main(string[] args)
         {   
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
@@ -33,7 +50,7 @@ namespace ProbSciANA
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }*/
-        static (List<Station>, List<Arete>) LectureFichierExcel(string excelFilePath){
+        public static (List<Station>, List<Arete>) LectureFichierExcel(string excelFilePath){
             var stations = new List<Station>();
             var aretes = new List<Arete>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
@@ -110,7 +127,7 @@ namespace ProbSciANA
             }
             return (stations, aretes);
         }
-        static void AffichageImage(List<Station> stations, List<Arete> aretes)
+        public static void AffichageImage(List<Station> stations, List<Arete> aretes)
         {
             // Chemins pour le fichier DOT et l'image PNG
             string dotFile = "graphe.dot";

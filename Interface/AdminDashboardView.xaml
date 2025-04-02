@@ -4,7 +4,7 @@
       Title="AdminDashboardView">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock Text="Panneau d'administration" FontSize="20" Margin="0,0,0,20"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Gérer les Clients" Width="200" Margin="5"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Gérer les Clients" Width="200" Margin="5" Click="BtnClients_Click"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Gérer les Cuisiniers" Width="200" Margin="5"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Voir les Commandes" Width="200" Margin="5"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Voir les Statistiques" Width="200" Margin="5"/>
