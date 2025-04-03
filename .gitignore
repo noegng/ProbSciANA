@@ -396,8 +396,9 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-# JetBrains Rider
+
 *.sln.iml
 Metro_Arcs_Par_Station_IDs.xlsx
 graphe.png
 graphe.dot
+!obj/Debug/net9.0-windows/Interface/

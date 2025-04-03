@@ -1,0 +1,50 @@
+<Page x:Class="ProbSciANA.Interface.CuisinierDashboardView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      Title="Cuisinier Dashboard">
+
+    <Grid>
+        <!-- Définition des lignes de la grille -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Barre de menu -->
+            <RowDefinition Height="*"/>   <!-- Liste des livraisons -->
+        </Grid.RowDefinitions>
+
+        <!-- Barre de menu -->
+        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0">
+            <Button Style="{StaticResource MenuButtonStyle}" Content="Ajouter un plat" Width="150" Margin="5" Click="AjouterPlat_Click"/>
+            <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="150" Margin="5" Click="BtnRetour_Click"/>
+            <Button Style="{StaticResource MenuButtonStyle}" Content="Retour à l'accueil" Width="150" Margin="5" Click="BtnRetourAccueil_Click"/>
+        </StackPanel>
+
+        <!-- Liste des livraisons -->
+        <ListView x:Name="LivraisonsListView" Grid.Row="1" Margin="10" ItemsSource="{Binding Livraisons}">
+            <ListView.View>
+                <GridView>
+                    <!-- Colonne : Nom du Plat -->
+                    <GridViewColumn Header="Nom du Plat" DisplayMemberBinding="{Binding NomPlat}" Width="200"/>
+                    
+                    <!-- Colonne : Nom du Client -->
+                    <GridViewColumn Header="Nom du Client" DisplayMemberBinding="{Binding NomClient}" Width="200"/>
+                    
+                    <!-- Colonne : Adresse de Livraison -->
+                    <GridViewColumn Header="Adresse de Livraison" DisplayMemberBinding="{Binding AdresseLivraison}" Width="300"/>
+                    
+                    <!-- Colonne : Action (Bouton Livrer) -->
+                    <GridViewColumn Header="Action" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource MenuButtonStyle}" Content="Livrer" Width="100" Margin="5"
+                                        Command="{Binding DataContext.LivrerCommandeCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                        CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Page>

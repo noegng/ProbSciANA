@@ -1,0 +1,11 @@
+<Page x:Class="ProbSciANA.Interface.StartView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="StartView">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock Text="Bienvenue sur Liv'In Paris" FontSize="24" Margin="0,0,0,20" TextAlignment="Center"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Mode Utilisateur" Width="200" Click="BtnModeUtilisateur_Click"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Mode Admin" Width="200" Margin="0,10,0,0" Click="BtnModeAdmin_Click"/>
+         
+    </StackPanel>
+</Page>
