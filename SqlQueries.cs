@@ -89,13 +89,13 @@ namespace ProbSciANA
     while (reader.Read())
     {
         clients.Add(new Client
-        (
+        {
             reader.GetInt32("id_utilisateur"),
             reader.GetString("nom"),
             reader.GetString("prenom"),
             reader.GetString("email"),
             reader.GetString("adresse")
-        ));
+    });
     }
 
     return clients;
