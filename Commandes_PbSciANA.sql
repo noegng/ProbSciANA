@@ -48,6 +48,17 @@ WHERE id_utilisateur = 2;
 
 SELECT * FROM Client_ WHERE id_utilisateur = 2;
 
+SELECT cu.*
+FROM Cuisinier cu
+JOIN Client_ cl ON cu.id_utilisateur = cl.id_utilisateur;
+
+SELECT u.id_utilisateur
+FROM utilisateur u
+JOIN Cuisinier c ON u.id_utilisateur = c.id_utilisateur;
+
+SELECT id_utilisateur, nom, prenom, adresse, telephone, email, station, date_inscription, mdp
+FROM Utilisateur;
+
 #****************** MODULE CLIENT *****************#
 
 SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.numero, u.rue, u.code_postal, u.ville, u.station, SUM(cmd.prix) AS total_achats

@@ -111,9 +111,6 @@ namespace ProbSciANA
 
    #endregion
 
-
-    static List<Utilisateur> utilisateurs = new List<Utilisateur>();
-
       public static (List<Station>, List<Arete>, Dictionary<string,double>) LectureFichierExcel()
       {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
