@@ -13,6 +13,7 @@ namespace ProbSciANA
         private int[,] matriceAdjacence;
         private Dictionary<Station, int> couleurs;
         private List<Arete> aretes;
+        private int nbCycles = -1; //Détecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
 
         public Graphe2(List<Arete> aretes) //Graphe non pondéré
         {
@@ -31,6 +32,14 @@ namespace ProbSciANA
         public Dictionary<Station, int> Couleurs
         {
             get { return couleurs; }
+        }
+        public int[,] MatriceAdjacence{
+            get { return matriceAdjacence; }
+            set { matriceAdjacence = value; }
+        }
+        public List<Arete> Aretes{
+            get { return aretes; }
+            set { aretes = value; }
         }
         #endregion
         #region Méthodes de parcours
@@ -86,7 +95,7 @@ namespace ProbSciANA
                 Station sommet = pile.Peek();
                 bool aExploréUnVoisin = false;
 
-                foreach (Station voisin in listeAdjacence[sommet].OrderBy(x => x))
+                foreach (Station voisin in listeAdjacence[sommet])
                 {
                     if (couleurs[voisin] == 0) // blanc
                     {
@@ -112,7 +121,7 @@ namespace ProbSciANA
         {
             couleurs = new Dictionary<Station, int>();
             HashSet<Station> visite = new HashSet<Station>();
-
+            nbCycles = 0;
             foreach (Station sommet in listeAdjacence.Keys)
             {
                 couleurs[sommet] = 0; // blanc
@@ -142,7 +151,7 @@ namespace ProbSciANA
                 }
                 else if (rechercheCycle && couleurs[voisin] == 1)
                 {
-                    Console.WriteLine("Cycle détecté.");
+                    nbCycles = nbCycles + 1;
                     return;
                 }
             }
@@ -166,6 +175,34 @@ namespace ProbSciANA
         public void ContientCycle()
         {
             DFSRécursif(true);
+            Console.WriteLine(nbCycles + " cycles trouvés dans le graphe.");
+        }
+        public void DFStoString(Station sommetDepart)
+        {
+            Console.Write("Parcours en Profondeur (DFS): ");
+            foreach (Station sommet in DFS(sommetDepart))
+            {
+                Console.Write(sommet.Nom + " ; ");
+            }
+            Console.WriteLine();
+        }
+        public void BFStoString(Station sommetDepart)
+        {
+            Console.Write("Parcours en Largeur (BFS):  ");
+            foreach (Station sommet in BFS(sommetDepart))
+            {
+                Console.Write(sommet.Nom + " ; ");
+            }
+            Console.WriteLine();
+        }
+        public void DFSRécursiftoString()
+        {
+            Console.Write("Parcours en Profondeur (DFS récursif): ");
+            foreach (Station sommet in DFSRécursif())
+            {
+                Console.Write(sommet.Nom + " ; ");
+            }
+            Console.WriteLine();
         }
         
         public void RemplissageListeAdjacence(List<Arete> aretes)
@@ -207,7 +244,6 @@ namespace ProbSciANA
         }
         public void RemplissageMatriceAdjacence()
         {
-           int i = 0;
             foreach (Arete arete in aretes)
             {
                 if ( arete.IdPrevious != null && arete.IdNext != null)
@@ -290,12 +326,12 @@ namespace ProbSciANA
             return distances;
         }
         //Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
-        public (List<Station>, int) DijkstraChemin(Station sommetDepart, Station sommetArrivee)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        public (List<Arete>, int) DijkstraChemin(Station sommetDepart, Station sommetArrivee)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<Station, int> distances = new Dictionary<Station, int>();
             HashSet<Station> visites = new HashSet<Station>();
             PriorityQueue<Station, int> filePriorite = new PriorityQueue<Station, int>(); // On utilise une priority queue pour gérer les sommets à explorer
-            Dictionary<Station, Station> predecesseurs = new Dictionary<Station, Station>(); // Pour reconstruire le chemin
+            Dictionary<Station, Arete> predecesseurs = new Dictionary<Station, Arete>(); // Pour reconstruire le chemin
             string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
 
             foreach (Station sommet in listeAdjacence.Keys)
@@ -334,7 +370,7 @@ namespace ProbSciANA
                             if (nouvelleDistance < distances[voisin.IdNext])
                             {
                                 distances[voisin.IdNext] = nouvelleDistance;
-                                predecesseurs[voisin.IdNext] = sommetActuel; // On met à jour le prédécesseur
+                                predecesseurs[voisin.IdNext] = voisin; // On met à jour le prédécesseur
                                 filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
                             }
                         }
@@ -344,13 +380,17 @@ namespace ProbSciANA
                 }
             }
             // Reconstruire le chemin
-            List<Station> chemin = new List<Station>();
-            for (Station sommet = sommetArrivee; sommet != null; sommet = predecesseurs[sommet])
+            List<Arete> cheminAretes = new List<Arete>();
+            Station courant = sommetArrivee;
+
+            while (predecesseurs[courant] != null)
             {
-                chemin.Add(sommet);
+                    Arete arete = predecesseurs[courant];
+                    cheminAretes.Add(arete);
+                    courant = arete.IdPrevious;
             }
-            chemin.Reverse(); // On inverse le chemin pour avoir l'ordre correct
-            return (chemin,distances[sommetArrivee]); // On renvoie le chemin et la distance totale
+            cheminAretes.Reverse(); // Important pour avoir le chemin dans le bon sens
+            return (cheminAretes, distances[sommetArrivee]);
         }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
         public Dictionary<Station, int> BellmanFord(Station sommetDepart)
@@ -379,11 +419,11 @@ namespace ProbSciANA
             return distances;
         }
         //Calculer et Renvoie le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
-        public (List<Station>, int) BellmanFordChemin(Station sommetDepart, Station sommetArrivee)
+        public (List<Arete>, int) BellmanFordChemin(Station sommetDepart, Station sommetArrivee)
         {
             Dictionary<Station, int> distances = new Dictionary<Station, int>();
             HashSet<Station> visites = new HashSet<Station>();
-            Dictionary<Station, Station> predecesseurs = new Dictionary<Station, Station>(); // Pour reconstruire le chemin
+            Dictionary<Station, Arete> predecesseurs = new Dictionary<Station, Arete>(); // Pour reconstruire le chemin
 
             foreach (Station sommet in listeAdjacence.Keys)
             {
@@ -401,18 +441,22 @@ namespace ProbSciANA
                     if ((distances[arete.IdPrevious] != int.MaxValue) && (distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement < distances[arete.IdNext]))
                     {
                         distances[arete.IdNext] = distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement;
-                        predecesseurs[arete.IdNext] = arete.IdPrevious; // On met à jour le prédécesseur
+                        predecesseurs[arete.IdNext] = arete; // On met à jour le prédécesseur
                     }
                 }
             }
             // Reconstruire le chemin
-            List<Station> chemin = new List<Station>();
-            for (Station sommet = sommetArrivee; sommet != null; sommet = predecesseurs[sommet])
+            List<Arete> cheminAretes = new List<Arete>();
+            Station courant = sommetArrivee;
+
+            while (predecesseurs[courant] != null)
             {
-                chemin.Add(sommet);
+                    Arete arete = predecesseurs[courant];
+                    cheminAretes.Add(arete);
+                    courant = arete.IdPrevious;
             }
-            chemin.Reverse(); // On inverse le chemin pour avoir l'ordre correct
-            return (chemin,distances[sommetArrivee]); // On renvoie le chemin et la distance totale
+            cheminAretes.Reverse(); // Important pour avoir le chemin dans le bon sens
+            return (cheminAretes, distances[sommetArrivee]);
         }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Floyd-Warshall
         public Dictionary<Station, Dictionary<Station, int>> FloydWarshall()

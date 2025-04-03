@@ -47,6 +47,7 @@ namespace ProbSciANA.Interface
             string prenom = PrenomTextBox.Text;
             string email = EmailTextBox.Text;
             string adresse = AdresseTextBox.Text;
+            string station = StationTextBox.Text;
             string mdp = MdpTextBox.Password;
             var selectedItem = RoleComboBox.SelectedItem as ComboBoxItem;
             string role = selectedItem?.Content.ToString();
@@ -60,7 +61,7 @@ namespace ProbSciANA.Interface
 
     try
     {
-        SqlQueries.SqlAddUser(Program.ConnectionString, nom, prenom, email, adresse, role, mdp);
+        SqlQueries.SqlAddUser(nom, prenom, adresse, email,station, role, mdp);
         MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
         if (role == "Client")  // Redirection selon le rôle
             {
@@ -100,7 +101,7 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
     public ConnexionView()
     {
         InitializeComponent();
-        utilisateurs = SqlQueries.ChargerUtilisateurs(Program.ConnectionString);
+        utilisateurs = SqlQueries.ChargerUtilisateurs();
         foreach (var utilisateur in utilisateurs.Keys)
     {
         UserComboBox.Items.Add(utilisateur);
@@ -195,9 +196,17 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
             if (livraison == null) return;
 
             // Appeler votre algorithme de plus court chemin ici
+         /*   Graphe2 graphe = new Graphe2(Program.Aretes);
+
+        List<Arete> aretechemin = new List<Arete>();
+        int temps = 0;
+           
+        (aretechemin,temps) = graphe.DijkstraChemin();
+            
+            Graphviz.GenerateChemin(aretechemin, Program.Stations);
             MessageBox.Show($"Calcul du trajet pour livrer {livraison.NomPlat} à {livraison.NomClient} ({livraison.AdresseLivraison})");
 
-          
+          */
             Program.AffichageImage(Program.Stations,Program.Aretes);
         }
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
@@ -267,7 +276,7 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
 
     private void LoadClients(string orderBy = "nom")
     {
-        var clients = SqlQueries.GetAllClients(Program.ConnectionString, orderBy);
+        var clients = SqlQueries.GetAllClients(orderBy);
         ClientsListView.ItemsSource = clients;
 
     }
@@ -276,7 +285,7 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
     {
         if (ClientsListView.SelectedItem is Client client)
     {
-        SqlQueries.DeleteClient(Program.ConnectionString, client.Id);
+        SqlQueries.DeleteClient(client.Id);
         LoadClients();
     }
     }
@@ -286,7 +295,7 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
         
         if (ClientsListView.SelectedItem is Client client)
     {
-        SqlQueries.UpdateClient(Program.ConnectionString, client.Id, client.Nom, client.Prenom, client.Email, client.Adresse);
+        SqlQueries.UpdateClient(client.Id, client.Nom, client.Prenom, client.Email, client.Adresse);
         LoadClients();
     }
     }
@@ -359,32 +368,8 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
 
 #endregion
 
-public class Livraison
-    {
-        public string NomPlat { get; set; }
-        public string NomClient { get; set; }
-        public string AdresseLivraison { get; set; }
-    }
 
-    public class RelayCommand<T> : ICommand
-    {
-        private readonly Action<T> _execute;
-        private readonly Func<T, bool> _canExecute;
 
-        public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-        }
-public bool CanExecute(object parameter) => _canExecute == null || _canExecute((T)parameter);
-
-        public void Execute(object parameter) => _execute((T)parameter);
-
-        public event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
-        }
-    }
+   
 
 }

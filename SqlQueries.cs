@@ -6,36 +6,53 @@ namespace ProbSciANA
 {
  public static class SqlQueries{
 
-        public static void SqlAddUser(string connectionString, string nom, string prenom, string email, string adresse, string role, string mdp)
+        public static void SqlAddUser(string nom, string prenom,string adresse, string email, string station, string role, string mdp)
     {
         
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        using (MySqlConnection connection = new MySqlConnection(Program.ConnectionString))
         {
             connection.Open();
 
-            string query = @"INSERT INTO utilisateur (Nom, Prenom, Email, Adresse, Role, MotDePasse)
-                             VALUES (@Nom, @Prenom, @Email, @Adresse, @Role, @Mdp);";
+            string query = @"INSERT INTO utilisateur (Nom, Prenom, adresse, email, station, mdp)
+                             VALUES (@Nom, @Prenom, @Adresse, @Email, @Station, @Mdp);";
 
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 command.Parameters.AddWithValue("@Nom", nom);
                 command.Parameters.AddWithValue("@Prenom", prenom);
-                command.Parameters.AddWithValue("@Email", email);
                 command.Parameters.AddWithValue("@Adresse", adresse);
-                command.Parameters.AddWithValue("@Role", role);
+                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@Station", station);
                 command.Parameters.AddWithValue("@Mdp", mdp);
                 command.ExecuteNonQuery();
+
+                if(role == "Client")
+                {
+                    string getIdQuery = "INSERT INTO Client_ (id_utilisateur) VALUES (LAST_INSERT_ID())"; 
+                    using (MySqlCommand getIdCommand = new MySqlCommand(getIdQuery, connection))
+                    {
+                        getIdCommand.ExecuteNonQuery();
+                    }
+                }
+                else if(role == "Cuisinier")
+                {
+                    string getIdQuery = "INSERT INTO Cuisinier_ (id_utilisateur) VALUES (LAST_INSERT_ID())"; 
+                    using (MySqlCommand getIdCommand = new MySqlCommand(getIdQuery, connection))
+                    {
+                        getIdCommand.ExecuteNonQuery();
+                    }
+                }
             }
             connection.Close();
         }
     }
 
-        public static Dictionary<string, (int id, string motDePasse, string role)> ChargerUtilisateurs(string connectionString)
+        public static Dictionary<string, (int id, string motDePasse, string role)> ChargerUtilisateurs()
     {
         var utilisateurs = new Dictionary<string, (int, string, string)>();
        
 
-        using var connection = new MySqlConnection(connectionString);
+        using var connection = new MySqlConnection(Program.ConnectionString);
         {
         connection.Open();
 
@@ -48,7 +65,7 @@ namespace ProbSciANA
             int id = reader.GetInt32("id_utilisateur");
             string nom = reader.GetString("nom");
             string prenom = reader.GetString("prenom");
-            string motDePasse = reader.GetString("MotDePasse");
+            string motDePasse = reader.GetString("mdp");
             string role = reader.GetString("Role");
             string display = $"{prenom} {nom}";
             utilisateurs[display] = (id, motDePasse, role);
@@ -57,11 +74,11 @@ namespace ProbSciANA
         return utilisateurs;
     }
 
-    public static List<Client> GetAllClients(string connectionString, string orderBy = "nom")
+    public static List<Client> GetAllClients(string orderBy = "nom")
 {
     var clients = new List<Client>();
 
-    using var connection = new MySqlConnection(connectionString);
+    using var connection = new MySqlConnection(Program.ConnectionString);
     connection.Open();
 
     string query = $"SELECT id_utilisateur, nom, prenom, email, adresse FROM utilisateur WHERE role = 'Client' ORDER BY {orderBy}";
@@ -84,9 +101,9 @@ namespace ProbSciANA
 }
 
 
-    public static void DeleteClient(string connectionString, int clientId)
+    public static void DeleteClient(int clientId)
     {
-        using var connection = new MySqlConnection(connectionString);
+        using var connection = new MySqlConnection(Program.ConnectionString);
         connection.Open();
         string query = "DELETE FROM utilisateur WHERE id_utilisateur = @Id";
         using var cmd = new MySqlCommand(query, connection);
@@ -94,9 +111,9 @@ namespace ProbSciANA
         cmd.ExecuteNonQuery();
     }
 
-    public static void UpdateClient(string connectionString, int id, string nom, string prenom, string email, string adresse)
+    public static void UpdateClient(int id, string nom, string prenom, string email, string adresse)
     {
-        using var connection = new MySqlConnection(connectionString);
+        using var connection = new MySqlConnection(Program.ConnectionString);
         connection.Open();
 
         string query = @"UPDATE utilisateur SET nom = @Nom, prenom = @Prenom, email = @Email, adresse = @Adresse WHERE id_utilisateur = @Id";

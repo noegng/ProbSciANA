@@ -26,6 +26,10 @@
             <TextBlock Text="Adresse :" Margin="5,10,0,5"/>
             <TextBox x:Name="AdresseTextBox" Width="200" Height="30" Margin="5"/>
 
+            <!-- Champ pour la station -->
+            <TextBlock Text="Station :" Margin="5,10,0,5"/>
+            <TextBox x:Name="StationTextBox" Width="200" Height="30" Margin="5"/>
+
             <!-- Champ pour l'email -->
             <TextBlock Text="Email :" Margin="5,10,0,5"/>
             <TextBox x:Name="EmailTextBox" Width="200" Height="30" Margin="5"/> 
