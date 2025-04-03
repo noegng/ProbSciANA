@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
-namespace LivinParis
+namespace ProbSciANA
 {
     public static class Requetes
     {
-        public static string connectionString = "server=localhost;user=root;password=ton_mot_de_passe;database=livinparis;";
+        public static string connectionString = "SERVER=localhost;PORT=3306;user=root;password=root;database=pbsciana;";
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
-        public static void SelectUtilisateurs()
+        public static void GetUtilisateurs()
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
@@ -38,7 +38,7 @@ namespace LivinParis
                     }
                 }
 
-                string queryClient = @"SELECT u.id_utilisateur
+                /*string queryClient = @"SELECT u.id_utilisateur
                                     FROM utilisateur u
                                     JOIN Client_ c ON u.id_utilisateur = c.id_utilisateur;";
 
@@ -49,7 +49,7 @@ namespace LivinParis
                         int i = 0;
                         while(reader.Read())
                         {
-                            utilisateurs[reader.GetInt32("id_utilisateur")].EstClient = true;
+                            utilisateurs[reader.GetInt32("id_utilisateur")-1].EstClient = true;
                             i++;
                         }
                     }
@@ -66,11 +66,11 @@ namespace LivinParis
                         int i = 0;
                         while(reader.Read())
                         {
-                            utilisateurs[reader.GetInt32("id_utilisateur")].EstClient = true;
+                            utilisateurs[reader.GetInt32("id_utilisateur")-1].EstClient = true;
                             i++;
                         }
                     }
-                }
+                }*/
                 connection.Close();
             }
         }
@@ -101,9 +101,9 @@ namespace LivinParis
             this.station = station;
             this.mdp = mdp;
             InsertUtilisateur();
+            Getid();
             InsertMaj();
-            date_inscription = DateTime.Now; // Pas ouf car pas forcément égal à celle de la BDD
-            id_utilisateur = Requetes.utilisateurs.Count+1;
+            Getdate();
             Requetes.utilisateurs.Add(this);
         }
 
@@ -123,7 +123,7 @@ namespace LivinParis
                 }
                 if(!value && estClient)
                 {
-                    estClient = value; Delete("Client_");
+                    estClient = value; Delete("Client_", this.id_utilisateur);
                 }
             }
         }
@@ -138,7 +138,7 @@ namespace LivinParis
                 }
                 if(!value && estCuisinier)
                 {
-                    estCuisinier = value; Delete("Cuisinier");
+                    estCuisinier = value; Delete("Cuisinier", this.id_utilisateur);
                 }
             }
         }
@@ -190,7 +190,7 @@ namespace LivinParis
                 connection.Open();
 
                 string query = @"INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, mdp)
-                                    VALUES (@nom, @prenom, @adresse, @telephone, @email, @station, @mdp);";
+                                VALUES (@nom, @prenom, @adresse, @telephone, @email, @station, @mdp);";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -230,48 +230,32 @@ namespace LivinParis
                 using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
                 {
                     connection.Open();
-                        string query = @"INSERT INTO Cuisinier (id_utilisateur)
-                                            VALUES (@id_utilisateur);";
+                    string query = @"INSERT INTO Cuisinier (id_utilisateur)
+                                    VALUES (@id_utilisateur);";
 
-                        using (MySqlCommand command = new MySqlCommand(query, connection))
-                        {
-                            command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
-                            command.ExecuteNonQuery();
-                        }
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
+                        command.ExecuteNonQuery();
+                    }
                     connection.Close();
                 }
             }
         }
-        private void Delete(string champ)
+        public void Delete(string table, int id_utilisateur)
         {
-            if(!estClient)
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
-                using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+                connection.Open();
+                string query = $"DELETE FROM {table} WHERE id_utilisateur = @id";
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
-                    connection.Open();
-                    string query = $"DELETE FROM Client_ WHERE id_utilisateur = @id";
-                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@id", id_utilisateur);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-            }
-            if(!estCuisinier)
-            {
-                using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
-                {
-                    connection.Open();
-                    string query = $"DELETE FROM Cuisinier WHERE id_utilisateur = @id";
-                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@id", id_utilisateur);
-                        cmd.ExecuteNonQuery();
-                    }
+                    cmd.Parameters.AddWithValue("@id", id_utilisateur);
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
-        private void Update(string champ, string value)
+        public void Update(string champ, string value)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -282,6 +266,35 @@ namespace LivinParis
                     cmd.Parameters.AddWithValue("@valeur", value);
                     cmd.Parameters.AddWithValue("@id", id_utilisateur);
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        private void Getid()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT LAST_INSERT_ID();";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    id_utilisateur = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+                }
+            }
+        }
+        private void Getdate()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT date_inscription FROM Utilisateur WHERE id_utilisateur = @id_utilisateur;";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
+                    date_inscription = Convert.ToDateTime(cmd.ExecuteScalar().ToString());
                 }
             }
         }
