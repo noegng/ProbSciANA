@@ -4,8 +4,8 @@
       Title="CommandesView">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock Text="Commandes" FontSize="20" Margin="0,0,0,20" HorizontalAlignment="Center"/>
-        <Button Content="Voir toutes les commandes" Width="200" Margin="5"/>
-        <Button Content="Rechercher par client" Width="200" Margin="5"/>
-        <Button Content="Retour" Width="200"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Voir toutes les commandes" Width="200" Margin="5"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Rechercher par client" Width="200" Margin="5"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="200"/>
     </StackPanel>
 </Page>

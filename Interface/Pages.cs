@@ -263,6 +263,10 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
             NavigationService?.Navigate(new StatistiquesView());
         }
 
+        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.GoBack();
+        }
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());

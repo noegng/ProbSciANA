@@ -17,7 +17,7 @@
         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0">
             <Button Style="{StaticResource MenuButtonStyle}" Content="Ajouter un plat" Width="150" Margin="5" Click="AjouterPlat_Click"/>
             <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="150" Margin="5" Click="BtnRetour_Click"/>
-            <Button Style="{StaticResource MenuButtonStyle}" Content="Retour à l'accueil" Width="150" Margin="5" Click="BtnRetourAccueil_Click"/>
+            <Button Style="{StaticResource MenuButtonStyle}" Content="Retour à l'accueil" Width="150" Click="BtnRetourAccueil_Click"/>
         </StackPanel>
 
         <!-- Liste des livraisons -->

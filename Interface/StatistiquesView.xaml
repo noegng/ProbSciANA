@@ -3,10 +3,10 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="StatistiquesView">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBlock Text="Statistiques" FontSize="20" Margin="0,0,0,20"/>
-        <Button Content="Top clients" Width="200" Margin="5"/>
-        <Button Content="Top cuisiniers" Width="200" Margin="5"/>
-        <Button Content="Prix moyen des commandes" Width="200" Margin="5"/>
-        <Button Content="Retour" Width="200" Margin="20,20,0,0"/>
+        <TextBlock Text="Statistiques" FontSize="20" Margin="0,0,0,20" HorizontalAlignment="Center"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Top clients" Width="200" Margin="5"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Top cuisiniers" Width="200" Margin="5"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Prix moyen des commandes" Width="200" Margin="5"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="200"/>
     </StackPanel>
 </Page>
