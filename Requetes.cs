@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 public static class Requetes
 {
     static string connectionString = "server=localhost;user=root;password=ton_mot_de_passe;database=livinparis;";
+    
     public static void SqlAddUser(string nom, string prenom, string email, string adresse, string role)
     {
         using (MySqlConnection connection = new MySqlConnection(connectionString))

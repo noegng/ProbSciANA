@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace LivinParis
 {
@@ -18,6 +19,7 @@ namespace LivinParis
             this.email = email;
             this.adresse = adresse;
             this.role = role;
+            
         }
 
         #region GetSet
