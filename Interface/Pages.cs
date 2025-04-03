@@ -172,6 +172,7 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
 #region Page Vue Cuisinier
     public partial class CuisinierDashboardView : Page
     {
+        
 
         public ObservableCollection<Livraison> Livraisons { get; set; }
         public ICommand LivrerCommandeCommand { get; }
@@ -179,12 +180,16 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
         public CuisinierDashboardView()
         {
             InitializeComponent();
-
+                Client client1 = new Client(1, "Marie", "a", "@gmail", "123 Rue de Paris", "Argentine", "mdp1");
+                Cuisinier cuisinier1 = new Cuisinier(2, "Albert", "b", "@gmail", "456 Avenue Einstein", "Argentine", "mdp2");
+                Cuisinier cuisinier2 = new Cuisinier(
              Livraisons = new ObservableCollection<Livraison>
             {
-                new Livraison { NomPlat = "Pizza", NomClient = "Jean Dupont", AdresseLivraison = "123 Rue de Paris" },
-                new Livraison { NomPlat = "Sushi", NomClient = "Marie Curie", AdresseLivraison = "456 Avenue Einstein" },
-                new Livraison { NomPlat = "Burger", NomClient = "Albert Einstein", AdresseLivraison = "789 Boulevard Newton" }
+                
+                
+                new Livraison ( "Pizza" , cuisinier1, "Michel", "Argentine" ),
+                new Livraison ("Boeuf", cuisinier2, "Augustin", "Liège");
+               
             };
 
             LivrerCommandeCommand = new RelayCommand<Livraison>(LivrerCommande);

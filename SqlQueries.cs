@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI;
 
 namespace ProbSciANA
 {
@@ -36,7 +37,7 @@ namespace ProbSciANA
                 }
                 else if(role == "Cuisinier")
                 {
-                    string getIdQuery = "INSERT INTO Cuisinier_ (id_utilisateur) VALUES (LAST_INSERT_ID())"; 
+                    string getIdQuery = "INSERT INTO Cuisinier (id_utilisateur) VALUES (LAST_INSERT_ID())"; 
                     using (MySqlCommand getIdCommand = new MySqlCommand(getIdQuery, connection))
                     {
                         getIdCommand.ExecuteNonQuery();
@@ -56,7 +57,7 @@ namespace ProbSciANA
         {
         connection.Open();
 
-        string query = "SELECT id_utilisateur, nom, prenom, MotDePasse, Role FROM utilisateur";
+        string query = "SELECT id_utilisateur, nom, prenom, Mdp FROM utilisateur";
         using var cmd = new MySqlCommand(query, connection);
         using var reader = cmd.ExecuteReader();
 
@@ -66,9 +67,9 @@ namespace ProbSciANA
             string nom = reader.GetString("nom");
             string prenom = reader.GetString("prenom");
             string motDePasse = reader.GetString("mdp");
-            string role = reader.GetString("Role");
+
             string display = $"{prenom} {nom}";
-            utilisateurs[display] = (id, motDePasse, role);
+            utilisateurs[display] = (id, motDePasse, "Client"); // Par défaut, on suppose que c'est un client
         }
         }
         return utilisateurs;
@@ -88,13 +89,13 @@ namespace ProbSciANA
     while (reader.Read())
     {
         clients.Add(new Client
-        {
-            Id = reader.GetInt32("id_utilisateur"),
-            Nom = reader.GetString("nom"),
-            Prenom = reader.GetString("prenom"),
-            Email = reader.GetString("email"),
-            Adresse = reader.GetString("adresse")
-        });
+        (
+            reader.GetInt32("id_utilisateur"),
+            reader.GetString("nom"),
+            reader.GetString("prenom"),
+            reader.GetString("email"),
+            reader.GetString("adresse")
+        ));
     }
 
     return clients;
