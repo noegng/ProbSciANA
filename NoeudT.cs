@@ -8,26 +8,44 @@ namespace ProbSciANA
 {
     public class Noeud<T>
     {
-        public T Valeur { get; }
+        private T valeur;  // VAleur unique du noeud
+        private int tempsChangement; // Temps de changement (si exitant)
 
-        public Noeud(T valeur)
+        // Constructeur de la classe Station
+        public Noeud(T valeur, int temps = 0 ) // valeur par défaut
         {
-            Valeur = valeur;
+            this.valeur = valeur;
+            tempsChangement = temps;
         }
+        #region Propriétés
+        public T Valeur
+        {
+            get { return valeur; }
+            set { valeur = value; }
+        }
+        public int TempsChangement
+        {
+            get { return tempsChangement; }
+            set { tempsChangement = value; }
+        }
+        #endregion
 
         public override bool Equals(object obj)
         {
-            return obj is Noeud<T> autre && EqualityComparer<T>.Default.Equals(Valeur, autre.Valeur);
+            if (obj is Station<T> autre)
+            {
+                return EqualityComparer<T>.Default.Equals(this.Valeur, autre.Info);
+            }
+            return false;
         }
 
         public override int GetHashCode()
         {
-            return EqualityComparer<T>.Default.GetHashCode(Valeur);
+            return HashCode.Combine(Valeur, TempsChangement);
         }
-
-        public override string ToString()
+        public string ToStringLong()
         {
-            return Valeur.ToString();
+            return $"Noeud: {Valeur}, Temps de changement: {TempsChangement} minutes";
         }
     }
 }

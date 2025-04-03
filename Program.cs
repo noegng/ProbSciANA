@@ -7,6 +7,7 @@ using OfficeOpenXml;
 using System.Net.Sockets;
 using System.Diagnostics;
 using OfficeOpenXml.Utils;
+using Org.BouncyCastle.Asn1.Misc;
 
 
 namespace ProbSciANA
@@ -18,10 +19,8 @@ namespace ProbSciANA
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
             //Etape1(); // Appel de la méthode principale
             string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
-            var stations = new List<Station>();
-            var aretes = new List<Arete>(); 
-            (stations, aretes) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
-            Graphe2 graphePondéré = new Graphe2(aretes); // Création d'un graphe à partir des arêtes
+            (var noeuds , var arcs) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
+            Graphe2 graphePondéré = new Graphe2(arcs); // Création d'un graphe à partir des arêtes
             //graphePondéré.BFStoString(stations[0]); 
             //graphePondéré.DFStoString(stations[0]);
             //graphePondéré.DFSRécursiftoString();
@@ -29,8 +28,8 @@ namespace ProbSciANA
             //graphePondéré.ContientCycle();
             //TestDistanceTemps(aretes); // Test de la distance et du temps de trajet entre deux stations
             //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
-            TestDijkstra(graphePondéré, stations); // Test de l'algorithme de Dijkstra
-            TestBellmanFord(graphePondéré, stations);
+            TestDijkstra(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra
+            TestBellmanFord(graphePondéré, noeuds);
             //TestDijkstraChemin(graphePondéré, stations); // Test de l'algorithme de Dijkstra avec vitesses moyennes
             //TestBellmanFordChemin(graphePondéré, stations);
 
@@ -38,10 +37,12 @@ namespace ProbSciANA
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
-        static (List<Station>, List<Arete>) LectureFichierExcel(string excelFilePath){
-            var stations = new List<Station>();
-            var aretes = new List<Arete>(); 
+        static (List<Noeud<(int id,string nom)>>, List<Arc<Noeud<(int id,string nom)>>>) LectureFichierExcel(string excelFilePath){
+            var noeuds = new List<Noeud<(int id,string nom)>>();
+            var arcs = new List<Arc<Noeud<(int id,string nom)>>>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
+            var longitudeLatitude = new Dictionary<Noeud<(int id,string nom)>, double[]>();
+
             using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
             {
                 // On considère la première feuille
@@ -55,25 +56,26 @@ namespace ProbSciANA
                     VitessesMoyennes.Add(IdLigne, VitesseMoyenne);
                     i++;
                 }
-                Arete.VitesseMoyenne = VitessesMoyennes; // Initialisation de la vitesse moyenne obligatoire pour le calcul du temps de trajet et la création de l'arête
                 worksheet = package.Workbook.Worksheets[1]; // On considère la premiere feuille
                 i = 2;
                 while (worksheet.Cells[i, 1].Value != null)
                 {
-                    int Id = int.Parse(worksheet.Cells[i, 1].Value.ToString());
-                    string Nom = worksheet.Cells[i, 2].Value.ToString();
+                    (int Id,string Nom) = (int.Parse(worksheet.Cells[i, 1].Value.ToString()),worksheet.Cells[i, 2].Value.ToString());
+                    
                     double Longitude = double.Parse(worksheet.Cells[i, 3].Value.ToString());
                     double Latitude = double.Parse(worksheet.Cells[i, 4].Value.ToString());
                     int tempsChamgement=0;
-                if (worksheet.Cells[i, 5].Value != null)
+                    if (worksheet.Cells[i, 5].Value != null)
                     {
                         tempsChamgement = int.Parse(worksheet.Cells[i, 5].Value.ToString());
                     }
-                    Station station = new Station(Id, Nom, Longitude, Latitude, tempsChamgement);
-                    stations.Add(station);
+                    Noeud<(int, string)> noeud = new Noeud<(int, string)>((Id, Nom), tempsChamgement);
+                    longitudeLatitude[noeud][0] = Longitude;
+                    longitudeLatitude[noeud][1] = Latitude;
+                    noeuds.Add(noeud);
                     i++;
                 }
-                stations.Sort((s1, s2) => s1.Id.CompareTo(s2.Id)); // Tri des stations par Id pour que les Id correspondent aux indices de la liste
+                noeuds.Sort((s1, s2) => s1.Valeur.id.CompareTo(s2.Valeur.id)); // Tri des stations par Id pour que les Id correspondent aux indices de la liste
                 worksheet = package.Workbook.Worksheets[2]; // On considère la deuxième feuille
                 i = 2;
                 while(worksheet.Cells[i, 1].Value != null)
@@ -88,32 +90,33 @@ namespace ProbSciANA
                     }
                     int idStationPrevious = 0;
                     int idStationNext = 0;
-                    foreach(Station var in stations)
+                    foreach(Noeud<(int id, string nom)>var in noeuds)
                     {
-                        if(var.Nom == IdPrevious)
+                        if(var.Valeur.nom == IdPrevious)
                         {
-                            idStationPrevious = var.Id;
+                            idStationPrevious = var.Valeur.id;
                         }
-                        if (var.Nom == IdNext)
+                        if (var.Valeur.nom== IdNext)
                         {
-                            idStationNext = var.Id;
+                            idStationNext = var.Valeur.id;
                         }
 
                     }
                     if (idStationPrevious != 0 && idStationNext != 0) // Aucune station a un id = 0 donc on ne peut pas créer l'arête
                     {
-                        Arete areteAllé = new Arete(stations[idStationPrevious-1], stations[idStationNext-1], IdLigne, sensUnique); // Création de l'arête avec les stations correspondantes (on faut cela pour consever toutes les informations des stations dans arete et les -1 car les id commencent à 1)
+                        Arc<Noeud<(int id,string nom)>> arcAllé = new Arc<Noeud<(int id,string nom)>>(noeuds[idStationPrevious-1], noeuds[idStationNext-1],poids, sensUnique); // Création de l'arête avec les stations correspondantes (on faut cela pour conserver toutes les informations des stations dans arete et les -1 car les id commencent à 1)
+                        arcAllé.CalculerTempsTrajet(longitudeLatitude,VitessesMoyennes,IdLigne); // On met a jour le poids
                         if (!sensUnique) // Si l'arête n'est pas sens unique, on crée l'arête retour
                         {
-                            Arete areteRetour = new Arete(stations[idStationNext-1], stations[idStationPrevious-1], IdLigne, sensUnique); // Création de l'arête retour
-                            aretes.Add(areteRetour); // Ajout de l'arête retour à la liste des arêtes
+                            Arc<Noeud<(int id,string nom)>> arcRetour = new Arc<Noeud<(int id,string nom)>>(noeuds[idStationNext-1], noeuds[idStationPrevious-1], poids, sensUnique); // Création de l'arête retour
+                            arcs.Add(arcRetour); // Ajout de l'arête retour à la liste des arêtes
                         }
-                        aretes.Add(areteAllé); // Ajout de l'arête à la liste des arêtes
+                        arcs.Add(arcAllé); // Ajout de l'arête à la liste des arêtes
                     }
                     i++;
                 }
             }
-            return (stations, aretes);
+            return (noeuds, arcs);
         }
         static void AffichageImage(List<Station> stations, List<Arete> aretes)
         {
