@@ -5,13 +5,19 @@
 
     <DockPanel LastChildFill="True">
 
-        
-        <TextBlock DockPanel.Dock="Top" Text="Gestion des Clients"
-                   FontSize="24" FontWeight="Bold"
-                   HorizontalAlignment="Center" Margin="10"/>
+        <!-- Titre -->
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Gestion des Clients"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="10"/>
 
-        
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
+        <!-- Boutons d'action -->
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="10">
             <Button Style="{StaticResource MenuButtonStyle}" Content="Ajouter un client" Click="BtnAjouter_Click"/>
             <Button Style="{StaticResource MenuButtonStyle}" Content="Supprimer" Click="BtnSupprimer_Click"/>
             <Button Style="{StaticResource MenuButtonStyle}" Content="Modifier" Click="BtnModifier_Click"/>
@@ -19,21 +25,26 @@
             <Button Style="{StaticResource MenuButtonStyle}" Content="Trier par adresse" Click="BtnTrierAdresse_Click"/>
         </StackPanel>
 
-        
+        <!-- Liste des clients -->
         <ListView x:Name="ClientsListView" Margin="20" SelectionMode="Single">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="50"/>
-                    <GridViewColumn Header="Nom" DisplayMemberBinding="{Binding Nom}" Width="100"/>
-                    <GridViewColumn Header="Prénom" DisplayMemberBinding="{Binding Prenom}" Width="100"/>
-                    <GridViewColumn Header="Email" DisplayMemberBinding="{Binding Email}" Width="180"/>
+                    <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id_utilisateur}" Width="50"/>
+                    <GridViewColumn Header="Nom" DisplayMemberBinding="{Binding Nom}" Width="120"/>
+                    <GridViewColumn Header="Prénom" DisplayMemberBinding="{Binding Prenom}" Width="120"/>
                     <GridViewColumn Header="Adresse" DisplayMemberBinding="{Binding Adresse}" Width="180"/>
+                    <GridViewColumn Header="Email" DisplayMemberBinding="{Binding Email}" Width="180"/>
+                    <GridViewColumn Header="Station" DisplayMemberBinding="{Binding Station}" Width="100"/>
                 </GridView>
             </ListView.View>
         </ListView>
 
-        
-        <Button Style="{StaticResource MenuButtonStyle}" DockPanel.Dock="Bottom" Content="Retour à l'accueil"
-                HorizontalAlignment="Center" Margin="10" Click="BtnRetourAccueil_Click"/>
+        <!-- Bouton retour -->
+        <Button Style="{StaticResource MenuButtonStyle}"
+                DockPanel.Dock="Bottom"
+                Content="Retour à l'accueil"
+                HorizontalAlignment="Center"
+                Margin="10"
+                Click="BtnRetourAccueil_Click"/>
     </DockPanel>
 </Page>

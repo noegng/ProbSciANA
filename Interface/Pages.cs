@@ -34,7 +34,7 @@ namespace ProbSciANA.Interface
 
 #region Page Login
     public partial class LoginView : Page
-    {
+   {
         public LoginView()
         {
             InitializeComponent();
@@ -42,7 +42,6 @@ namespace ProbSciANA.Interface
 
         private void BtnValider_Click(object sender, RoutedEventArgs e)
         {
-            // Récupération des champs d'identité
             string nom = NomTextBox.Text;
             string prenom = PrenomTextBox.Text;
             string email = EmailTextBox.Text;
@@ -52,39 +51,45 @@ namespace ProbSciANA.Interface
             var selectedItem = RoleComboBox.SelectedItem as ComboBoxItem;
             string role = selectedItem?.Content.ToString();
 
-    if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(prenom) ||
-        string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(adresse) || string.IsNullOrWhiteSpace(role))
-    {
-        MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
-        return;
-    }
-
-    try
-    {
-        SqlQueries.SqlAddUser(nom, prenom, adresse, email,station, role, mdp);
-        MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
-        if (role == "Client")  // Redirection selon le rôle
+            if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(prenom) ||
+                string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(adresse) ||
+                string.IsNullOrWhiteSpace(role))
             {
-                NavigationService?.Navigate(new UserDashboardView());
+                MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
+                return;
             }
-            else if (role == "Cuisinier")
-            {
-                NavigationService?.Navigate(new CuisinierDashboardView());
-            }
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show("Erreur lors de l'enregistrement : " + ex.Message);
-    }
 
-            
-            
+            try
+            {
+                var nouvelUtilisateur = new Utilisateur(
+                    estClient: role == "Client",
+                    estCuisinier: role == "Cuisinier",
+                    nom,
+                    prenom,
+                    adresse,
+                    "", // téléphone
+                    email,
+                    station,
+                    mdp);
+
+                MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
+
+                if (role == "Client")
+                    NavigationService?.Navigate(new UserDashboardView());
+                else if (role == "Cuisinier")
+                    NavigationService?.Navigate(new CuisinierDashboardView());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'enregistrement : " + ex.Message);
+            }
         }
-      
-      private void BtnSeConnecter_Click(object sender, RoutedEventArgs e)
+
+        private void BtnSeConnecter_Click(object sender, RoutedEventArgs e)
         {
-    NavigationService?.Navigate(new ConnexionView());
+            NavigationService?.Navigate(new ConnexionView());
         }
+
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
@@ -96,51 +101,54 @@ namespace ProbSciANA.Interface
 #region Page Connexion
 public partial class ConnexionView : Page
 {
-private Dictionary<string, (int id, string motDePasse, string role)> utilisateurs;
+        private Dictionary<string, Utilisateur> utilisateurs;
 
-    public ConnexionView()
-    {
-        InitializeComponent();
-        utilisateurs = SqlQueries.ChargerUtilisateurs();
-        foreach (var utilisateur in utilisateurs.Keys)
-    {
-        UserComboBox.Items.Add(utilisateur);
-    }
-    }
-
-    
-    private void BtnConnexion_Click(object sender, RoutedEventArgs e)
-    {
-        if (UserComboBox.SelectedItem == null || string.IsNullOrWhiteSpace(PasswordBox.Password))
+        public ConnexionView()
         {
-            MessageBox.Show("Veuillez sélectionner un utilisateur et saisir le mot de passe.");
-            return;
+            InitializeComponent();
+            Requetes.SelectUtilisateurs();
+            utilisateurs = new Dictionary<string, Utilisateur>();
+
+            foreach (var utilisateur in Requetes.utilisateurs)
+            {
+                string display = utilisateur.Prenom + " " + utilisateur.Nom;
+                utilisateurs[display] = utilisateur;
+                UserComboBox.Items.Add(display);
+            }
         }
 
-        string nomUtilisateur = UserComboBox.SelectedItem.ToString();
-        string motDePasseEntre = PasswordBox.Password;
-
-        if (utilisateurs.TryGetValue(nomUtilisateur, out var infos)
-            && motDePasseEntre == infos.motDePasse)
+        private void BtnConnexion_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"Connexion réussie : {nomUtilisateur} ({infos.role})");
+            if (UserComboBox.SelectedItem == null || string.IsNullOrWhiteSpace(PasswordBox.Password))
+            {
+                MessageBox.Show("Veuillez sélectionner un utilisateur et saisir le mot de passe.");
+                return;
+            }
 
-            if (infos.role == "Cuisinier")
-                NavigationService?.Navigate(new CuisinierDashboardView());
+            string nomUtilisateur = UserComboBox.SelectedItem.ToString();
+            string motDePasseEntre = PasswordBox.Password;
+
+            if (utilisateurs.TryGetValue(nomUtilisateur, out var utilisateur)
+                && motDePasseEntre == utilisateur.Mdp)
+            {
+                MessageBox.Show($"Connexion réussie : {nomUtilisateur}");
+
+                if (utilisateur.EstCuisinier)
+                    NavigationService?.Navigate(new CuisinierDashboardView());
+                else if (utilisateur.EstClient)
+                    NavigationService?.Navigate(new UserDashboardView());
+            }
             else
-                NavigationService?.Navigate(new UserDashboardView());
+            {
+                MessageBox.Show("Mot de passe incorrect.");
+            }
         }
-        else
-        {
-            MessageBox.Show("Mot de passe incorrect.");
-        }
-    }
 
-    private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
-    {
-        NavigationService?.Navigate(new StartView());
+        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
     }
-}
 
 #endregion
 
@@ -276,68 +284,116 @@ private Dictionary<string, (int id, string motDePasse, string role)> utilisateur
 
 #region Page Gestion Clients (admin)
     public partial class ClientsView : Page
-    {
-    public ClientsView()
-    {
-        InitializeComponent();
-        LoadClients();
-    }
+     {
+        private List<Utilisateur> clients;
 
-    private void LoadClients(string orderBy = "nom")
-    {
-        var clients = SqlQueries.GetAllClients(orderBy);
-        ClientsListView.ItemsSource = clients;
+        public ClientsView()
+        {
+            InitializeComponent();
+            Requetes.SelectUtilisateurs();
+            LoadClients();
+        }
 
-    }
+        private void LoadClients(string orderBy = "nom")
+        {
+            clients = Requetes.utilisateurs.FindAll(u => u.EstClient);
+            if (orderBy == "adresse")
+                clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
+            else
+                clients.Sort((a, b) => a.Nom.CompareTo(b.Nom));
 
-    private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
-    {
-        if (ClientsListView.SelectedItem is Client client)
-    {
-        SqlQueries.DeleteClient(client.Id);
-        LoadClients();
-    }
-    }
+            ClientsListView.ItemsSource = null;
+            ClientsListView.ItemsSource = clients;
+        }
 
-    private void BtnModifier_Click(object sender, RoutedEventArgs e)
-    {
-        
-        if (ClientsListView.SelectedItem is Client client)
-    {
-        SqlQueries.UpdateClient(client.Id, client.Nom, client.Prenom, client.Email, client.Adresse);
-        LoadClients();
-    }
-    }
+        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (ClientsListView.SelectedItem is Utilisateur client)
+            {
+                client.EstClient = false; // Déclenche suppression automatique
+                Requetes.utilisateurs.Remove(client);
+                LoadClients();
+            }
+        }
 
-    private void BtnAjouter_Click(object sender, RoutedEventArgs e)
-    {
-        NavigationService?.Navigate(new LoginView());
+        private void BtnModifier_Click(object sender, RoutedEventArgs e)
+        {
+            if (ClientsListView.SelectedItem is Utilisateur client)
+            {
+                // Exemple : mise à jour du nom pour test
+                client.Nom = client.Nom + " (modifié)";
+                LoadClients();
+            }
+        }
+
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new LoginView());
+        }
+
+        private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadClients("nom");
+        private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadClients("adresse");
+        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
     }
-
-    private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadClients("nom");
-    private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadClients("adresse");
-
-    private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
-{
-    NavigationService?.Navigate(new StartView());
-}
-}
 
 #endregion
 
 #region Page Gestion Cuisiniers (admin)
     public partial class CuisiniersView : Page
     {
+        private List<Utilisateur> cuisiniers;
+
         public CuisiniersView()
         {
             InitializeComponent();
+            Requetes.SelectUtilisateurs();
+            LoadCuisiniers();
         }
 
-
-        
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        private void LoadCuisiniers(string orderBy = "nom")
         {
-            NavigationService?.GoBack();
+            cuisiniers = Requetes.utilisateurs.FindAll(u => u.EstCuisinier);
+            if (orderBy == "adresse")
+                cuisiniers.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
+            else
+                cuisiniers.Sort((a, b) => a.Nom.CompareTo(b.Nom));
+
+            CuisiniersListView.ItemsSource = null;
+            CuisiniersListView.ItemsSource = cuisiniers;
+        }
+
+        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
+            {
+                cuisinier.EstCuisinier = false;
+                Requetes.utilisateurs.Remove(cuisinier);
+                LoadCuisiniers();
+            }
+        }
+
+        private void BtnModifier_Click(object sender, RoutedEventArgs e)
+        {
+            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
+            {
+                cuisinier.Nom = cuisinier.Nom + " (modifié)";
+                LoadCuisiniers();
+            }
+        }
+
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new LoginView());
+        }
+
+        private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("nom");
+        private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("adresse");
+        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
         }
     }
 
