@@ -1,17 +1,17 @@
 --------------------------
 -- Table Utilisateur
 --------------------------
-INSERT INTO Utilisateur (nom, prenom, rue, numero, code_postal, ville, telephone, email, station) VALUES
-('Dupont', 'Jean', 'Rue de Paris', 10, '75001', 'Paris', '0102030405', 'jean.dupont@example.com', 'Station A'),
-('Martin', 'Alice', 'Avenue de la République', 15, '75011', 'Paris', '0102030406', 'alice.martin@example.com', 'Station B'),
-('Durand', 'Pierre', 'Boulevard Voltaire', 20, '75012', 'Paris', '0102030407', 'pierre.durand@example.com', 'Station C'),
-('Leroy', 'Sophie', 'Rue Victor Hugo', 5, '75002', 'Paris', '0102030408', 'sophie.leroy@example.com', 'Station D'),
-('Moreau', 'Julien', 'Rue de la Paix', 8, '75008', 'Paris', '0102030409', 'julien.moreau@example.com', 'Station E'),
-('Simon', 'Claire', 'Rue Lafayette', 12, '75009', 'Paris', '0102030410', 'claire.simon@example.com', 'Station F'),
-('Laurent', 'Marc', 'Avenue Mozart', 22, '75016', 'Paris', '0102030411', 'marc.laurent@example.com', 'Station G'),
-('Garnier', 'Emma', 'Rue de Rivoli', 18, '75004', 'Paris', '0102030412', 'emma.garnier@example.com', 'Station H'),
-('Roux', 'Lucas', 'Rue du Bac', 7, '75007', 'Paris', '0102030413', 'lucas.roux@example.com', 'Station I'),
-('Morel', 'Léa', 'Boulevard Saint-Germain', 3, '75006', 'Paris', '0102030414', 'lea.morel@example.com', 'Station J');
+INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, mdp) VALUES
+('Dupont', 'Jean', '10 Rue de Paris, 75001 Paris', '0102030405', 'jean.dupont@example.com', 'Station A', 'mdp1234'),
+('Martin', 'Alice', '15 Avenue de la République, 75011 Paris', '0102030406', 'alice.martin@example.com', 'Station B', 'mdp1234'),
+('Durand', 'Pierre', '20 Boulevard Voltaire, 75012 Paris', '0102030407', 'pierre.durand@example.com', 'Station C', 'mdp1234'),
+('Leroy', 'Sophie', '5 Rue Victor Hugo, 75002 Paris', '0102030408', 'sophie.leroy@example.com', 'Station D', 'mdp1234'),
+('Moreau', 'Julien', '8 Rue de la Paix, 75008 Paris', '0102030409', 'julien.moreau@example.com', 'Station E', 'mdp1234'),
+('Simon', 'Claire', '12 Rue Lafayette, 75009 Paris', '0102030410', 'claire.simon@example.com', 'Station F', 'mdp1234'),
+('Laurent', 'Marc', '22 Avenue Mozart, 75016 Paris', '0102030411', 'marc.laurent@example.com', 'Station G', 'mdp1234'),
+('Garnier', 'Emma', '18 Rue de Rivoli, 75004 Paris', '0102030412', 'emma.garnier@example.com', 'Station H', 'mdp1234'),
+('Roux', 'Lucas', '7 Rue du Bac, 75007 Paris', '0102030413', 'lucas.roux@example.com', 'Station I', 'mdp1234'),
+('Morel', 'Léa', '3 Boulevard Saint-Germain, 75006 Paris', '0102030414', 'lea.morel@example.com', 'Station J', 'mdp1234');
 
 --------------------------
 -- Table Client_

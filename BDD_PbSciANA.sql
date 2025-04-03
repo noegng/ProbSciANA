@@ -7,13 +7,12 @@ CREATE TABLE IF NOT EXISTS Utilisateur(
    id_utilisateur INT PRIMARY KEY AUTO_INCREMENT,
    nom VARCHAR(50),
    prenom VARCHAR(50),
-   rue VARCHAR(50),
-   numero TINYINT CHECK (numero >=0),
-   code_postal VARCHAR(5),
-   ville VARCHAR(50),
+   adresse VARCHAR(100),
    telephone VARCHAR(10),
    email VARCHAR(50) UNIQUE,
-   station VARCHAR(50)
+   station VARCHAR(50),
+   date_inscription DATETIME DEFAULT NOW(),
+   mdp VARCHAR(15)
 );
 
 DROP TABLE IF EXISTS Client_;

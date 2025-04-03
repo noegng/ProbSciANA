@@ -202,6 +202,23 @@ namespace ProbSciANA
                 Console.WriteLine($"Distance 1 entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
             }
         }
+
+        static void TestDistanceTempsBIS(List<Arete> aretes , Dictionary<string, double> VitessesMoyennes)
+        // Test de la distance et du temps de trajet entre deux stations
+        {
+            foreach (Arete arete in aretes)
+            {
+                if (arete.IdPrevious == null || arete.IdNext == null)
+                {
+                    continue;   // Ignore les arêtes sans stations
+                }
+                // Calcul de la distance entre deux stations
+                double distance = arete.CalculerDistance();
+                // Affichage de la distance et du temps de trajet
+                Console.WriteLine($"Distance 1 entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
+            }
+        }
+
         #region Etape 1
         static void Etape1()
         {
@@ -366,21 +383,7 @@ namespace ProbSciANA
             Console.WriteLine("Le temps le plus court entre " + depart.Nom + " et " + arrivee.Nom + " est de " + plusPetiteDistance + " min.");
         }
 
-        static void TestDistanceTemps(List<Arete> aretes , Dictionary<string, double> VitessesMoyennes)
-        // Test de la distance et du temps de trajet entre deux stations
-        {
-            foreach (Arete arete in aretes)
-            {
-                if (arete.IdPrevious == null || arete.IdNext == null)
-                {
-                    continue;   // Ignore les arêtes sans stations
-                }
-                // Calcul de la distance entre deux stations
-                double distance = arete.CalculerDistance();
-                // Affichage de la distance et du temps de trajet
-                Console.WriteLine($"Distance 1 entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
-            }
-        }
+        
         /// <summary>
         /// Test tabLien et noeudMax et nbLien
         /// </summary>
