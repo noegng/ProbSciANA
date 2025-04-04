@@ -336,8 +336,7 @@ public partial class ConnexionView : Page
         {
             if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
             {
-                cuisinier.EstCuisinier = false;
-                Requetes.utilisateurs.Remove(cuisinier);
+                cuisinier.EstCuisinier = false; // Déclenche suppression automatique
                 LoadCuisiniers();
             }
         }
