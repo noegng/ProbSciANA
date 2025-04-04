@@ -10,12 +10,14 @@ namespace ProbSciANA
     {
         private T valeur;  // VAleur unique du noeud
         private int tempsChangement; // Temps de changement (si exitant)
+        private static int idBrute = 0;
 
         // Constructeur de la classe Station
         public Noeud(T valeur, int temps = 0 ) // valeur par défaut
         {
             this.valeur = valeur;
             tempsChangement = temps;
+            idBrute++;
         }
         #region Propriétés
         public T Valeur
@@ -27,6 +29,11 @@ namespace ProbSciANA
         {
             get { return tempsChangement; }
             set { tempsChangement = value; }
+        }
+        public int IdBrute
+        {
+            get { return idBrute; }
+            set { idBrute = value; }
         }
         #endregion
 

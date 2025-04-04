@@ -9,15 +9,18 @@ namespace ProbSciANA
         private T idNext;
         private int poids;
         private bool sensUnique;
+        private string idLigne;
+
         // private string idLigne;
         // private static Dictionary<string, double> vitesseMoyenne = new Dictionary<string, double>();
         // private static Dictionary<T, double[]> longitudeLatitude = new Dictionary<T, double[]>();
-        public Arc(T idPrevious, T idNext,int poids = 1, bool sensUnique = false) {
+        public Arc(T idPrevious, T idNext, bool sensUnique = false, string idLigne = "",int poids = 1) {
         this.idPrevious = idPrevious;
         this.idNext = idNext;
         this.sensUnique = sensUnique;
         this.poids = poids;
-    }
+        this.idLigne = idLigne;
+        }
 #region Properties
         public T IdPrevious
         {
@@ -43,10 +46,23 @@ namespace ProbSciANA
                 sensUnique = value;
             }
         }
+        public string IdLigne {
+        get {
+            return idLigne;
+        }
+        set {
+            idLigne = value;
+        }
+    }
 #endregion
         public bool Equals(Arete<T> other)
         {
             if (other == null) return false;
+            if(idLigne != null || idLigne != ""){
+                return EqualityComparer<T>.Default.Equals(IdPrevious, other.IdPrevious) &&
+                        EqualityComparer<T>.Default.Equals(IdNext, other.IdNext) && 
+                        EqualityComparer<string>.Default.Equals(IdLigne, other.IdLigne);
+            }
             return EqualityComparer<T>.Default.Equals(IdPrevious, other.IdPrevious) &&
                    EqualityComparer<T>.Default.Equals(IdNext, other.IdNext);
         }
@@ -72,13 +88,13 @@ namespace ProbSciANA
             return R * c; // Distance en km
         }
         //Calcul et met a jour la variabl temps ( temps de trajet entre deux stations)
-        public void CalculerTempsTrajet(Dictionary<T, double[]> longitudeLatitude, Dictionary<string, double> VitessesMoyennes, string idLigne)
+        public int CalculerTempsTrajet(Dictionary<T, double[]> longitudeLatitude, Dictionary<string, double> VitessesMoyennes, string idLigne)
         {
             // calcul de la distance entre idPrevious et idNext avec la formule de Haversine
             double distance = CalculerDistance(longitudeLatitude);
             double t = distance / VitessesMoyennes[idLigne];
             poids =  (int)t + 1; // +1 pour eviter d'avoir un temps de trajet nul et pour arrondir a l'entier superieur
-            
+            return poids;
         }
         
     }

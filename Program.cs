@@ -75,7 +75,7 @@ namespace ProbSciANA
                     noeuds.Add(noeud);
                     i++;
                 }
-                noeuds.Sort((s1, s2) => s1.Valeur.id.CompareTo(s2.Valeur.id)); // Tri des stations par Id pour que les Id correspondent aux indices de la liste
+                noeuds.Sort((s1, s2) => s1.Valeur.id.CompareTo(s2.Valeur.id)); // Tri des stations par Id pour que les Id correspondent aux indices de la liste ( Ou par IdBrute)
                 worksheet = package.Workbook.Worksheets[2]; // On considère la deuxième feuille
                 i = 2;
                 while(worksheet.Cells[i, 1].Value != null)
@@ -104,11 +104,11 @@ namespace ProbSciANA
                     }
                     if (idStationPrevious != 0 && idStationNext != 0) // Aucune station a un id = 0 donc on ne peut pas créer l'arête
                     {
-                        Arc<Noeud<(int id,string nom)>> arcAllé = new Arc<Noeud<(int id,string nom)>>(noeuds[idStationPrevious-1], noeuds[idStationNext-1],poids, sensUnique); // Création de l'arête avec les stations correspondantes (on faut cela pour conserver toutes les informations des stations dans arete et les -1 car les id commencent à 1)
-                        arcAllé.CalculerTempsTrajet(longitudeLatitude,VitessesMoyennes,IdLigne); // On met a jour le poids
+                        Arc<Noeud<(int id,string nom)>> arcAllé = new Arc<Noeud<(int id,string nom)>>(noeuds[idStationPrevious-1], noeuds[idStationNext-1], sensUnique, IdLigne); // Création de l'arête avec les stations correspondantes (on faut cela pour conserver toutes les informations des stations dans arete et les -1 car les id commencent à 1)
+                        int poids = arcAllé.CalculerTempsTrajet(longitudeLatitude,VitessesMoyennes,IdLigne); // On met a jour le poids
                         if (!sensUnique) // Si l'arête n'est pas sens unique, on crée l'arête retour
                         {
-                            Arc<Noeud<(int id,string nom)>> arcRetour = new Arc<Noeud<(int id,string nom)>>(noeuds[idStationNext-1], noeuds[idStationPrevious-1], poids, sensUnique); // Création de l'arête retour
+                            Arc<Noeud<(int id,string nom)>> arcRetour = new Arc<Noeud<(int id,string nom)>>(noeuds[idStationNext-1], noeuds[idStationPrevious-1], sensUnique, IdLigne, poids); // Création de l'arête retour
                             arcs.Add(arcRetour); // Ajout de l'arête retour à la liste des arêtes
                         }
                         arcs.Add(arcAllé); // Ajout de l'arête à la liste des arêtes
