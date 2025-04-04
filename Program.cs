@@ -16,7 +16,7 @@ namespace ProbSciANA
 {
      public class Program<T>
     {
-         // Chaîne de connexion SQL
+         /// Chaîne de connexion SQL
          
         public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
 

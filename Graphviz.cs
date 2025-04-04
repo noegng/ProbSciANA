@@ -51,7 +51,7 @@ namespace ProbSciANA
     numéroImage++;
     /// Chemins pour le fichier DOT et l'image PNG
     string dotFilePath = "graphe"+numéroImage+".dot";
-    string pngFilePath = "graphe."+numéroImage+"png";                        
+    string pngFilePath = "graphe"+numéroImage+".png";                        
     /// Générer le fichier DOT et l'image PNG
     try
     {

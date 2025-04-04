@@ -370,7 +370,7 @@ public partial class ConnexionView : Page
 
         private void BtnModifier_Click(object sender, RoutedEventArgs e)
         {
-            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
+            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier && !cuisinier.Nom.Contains("(modifié)"))
             {
                 cuisinier.Nom = cuisinier.Nom + " (modifié)";
                 LoadCuisiniers();
