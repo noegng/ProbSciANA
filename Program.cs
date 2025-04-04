@@ -30,7 +30,8 @@ namespace ProbSciANA
             // Charger les données depuis le fichier Excel
             (Stations, Aretes) = LectureFichierExcel(excelFilePath);
         }
-
+    
+    
 
         
       /* static void Main(string[] args)
@@ -55,7 +56,7 @@ namespace ProbSciANA
             //AffichageImage(noeuds, arcs); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
-        }
+        }*/
         static (List<Noeud<(int id,string nom)>>, List<Arc<(int id,string nom)>>) LectureFichierExcel(string excelFilePath){
             var noeuds = new List<Noeud<(int id,string nom)>>();
             var arcs = new List<Arc<(int id,string nom)>>(); 
