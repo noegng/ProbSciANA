@@ -8,8 +8,10 @@ namespace ProbSciAlex
     {
         public static string connectionString = "SERVER=localhost;PORT=3306;user=root;password=root;database=pbsciana;";
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
+        public static List<Utilisateur> clients = new List<Utilisateur>();
         public static void GetUtilisateurs()
         {
+            utilisateurs.Clear();
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -56,7 +58,14 @@ namespace ProbSciAlex
                     {
                         while(reader.Read())
                         {
-                            utilisateurs[reader.GetInt32("id_utilisateur")-1].estClient = true;
+                            for(int i = 0; i < utilisateurs.Count; i++)
+                            {
+                                if(utilisateurs[i].Id_utilisateur == reader.GetInt32("id_utilisateur"))
+                                {
+                                    utilisateurs[i].estClient = true;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -67,14 +76,47 @@ namespace ProbSciAlex
                     {
                         while(reader.Read())
                         {
-                            utilisateurs[reader.GetInt32("id_utilisateur")-1].estCuisinier = true;
+                            for(int i = 0; i < utilisateurs.Count; i++)
+                            {
+                                if(utilisateurs[i].Id_utilisateur == reader.GetInt32("id_utilisateur"))
+                                {
+                                    utilisateurs[i].estCuisinier = true;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
                 connection.Close();
             }
         }
-        
+        public static void GetClientsByAchats(string order)
+        {
+            GetUtilisateurs();
+            clients.Clear();
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = $"SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.numero, u.rue, u.code_postal, u.ville, u.station, SUM(cmd.prix) AS achats " +
+                               $"FROM client_ c " +
+                               $"JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur " +
+                               $"LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur " +
+                               $"GROUP BY u.id_utilisateur " +
+                               $"ORDER BY {order} DESC;";
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while(reader.Read())
+                        {
+                            clients.Add(utilisateurs[reader.GetInt32("id_utilisateur")-1]);
+                        }
+                    }
+                }
+                connection.Close();
+            }
+        }
     }
 
     public class Utilisateur
@@ -258,7 +300,7 @@ namespace ProbSciAlex
                 }
             }
         }
-        public void Delete(string table, int id_utilisateur)
+        public static void Delete(string table, int id_utilisateur)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
