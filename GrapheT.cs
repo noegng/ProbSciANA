@@ -406,21 +406,21 @@ namespace ProbSciANA
 
             for (int i = 0; i < listeAdjacence.Count - 1; i++)
             {
-                foreach (Arc<T> arete in arcs)
+                foreach (Arc<T> arc in arcs)
                 {
-                    if (arete.IdPrevious.IdBrute == i) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une Noeud)
+                    if (arc.IdPrevious.IdBrute == i) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une Noeud)
                     {
                     int tempsChangement = 0;
-                    if (idLignePrécédent != arete.IdLigne) // On vérifie si on change de ligne
+                    if (idLignePrécédent != arc.IdLigne) // On vérifie si on change de ligne
                     {
-                        tempsChangement = arete.IdPrevious.TempsChangement; // On met à jour le temps de changement
+                        tempsChangement = arc.IdPrevious.TempsChangement; // On met à jour le temps de changement
                     }
-                    if ((distances[arete.IdPrevious] != int.MaxValue) && (distances[arete.IdPrevious] + arete.Poids + arete.IdPrevious.TempsChangement < distances[arete.IdNext]))
+                    if ((distances[arc.IdPrevious] != int.MaxValue) && (distances[arc.IdPrevious] + arc.Poids + arc.IdPrevious.TempsChangement < distances[arc.IdNext]))
                     {
-                        distances[arete.IdNext] = distances[arete.IdPrevious] + arete.Poids + arete.IdPrevious.TempsChangement;
+                        distances[arc.IdNext] = distances[arc.IdPrevious] + arc.Poids + arc.IdPrevious.TempsChangement;
                     }
                     }
-                    idLignePrécédent = arete.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
+                    idLignePrécédent = arc.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
                 }
             }
 

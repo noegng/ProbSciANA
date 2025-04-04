@@ -29,10 +29,10 @@ namespace ProbSciANA
             //graphePondéré.ContientCycle();
             //TestDistanceTemps(arcs); // Test de la distance et du temps de trajet entre deux noeuds
             //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
-            TestDijkstra(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra
-            //TestBellmanFord(graphePondéré, noeuds);
+            //TestDijkstra(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra
+            TestBellmanFord(graphePondéré, noeuds);
             //TestDijkstraChemin(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra avec vitesses moyennes
-            TestBellmanFordChemin(graphePondéré, noeuds);
+            //TestBellmanFordChemin(graphePondéré, noeuds);
 
             //AffichageImage(noeuds, arcs); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
@@ -71,7 +71,7 @@ namespace ProbSciANA
                     }
                     Noeud<(int, string)> noeud = new Noeud<(int, string)>((Id, Nom), tempsChamgement, Longitude, Latitude);
                     noeuds.Add(noeud);
-                    i++;
+                    i++;    
                 }
                 noeuds.Sort((s1, s2) => s1.Valeur.id.CompareTo(s2.Valeur.id)); // Tri des arcs par Id pour que les Id correspondent aux indices de la liste ( Ou par IdBrute)
                 worksheet = package.Workbook.Worksheets[2]; // On considère la deuxième feuille

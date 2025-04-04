@@ -10,7 +10,8 @@ namespace ProbSciANA
     {
         private T valeur;  // VAleur unique du noeud
         private int tempsChangement; // Temps de changement (si exitant)
-        private static int idBrute = 0;
+        private int idBrute = 0;
+        public static int Compteur = 0;
         public double Longitude { get; set; } // Longitude de la station
         public double Latitude { get; set; } // Latitude de la station
 
@@ -20,6 +21,7 @@ namespace ProbSciANA
             this.valeur = valeur;
             tempsChangement = temps;
             idBrute++;
+
         }
         public Noeud(T valeur, int temps, double longitude, double latitude) // valeur par défaut
         {
@@ -27,7 +29,8 @@ namespace ProbSciANA
             tempsChangement = temps;
             Longitude = longitude;
             Latitude = latitude;
-            idBrute++;
+            Compteur++;
+            this.idBrute = Compteur;
         }
         #region Propriétés
         public T Valeur
@@ -40,7 +43,7 @@ namespace ProbSciANA
             get { return tempsChangement; }
             set { tempsChangement = value; }
         }
-        public int IdBrute
+        public  int IdBrute
         {
             get { return idBrute; }
             set { idBrute = value; }
