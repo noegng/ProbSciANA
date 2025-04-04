@@ -61,21 +61,21 @@ FROM Utilisateur;
 
 #****************** MODULE CLIENT *****************#
 
-SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.numero, u.rue, u.code_postal, u.ville, u.station, SUM(cmd.prix) AS total_achats
+SELECT u.id_utilisateur, u.nom, u.prenom, SUM(cmd.prix) AS total_achats
 FROM client_ c
 JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
 LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
 GROUP BY u.id_utilisateur
 ORDER BY u.nom ASC, u.numero ASC;
 
-SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.numero, u.rue, u.code_postal, u.ville, u.station, SUM(cmd.prix) AS total_achats
+SELECT u.id_utilisateur, u.nom, u.prenom, SUM(cmd.prix) AS total_achats
 FROM client_ c
 JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
 LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
 GROUP BY u.id_utilisateur
 ORDER BY u.nom DESC, u.numero ASC;
 
-SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.numero, u.rue, u.code_postal, u.ville, u.station, SUM(cmd.prix) AS total_achats
+SELECT u.id_utilisateur, u.nom, u.prenom, SUM(cmd.prix) AS total_achats
 FROM client_ c
 JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
 LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
