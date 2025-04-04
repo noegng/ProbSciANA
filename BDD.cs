@@ -34,7 +34,7 @@ namespace ProbSciANA
                     {
                         int i = 0;
                         if (utilisateurs.Count == 0)
-                        {
+                       {
                             while(reader.Read())
                         {
                             utilisateurs.Add(new Utilisateur(
@@ -52,10 +52,9 @@ namespace ProbSciANA
                             ));
                             i++;
                         }
-                        }
-                        
-                    }
+                    }    
                 }
+            }
 
                 using (MySqlCommand command = new MySqlCommand(queryClient, connection))
                 {
@@ -139,7 +138,7 @@ namespace ProbSciANA
         #region GetSet
         public int Id_utilisateur
         {
-            get { return id_utilisateur; } set { id_utilisateur = value; }
+            get { return id_utilisateur; }
         }
         public bool EstClient
         {
@@ -283,10 +282,6 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id", id_utilisateur);
                     cmd.ExecuteNonQuery();
                     Requetes.utilisateurs.Remove(this);
-                   //for(int i = id_utilisateur-1; i < Requetes.utilisateurs.Count; i++)
-                   //{
-                   //    Requetes.utilisateurs[i].Id_utilisateur= Requetes.utilisateurs[i].Id_utilisateur-1 ;
-                   //}
 
                 }
             }
