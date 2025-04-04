@@ -20,7 +20,7 @@ namespace ProbSciANA
             this.aretes = aretes;
             listeAdjacence = new Dictionary<Station, List<Station>>();
             RemplissageListeAdjacence(aretes);
-            matriceAdjacence = new int[listeAdjacence.Count,listeAdjacence.Count]; // 248 stations
+            matriceAdjacence = new int[listeAdjacence.Count,listeAdjacence.Count];
             RemplissageMatriceAdjacence();
         }
         #region Propriétés
@@ -396,7 +396,7 @@ namespace ProbSciANA
         public Dictionary<Station, int> BellmanFord(Station sommetDepart)
         {
             Dictionary<Station, int> distances = new Dictionary<Station, int>();
-            HashSet<Station> visites = new HashSet<Station>();
+            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
 
             foreach (Station sommet in listeAdjacence.Keys)
             {
@@ -409,10 +409,19 @@ namespace ProbSciANA
             {
                 foreach (Arete arete in aretes)
                 {
+                    if (arete.IdPrevious.Id == i+1) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une station)
+                    {
+                    int tempsChangement = 0;
+                    if (idLignePrécédent != arete.IdLigne) // On vérifie si on change de ligne
+                    {
+                        tempsChangement = arete.IdPrevious.TempsChangement; // On met à jour le temps de changement
+                    }
                     if ((distances[arete.IdPrevious] != int.MaxValue) && (distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement < distances[arete.IdNext]))
                     {
                         distances[arete.IdNext] = distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement;
                     }
+                    }
+                    idLignePrécédent = arete.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
                 }
             }
 
