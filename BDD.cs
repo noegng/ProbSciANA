@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
-namespace ProbSciANA
+namespace ProbSciAlex
 {
     public static class Requetes
     {
@@ -15,15 +15,25 @@ namespace ProbSciANA
                 connection.Open();
 
                 string queryUtilisateur = @"SELECT id_utilisateur, nom, prenom, adresse, telephone, email, station, date_inscription, mdp
-                                          FROM Utilisateur;";
+                                        FROM Utilisateur;";
+
+                string queryClient      = @"SELECT u.id_utilisateur
+                                        FROM utilisateur u
+                                        JOIN Client_ c ON u.id_utilisateur = c.id_utilisateur;";
+
+                string queryCuisinier   = @"SELECT u.id_utilisateur
+                                        FROM utilisateur u
+                                        JOIN Cuisinier c ON u.id_utilisateur = c.id_utilisateur;";
 
                 using (MySqlCommand command = new MySqlCommand(queryUtilisateur, connection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
+                        int i = 0;
                         while(reader.Read())
                         {
                             utilisateurs.Add(new Utilisateur(
+                            reader.GetInt32("id_utilisateur"),
                             false,
                             false,
                             reader.GetString("nom"),
@@ -32,55 +42,46 @@ namespace ProbSciANA
                             reader.GetString("telephone"),
                             reader.GetString("email"),
                             reader.GetString("station"),
+                            reader.GetDateTime("date_inscription"),
                             reader.GetString("mdp")
                             ));
+                            i++;
                         }
                     }
                 }
-
-                /*string queryClient = @"SELECT u.id_utilisateur
-                                    FROM utilisateur u
-                                    JOIN Client_ c ON u.id_utilisateur = c.id_utilisateur;";
 
                 using (MySqlCommand command = new MySqlCommand(queryClient, connection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
-                        int i = 0;
                         while(reader.Read())
                         {
-                            utilisateurs[reader.GetInt32("id_utilisateur")-1].EstClient = true;
-                            i++;
+                            utilisateurs[reader.GetInt32("id_utilisateur")-1].estClient = true;
                         }
                     }
                 }
-
-                string queryCuisinier = @"SELECT u.id_utilisateur
-                                        FROM utilisateur u
-                                        JOIN Cuisinier c ON u.id_utilisateur = c.id_utilisateur;";
 
                 using (MySqlCommand command = new MySqlCommand(queryCuisinier, connection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
-                        int i = 0;
                         while(reader.Read())
                         {
-                            utilisateurs[reader.GetInt32("id_utilisateur")-1].EstClient = true;
-                            i++;
+                            utilisateurs[reader.GetInt32("id_utilisateur")-1].estCuisinier = true;
                         }
                     }
-                }*/
+                }
                 connection.Close();
             }
         }
+        
     }
 
     public class Utilisateur
     {
         private int id_utilisateur;
-        private bool estClient;
-        private bool estCuisinier;
+        public bool estClient;
+        public bool estCuisinier;
         private string nom;
         private string prenom;
         private string adresse;
@@ -89,6 +90,21 @@ namespace ProbSciANA
         private string station;
         private DateTime date_inscription;
         private string mdp;
+
+        public Utilisateur(int id_utilisateur, bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string station, DateTime date_inscription, string mdp)
+        {
+            this.id_utilisateur = id_utilisateur;
+            this.estClient = estClient;
+            this.estCuisinier = estCuisinier;
+            this.nom = nom;
+            this.prenom = prenom;
+            this.adresse = adresse;
+            this.telephone = telephone;
+            this.email = email;
+            this.station = station;
+            this.date_inscription = date_inscription;
+            this.mdp = mdp;
+        }
         public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string station, string mdp)
         {
             this.estClient = estClient;
@@ -213,14 +229,14 @@ namespace ProbSciANA
                 using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
                 {
                     connection.Open();
-                        string query = @"INSERT INTO Client_ (id_utilisateur)
-                                            VALUES (@id_utilisateur);";
+                    string query = @"INSERT INTO Client_ (id_utilisateur)
+                                    VALUES (@id_utilisateur);";
 
-                        using (MySqlCommand command = new MySqlCommand(query, connection))
-                        {
-                            command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
-                            command.ExecuteNonQuery();
-                        }
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
+                        command.ExecuteNonQuery();
+                    }
                     connection.Close();
                 }
             }
@@ -299,4 +315,5 @@ namespace ProbSciANA
             }
         }
     }
+    
 }
