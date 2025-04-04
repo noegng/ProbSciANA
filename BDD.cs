@@ -169,7 +169,7 @@ namespace ProbSciANA
                 {
                     estCuisinier = value; Delete("Cuisinier");
                 }
-                
+
             }
         }
         public string Nom
@@ -283,10 +283,10 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id", id_utilisateur);
                     cmd.ExecuteNonQuery();
                     Requetes.utilisateurs.Remove(this);
-                   for(int i = id_utilisateur-1; i < Requetes.utilisateurs.Count; i++)
-                   {
-                       Requetes.utilisateurs[i].Id_utilisateur= Requetes.utilisateurs[i].Id_utilisateur-1 ;
-                   }
+                   //for(int i = id_utilisateur-1; i < Requetes.utilisateurs.Count; i++)
+                   //{
+                   //    Requetes.utilisateurs[i].Id_utilisateur= Requetes.utilisateurs[i].Id_utilisateur-1 ;
+                   //}
 
                 }
             }
