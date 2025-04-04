@@ -15,7 +15,7 @@ namespace ProbSciANA.Interface
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel
-            Program.InitializeData(excelFilePath);
+            Program<(int id, string nom)>.InitializeData(excelFilePath);
 
 
             MainWindow mainWindow = new MainWindow();

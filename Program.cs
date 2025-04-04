@@ -14,21 +14,21 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace ProbSciANA
 {
-     public class Program
+     public class Program<T>
     {
          // Chaîne de connexion SQL
          
         public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
 
         // Liste des stations et des arêtes
-        public static List<Station> Stations { get; private set; }
-        public static List<Arete> Aretes { get; private set; }
+        public static List<Noeud<T>> Stations { get; private set; }
+        public static List<Arc<T>> Aretes { get; private set; }
 
         // Méthode pour initialiser les données
         public static void InitializeData(string excelFilePath)
         {
             // Charger les données depuis le fichier Excel
-            (Stations, Aretes) = LectureFichierExcel(excelFilePath);
+            (var Stations,var  Aretes) = LectureFichierExcel(excelFilePath);
         }
 
 
@@ -56,6 +56,7 @@ namespace ProbSciANA
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
+      */
         static (List<Noeud<(int id,string nom)>>, List<Arc<(int id,string nom)>>) LectureFichierExcel(string excelFilePath){
             var noeuds = new List<Noeud<(int id,string nom)>>();
             var arcs = new List<Arc<(int id,string nom)>>(); 
