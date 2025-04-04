@@ -25,7 +25,7 @@ public class Arete {
         this.idNext = idNext;
         this.idLigne = idLigne;
         this.sensUnique = sensUnique;
-        temps = CalculerTempsTrajet(vitesseMoyenne);
+        temps = CalculerTempsTrajet();
     }
 
     #region Propriétés
@@ -102,20 +102,7 @@ public class Arete {
     {
         return $"Arete: {IdPrevious.Nom} -> {IdNext.Nom}, Ligne: {IdLigne}";
     }
-    /*
-    public override bool Equals(object obj)
-    {
-        if (obj is Arete autre)
-        {
-            return this.IdPrevious.Equals(autre.IdPrevious) && this.IdNext.Equals(autre.IdNext);
-        }
-        return false;
-    }
-    public override int GetHashCode()
-    {
-        return IdPrevious.GetHashCode() ^ IdNext.GetHashCode();
-    }
-    */
+    
     //Calculer la distance entre deux stations avec la formule de Haversine
     public double CalculerDistance()
     {
@@ -129,7 +116,7 @@ public class Arete {
         return R * c; // Distance en km
     }
     //Calcul et met a jour la variabl temps ( temps de trajet entre deux stations)
-    public int CalculerTempsTrajet(Dictionary<string, double> VitesseMoyenne)
+    public int CalculerTempsTrajet()
     {
         // calcul de la distance entre idPrevious et idNext avec la formule de Haversine
         // puis conversion en temps de trajet (en minutes) en fonction de la vitesse moyenne du train
