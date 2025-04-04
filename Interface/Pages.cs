@@ -182,46 +182,14 @@ public partial class ConnexionView : Page
     {
         
 
-        public ObservableCollection<Livraison> Livraisons { get; set; }
-        public ICommand LivrerCommandeCommand { get; }
 
         public CuisinierDashboardView()
         {
             InitializeComponent();
-                Client client1 = new Client(1, "Marie", "a", "@gmail", "123 Rue de Paris", "Argentine", "mdp1");
-                Cuisinier cuisinier1 = new Cuisinier(2, "Albert", "b", "@gmail", "456 Avenue Einstein", "Argentine", "mdp2");
-                Cuisinier cuisinier2 = new Cuisinier(
-             Livraisons = new ObservableCollection<Livraison>
-            {
-                
-                
-                new Livraison ( "Pizza" , cuisinier1, "Michel", "Argentine" ),
-                new Livraison ("Boeuf", cuisinier2, "Augustin", "Liège");
-               
-            };
-
-            LivrerCommandeCommand = new RelayCommand<Livraison>(LivrerCommande);
-            DataContext = this;
-        }
-
-        private void LivrerCommande(Livraison livraison)
-        {
-            if (livraison == null) return;
-
-            // Appeler votre algorithme de plus court chemin ici
-         /*   Graphe2 graphe = new Graphe2(Program.Aretes);
-
-        List<Arete> aretechemin = new List<Arete>();
-        int temps = 0;
-           
-        (aretechemin,temps) = graphe.DijkstraChemin();
             
-            Graphviz.GenerateChemin(aretechemin, Program.Stations);
-            MessageBox.Show($"Calcul du trajet pour livrer {livraison.NomPlat} à {livraison.NomClient} ({livraison.AdresseLivraison})");
-
-          */
-            Program.AffichageImage(Program.Stations,Program.Aretes);
         }
+
+      
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
             // Logique pour ajouter un plat

@@ -6,7 +6,7 @@ namespace ProbSciANA
 {
     public static class Requetes
     {
-        public static string connectionString = "server=localhost;user=root;password=ton_mot_de_passe;database=livinparis;";
+        public static string connectionString = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
         public static void SelectUtilisateurs()
         {
