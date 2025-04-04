@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Testing.Platform.Extensions.Messages;
 using MySql.Data.MySqlClient;
-using System.Linq;
-
 
 namespace ProbSciANA
 {
@@ -11,8 +8,10 @@ namespace ProbSciANA
     {
         public static string connectionString = "SERVER=localhost;PORT=3306;user=root;password=root;database=pbsciana;";
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
+        public static Dictionary<Utilisateur,double> clients = new Dictionary<Utilisateur,double>();
         public static void GetUtilisateurs()
         {
+            utilisateurs.Clear();
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -33,9 +32,7 @@ namespace ProbSciANA
                     using (var reader = command.ExecuteReader())
                     {
                         int i = 0;
-                        if (utilisateurs.Count == 0)
-                       {
-                            while(reader.Read())
+                        while(reader.Read())
                         {
                             utilisateurs.Add(new Utilisateur(
                             reader.GetInt32("id_utilisateur"),
@@ -52,9 +49,8 @@ namespace ProbSciANA
                             ));
                             i++;
                         }
-                    }    
+                    }
                 }
-            }
 
                 using (MySqlCommand command = new MySqlCommand(queryClient, connection))
                 {
@@ -62,11 +58,15 @@ namespace ProbSciANA
                     {
                         while(reader.Read())
                         {
-                              int id = reader.GetInt32("id_utilisateur");
-                            var utilisateur = utilisateurs.FirstOrDefault(u => u.Id_utilisateur == id);
-                            if (utilisateur != null)
-                                utilisateur.estClient = true;
-                      }
+                            for(int i = 0; i < utilisateurs.Count; i++)
+                            {
+                                if(utilisateurs[i].Id_utilisateur == reader.GetInt32("id_utilisateur"))
+                                {
+                                    utilisateurs[i].estClient = true;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -76,17 +76,54 @@ namespace ProbSciANA
                     {
                         while(reader.Read())
                         {
-                            int id = reader.GetInt32("id_utilisateur");
-                            var utilisateur = utilisateurs.FirstOrDefault(u => u.Id_utilisateur == id);
-                            if (utilisateur != null)
-                                utilisateur.estCuisinier = true;
+                            for(int i = 0; i < utilisateurs.Count; i++)
+                            {
+                                if(utilisateurs[i].Id_utilisateur == reader.GetInt32("id_utilisateur"))
+                                {
+                                    utilisateurs[i].estCuisinier = true;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
                 connection.Close();
             }
         }
-        
+        public static void GetClientsByAchats(string order)
+        {
+            GetUtilisateurs();
+            clients.Clear();
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = $"SELECT u.id_utilisateur, SUM(cmd.prix) AS achats " +
+                               $"FROM client_ c " +
+                               $"JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur " +
+                               $"LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur " +
+                               $"GROUP BY u.id_utilisateur " +
+                               $"ORDER BY {order} DESC;";
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while(reader.Read())
+                        {
+                            for(int i = 0; i < utilisateurs.Count; i++)
+                            {
+                                if(utilisateurs[i].Id_utilisateur == reader.GetInt32("id_utilisateur"))
+                                {
+                                    clients.Add(utilisateurs[i], reader.GetDouble("achats"));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                connection.Close();
+            }
+        }
     }
 
     public class Utilisateur
@@ -151,7 +188,7 @@ namespace ProbSciANA
                 }
                 if(!value && estClient)
                 {
-                    estClient = value; Delete("Client_");
+                    estClient = value; Delete("Client_", this.id_utilisateur);
                 }
             }
         }
@@ -166,9 +203,8 @@ namespace ProbSciANA
                 }
                 if(!value && estCuisinier)
                 {
-                    estCuisinier = value; Delete("Cuisinier");
+                    estCuisinier = value; Delete("Cuisinier", this.id_utilisateur);
                 }
-
             }
         }
         public string Nom
@@ -271,7 +307,7 @@ namespace ProbSciANA
                 }
             }
         }
-        public void Delete(string table)
+        public static void Delete(string table, int id_utilisateur)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -281,8 +317,6 @@ namespace ProbSciANA
                 {
                     cmd.Parameters.AddWithValue("@id", id_utilisateur);
                     cmd.ExecuteNonQuery();
-                    Requetes.utilisateurs.Remove(this);
-
                 }
             }
         }
