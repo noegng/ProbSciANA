@@ -56,7 +56,7 @@ SELECT u.id_utilisateur
 FROM utilisateur u
 JOIN Cuisinier c ON u.id_utilisateur = c.id_utilisateur;
 
-SELECT id_utilisateur, nom, prenom, adresse, telephone, email, station, date_inscription, mdp
+SELECT *
 FROM Utilisateur;
 
 #****************** MODULE CLIENT *****************#
@@ -83,7 +83,27 @@ GROUP BY u.id_utilisateur
 ORDER BY total_achats DESC;
 
 #****************** MODULE CUISINIER *****************#
+SELECT DISTINCT u.id_utilisateur, u.nom, u.prenom, u.email, cmd.date_commande
+FROM Utilisateur u
+JOIN Client_ c ON c.id_utilisateur = u.id_utilisateur
+JOIN Commande cmd ON cmd.id_client = c.id_utilisateur
+JOIN Cuisinier cu ON cmd.id_cuisinier = cu.id_utilisateur
+JOIN Utilisateur cu_u ON cu_u.id_utilisateur = cu.id_utilisateur
+WHERE cmd.id_cuisinier = 2
+AND cmd.date_commande >= cu_u.date_inscription;
 
+SELECT p.nom, COUNT(*) AS frequence
+FROM Plat p
+JOIN Cuisine c ON p.id_plat = c.id_plat
+WHERE c.id_cuisinier = 3
+GROUP BY p.nom
+ORDER BY frequence DESC;
+
+SELECT p.*
+FROM Plat p
+JOIN Cuisine c ON p.id_plat = c.id_plat
+WHERE c.id_cuisinier = 2
+AND c.plat_du_jour = TRUE;
 
 #****************** MODULE COMMANDES *****************#
 

@@ -1,17 +1,17 @@
 --------------------------
 -- Table Utilisateur
 --------------------------
-INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, mdp) VALUES
-('Dupont', 'Jean', '10 Rue de Paris, 75001 Paris', '0102030405', 'jean.dupont@example.com', 'Station A', 'mdp1234'),
-('Martin', 'Alice', '15 Avenue de la République, 75011 Paris', '0102030406', 'alice.martin@example.com', 'Station B', 'mdp1234'),
-('Durand', 'Pierre', '20 Boulevard Voltaire, 75012 Paris', '0102030407', 'pierre.durand@example.com', 'Station C', 'mdp1234'),
-('Leroy', 'Sophie', '5 Rue Victor Hugo, 75002 Paris', '0102030408', 'sophie.leroy@example.com', 'Station D', 'mdp1234'),
-('Moreau', 'Julien', '8 Rue de la Paix, 75008 Paris', '0102030409', 'julien.moreau@example.com', 'Station E', 'mdp1234'),
-('Simon', 'Claire', '12 Rue Lafayette, 75009 Paris', '0102030410', 'claire.simon@example.com', 'Station F', 'mdp1234'),
-('Laurent', 'Marc', '22 Avenue Mozart, 75016 Paris', '0102030411', 'marc.laurent@example.com', 'Station G', 'mdp1234'),
-('Garnier', 'Emma', '18 Rue de Rivoli, 75004 Paris', '0102030412', 'emma.garnier@example.com', 'Station H', 'mdp1234'),
-('Roux', 'Lucas', '7 Rue du Bac, 75007 Paris', '0102030413', 'lucas.roux@example.com', 'Station I', 'mdp1234'),
-('Morel', 'Léa', '3 Boulevard Saint-Germain, 75006 Paris', '0102030414', 'lea.morel@example.com', 'Station J', 'mdp1234');
+INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, date_inscription, mdp) VALUES
+('Dupont', 'Jean', '10 Rue de Paris, 75001 Paris', '0102030405', 'jean.dupont@example.com', 'Station A', '2025-02-25 10:00:00', 'mdp1234'),
+('Martin', 'Alice', '15 Avenue de la République, 75011 Paris', '0102030406', 'alice.martin@example.com', 'Station B', '2025-02-26 11:00:00', 'mdp1234'),
+('Durand', 'Pierre', '20 Boulevard Voltaire, 75012 Paris', '0102030407', 'pierre.durand@example.com', 'Station C', '2025-02-27 12:00:00', 'mdp1234'),
+('Leroy', 'Sophie', '5 Rue Victor Hugo, 75002 Paris', '0102030408', 'sophie.leroy@example.com', 'Station D', '2025-02-28 13:00:00', 'mdp1234'),
+('Moreau', 'Julien', '8 Rue de la Paix, 75008 Paris', '0102030409', 'julien.moreau@example.com', 'Station E', '2025-03-01 14:00:00', 'mdp1234'),
+('Simon', 'Claire', '12 Rue Lafayette, 75009 Paris', '0102030410', 'claire.simon@example.com', 'Station F', '2025-03-02 15:00:00', 'mdp1234'),
+('Laurent', 'Marc', '22 Avenue Mozart, 75016 Paris', '0102030411', 'marc.laurent@example.com', 'Station G', '2025-03-03 16:00:00', 'mdp1234'),
+('Garnier', 'Emma', '18 Rue de Rivoli, 75004 Paris', '0102030412', 'emma.garnier@example.com', 'Station H', '2025-03-04 17:00:00', 'mdp1234'),
+('Roux', 'Lucas', '7 Rue du Bac, 75007 Paris', '0102030413', 'lucas.roux@example.com', 'Station I', '2025-03-05 18:00:00', 'mdp1234'),
+('Morel', 'Léa', '3 Boulevard Saint-Germain, 75006 Paris', '0102030414', 'lea.morel@example.com', 'Station J', '2025-03-06 19:00:00', 'mdp1234');
 
 --------------------------
 -- Table Client_
@@ -90,16 +90,16 @@ INSERT INTO Avis (note, commentaire, date_avis, id_Client_, id_cuisinier) VALUES
 -- Table Commande
 --------------------------
 INSERT INTO Commande (nom, prix, statut, date_commande, id_client, id_cuisinier) VALUES
-('Commande 1', 20.00, 'en cours', '2025-03-01', 1, 2),
-('Commande 2', 35.50, 'faite', '2025-03-02', 2, 3),
-('Commande 3', 15.75, 'livrée', '2025-03-03', 3, 5),
-('Commande 4', 40.00, 'en cours', '2025-03-04', 4, 7),
-('Commande 5', 22.50, 'faite', '2025-03-05', 5, 8),
-('Commande 6', 30.00, 'livrée', '2025-03-06', 6, 10),
-('Commande 7', 18.25, 'en cours', '2025-03-07', 7, 2),
-('Commande 8', 27.80, 'faite', '2025-03-08', 8, 3),
-('Commande 9', 33.00, 'livrée', '2025-03-09', 9, 5),
-('Commande 10', 25.50, 'en cours', '2025-03-10', 10, 7);
+('Commande 1', 20.00, 'en cours', '2025-03-01 10:15:00', 1, 2),
+('Commande 2', 35.50, 'faite', '2025-03-02 12:30:00', 2, 3),
+('Commande 3', 15.75, 'livrée', '2025-03-03 09:45:00', 3, 5),
+('Commande 4', 40.00, 'en cours', '2025-03-04 18:00:00', 4, 7),
+('Commande 5', 22.50, 'faite', '2025-03-05 14:20:00', 5, 8),
+('Commande 6', 30.00, 'livrée', '2025-03-06 11:05:00', 6, 10),
+('Commande 7', 18.25, 'en cours', '2025-03-07 17:30:00', 7, 2),
+('Commande 8', 27.80, 'faite', '2025-03-08 13:10:00', 8, 3),
+('Commande 9', 33.00, 'livrée', '2025-03-09 16:45:00', 9, 5),
+('Commande 10', 25.50, 'en cours', '2025-03-10 08:50:00', 10, 7);
 
 --------------------------
 -- Table Trajet
@@ -134,17 +134,18 @@ INSERT INTO Livraison (station, date_livraison, statut, id_trajet, id_commande) 
 --------------------------
 -- Table Cuisine
 --------------------------
-INSERT INTO Cuisine (id_cuisinier, id_plat, date_cuisine, statut) VALUES
-(2, 1, '2025-03-01', 'fait'),
-(3, 2, '2025-03-02', 'fait'),
-(5, 3, '2025-03-03', 'fait'),
-(7, 4, '2025-03-04', 'fait'),
-(8, 5, '2025-03-05', 'fait'),
-(10, 6, '2025-03-06', 'fait'),
-(2, 7, '2025-03-07', 'fait'),
-(3, 8, '2025-03-08', 'fait'),
-(5, 9, '2025-03-09', 'fait'),
-(7, 10, '2025-03-10', 'fait');
+INSERT INTO Cuisine (id_cuisinier, id_plat, plat_du_jour, date_cuisine, statut) VALUES
+(2, 1, FALSE, '2025-03-01 11:00:00', 'fait'),
+(3, 2, FALSE, '2025-03-02 12:00:00', 'fait'),
+(5, 3, FALSE, '2025-03-03 13:00:00', 'fait'),
+(7, 4, FALSE, '2025-03-04 14:00:00', 'fait'),
+(8, 5, FALSE, '2025-03-05 15:00:00', 'fait'),
+(10, 6, FALSE, '2025-03-06 16:00:00', 'fait'),
+(2, 7, TRUE, '2025-03-07 17:00:00', 'fait'),
+(3, 8, FALSE, '2025-03-08 18:00:00', 'fait'),
+(5, 9, FALSE, '2025-03-09 19:00:00', 'fait'),
+(7, 10, FALSE, '2025-03-10 20:00:00', 'fait');
+
 
 --------------------------
 -- Table Compose
