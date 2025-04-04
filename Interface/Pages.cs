@@ -181,21 +181,70 @@ public partial class ConnexionView : Page
     public partial class CuisinierDashboardView : Page
     {
         
-
+private List<Livraison> livraisons;
 
         public CuisinierDashboardView()
         {
             InitializeComponent();
-            
+            LoadLivraisons();
         }
+        private void LoadLivraisons()
+    {
+        // Exemple de données de livraison
+        livraisons = new List<Livraison>
+        {
+            new Livraison
+            {
+                NomPlat = "Pizza",
+                NomClient = "Jean Dupont",
+                AdresseLivraison = "123 Rue de Paris",
+                IdStationDepart = Noeud<(int id, string nom)>,
+                IdStationArrivee = 5
+            },
+            new Livraison
+            {
+                NomPlat = "Sushi",
+                NomClient = "Marie Curie",
+                AdresseLivraison = "456 Avenue Einstein",
+                IdStationDepart = 2,
+                IdStationArrivee = 8
+            },
+            new Livraison
+            {
+                NomPlat = "Burger",
+                NomClient = "Albert Einstein",
+                AdresseLivraison = "789 Boulevard Newton",
+                IdStationDepart = 3,
+                IdStationArrivee = 10
+            }
+        };
 
+        // Lier la liste à une ListView (si nécessaire)
+        LivraisonsListView.ItemsSource = livraisons;
+    }
       
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
-            // Logique pour ajouter un plat
+            /// Logique pour ajouter un plat
             MessageBox.Show("Ajouter un plat");
         }
 
+        private void BtnLivrer(object sender, RoutedEventArgs e)
+        {
+            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel
+            var graphe = Program<(int id, string nom)>.InitializeData(excelFilePath);
+            if (LivraisonsListView.SelectedItem is Livraison livraison)
+            {
+                /// Logique pour livrer le plat
+                MessageBox.Show($"Livraison de {livraison.NomPlat} à {livraison.NomClient}");
+                graphe.DijkstraChemin(livraison.IdStationDepart, livraison.IdStationArrivee);
+                
+            }
+            else
+            {
+                MessageBox.Show("Veuillez sélectionner une livraison.");
+            }
+        }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
         {

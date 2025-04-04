@@ -126,6 +126,15 @@ namespace ProbSciANA
         }
     }
 
+public class Livraison
+{
+    public string NomPlat { get; set; }
+    public string NomClient { get; set; }
+    public string AdresseLivraison { get; set; }
+    public Noeud<(int id, string nom)> IdStationDepart { get; set; } /// Station du cuisinier
+    public Noeud<(int id, string nom)> IdStationArrivee { get; set; } // Station du client
+}
+
     public class Utilisateur
     {
         private int id_utilisateur;
@@ -136,11 +145,11 @@ namespace ProbSciANA
         private string adresse;
         private string telephone;
         private string email;
-        private string station;
+        private Noeud<(int id, string nom)> station;
         private DateTime date_inscription;
         private string mdp;
 
-        public Utilisateur(int id_utilisateur, bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string station, DateTime date_inscription, string mdp)
+        public Utilisateur(int id_utilisateur, bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, Noeud<(int id, string nom)> station, DateTime date_inscription, string mdp)
         {
             this.id_utilisateur = id_utilisateur;
             this.estClient = estClient;
@@ -154,7 +163,7 @@ namespace ProbSciANA
             this.date_inscription = date_inscription;
             this.mdp = mdp;
         }
-        public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string station, string mdp)
+        public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, Noeud<(int id, string nom)> station, string mdp)
         {
             this.estClient = estClient;
             this.estCuisinier = estCuisinier;
@@ -232,7 +241,7 @@ namespace ProbSciANA
             get { return email; }
             set { email = value; Update("email", value); }
         }
-        public string Station
+        public Noeud<(int id, string nom)> Station
         {
             get { return station; }
             set { station = value; Update("station", value); }
@@ -320,7 +329,7 @@ namespace ProbSciANA
                 }
             }
         }
-        public void Update(string champ, string value)
+        public void Update(string champ, Noeud<(int id, string nom)> value)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {

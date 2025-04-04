@@ -14,21 +14,23 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace ProbSciANA
 {
-     public class Program<T>
+     public class Program
     {
          // Chaîne de connexion SQL
          
         public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
 
         // Liste des stations et des arêtes
-        public static List<Noeud<T>> Stations { get; private set; }
-        public static List<Arc<T>> Aretes { get; private set; }
+        public static List<Noeud<(int id, string nom)>> Stations { get; private set; }
+        public static List<Arc<(int id, string nom)>> Aretes { get; private set; }
 
         // Méthode pour initialiser les données
-        public static void InitializeData(string excelFilePath)
+        public static Graphe<(int id, string nom)> InitializeData(string excelFilePath)
         {
             // Charger les données depuis le fichier Excel
             (var Stations,var  Aretes) = LectureFichierExcel(excelFilePath);
+            Graphe<(int id, string nom)> graphe = new Graphe<(int id, string nom)>(Aretes);
+            return graphe;
         }
 
 
