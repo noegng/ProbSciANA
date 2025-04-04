@@ -22,7 +22,7 @@ namespace ProbSciANA
             string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
             (List<Noeud<(int id,string nom)>> noeuds , List<Arc<(int id,string nom)>> arcs) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
             Graphe<(int id,string nom)> graphePondéré = new Graphe<(int id,string nom)>(arcs); // Création d'un graphe à partir des arêtes
-            //graphePondéré.BFStoString(noeuds[0]); 
+            //graphePondéré.BFStoString(noeuds[0]);
             //graphePondéré.DFStoString(noeuds[0]);
             //graphePondéré.DFSRécursiftoString();
             //graphePondéré.EstConnexe();
@@ -275,14 +275,14 @@ namespace ProbSciANA
             // Test de l'algorithme de Dijkstra
             Noeud<(int id, string nom)> depart = arcs[0]; // Noeud de départ
             Noeud<(int id, string nom)> arrivee = arcs[10]; // Noeud d'arrivée
-            int plusPetitTemps = graphePondéré.Dijkstra(depart)[arrivee]; // Calcul du chemin le plus court
+            int plusPetitTemps = graphePondéré.Dijkstra3(depart)[arrivee]; // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetitTemps + " min.");
             sw = Stopwatch.StartNew();
             depart = arcs[0]; // Noeud de départ
             arrivee = arcs[246]; // Noeud d'arrivée
-            plusPetitTemps = graphePondéré.Dijkstra(depart)[arrivee]; // Calcul du chemin le plus court
+            plusPetitTemps = graphePondéré.Dijkstra3(depart)[arrivee]; // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetitTemps + " min.");
@@ -293,7 +293,7 @@ namespace ProbSciANA
             var sw = Stopwatch.StartNew();
             Noeud<(int id, string nom)> depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = arcs[174]; // Noeud<(int id, string nom)> d'arrivée
-            (List<Arc<(int id, string nom)>> chemin , int plusPetiteDistance) = graphePondéré.DijkstraChemin2(depart, arrivee); // Calcul du chemin le plus court
+            (List<Arc<(int id, string nom)>> chemin , int plusPetiteDistance) = graphePondéré.DijkstraCheminG(depart, arrivee); // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");
@@ -308,7 +308,7 @@ namespace ProbSciANA
             depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             arrivee = arcs[246]; // Noeud<(int id, string nom)> d'arrivée
             sw = Stopwatch.StartNew();
-            (chemin , plusPetiteDistance) = graphePondéré.DijkstraChemin2(depart, arrivee); // Calcul du chemin le plus court
+            (chemin , plusPetiteDistance) = graphePondéré.DijkstraCheminG(depart, arrivee); // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");

@@ -17,9 +17,9 @@ digraph G {
     "(13, Palais Royal - Musée du Louvre)" [pos="2.33645436775425,48.862222264626!", color="red",label="(13, Palais Royal - Musée du Louvre)",style="bold", fontsize=12];
     "(14, Louvre - Rivoli)" [pos="2.34096962328527,48.8608712117595!", color="red",label="(14, Louvre - Rivoli)",style="bold", fontsize=12];
     "(15, Châtelet)" [pos="2.34816099123458,48.8569534598372!", color="red",label="(15, Châtelet)",style="bold", fontsize=12];
-    "(16, Hôtel de Ville)" [pos="2.3520676701391,48.8573524042377!", color="red",label="(16, Hôtel de Ville)",style="bold", fontsize=12];
-    "(17, Saint-Paul)" [pos="2.36088525627519,48.8551874206563!", color="red",label="(17, Saint-Paul)",style="bold", fontsize=12];
-    "(18, Bastille)" [pos="2.36871896103409,48.8520542925495!", color="red",label="(18, Bastille)",style="bold", fontsize=12];
+    "(16, Hôtel de Ville)" [pos="2.3520676701391,48.8573524042377!", color="",label="(16, Hôtel de Ville)",style="", fontsize=12];
+    "(17, Saint-Paul)" [pos="2.36088525627519,48.8551874206563!", color="",label="(17, Saint-Paul)",style="", fontsize=12];
+    "(18, Bastille)" [pos="2.36871896103409,48.8520542925495!", color="",label="(18, Bastille)",style="", fontsize=12];
     "(19, Gare de Lyon)" [pos="2.3731565937892,48.8456832057876!", color="red",label="(19, Gare de Lyon)",style="bold", fontsize=12];
     "(20, Reuilly - Diderot)" [pos="2.38720107040939,48.8472129257497!", color="red",label="(20, Reuilly - Diderot)",style="bold", fontsize=12];
     "(21, Nation)" [pos="2.39584398872374,48.8480842890258!", color="",label="(21, Nation)",style="", fontsize=12];
@@ -267,10 +267,7 @@ digraph G {
     "(12, Tuileries)" -> "(13, Palais Royal - Musée du Louvre)" [ color="#F2C931", penwidth=3, style=bold];
     "(13, Palais Royal - Musée du Louvre)" -> "(14, Louvre - Rivoli)" [ color="#F2C931", penwidth=3, style=bold];
     "(14, Louvre - Rivoli)" -> "(15, Châtelet)" [ color="#F2C931", penwidth=3, style=bold];
-    "(15, Châtelet)" -> "(16, Hôtel de Ville)" [ color="#F2C931", penwidth=3, style=bold];
-    "(16, Hôtel de Ville)" -> "(17, Saint-Paul)" [ color="#F2C931", penwidth=3, style=bold];
-    "(17, Saint-Paul)" -> "(18, Bastille)" [ color="#F2C931", penwidth=3, style=bold];
-    "(18, Bastille)" -> "(19, Gare de Lyon)" [ color="#F2C931", penwidth=3, style=bold];
+    "(15, Châtelet)" -> "(19, Gare de Lyon)" [ color="#67328E", penwidth=3, style=bold];
     "(19, Gare de Lyon)" -> "(20, Reuilly - Diderot)" [ color="#F2C931", penwidth=3, style=bold];
     "(20, Reuilly - Diderot)" -> "(172, Montgallet)" [ color="#C5A3CA", penwidth=3, style=bold];
     "(172, Montgallet)" -> "(123, Daumesnil)" [ color="#C5A3CA", penwidth=3, style=bold];
