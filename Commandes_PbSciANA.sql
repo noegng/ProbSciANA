@@ -59,6 +59,9 @@ JOIN Cuisinier c ON u.id_utilisateur = c.id_utilisateur;
 SELECT *
 FROM Utilisateur;
 
+SELECT *
+FROM Commande;
+
 #****************** MODULE CLIENT *****************#
 
 SELECT u.id_utilisateur, u.nom, u.prenom, SUM(cmd.prix) AS total_achats

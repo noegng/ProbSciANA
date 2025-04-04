@@ -8,8 +8,9 @@ namespace ProbSciANA
     {
         public static string connectionString = "SERVER=localhost;PORT=3306;user=root;password=root;database=pbsciana;";
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
-        public static Dictionary<Utilisateur,double> clients = new Dictionary<Utilisateur,double>();
         public static List<Commande> commandes = new List<Commande>();
+        public static List<Livraison> livraisons = new List<Livraison>();
+        public static Dictionary<Utilisateur,double> clients = new Dictionary<Utilisateur,double>();
         public static void RefreshUtilisateurs()
         {
             utilisateurs.Clear();
@@ -32,7 +33,6 @@ namespace ProbSciANA
                 {
                     using (var reader = command.ExecuteReader())
                     {
-                        int i = 0;
                         while(reader.Read())
                         {
                             utilisateurs.Add(new Utilisateur(
@@ -48,7 +48,6 @@ namespace ProbSciANA
                             reader.GetDateTime("date_inscription"),
                             reader.GetString("mdp")
                             ));
-                            i++;
                         }
                     }
                 }
@@ -93,7 +92,7 @@ namespace ProbSciANA
         }
         public static void RefreshClientsByAchats(string order)
         {
-            GetUtilisateurs();
+            RefreshUtilisateurs();
             clients.Clear();
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
@@ -127,6 +126,7 @@ namespace ProbSciANA
         }
         public static void RefreshCommandes()
         {
+            commandes.Clear();
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -149,6 +149,34 @@ namespace ProbSciANA
                             reader.GetInt32("id_cuisinier")
                             ));
                             i++;
+                        }
+                    }
+                }
+                connection.Close();
+            }
+        }
+        public static void RefreshLivraisons()
+        {
+            livraisons.Clear();
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = @"SELECT * FROM Livraison;";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while(reader.Read())
+                        {
+                            livraisons.Add(new Livraison(
+                            reader.GetInt32("id_livraison"),
+                            reader.GetString("station"),
+                            reader.GetDateTime("date_livraison"),
+                            reader.GetString("statut"),
+                            reader.GetInt32("id_trajet"),
+                            reader.GetInt32("id_commande")
+                            ));
                         }
                     }
                 }
@@ -462,6 +490,74 @@ namespace ProbSciANA
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
                     id_commande = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+                }
+            }
+        }
+    }
+
+    public class Livraison
+    {
+        private int id_livraison {get; set;}
+        private string station {get; set;}
+        private DateTime date_livraison {get; set;}
+        private string statut {get; set;}
+        private int id_trajet {get; set;}
+        private int id_commande {get; set;}
+        
+        public Livraison(int id_livraison, string station, DateTime date_livraison, string statut, int id_trajet, int id_commande)
+        {
+            this.id_livraison = id_livraison;
+            this.station = station;
+            this.date_livraison = date_livraison;
+            this.statut = statut;
+            this.id_trajet = id_trajet;
+            this.id_commande = id_commande;
+        }
+
+        public Livraison(string station, DateTime date_livraison, string statut, int id_trajet, int id_commande)
+        {
+            this.station = station;
+            this.date_livraison = date_livraison;
+            this.statut = statut;
+            this.id_trajet = id_trajet;
+            this.id_commande = id_commande;
+            InsertLivraison();
+            Getid();
+            Requetes.livraisons.Add(this);
+        }
+
+        public void InsertLivraison()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+
+                string query = @"INSERT INTO Livraison (station, date_livraison, statut, id_trajet, id_commande)
+                                VALUES (@station, @date_livraison, @statut, @id_trajet, @id_commande);";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@station", station);
+                    command.Parameters.AddWithValue("@date_livraison", date_livraison.ToString("yyyy-MM-dd HH:mm:ss"));
+                    command.Parameters.AddWithValue("@statut", statut);
+                    command.Parameters.AddWithValue("@id_trajet", id_trajet);
+                    command.Parameters.AddWithValue("@id_commande", id_commande);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+        private void Getid()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT LAST_INSERT_ID();";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    id_livraison = Convert.ToInt32(cmd.ExecuteScalar().ToString());
                 }
             }
         }
