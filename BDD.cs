@@ -8,7 +8,7 @@ namespace ProbSciAlex
     {
         public static string connectionString = "SERVER=localhost;PORT=3306;user=root;password=root;database=pbsciana;";
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
-        public static List<Utilisateur> clients = new List<Utilisateur>();
+        public static Dictionary<Utilisateur,double> clients = new Dictionary<Utilisateur,double>();
         public static void GetUtilisateurs()
         {
             utilisateurs.Clear();
@@ -98,7 +98,7 @@ namespace ProbSciAlex
             {
                 connection.Open();
 
-                string query = $"SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.telephone, u.numero, u.rue, u.code_postal, u.ville, u.station, SUM(cmd.prix) AS achats " +
+                string query = $"SELECT u.id_utilisateur, SUM(cmd.prix) AS achats " +
                                $"FROM client_ c " +
                                $"JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur " +
                                $"LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur " +
@@ -110,7 +110,14 @@ namespace ProbSciAlex
                     {
                         while(reader.Read())
                         {
-                            clients.Add(utilisateurs[reader.GetInt32("id_utilisateur")-1]);
+                            for(int i = 0; i < utilisateurs.Count; i++)
+                            {
+                                if(utilisateurs[i].Id_utilisateur == reader.GetInt32("id_utilisateur"))
+                                {
+                                    clients.Add(utilisateurs[i], reader.GetDouble("achats"));
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
