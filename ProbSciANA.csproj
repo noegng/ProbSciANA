@@ -10,6 +10,7 @@
     <Content Include="Graphviz\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Remove="Metro_Arcs_Par_Station_IDs.xlsx" />
 
     <PackageReference Include="EPPlus" Version="4.0.1.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
@@ -20,6 +21,12 @@
 
   <ItemGroup>
     <ApplicationDefinition Include="Interface\App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Metro_Arcs_Par_Station_IDs.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
