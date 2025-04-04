@@ -279,7 +279,6 @@ public partial class ConnexionView : Page
             if (ClientsListView.SelectedItem is Utilisateur client)
             {
                 client.EstClient = false; // Déclenche suppression automatique
-                Requetes.utilisateurs.Remove(client);
                 LoadClients();
             }
         }

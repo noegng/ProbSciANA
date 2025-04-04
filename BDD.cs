@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Testing.Platform.Extensions.Messages;
 using MySql.Data.MySqlClient;
+using System.Linq;
+
 
 namespace ProbSciANA
 {
@@ -30,7 +33,9 @@ namespace ProbSciANA
                     using (var reader = command.ExecuteReader())
                     {
                         int i = 0;
-                        while(reader.Read())
+                        if (utilisateurs.Count == 0)
+                        {
+                            while(reader.Read())
                         {
                             utilisateurs.Add(new Utilisateur(
                             reader.GetInt32("id_utilisateur"),
@@ -47,6 +52,8 @@ namespace ProbSciANA
                             ));
                             i++;
                         }
+                        }
+                        
                     }
                 }
 
@@ -56,8 +63,11 @@ namespace ProbSciANA
                     {
                         while(reader.Read())
                         {
-                            utilisateurs[reader.GetInt32("id_utilisateur")-1].estClient = true;
-                        }
+                              int id = reader.GetInt32("id_utilisateur");
+                            var utilisateur = utilisateurs.FirstOrDefault(u => u.Id_utilisateur == id);
+                            if (utilisateur != null)
+                                utilisateur.estClient = true;
+                      }
                     }
                 }
 
@@ -67,7 +77,10 @@ namespace ProbSciANA
                     {
                         while(reader.Read())
                         {
-                            utilisateurs[reader.GetInt32("id_utilisateur")-1].estCuisinier = true;
+                            int id = reader.GetInt32("id_utilisateur");
+                            var utilisateur = utilisateurs.FirstOrDefault(u => u.Id_utilisateur == id);
+                            if (utilisateur != null)
+                                utilisateur.estCuisinier = true;
                         }
                     }
                 }
@@ -126,7 +139,7 @@ namespace ProbSciANA
         #region GetSet
         public int Id_utilisateur
         {
-            get { return id_utilisateur; }
+            get { return id_utilisateur; } set { id_utilisateur = value; }
         }
         public bool EstClient
         {
@@ -139,7 +152,7 @@ namespace ProbSciANA
                 }
                 if(!value && estClient)
                 {
-                    estClient = value; Delete("Client_", this.id_utilisateur);
+                    estClient = value; Delete("Client_");
                 }
             }
         }
@@ -154,8 +167,9 @@ namespace ProbSciANA
                 }
                 if(!value && estCuisinier)
                 {
-                    estCuisinier = value; Delete("Cuisinier", this.id_utilisateur);
+                    estCuisinier = value; Delete("Cuisinier");
                 }
+                
             }
         }
         public string Nom
@@ -258,7 +272,7 @@ namespace ProbSciANA
                 }
             }
         }
-        public void Delete(string table, int id_utilisateur)
+        public void Delete(string table)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -268,6 +282,12 @@ namespace ProbSciANA
                 {
                     cmd.Parameters.AddWithValue("@id", id_utilisateur);
                     cmd.ExecuteNonQuery();
+                    Requetes.utilisateurs.Remove(this);
+                   for(int i = id_utilisateur-1; i < Requetes.utilisateurs.Count; i++)
+                   {
+                       Requetes.utilisateurs[i].Id_utilisateur= Requetes.utilisateurs[i].Id_utilisateur-1 ;
+                   }
+
                 }
             }
         }
