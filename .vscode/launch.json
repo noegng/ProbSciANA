@@ -1,6 +1,8 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
+
         {
             "name": ".NET Core Launch (WPF)",
             "type": "coreclr",
@@ -9,7 +11,7 @@
             "program": "${workspaceFolder}/bin/Debug/net9.0-windows/ProbSciANA.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
-            "console": "externalTerminal", 
+            "console": "integratedTerminal", 
             "stopAtEntry": false
         }
     ]

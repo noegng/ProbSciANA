@@ -400,16 +400,14 @@ CREATE TABLE `utilisateur` (
   `id_utilisateur` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(50) DEFAULT NULL,
   `prenom` varchar(50) DEFAULT NULL,
-  `rue` varchar(50) DEFAULT NULL,
-  `numero` tinyint DEFAULT NULL,
-  `code_postal` varchar(5) DEFAULT NULL,
-  `ville` varchar(50) DEFAULT NULL,
-  `telephone` varchar(10) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
+  `adresse` varchar(100) DEFAULT NULL,
+  `role` varchar(50) DEFAULT NULL,
+  `MotDePasse` varchar(50) DEFAULT NULL,
   `station` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_utilisateur`),
-  UNIQUE KEY `email` (`email`),
-  CONSTRAINT `utilisateur_chk_1` CHECK ((`numero` >= 0))
+  UNIQUE KEY `email` (`email`)
+  
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -419,7 +417,18 @@ CREATE TABLE `utilisateur` (
 
 LOCK TABLES `utilisateur` WRITE;
 /*!40000 ALTER TABLE `utilisateur` DISABLE KEYS */;
-INSERT INTO `utilisateur` VALUES (1,'Dupont','Jean','Rue de Paris',10,'75001','Paris','0102030405','jean.dupont@example.com','Station A'),(3,'Durand','Pierre','Boulevard Voltaire',20,'75012','Paris','0102030407','pierre.durand@example.com','Station C'),(4,'Leroy','Sophie','Rue Victor Hugo',5,'75002','Paris','0102030408','sophie.leroy@example.com','Station D'),(5,'Moreau','Julien','Rue de la Paix',8,'75008','Paris','0102030409','julien.moreau@example.com','Station E'),(6,'Simon','Claire','Rue Lafayette',12,'75009','Paris','0102030410','claire.simon@example.com','Station F'),(7,'Laurent','Marc','Avenue Mozart',22,'75016','Paris','0102030411','marc.laurent@example.com','Station G'),(8,'Garnier','Emma','Rue de Rivoli',18,'75004','Paris','0102030412','emma.garnier@example.com','Station H'),(9,'Roux','Lucas','Rue du Bac',7,'75007','Paris','0102030413','lucas.roux@example.com','Station I'),(10,'Morel','Léa','Boulevard Saint-Germain',3,'75006','Paris','0102030414','lea.morel@example.com','Station J');
+INSERT INTO utilisateur (id_utilisateur, nom, prenom, email, adresse, role, MotDePasse, station)
+VALUES
+(1, 'Martin', 'Alice', 'alice.martin@example.com', '12 rue de Paris', 'Client', 'alice123', 'République'),
+(2, 'Durand', 'Paul', 'paul.durand@example.com', '45 avenue Victor Hugo', 'Cuisinier', 'paulcuisine', 'Nation'),
+(3, 'Leroy', 'Camille', 'camille.leroy@example.com', '7 rue Lafayette', 'Client', 'camille2024', 'Gare du Nord'),
+(4, 'Bernard', 'Luc', 'luc.bernard@example.com', '88 boulevard Haussmann', 'Cuisinier', 'lucfood', 'Châtelet'),
+(5, 'Petit', 'Sophie', 'sophie.petit@example.com', '31 rue Mouffetard', 'Client', 'sophiepass', 'Montparnasse'),
+(6, 'Garcia', 'Julien', 'julien.garcia@example.com', '9 rue Oberkampf', 'Cuisinier', 'juliencook', 'Belleville'),
+(7, 'Roux', 'Chloé', 'chloe.roux@example.com', '55 rue de Rivoli', 'Client', 'chloe1234', 'Bastille'),
+(8, 'Moreau', 'Nicolas', 'nicolas.moreau@example.com', '23 rue Saint-Honoré', 'Cuisinier', 'nicofood', 'Opéra'),
+(9, 'Fournier', 'Emma', 'emma.fournier@example.com', '18 rue de Rennes', 'Client', 'emmaclient', 'Denfert-Rochereau'),
+(10, 'Lopez', 'Antoine', 'antoine.lopez@example.com', '102 rue Lecourbe', 'Cuisinier', 'antoinechef', 'La Motte-Picquet');
 /*!40000 ALTER TABLE `utilisateur` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

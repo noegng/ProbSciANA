@@ -6,8 +6,9 @@
         <TextBlock Text="Tableau de bord Utilisateur" FontSize="20" Margin="0,0,0,20"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Commander un plat" Width="200" Margin="5"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Suivre mes commandes" Width="200" Margin="5"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="200" Margin="20,20,0,0"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="200" HorizontalAlignment="Center"
+            Click="BtnRetour_Click"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Retour à l'accueil" Width="200" Height="35" Margin="10"
-        Click="BtnRetourAccueil_Click"/>
+        Click="BtnRetourAccueil_Click" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
     </StackPanel>
 </Page>
