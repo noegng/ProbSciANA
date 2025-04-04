@@ -7,6 +7,7 @@
         <Button Style="{StaticResource MenuButtonStyle}" Content="Top clients" Width="200" Margin="5"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Top cuisiniers" Width="200" Margin="5"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Prix moyen des commandes" Width="200" Margin="5"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="200"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="200"
+            Click="BtnRetour_Click"/>
     </StackPanel>
 </Page>

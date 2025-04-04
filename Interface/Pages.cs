@@ -106,7 +106,7 @@ public partial class ConnexionView : Page
         public ConnexionView()
         {
             InitializeComponent();
-            Requetes.SelectUtilisateurs();
+            Requetes.GetUtilisateurs();
             utilisateurs = new Dictionary<string, Utilisateur>();
 
             foreach (var utilisateur in Requetes.utilisateurs)
@@ -258,7 +258,7 @@ public partial class ConnexionView : Page
         public ClientsView()
         {
             InitializeComponent();
-            Requetes.SelectUtilisateurs();
+            Requetes.GetUtilisateurs();
             LoadClients();
         }
 
@@ -317,7 +317,7 @@ public partial class ConnexionView : Page
         public CuisiniersView()
         {
             InitializeComponent();
-            Requetes.SelectUtilisateurs();
+            Requetes.GetUtilisateurs();
             LoadCuisiniers();
         }
 
