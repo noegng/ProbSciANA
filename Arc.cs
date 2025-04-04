@@ -11,9 +11,6 @@ namespace ProbSciANA
         private bool sensUnique;
         private string idLigne;
 
-        // private string idLigne;
-        // private static Dictionary<string, double> vitesseMoyenne = new Dictionary<string, double>();
-        // private static Dictionary<T, double[]> longitudeLatitude = new Dictionary<T, double[]>();
         public Arc(T idPrevious, T idNext, bool sensUnique = false, string idLigne = "",int poids = 1) {
         this.idPrevious = idPrevious;
         this.idNext = idNext;
@@ -55,7 +52,7 @@ namespace ProbSciANA
         }
     }
 #endregion
-        public bool Equals(Arete<T> other)
+        public bool Equals(Arc<T> other)
         {
             if (other == null) return false;
             if(idLigne != null || idLigne != ""){

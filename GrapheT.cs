@@ -251,7 +251,7 @@ namespace ProbSciANA
         }
         #endregion
         #region Méthodes de recherche de chemin
-        public Dictionary<Noeud<T>, int> Dijkstra(Noeud<T> sommetDepart, Dictionary<Arc<Noeud<T>>, int> poidsArcs )   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        public Dictionary<Noeud<T>, int> Dijkstra(Noeud<T> sommetDepart)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<Noeud<T>, int> distances = new Dictionary<Noeud<T>, int>();
             HashSet<Noeud<T>> visites = new HashSet<Noeud<T>>();
@@ -313,16 +313,19 @@ namespace ProbSciANA
 
             return distances;
         }
-        public Dictionary<Noeud<T>, int> Dijkstra2(Noeud<T> sommetDepart)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        //Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
+        public (List<Arc<Noeud<T>>>, int) DijkstraChemin(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<Noeud<T>, int> distances = new Dictionary<Noeud<T>, int>();
             HashSet<Noeud<T>> visites = new HashSet<Noeud<T>>();
             PriorityQueue<Noeud<T>, int> filePriorite = new PriorityQueue<Noeud<T>, int>(); // On utilise une priority queue pour gérer les sommets à explorer
-            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à un string vide
+            Dictionary<Noeud<T>, Arc<Noeud<T>>> predecesseurs = new Dictionary<Noeud<T>, Arc<Noeud<T>>>(); // Pour reconstruire le chemin
+            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
 
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
                 distances[sommet] = int.MaxValue; // On initialise les distances à l'infini
+                predecesseurs[sommet] = null; // On initialise les prédécesseurs à null
             }
 
             distances[sommetDepart] = 0;
@@ -331,7 +334,12 @@ namespace ProbSciANA
             while (filePriorite.Count > 0)
             {
                 Noeud<T> sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
-                visites.Add(sommetActuel);
+                visites.Add(sommetActuel); 
+
+                if (sommetActuel.Equals(sommetArrivee)) // Si on a atteint le sommet d'arrivée
+                {
+                    break;
+                }
 
                 foreach (Arc<Noeud<T>> voisin in arcs) // On parcourt les voisins du sommet actuel
                 {
@@ -346,10 +354,11 @@ namespace ProbSciANA
                         if (!visites.Contains(voisin.IdNext)) // On vérifie si le voisin n'a pas déjà été visité
                         {
                             // On met à jour la distance si on trouve un chemin plus court
-                            int nouvelleDistance = distances[sommetActuel] + voisin.Poids + tempsChangement; // On cast les sommets en Noeud pour utiliser la classe Arc<Noeud<T>>
+                            int nouvelleDistance = distances[sommetActuel] + voisin.Poids + tempsChangement; // On cast les sommets en Noeud<T> pour utiliser la classe Arete
                             if (nouvelleDistance < distances[voisin.IdNext])
                             {
                                 distances[voisin.IdNext] = nouvelleDistance;
+                                predecesseurs[voisin.IdNext] = voisin; // On met à jour le prédécesseur
                                 filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
                             }
                         }
@@ -358,8 +367,18 @@ namespace ProbSciANA
                     
                 }
             }
+            // Reconstruire le chemin
+            List<Arc<Noeud<T>>> cheminAretes = new List<Arc<Noeud<T>>>();
+            Noeud<T> courant = sommetArrivee;
 
-            return distances;
+            while (predecesseurs[courant] != null)
+            {
+                    Arc<Noeud<T>> arc = predecesseurs[courant];
+                    cheminAretes.Add(arc);
+                    courant = arc.IdPrevious;
+            }
+            cheminAretes.Reverse(); // Important pour avoir le chemin dans le bon sens
+            return (cheminAretes, distances[sommetArrivee]);
         }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
         public Dictionary<Noeud<T>, int> BellmanFord(Noeud<T> sommetDepart)
