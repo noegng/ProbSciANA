@@ -19,7 +19,7 @@ namespace ProbSciANA
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);  // Initialisation de la bibliothèque EPPlus pour lire les fichiers Excel  
             //Etape1(); // Appel de la méthode principale
             string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
-            (List<Noeud<(int id,string nom)>> noeuds , List<Arc<Noeud<(int id,string nom)>>> arcs, Dictionary<Noeud<(int id,string nom)>, double[]> longitudeLatitude ) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
+            (List<Noeud<(int id,string nom)>> noeuds , List<Arc<(int id,string nom)>> arcs) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
             Graphe<(int id,string nom)> graphePondéré = new Graphe<(int id,string nom)>(arcs); // Création d'un graphe à partir des arêtes
             //graphePondéré.BFStoString(arcs[0]); 
             //graphePondéré.DFStoString(arcs[0]);
@@ -28,20 +28,19 @@ namespace ProbSciANA
             //graphePondéré.ContientCycle();
             //TestDistanceTemps(aretes); // Test de la distance et du temps de trajet entre deux arcs
             //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
-            //TestDijkstra(graphePondéré, noeuds,longitudeLatitude); // Test de l'algorithme de Dijkstra
-            //TestBellmanFord(graphePondéré, noeuds, longitudeLatitude);
-            //TestDijkstraChemin(graphePondéré, noeuds, longitudeLatitude); // Test de l'algorithme de Dijkstra avec vitesses moyennes
-            //TestBellmanFordChemin(graphePondéré, noeuds, longitudeLatitude);
+            TestDijkstra(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra
+            TestBellmanFord(graphePondéré, noeuds);
+            TestDijkstraChemin(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+            TestBellmanFordChemin(graphePondéré, noeuds);
 
-            AffichageImage(noeuds, arcs, longitudeLatitude); // Affichage de l'image du graphe
+            AffichageImage(noeuds, arcs); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
-        static (List<Noeud<(int id,string nom)>>, List<Arc<Noeud<(int id,string nom)>>>,Dictionary<Noeud<(int id,string nom)>, double[]> ) LectureFichierExcel(string excelFilePath){
+        static (List<Noeud<(int id,string nom)>>, List<Arc<(int id,string nom)>>) LectureFichierExcel(string excelFilePath){
             var noeuds = new List<Noeud<(int id,string nom)>>();
-            var arcs = new List<Arc<Noeud<(int id,string nom)>>>(); 
+            var arcs = new List<Arc<(int id,string nom)>>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
-            var longitudeLatitude = new Dictionary<Noeud<(int id,string nom)>, double[]>();
 
             using (var package = new ExcelPackage(new FileInfo(excelFilePath)))
             {
@@ -70,7 +69,6 @@ namespace ProbSciANA
                         tempsChamgement = int.Parse(worksheet.Cells[i, 5].Value.ToString());
                     }
                     Noeud<(int, string)> noeud = new Noeud<(int, string)>((Id, Nom), tempsChamgement, Longitude, Latitude);
-                    longitudeLatitude.Add(noeud, [Longitude,Latitude]);
                     noeuds.Add(noeud);
                     i++;
                 }
@@ -103,11 +101,11 @@ namespace ProbSciANA
                     }
                     if (idStationPrevious != 0 && idStationNext != 0) // Aucune station a un id = 0 donc on ne peut pas créer l'arête
                     {
-                        Arc<Noeud<(int id,string nom)>> arcAllé = new Arc<Noeud<(int id,string nom)>>(noeuds[idStationPrevious-1], noeuds[idStationNext-1], sensUnique, IdLigne); // Création de l'arête avec les arcs correspondantes (on faut cela pour conserver toutes les informations des arcs dans arete et les -1 car les id commencent à 1)
-                        int poids = arcAllé.CalculerTempsTrajet(longitudeLatitude,VitessesMoyennes,IdLigne); // On met a jour le poids
+                        Arc<(int id,string nom)> arcAllé = new Arc<(int id,string nom)>(noeuds[idStationPrevious-1], noeuds[idStationNext-1], sensUnique, IdLigne); // Création de l'arête avec les arcs correspondantes (on faut cela pour conserver toutes les informations des arcs dans arete et les -1 car les id commencent à 1)
+                        int poids = arcAllé.CalculerTempsTrajet(VitessesMoyennes,IdLigne ); // On met a jour le poids
                         if (!sensUnique) // Si l'arête n'est pas sens unique, on crée l'arête retour
                         {
-                            Arc<Noeud<(int id,string nom)>> arcRetour = new Arc<Noeud<(int id,string nom)>>(noeuds[idStationNext-1], noeuds[idStationPrevious-1], sensUnique, IdLigne, poids); // Création de l'arête retour
+                            Arc<(int id,string nom)> arcRetour = new Arc<(int id,string nom)>(noeuds[idStationNext-1], noeuds[idStationPrevious-1], sensUnique, IdLigne, poids); // Création de l'arête retour
                             arcs.Add(arcRetour); // Ajout de l'arête retour à la liste des arêtes
                         }
                         arcs.Add(arcAllé); // Ajout de l'arête à la liste des arêtes
@@ -115,16 +113,17 @@ namespace ProbSciANA
                     i++;
                 }
             }
-            return (noeuds, arcs, longitudeLatitude);
+            return (noeuds, arcs);
         }
-        static void AffichageImage(List<Noeud<(int id, string nom)>> noeuds, List<Arc<Noeud<(int id,string nom)>>> arcs,Dictionary<Noeud<(int id,string nom)>, double[]> longitudeLatitude)
+        static void AffichageImage(List<Noeud<(int id, string nom)>> noeuds, List<Arc<(int id,string nom)>> arcs)
         {
             // Chemins pour le fichier DOT et l'image PNG
             string dotFile = "graphe.dot";
             string pngFile = "graphe.png";                        
             // Générer le fichier DOT et l'image PNG
-            Graphviz<(int id, string nom)>.GenerateGraphImage(noeuds, arcs, dotFile, pngFile, longitudeLatitude);
+            Graphviz<(int id, string nom)>.GenerateGraphImage(noeuds, arcs, dotFile, pngFile);
         }
+        
         
         #region Etape 1
         static void Etape1()
@@ -273,7 +272,7 @@ namespace ProbSciANA
         }
         #endregion
         #region Test
-        static void TestDijkstra(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> arcs,Dictionary<Noeud<(int id,string nom)>, double[]> longitudeLatitude)
+        static void TestDijkstra(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> arcs)
         {
             var sw = Stopwatch.StartNew();
             // Test de l'algorithme de Dijkstra
@@ -291,23 +290,23 @@ namespace ProbSciANA
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetitTemps + " min.");
         }
-        static void TestDijkstraChemin(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> arcs ,Dictionary<Noeud<(int id,string nom)>, double[]> longitudeLatitude)
+        static void TestDijkstraChemin(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> arcs)
         {
             // Test de l'algorithme de Dijkstra
             var sw = Stopwatch.StartNew();
             Noeud<(int id, string nom)> depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = arcs[174]; // Noeud<(int id, string nom)> d'arrivée
-            (List<Arc<Noeud<(int id, string nom)>>> chemin , int plusPetiteDistance) = graphePondéré.DijkstraChemin(depart, arrivee); // Calcul du chemin le plus court
+            (List<Arc<(int id, string nom)>> chemin , int plusPetiteDistance) = graphePondéré.DijkstraChemin(depart, arrivee); // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");
             Console.Write("Chemin : ");
-            foreach (Arc<Noeud<(int id, string nom)>> arete in chemin)
+            foreach (Arc<(int id, string nom)> arete in chemin)
             {
                 Console.Write(arete.IdPrevious.Valeur.nom + " -> "); // Affichage du chemin
             }
             Console.WriteLine(arrivee.Valeur.nom);
-            Graphviz<(int id, string nom)>.GenerateChemin(chemin, arcs, longitudeLatitude);
+            Graphviz<(int id, string nom)>.GenerateChemin(chemin, arcs);
             Console.WriteLine("--------------------------------------------------");
             depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             arrivee = arcs[246]; // Noeud<(int id, string nom)> d'arrivée
@@ -317,15 +316,15 @@ namespace ProbSciANA
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");
             Console.Write("Chemin : ");
-            foreach (Arc<Noeud<(int id, string nom)>> arete in chemin)
+            foreach (Arc<(int id, string nom)> arete in chemin)
             {
                 Console.Write(arete.IdPrevious.Valeur.nom + " -> "); // Affichage du chemin
             }
             Console.WriteLine(arrivee.Valeur.nom);
-            Graphviz<(int id, string nom)>.GenerateChemin(chemin, arcs, longitudeLatitude);
+            Graphviz<(int id, string nom)>.GenerateChemin(chemin, arcs);
         }
 
-        static void TestBellmanFord(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> arcs, Dictionary<Noeud<(int id,string nom)>, double[]> longitudeLatitude)
+        static void TestBellmanFord(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> arcs)
         {
             Noeud<(int id, string nom)> depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = arcs[10]; // Noeud<(int id, string nom)> d'arrivée
@@ -336,21 +335,21 @@ namespace ProbSciANA
             plusPetitTemps = graphePondéré.BellmanFord(depart)[arrivee]; // Calcul du chemin le plus court
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetitTemps + " min.");
         }
-        static void TestBellmanFordChemin(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> arcs, Dictionary<Noeud<(int id,string nom)>, double[]> longitudeLatitude)
+        static void TestBellmanFordChemin(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> arcs)
         {
             Noeud<(int id, string nom)> depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = arcs[174]; // Noeud<(int id, string nom)> d'arrivée
             var sw = Stopwatch.StartNew();
-            (List<Arc<Noeud<(int id, string nom)>>> chemin , int plusPetiteDistance) = graphePondéré.BellmanFordChemin(depart, arrivee); // Calcul du chemin le plus court
+            (List<Arc<(int id, string nom)>> chemin , int plusPetiteDistance) = graphePondéré.BellmanFordChemin(depart, arrivee); // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");
             Console.Write("Chemin : ");
-            foreach (Arc<Noeud<(int id, string nom)>> arete in chemin)
+            foreach (Arc<(int id, string nom)> arete in chemin)
             {
                 Console.Write(arete.IdPrevious.Valeur.nom + " -> "); // Affichage du chemin
             }
-            Graphviz<(int id, string nom)>.GenerateChemin(chemin, arcs, longitudeLatitude);
+            Graphviz<(int id, string nom)>.GenerateChemin(chemin, arcs);
             Console.WriteLine("--------------------------------------------------");
             depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             arrivee = arcs[246]; // Noeud<(int id, string nom)> d'arrivée
@@ -360,11 +359,11 @@ namespace ProbSciANA
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");
             Console.Write("Chemin : ");
-            foreach (Arc<Noeud<(int id, string nom)>> arete in chemin)
+            foreach (Arc<(int id, string nom)> arete in chemin)
             {
                 Console.Write(arete.IdPrevious.Valeur.nom + " -> "); // Affichage du chemin
             }
-            Graphviz<(int id, string nom)>.GenerateChemin(chemin, arcs, longitudeLatitude);
+            Graphviz<(int id, string nom)>.GenerateChemin(chemin, arcs);
         }
         static void TestListeEtMatrice(Graphe<(int id,string nom)> graphePondéré)
         {

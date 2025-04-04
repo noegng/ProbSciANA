@@ -45,7 +45,7 @@ namespace ProbSciANA
         };
     }
 
-        public static void GenerateGraphImage( List <Noeud<T>> noeuds, List <Arc<Noeud<T>>> arcs, string dotFilePath, string pngFilePath,Dictionary<Noeud<(int id,string nom)>, double[]> longitudeLatitude)
+        public static void GenerateGraphImage( List <Noeud<T>> noeuds, List <Arc<T>> arcs, string dotFilePath, string pngFilePath)
 {
     try
     {
@@ -124,7 +124,7 @@ namespace ProbSciANA
         throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
     }
 }
-    public static void GenerateChemin(List <Arc<Noeud<T>>> arcsChemin, List <Noeud<T>> noeuds, Dictionary<Noeud<(int id,string nom)>, double[]> longitudeLatitude)
+    public static void GenerateChemin(List <Arc<T>> arcsChemin, List <Noeud<T>> noeuds)
 {
     string dotFilePath = "grapheChemin.dot";
     string pngFilePath = "grapheChemin.png";
