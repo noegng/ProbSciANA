@@ -12,10 +12,10 @@ namespace ProbSciANA
         private Dictionary<Station, List<Station>> listeAdjacence;
         private int[,] matriceAdjacence;
         private Dictionary<Station, int> couleurs;
-        private List<Arc> aretes;
+        private List<Arete> aretes;
         private int nbCycles = -1; //Détecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
 
-        public Graphe2(List<Arc> aretes) //Graphe non pondéré
+        public Graphe2(List<Arete> aretes) //Graphe non pondéré
         {
             this.aretes = aretes;
             listeAdjacence = new Dictionary<Station, List<Station>>();
@@ -37,7 +37,7 @@ namespace ProbSciANA
             get { return matriceAdjacence; }
             set { matriceAdjacence = value; }
         }
-        public List<Arc> Aretes{
+        public List<Arete> Aretes{
             get { return aretes; }
             set { aretes = value; }
         }
@@ -205,9 +205,9 @@ namespace ProbSciANA
             Console.WriteLine();
         }
         
-        public void RemplissageListeAdjacence(List<Arc> aretes)
+        public void RemplissageListeAdjacence(List<Arete> aretes)
         {
-            foreach (Arc arete in aretes)
+            foreach (Arete arete in aretes)
             {
                 if (listeAdjacence.Count == 0)
                 {
@@ -244,7 +244,7 @@ namespace ProbSciANA
         }
         public void RemplissageMatriceAdjacence()
         {
-            foreach (Arc arete in aretes)
+            foreach (Arete arete in aretes)
             {
                 if ( arete.IdPrevious != null && arete.IdNext != null)
                 {
@@ -297,7 +297,7 @@ namespace ProbSciANA
                 Station sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
                 visites.Add(sommetActuel);
 
-                foreach (Arc voisin in aretes) // On parcourt les voisins du sommet actuel
+                foreach (Arete voisin in aretes) // On parcourt les voisins du sommet actuel
                 {
                     if (voisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
                     { 
@@ -326,12 +326,12 @@ namespace ProbSciANA
             return distances;
         }
         //Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
-        public (List<Arc>, int) DijkstraChemin(Station sommetDepart, Station sommetArrivee)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        public (List<Arete>, int) DijkstraChemin(Station sommetDepart, Station sommetArrivee)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<Station, int> distances = new Dictionary<Station, int>();
             HashSet<Station> visites = new HashSet<Station>();
             PriorityQueue<Station, int> filePriorite = new PriorityQueue<Station, int>(); // On utilise une priority queue pour gérer les sommets à explorer
-            Dictionary<Station, Arc> predecesseurs = new Dictionary<Station, Arc>(); // Pour reconstruire le chemin
+            Dictionary<Station, Arete> predecesseurs = new Dictionary<Station, Arete>(); // Pour reconstruire le chemin
             string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
 
             foreach (Station sommet in listeAdjacence.Keys)
@@ -353,7 +353,7 @@ namespace ProbSciANA
                     break;
                 }
 
-                foreach (Arc voisin in aretes) // On parcourt les voisins du sommet actuel
+                foreach (Arete voisin in aretes) // On parcourt les voisins du sommet actuel
                 {
                     if (voisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
                     { 
@@ -380,12 +380,12 @@ namespace ProbSciANA
                 }
             }
             // Reconstruire le chemin
-            List<Arc> cheminAretes = new List<Arc>();
+            List<Arete> cheminAretes = new List<Arete>();
             Station courant = sommetArrivee;
 
             while (predecesseurs[courant] != null)
             {
-                    Arc arete = predecesseurs[courant];
+                    Arete arete = predecesseurs[courant];
                     cheminAretes.Add(arete);
                     courant = arete.IdPrevious;
             }
@@ -407,7 +407,7 @@ namespace ProbSciANA
 
             for (int i = 0; i < listeAdjacence.Count - 1; i++)
             {
-                foreach (Arc arete in aretes)
+                foreach (Arete arete in aretes)
                 {
                     if (arete.IdPrevious.Id == i+1) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une station)
                     {
@@ -428,11 +428,11 @@ namespace ProbSciANA
             return distances;
         }
         //Calculer et Renvoie le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
-        public (List<Arc>, int) BellmanFordChemin(Station sommetDepart, Station sommetArrivee)
+        public (List<Arete>, int) BellmanFordChemin(Station sommetDepart, Station sommetArrivee)
         {
             Dictionary<Station, int> distances = new Dictionary<Station, int>();
             HashSet<Station> visites = new HashSet<Station>();
-            Dictionary<Station, Arc> predecesseurs = new Dictionary<Station, Arc>(); // Pour reconstruire le chemin
+            Dictionary<Station, Arete> predecesseurs = new Dictionary<Station, Arete>(); // Pour reconstruire le chemin
 
             foreach (Station sommet in listeAdjacence.Keys)
             {
@@ -445,7 +445,7 @@ namespace ProbSciANA
 
             for (int i = 0; i < listeAdjacence.Count - 1; i++)
             {
-                foreach (Arc arete in aretes)
+                foreach (Arete arete in aretes)
                 {
                     if ((distances[arete.IdPrevious] != int.MaxValue) && (distances[arete.IdPrevious] + arete.Temps + arete.IdPrevious.TempsChangement < distances[arete.IdNext]))
                     {
@@ -455,12 +455,12 @@ namespace ProbSciANA
                 }
             }
             // Reconstruire le chemin
-            List<Arc> cheminAretes = new List<Arc>();
+            List<Arete> cheminAretes = new List<Arete>();
             Station courant = sommetArrivee;
 
             while (predecesseurs[courant] != null)
             {
-                    Arc arete = predecesseurs[courant];
+                    Arete arete = predecesseurs[courant];
                     cheminAretes.Add(arete);
                     courant = arete.IdPrevious;
             }

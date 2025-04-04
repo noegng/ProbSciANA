@@ -94,7 +94,7 @@ namespace ProbSciANA
                 Noeud<T> sommet = pile.Peek();
                 bool aExploréUnVoisin = false;
 
-                foreach (Noeud<T> voisin in listeAdjacence[sommet].OrderBy(x => x))
+                foreach (Noeud<T> voisin in listeAdjacence[sommet])
                 {
                     if (couleurs[voisin] == 0) // blanc
                     {
@@ -178,7 +178,33 @@ namespace ProbSciANA
         }
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
         // 
-        
+        public void DFStoString(Noeud<T> sommetDepart)
+        {
+            Console.Write("Parcours en Profondeur (DFS): ");
+            foreach (Noeud<T> sommet in DFS(sommetDepart))
+            {
+                Console.Write(sommet.ToString() + " ; ");
+            }
+            Console.WriteLine();
+        }
+        public void BFStoString(Noeud<T> sommetDepart)
+        {
+            Console.Write("Parcours en Largeur (BFS):  ");
+            foreach (Noeud<T> sommet in BFS(sommetDepart))
+            {
+                Console.Write(sommet.ToString() + " ; ");
+            }
+            Console.WriteLine();
+        }
+        public void DFSRécursiftoString()
+        {
+            Console.Write("Parcours en Profondeur (DFS récursif): ");
+            foreach (Noeud<T> sommet in DFSRécursif())
+            {
+                Console.Write(sommet.ToString() + " ; ");
+            }
+            Console.WriteLine();
+        }
         public void RemplissageListeAdjacence(List<Arc<T>> arcs)
         {
             foreach (Arc<T> arete in arcs)
@@ -382,7 +408,7 @@ namespace ProbSciANA
             {
                 foreach (Arc<T> arete in arcs)
                 {
-                    if (arete.IdPrevious.IdBrute == i+1) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une Noeud)
+                    if (arete.IdPrevious.IdBrute == i) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une Noeud)
                     {
                     int tempsChangement = 0;
                     if (idLignePrécédent != arete.IdLigne) // On vérifie si on change de ligne

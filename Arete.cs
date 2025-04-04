@@ -10,7 +10,7 @@ using Org.BouncyCastle.Asn1.Tsp;
 namespace ProbSciANA
 {
 
-public class Arc {
+public class Arete {
 
 
     private Station idPrevious;
@@ -20,7 +20,7 @@ public class Arc {
     private bool sensUnique;
     private static Dictionary<string, double> vitesseMoyenne = new Dictionary<string, double>();
     
-        public Arc(Station idPrevious, Station idNext, string idLigne, bool sensUnique = false) {
+        public Arete(Station idPrevious, Station idNext, string idLigne, bool sensUnique = false) {
         this.idPrevious = idPrevious;
         this.idNext = idNext;
         this.idLigne = idLigne;
@@ -79,7 +79,7 @@ public class Arc {
         }
     }
     #endregion
-    public bool Equals(Arc other)
+    public bool Equals(Arete other)
     {
         if (other == null) return false;
         return IdPrevious == other.IdPrevious && IdNext == other.IdNext && IdLigne == other.IdLigne;
@@ -87,7 +87,7 @@ public class Arc {
 
     public override bool Equals(object obj)
     {
-        return Equals(obj as Arc);
+        return Equals(obj as Arete);
     }
 
     public override int GetHashCode()

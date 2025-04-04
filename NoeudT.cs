@@ -46,23 +46,22 @@ namespace ProbSciANA
             set { idBrute = value; }
         }
         #endregion
-
         public override bool Equals(object obj)
         {
-            if (obj is Station<T> autre)
-            {
-                return EqualityComparer<T>.Default.Equals(this.Valeur, autre.Info);
-            }
-            return false;
+            return obj is Noeud<T> autre && EqualityComparer<T>.Default.Equals(Valeur, autre.Valeur);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Valeur, TempsChangement);
+            return EqualityComparer<T>.Default.GetHashCode(Valeur);
         }
         public string ToStringLong()
         {
             return $"Noeud: {Valeur}, Temps de changement: {TempsChangement} minutes";
+        }
+        public override string ToString()
+        {
+            return Valeur.ToString();
         }
     }
 }

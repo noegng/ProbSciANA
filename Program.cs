@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using OfficeOpenXml.Utils;
 using Org.BouncyCastle.Asn1.Misc;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 
 namespace ProbSciANA
@@ -21,19 +22,19 @@ namespace ProbSciANA
             string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel contenant les positions des sommets.
             (List<Noeud<(int id,string nom)>> noeuds , List<Arc<(int id,string nom)>> arcs) = LectureFichierExcel(excelFilePath); // Lecture du fichier Excel
             Graphe<(int id,string nom)> graphePondéré = new Graphe<(int id,string nom)>(arcs); // Création d'un graphe à partir des arêtes
-            //graphePondéré.BFStoString(arcs[0]); 
-            //graphePondéré.DFStoString(arcs[0]);
+            //graphePondéré.BFStoString(noeuds[0]); 
+            //graphePondéré.DFStoString(noeuds[0]);
             //graphePondéré.DFSRécursiftoString();
             //graphePondéré.EstConnexe();
             //graphePondéré.ContientCycle();
-            //TestDistanceTemps(aretes); // Test de la distance et du temps de trajet entre deux arcs
+            //TestDistanceTemps(arcs); // Test de la distance et du temps de trajet entre deux noeuds
             //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
             TestDijkstra(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra
-            TestBellmanFord(graphePondéré, noeuds);
-            TestDijkstraChemin(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+            //TestBellmanFord(graphePondéré, noeuds);
+            //TestDijkstraChemin(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra avec vitesses moyennes
             TestBellmanFordChemin(graphePondéré, noeuds);
 
-            AffichageImage(noeuds, arcs); // Affichage de l'image du graphe
+            //AffichageImage(noeuds, arcs); // Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
@@ -371,10 +372,10 @@ namespace ProbSciANA
             graphePondéré.AfficherMatriceAdjacence(); // Affichage de la matrice d'adjacence
         }
 
-        static void TestDistanceTemps(List<Arc> aretes)
+        static void TestDistanceTemps(List<Arc<(int id,string nom)>> arcs)
         // Test de la distance et du temps de trajet entre deux arcs
         {
-            foreach (Arc arete in aretes)
+            foreach (Arc<(int id,string nom)> arete in arcs)
             {
                 if (arete.IdPrevious == null || arete.IdNext == null)
                 {
@@ -383,7 +384,7 @@ namespace ProbSciANA
                 // Calcul de la distance entre deux arcs
                 double distance = arete.CalculerDistance();
                 // Affichage de la distance et du temps de trajet
-                Console.WriteLine($"Distance entre {arete.IdPrevious.Nom} et {arete.IdNext.Nom} : {distance} km et temps de trajet : {arete.Temps} min");
+                Console.WriteLine($"Distance entre {arete.IdPrevious.ToString()} et {arete.IdNext.ToString()} : {distance} km et temps de trajet : {arete.Poids} min");
             }
         }
         /// <summary>
