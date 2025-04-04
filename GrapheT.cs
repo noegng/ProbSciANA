@@ -295,14 +295,14 @@ namespace ProbSciANA
             while (filePriorite.Count > 0)
             {
                 Noeud<T> sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
-                visites.Add(sommetActuel); 
-
+                visites.Add(sommetActuel);  
+                int i = 0;
                 foreach (Arc<T> arcVoisin in arcs) // On parcourt les voisins du sommet actuel
                 {
                     if (arcVoisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
                     { 
                         int tempsChangement = 0;
-                        if (idLignePrécédent != arcVoisin.IdLigne) // On vérifie si on change de ligne
+                        if (idLignePrécédent != arcVoisin.IdLigne && i != 0) // On vérifie si on change de ligne
                         {
                             tempsChangement = arcVoisin.IdPrevious.TempsChangement; // On met à jour le temps de changement
                         }
@@ -351,13 +351,13 @@ namespace ProbSciANA
                 {
                     break;
                 }
-
+                int  i = 0;
                 foreach (Arc<T> voisin in arcs) // On parcourt les voisins du sommet actuel
                 {
                     if (voisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
                     { 
                         int tempsChangement = 0;
-                        if (idLignePrécédent != voisin.IdLigne) // On vérifie si on change de ligne
+                        if (idLignePrécédent != voisin.IdLigne && i != 0) // On vérifie si on change de ligne et i != 0 pour éviter la 1ère occcurence car forcément vrai 
                         {
                             tempsChangement = voisin.IdPrevious.TempsChangement; // On met à jour le temps de changement
                         }
@@ -374,6 +374,7 @@ namespace ProbSciANA
                             }
                         }
                         idLignePrécédent = voisin.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
+                        i++;
                     }
                     
                 }
@@ -391,6 +392,142 @@ namespace ProbSciANA
             cheminAretes.Reverse(); // Important pour avoir le chemin dans le bon sens
             return (cheminAretes, distances[sommetArrivee]);
         }
+        public (List<Arc<T>>, int) DijkstraChemin2(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
+{
+    var distances = new Dictionary<Noeud<T>, int>();
+    var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
+    var lignePrecedente = new Dictionary<Noeud<T>, string>();
+    var filePriorite = new PriorityQueue<Noeud<T>, int>();
+    var visites = new HashSet<Noeud<T>>();
+
+    foreach (var sommet in listeAdjacence.Keys)
+    {
+        distances[sommet] = int.MaxValue;
+        predecesseurs[sommet] = null;
+    }
+
+    distances[sommetDepart] = 0;
+    lignePrecedente[sommetDepart] = "";
+    filePriorite.Enqueue(sommetDepart, 0);
+
+    while (filePriorite.Count > 0)
+    {
+        var sommetActuel = filePriorite.Dequeue();
+        visites.Add(sommetActuel);
+
+        if (sommetActuel.Equals(sommetArrivee))
+            break;
+
+        foreach (var arc in arcs.Where(a => a.IdPrevious.Equals(sommetActuel)))
+        {
+            if (arc.IdPrevious == sommetActuel){
+
+
+            int tempsChangement = 0;
+            if (lignePrecedente.TryGetValue(sommetActuel, out string ligneActuelle))
+            {
+                if (ligneActuelle != arc.IdLigne)
+                    tempsChangement = arc.IdPrevious.TempsChangement;
+            }
+
+            int nouvelleDistance = distances[sommetActuel] + arc.Poids + tempsChangement;
+
+            if (nouvelleDistance < distances[arc.IdNext])
+            {
+                distances[arc.IdNext] = nouvelleDistance;
+                predecesseurs[arc.IdNext] = arc;
+                lignePrecedente[arc.IdNext] = arc.IdLigne;
+                filePriorite.Enqueue(arc.IdNext, nouvelleDistance);
+            }
+            }
+        }
+    }
+
+    var chemin = new List<Arc<T>>();
+    var courant = sommetArrivee;
+
+    while (predecesseurs[courant] != null)
+    {
+        var arc = predecesseurs[courant];
+        chemin.Add(arc);
+        courant = arc.IdPrevious;
+    }
+
+    chemin.Reverse();
+    return (chemin, distances[sommetArrivee]);
+}
+public (List<Arc<T>>, int) BellmanFordChemin2(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
+{
+    var distances = new Dictionary<Noeud<T>, int>();
+    var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
+    var lignePrecedente = new Dictionary<Noeud<T>, string>();
+
+    foreach (var sommet in listeAdjacence.Keys)
+    {
+        distances[sommet] = int.MaxValue;
+        predecesseurs[sommet] = null;
+    }
+
+    distances[sommetDepart] = 0;
+    lignePrecedente[sommetDepart] = "";
+
+    for (int i = 0; i < listeAdjacence.Count - 1; i++)
+    {
+        foreach (var arc in arcs)
+        {
+            if (distances[arc.IdPrevious] == int.MaxValue)
+                continue;
+
+            int tempsChangement = 0;
+            if (lignePrecedente.TryGetValue(arc.IdPrevious, out string ligneActuelle))
+            {
+                if (ligneActuelle != arc.IdLigne)
+                    tempsChangement = arc.IdPrevious.TempsChangement;
+            }
+
+            int nouvelleDistance = distances[arc.IdPrevious] + arc.Poids + tempsChangement;
+
+            if (nouvelleDistance < distances[arc.IdNext])
+            {
+                distances[arc.IdNext] = nouvelleDistance;
+                predecesseurs[arc.IdNext] = arc;
+                lignePrecedente[arc.IdNext] = arc.IdLigne;
+            }
+        }
+    }
+
+    // Détection de cycle négatif (facultatif ici si tu sais qu’il n’y en a pas)
+    foreach (var arc in arcs)
+    {
+        int tempsChangement = 0;
+        if (lignePrecedente.TryGetValue(arc.IdPrevious, out string ligneActuelle))
+        {
+            if (ligneActuelle != arc.IdLigne)
+                tempsChangement = arc.IdPrevious.TempsChangement;
+        }
+
+        if (distances[arc.IdPrevious] != int.MaxValue &&
+            distances[arc.IdPrevious] + arc.Poids + tempsChangement < distances[arc.IdNext])
+        {
+            throw new InvalidOperationException("Cycle de poids négatif détecté.");
+        }
+    }
+
+    var chemin = new List<Arc<T>>();
+    var courant = sommetArrivee;
+
+    while (predecesseurs[courant] != null)
+    {
+        var arc = predecesseurs[courant];
+        chemin.Add(arc);
+        courant = arc.IdPrevious;
+    }
+
+    chemin.Reverse();
+    return (chemin, distances[sommetArrivee]);
+}
+
+
         //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
         public Dictionary<Noeud<T>, int> BellmanFord(Noeud<T> sommetDepart)
         {
@@ -411,7 +548,7 @@ namespace ProbSciANA
                     if (arc.IdPrevious.IdBrute == i) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une Noeud)
                     {
                     int tempsChangement = 0;
-                    if (idLignePrécédent != arc.IdLigne) // On vérifie si on change de ligne
+                    if (idLignePrécédent != arc.IdLigne && i != 0) // On vérifie si on change de ligne
                     {
                         tempsChangement = arc.IdPrevious.TempsChangement; // On met à jour le temps de changement
                     }
@@ -444,21 +581,22 @@ namespace ProbSciANA
 
             for (int i = 0; i < listeAdjacence.Count - 1; i++)
             {
-                foreach (Arc<T> arete in arcs)
+                foreach (Arc<T> arc in arcs)
                 {
-                    if (arete.IdPrevious.IdBrute == i+1) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une Noeud)
+                    if (arc.IdPrevious.IdBrute == i) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une Noeud)
                     {
                     int tempsChangement = 0;
-                    if (idLignePrécédent != arete.IdLigne) // On vérifie si on change de ligne
+                    if (idLignePrécédent != arc.IdLigne && i != 0) // On vérifie si on change de ligne
                     {
-                        tempsChangement = arete.IdPrevious.TempsChangement; // On met à jour le temps de changement
+                        tempsChangement = arc.IdPrevious.TempsChangement; // On met à jour le temps de changement
                     }
-                    if ((distances[arete.IdPrevious] != int.MaxValue) && (distances[arete.IdPrevious] + arete.Poids + arete.IdPrevious.TempsChangement < distances[arete.IdNext]))
+                    if ((distances[arc.IdPrevious] != int.MaxValue) && (distances[arc.IdPrevious] + arc.Poids + arc.IdPrevious.TempsChangement < distances[arc.IdNext]))
                     {
-                        distances[arete.IdNext] = distances[arete.IdPrevious] + arete.Poids + arete.IdPrevious.TempsChangement;
+                        distances[arc.IdNext] = distances[arc.IdPrevious] + arc.Poids + arc.IdPrevious.TempsChangement;
+                        predecesseurs[arc.IdNext] = arc; // On met à jour le prédécesseur
                     }
                     }
-                    idLignePrécédent = arete.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
+                    idLignePrécédent = arc.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
                 }
             }
             // Reconstruire le chemin

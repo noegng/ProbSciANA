@@ -30,8 +30,8 @@ namespace ProbSciANA
             //TestDistanceTemps(arcs); // Test de la distance et du temps de trajet entre deux noeuds
             //TestListeEtMatrice(graphePondéré); // Test de la liste d'adjacence et de la matrice d'adjacence
             //TestDijkstra(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra
-            TestBellmanFord(graphePondéré, noeuds);
-            //TestDijkstraChemin(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra avec vitesses moyennes
+            //TestBellmanFord(graphePondéré, noeuds);
+            TestDijkstraChemin(graphePondéré, noeuds); // Test de l'algorithme de Dijkstra avec vitesses moyennes
             //TestBellmanFordChemin(graphePondéré, noeuds);
 
             //AffichageImage(noeuds, arcs); // Affichage de l'image du graphe
@@ -118,11 +118,7 @@ namespace ProbSciANA
         }
         static void AffichageImage(List<Noeud<(int id, string nom)>> noeuds, List<Arc<(int id,string nom)>> arcs)
         {
-            // Chemins pour le fichier DOT et l'image PNG
-            string dotFile = "graphe.dot";
-            string pngFile = "graphe.png";                        
-            // Générer le fichier DOT et l'image PNG
-            Graphviz<(int id, string nom)>.GenerateGraphImage(noeuds, arcs, dotFile, pngFile);
+            Graphviz<(int id, string nom)>.GenerateGraphImage(noeuds, arcs);
         }
         
         
@@ -297,7 +293,7 @@ namespace ProbSciANA
             var sw = Stopwatch.StartNew();
             Noeud<(int id, string nom)> depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = arcs[174]; // Noeud<(int id, string nom)> d'arrivée
-            (List<Arc<(int id, string nom)>> chemin , int plusPetiteDistance) = graphePondéré.DijkstraChemin(depart, arrivee); // Calcul du chemin le plus court
+            (List<Arc<(int id, string nom)>> chemin , int plusPetiteDistance) = graphePondéré.DijkstraChemin2(depart, arrivee); // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");
@@ -312,7 +308,7 @@ namespace ProbSciANA
             depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             arrivee = arcs[246]; // Noeud<(int id, string nom)> d'arrivée
             sw = Stopwatch.StartNew();
-            (chemin , plusPetiteDistance) = graphePondéré.DijkstraChemin(depart, arrivee); // Calcul du chemin le plus court
+            (chemin , plusPetiteDistance) = graphePondéré.DijkstraChemin2(depart, arrivee); // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");
@@ -341,7 +337,7 @@ namespace ProbSciANA
             Noeud<(int id, string nom)> depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = arcs[174]; // Noeud<(int id, string nom)> d'arrivée
             var sw = Stopwatch.StartNew();
-            (List<Arc<(int id, string nom)>> chemin , int plusPetiteDistance) = graphePondéré.BellmanFordChemin(depart, arrivee); // Calcul du chemin le plus court
+            (List<Arc<(int id, string nom)>> chemin , int plusPetiteDistance) = graphePondéré.BellmanFordChemin2(depart, arrivee); // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");
@@ -355,7 +351,7 @@ namespace ProbSciANA
             depart = arcs[0]; // Noeud<(int id, string nom)> de départ
             arrivee = arcs[246]; // Noeud<(int id, string nom)> d'arrivée
             sw = Stopwatch.StartNew();
-            (chemin , plusPetiteDistance) = graphePondéré.BellmanFordChemin(depart, arrivee); // Calcul du chemin le plus court
+            (chemin , plusPetiteDistance) = graphePondéré.BellmanFordChemin2(depart, arrivee); // Calcul du chemin le plus court
             sw.Stop();
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetiteDistance + " min.");
