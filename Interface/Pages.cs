@@ -262,23 +262,48 @@ public partial class ConnexionView : Page
             LoadClients();
         }
 
-        private void LoadClients(string orderBy = "nom")
+        private void LoadClients(string orderBy = "u.nom")
         {
-            clients = Requetes.utilisateurs.FindAll(u => u.EstClient);
-            if (orderBy == "adresse")
-                clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
-            else
-                clients.Sort((a, b) => a.Nom.CompareTo(b.Nom));
+           
+        /// Récupérer tous les clients
+    clients = Requetes.utilisateurs.FindAll(u => u.EstClient);
 
-            ClientsListView.ItemsSource = null;
-            ClientsListView.ItemsSource = clients;
+    /// Appliquer le tri en fonction de `orderBy`
+    switch (orderBy)
+    {
+        case "u.nom":
+            clients.Sort((a, b) => a.Nom.CompareTo(b.Nom));
+            break;
+
+        case "u.adresse":
+            clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
+            break;
+
+        case "achats":
+            /// Récupérer les clients triés par leurs achats
+            Requetes.GetClientsByAchats(orderBy);
+            clients.Sort((a, b) =>
+            {
+                double achatsA = Requetes.clients.ContainsKey(a) ? Requetes.clients[a] : 0;
+                double achatsB = Requetes.clients.ContainsKey(b) ? Requetes.clients[b] : 0;
+                return achatsB.CompareTo(achatsA); /// Tri décroissant par montant des achats
+            });
+            break;
+
+        default:
+            break;
+    }
+
+    /// Mettre à jour la source de données de la ListView
+    ClientsListView.ItemsSource = null;
+    ClientsListView.ItemsSource = clients;
         }
 
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
             if (ClientsListView.SelectedItem is Utilisateur client)
             {
-                client.EstClient = false; // Déclenche suppression automatique
+                client.EstClient = false; /// Déclenche suppression automatique
                 LoadClients();
             }
         }
@@ -287,7 +312,7 @@ public partial class ConnexionView : Page
         {
             if (ClientsListView.SelectedItem is Utilisateur client)
             {
-                // Exemple : mise à jour du nom pour test
+                /// Exemple : mise à jour du nom pour test
                 client.Nom = client.Nom + " (modifié)";
                 LoadClients();
             }
@@ -298,8 +323,10 @@ public partial class ConnexionView : Page
             NavigationService?.Navigate(new LoginView());
         }
 
-        private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadClients("nom");
-        private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadClients("adresse");
+        private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadClients("u.nom");
+        private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadClients("u.adresse");
+
+        private void BtnTrierAchats_Click(object sender, RoutedEventArgs e) => LoadClients("achats");
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
@@ -320,7 +347,7 @@ public partial class ConnexionView : Page
             LoadCuisiniers();
         }
 
-        private void LoadCuisiniers(string orderBy = "nom")
+        private void LoadCuisiniers(string orderBy = "u.nom")
         {
             cuisiniers = Requetes.utilisateurs.FindAll(u => u.EstCuisinier);
             if (orderBy == "adresse")
