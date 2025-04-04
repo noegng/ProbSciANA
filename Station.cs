@@ -12,27 +12,31 @@ namespace ProbSciANA
 
 public class Station
 {
-    public int Id { get; set; } // Identifiant unique de la station
-    public string Nom { get; set; } // Nom de la station
-    public double Longitude { get; set; } // Longitude de la station
-    public double Latitude { get; set; } // Latitude de la station
-    public int TempsChangement;
+    public int id { get; set; } // Identifiant unique de la station
+    public string nom { get; set; } // Nom de la station
+    public double longitude { get; set; } // Longitude de la station
+    public double latitude { get; set; } // Latitude de la station
+    public int tempsChangement;
 
     // Constructeur de la classe Station
 
+    public Station(int id)
+    {
+        this.id = id;
+    }
     public Station(int id, string nom, double longitude, double latitude, int temps)
     {
-        Id = id;
-        Nom = nom;
-        Longitude = longitude;
-        Latitude = latitude;
-        TempsChangement = temps;
+        this.id = id;
+        this.nom = nom;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.tempsChangement = temps;
     }
     public override bool Equals(object obj)
     {
         if (obj is Station autre)
         {
-            return this.Id == autre.Id || this.Nom == autre.Nom ;
+            return this.id == autre.id || this.nom == autre.nom ;
         }
                 
         return false;

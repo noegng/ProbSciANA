@@ -11,6 +11,10 @@ namespace ProbSciANA
         public static List<Commande> commandes = new List<Commande>();
         public static List<Livraison> livraisons = new List<Livraison>();
         public static Dictionary<Utilisateur,double> clients = new Dictionary<Utilisateur,double>();
+
+        
+
+
         public static void RefreshUtilisateurs()
         {
             utilisateurs.Clear();
@@ -171,7 +175,6 @@ namespace ProbSciANA
                         {
                             livraisons.Add(new Livraison(
                             reader.GetInt32("id_livraison"),
-                            reader.GetString("station"),
                             reader.GetDateTime("date_livraison"),
                             reader.GetString("statut"),
                             reader.GetInt32("id_trajet"),
@@ -498,25 +501,24 @@ namespace ProbSciANA
     public class Livraison
     {
         private int id_livraison {get; set;}
-        private string station {get; set;}
+        private string stationCuisinier {get; set;}
+        private string stationClient {get; set;}
         private DateTime date_livraison {get; set;}
         private string statut {get; set;}
         private int id_trajet {get; set;}
         private int id_commande {get; set;}
         
-        public Livraison(int id_livraison, string station, DateTime date_livraison, string statut, int id_trajet, int id_commande)
+        public Livraison(int id_livraison, DateTime date_livraison, string statut, int id_trajet, int id_commande)
         {
             this.id_livraison = id_livraison;
-            this.station = station;
             this.date_livraison = date_livraison;
             this.statut = statut;
             this.id_trajet = id_trajet;
             this.id_commande = id_commande;
         }
 
-        public Livraison(string station, DateTime date_livraison, string statut, int id_trajet, int id_commande)
+        public Livraison(DateTime date_livraison, string statut, int id_trajet, int id_commande)
         {
-            this.station = station;
             this.date_livraison = date_livraison;
             this.statut = statut;
             this.id_trajet = id_trajet;
@@ -532,12 +534,11 @@ namespace ProbSciANA
             {
                 connection.Open();
 
-                string query = @"INSERT INTO Livraison (station, date_livraison, statut, id_trajet, id_commande)
+                string query = @"INSERT INTO Livraison (date_livraison, statut, id_trajet, id_commande)
                                 VALUES (@station, @date_livraison, @statut, @id_trajet, @id_commande);";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@station", station);
                     command.Parameters.AddWithValue("@date_livraison", date_livraison.ToString("yyyy-MM-dd HH:mm:ss"));
                     command.Parameters.AddWithValue("@statut", statut);
                     command.Parameters.AddWithValue("@id_trajet", id_trajet);

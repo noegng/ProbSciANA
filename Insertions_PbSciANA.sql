@@ -119,17 +119,17 @@ INSERT INTO Trajet (chemin_optimal, temps_optimal, id_utilisateur) VALUES
 --------------------------
 -- Table Livraison
 --------------------------
-INSERT INTO Livraison (station, date_livraison, statut, id_trajet, id_commande) VALUES
-('Station A', '2025-03-11', 'à faire', 1, 1),
-('Station B', '2025-03-12', 'en cours', 2, 2),
-('Station C', '2025-03-13', 'finie', 3, 3),
-('Station D', '2025-03-14', 'à faire', 4, 4),
-('Station E', '2025-03-15', 'en cours', 5, 5),
-('Station F', '2025-03-16', 'finie', 6, 6),
-('Station G', '2025-03-17', 'à faire', 7, 7),
-('Station H', '2025-03-18', 'en cours', 8, 8),
-('Station I', '2025-03-19', 'finie', 9, 9),
-('Station J', '2025-03-20', 'à faire', 10, 10);
+INSERT INTO Livraison (date_livraison, statut, id_trajet, id_commande) VALUES
+('2025-03-11 10:00:00', 'à faire', 1, 1),
+('2025-03-12 11:00:00', 'en cours', 2, 2),
+('2025-03-13 12:00:00', 'finie', 3, 3),
+('2025-03-14 13:00:00', 'à faire', 4, 4),
+('2025-03-15 14:00:00', 'en cours', 5, 5),
+('2025-03-16 15:00:00', 'finie', 6, 6),
+('2025-03-17 16:00:00', 'à faire', 7, 7),
+('2025-03-18 17:00:00', 'en cours', 8, 8),
+('2025-03-19 18:00:00', 'finie', 9, 9),
+('2025-03-20 19:00:00', 'à faire', 10, 10);
 
 --------------------------
 -- Table Cuisine

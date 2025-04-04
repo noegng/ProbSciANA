@@ -96,7 +96,6 @@ CREATE TABLE IF NOT EXISTS Trajet(
 DROP TABLE IF EXISTS Livraison;
 CREATE TABLE IF NOT EXISTS Livraison(
    id_livraison INT PRIMARY KEY AUTO_INCREMENT,
-   station VARCHAR(50),
    date_livraison DATETIME,
    statut ENUM('à faire', 'en cours', 'finie'),
    id_trajet INT NULL,

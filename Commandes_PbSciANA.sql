@@ -62,6 +62,24 @@ FROM Utilisateur;
 SELECT *
 FROM Commande;
 
+SELECT *
+FROM Livraison;
+
+SELECT l.id_livraison, uc.station AS station_client, uu.station AS station_cuisinier
+FROM Livraison l
+JOIN Commande cmd ON l.id_commande = cmd.id_commande
+JOIN Utilisateur uc ON cmd.id_client = uc.id_utilisateur
+JOIN Utilisateur uu ON cmd.id_cuisinier = uu.id_utilisateur
+ORDER BY l.id_livraison;
+
+SELECT l.id_livraison, uc.station AS station_client, uu.station AS station_cuisinier
+FROM Livraison l
+JOIN Commande cmd ON l.id_commande = cmd.id_commande
+JOIN Utilisateur uc ON cmd.id_client = uc.id_utilisateur
+JOIN Trajet t ON l.id_trajet = t.id_trajet
+JOIN Utilisateur uu ON t.id_utilisateur = uu.id_utilisateur
+ORDER BY l.id_livraison;
+
 #****************** MODULE CLIENT *****************#
 
 SELECT u.id_utilisateur, u.nom, u.prenom, SUM(cmd.prix) AS total_achats
