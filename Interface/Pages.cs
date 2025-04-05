@@ -186,7 +186,7 @@ public partial class ConnexionView : Page
         public CuisinierDashboardView()
         {
             InitializeComponent();
-            
+            string excelFilePath = App.ExcelFilePath;
         }
 
       
@@ -194,9 +194,18 @@ public partial class ConnexionView : Page
         {
             // Logique pour ajouter un plat
             MessageBox.Show("Ajouter un plat");
+
         }
 
+        private void AfficherGraphe_Click(object sender, RoutedEventArgs e)
+        {
+            var graphe = Program.graphe;
+            var stations = Program.Stations;
+            var arcs = Program.Arcs;
 
+        Graphviz<(int id, string nom)>.GenerateGraphImage(stations, arcs);
+
+        }
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.GoBack();

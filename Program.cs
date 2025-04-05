@@ -14,21 +14,23 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace ProbSciANA
 {
-     public class Program<T>
+     public class Program
     {
          /// Chaîne de connexion SQL
          
         public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
 
         // Liste des stations et des arêtes
-        public static List<Noeud<T>> Stations { get; private set; }
-        public static List<Arc<T>> Aretes { get; private set; }
+        public static List<Noeud<(int id, string nom)>> Stations { get;  set; }
+        public static List<Arc<(int id, string nom)>> Arcs { get;  set; }
+        public static Graphe<(int id, string nom)> graphe { get;  set; }
 
         // Méthode pour initialiser les données
         public static void InitializeData(string excelFilePath)
         {
             // Charger les données depuis le fichier Excel
-            (var Stations,var  Aretes) = LectureFichierExcel(excelFilePath);
+            (Stations,Arcs) = LectureFichierExcel(excelFilePath);
+            graphe = new Graphe<(int id, string nom)>(Arcs); // Créer le graphe à partir des arêtes
         }
 
 
@@ -137,7 +139,7 @@ namespace ProbSciANA
             }
             return (noeuds, arcs);
         }
-        static void AffichageImage(List<Noeud<(int id, string nom)>> noeuds, List<Arc<(int id,string nom)>> arcs)
+        public void AffichageImage(List<Noeud<(int id, string nom)>> noeuds, List<Arc<(int id,string nom)>> arcs)
         {
             Graphviz<(int id, string nom)>.GenerateGraphImage(noeuds, arcs);
         }
