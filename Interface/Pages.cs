@@ -199,11 +199,14 @@ public partial class ConnexionView : Page
 
         private void AfficherGraphe_Click(object sender, RoutedEventArgs e)
         {
-            var graphe = Program.graphe;
-            var stations = Program.Stations;
+            var graphe = Program.Graphe;
+            var stations = Program.Noeuds;
             var arcs = Program.Arcs;
 
         Graphviz<(int id, string nom)>.GenerateGraphImage(stations, arcs);
+        graphe.AffichageDijkstra(stations[10],stations[80]);
+        graphe.AffichageBellmanFord(stations[10],stations[80]);
+        graphe.AffichageFloydWarshall(stations[10],stations[80]);
 
         }
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
@@ -322,7 +325,10 @@ public partial class ConnexionView : Page
             if (ClientsListView.SelectedItem is Utilisateur client)
             {
                 /// Exemple : mise à jour du nom pour test
-                client.Nom = client.Nom + " (modifié)";
+                if (!client.Nom.Contains("(modifié)"))
+                {
+                    client.Nom = client.Nom + " (modifié)";
+                }
                 LoadClients();
             }
         }

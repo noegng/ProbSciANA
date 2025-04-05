@@ -21,16 +21,16 @@ namespace ProbSciANA
         public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
 
         // Liste des stations et des arêtes
-        public static List<Noeud<(int id, string nom)>> Stations { get;  set; }
+        public static List<Noeud<(int id, string nom)>> Noeuds { get;  set; }
         public static List<Arc<(int id, string nom)>> Arcs { get;  set; }
-        public static Graphe<(int id, string nom)> graphe { get;  set; }
+        public static Graphe<(int id, string nom)> Graphe { get;  set; }
 
         // Méthode pour initialiser les données
         public static void InitializeData(string excelFilePath)
         {
             // Charger les données depuis le fichier Excel
-            (Stations,Arcs) = LectureFichierExcel(excelFilePath);
-            graphe = new Graphe<(int id, string nom)>(Arcs); // Créer le graphe à partir des arêtes
+            (Noeuds,Arcs) = LectureFichierExcel(excelFilePath);
+            Graphe = new Graphe<(int id, string nom)>(Arcs); // Créer le graphe à partir des arêtes
         }
 
 
@@ -61,7 +61,7 @@ namespace ProbSciANA
             Console.ReadKey();
         }
       */
-        static (List<Noeud<(int id,string nom)>>, List<Arc<(int id,string nom)>>) LectureFichierExcel(string excelFilePath){
+        public static (List<Noeud<(int id,string nom)>>, List<Arc<(int id,string nom)>>) LectureFichierExcel(string excelFilePath){
             var noeuds = new List<Noeud<(int id,string nom)>>();
             var arcs = new List<Arc<(int id,string nom)>>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
@@ -139,9 +139,9 @@ namespace ProbSciANA
             }
             return (noeuds, arcs);
         }
-        public void AffichageImage(List<Noeud<(int id, string nom)>> noeuds, List<Arc<(int id,string nom)>> arcs)
+        public void AffichageImage()
         {
-            Graphviz<(int id, string nom)>.GenerateGraphImage(noeuds, arcs);
+            Graphviz<(int id, string nom)>.GenerateGraphImage(Noeuds, Arcs);
         }
         
         
@@ -292,7 +292,7 @@ namespace ProbSciANA
         }
         #endregion
         #region Test
-        static void TestDijkstra(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestDijkstra(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
         {
             var sw = Stopwatch.StartNew();
             /// Test de l'algorithme de Dijkstra
@@ -310,7 +310,7 @@ namespace ProbSciANA
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetitTemps + " min.");
         }
-        static void TestDijkstraChemin(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestDijkstraChemin(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
         {
             /// Test de l'algorithme de Dijkstra
             var sw = Stopwatch.StartNew();
@@ -344,7 +344,7 @@ namespace ProbSciANA
             Graphviz<(int id, string nom)>.GenerateChemin(chemin, noeuds);
         }
 
-        static void TestBellmanFord(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestBellmanFord(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
         {
             Noeud<(int id, string nom)> depart = noeuds[0]; /// Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = noeuds[174]; /// Noeud<(int id, string nom)> d'arrivée
@@ -361,7 +361,7 @@ namespace ProbSciANA
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetitTemps + " min.");
         }
-        static void TestBellmanFordChemin(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestBellmanFordChemin(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
         {
             Noeud<(int id, string nom)> depart = noeuds[0]; /// Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = noeuds[174]; /// Noeud<(int id, string nom)> d'arrivée
@@ -391,7 +391,7 @@ namespace ProbSciANA
             }
             Graphviz<(int id, string nom)>.GenerateChemin(chemin, noeuds);
         }
-        static void TestFloydWarshall(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestFloydWarshall(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
         {
             var sw = Stopwatch.StartNew();
             /// Test de l'algorithme de Dijkstra
@@ -409,7 +409,7 @@ namespace ProbSciANA
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetitTemps + " min.");
         }
-        static void TestFloydWarshallChemin(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestFloydWarshallChemin(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
         {
             Noeud<(int id, string nom)> depart = noeuds[0]; /// Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = noeuds[174]; /// Noeud<(int id, string nom)> d'arrivée
@@ -439,13 +439,13 @@ namespace ProbSciANA
             }
             Graphviz<(int id, string nom)>.GenerateChemin(chemin, noeuds);
         }
-        static void TestListeEtMatrice(Graphe<(int id,string nom)> graphePondéré)
+        public static void TestListeEtMatrice(Graphe<(int id,string nom)> graphePondéré)
         {
             graphePondéré.AfficherListeAdjacence(); /// Affichage de la liste d'adjacence
             graphePondéré.AfficherMatriceAdjacence(); /// Affichage de la matrice d'adjacence
         }
 
-        static void TestDistanceTemps(List<Arc<(int id,string nom)>> arcs)
+        public static void TestDistanceTemps(List<Arc<(int id,string nom)>> arcs)
         /// Test de la distance et du temps de trajet entre deux arcs
         {
             foreach (Arc<(int id,string nom)> arete in arcs)
