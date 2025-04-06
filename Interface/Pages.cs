@@ -29,6 +29,11 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new AdminDashboardView());
         }
+        private void BtnModeTest_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new );
+        }
+
     }
 #endregion
 
@@ -436,6 +441,21 @@ public partial class ConnexionView : Page
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.GoBack();
+        }
+    }
+
+#endregion
+#region Test
+    public partial class Test : Page
+    {
+        public Test()
+        {
+            InitializeComponent();
+        }
+
+        private void Dijkstra(object sender, RoutedEventArgs e)
+        {
+            Program.Graphe.AffichageDijkstra(Program.Noeuds[1],Program.Noeuds[100]);
         }
     }
 
