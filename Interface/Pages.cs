@@ -31,7 +31,7 @@ namespace ProbSciANA.Interface
         }
         private void BtnModeTest_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new );
+            NavigationService?.Navigate(new Test());
         }
 
     }
