@@ -453,9 +453,28 @@ public partial class ConnexionView : Page
             InitializeComponent();
         }
 
-        private void Dijkstra(object sender, RoutedEventArgs e)
+        private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
         {
             Program.Graphe.AffichageDijkstra(Program.Noeuds[1],Program.Noeuds[100]);
+        }
+
+        private void BtnAffichage_BF(object sender, RoutedEventArgs e)
+        {
+            Program.Graphe.AffichageBellmanFord(Program.Noeuds[1],Program.Noeuds[100]);
+        }
+        private void BtnAffichage_Floyd(object sender, RoutedEventArgs e)
+        {
+            Program.Graphe.AffichageFloydWarshall(Program.Noeuds[1],Program.Noeuds[100]);
+        }
+
+        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.GoBack();
+        }
+
+        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
         }
     }
 

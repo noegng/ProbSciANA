@@ -1,12 +1,12 @@
-<Page x:Class="ProbSciANA.Interface.UserDashboardView"
+<Page x:Class="ProbSciANA.Interface.Test"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Test">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock Text="Tester les méthodes" FontSize="20" Margin="0,0,0,20"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Test afficahge Dijkstra" Width="200" Margin="5" Click="BtnRetour_Click"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Test afficahge Bellman-Ford" Width="200" Margin="5" Click="BtnRetour_Click"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Test afficahge Floyd-Warshall" Width="200" Margin="5" Click="BtnRetour_Click"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Test affichage Dijkstra" Width="200" Margin="5" Click="BtnAffichage_Djikstra"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Test affichage Bellman-Ford" Width="200" Margin="5" Click="BtnAffichage_BF"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Test affichage Floyd-Warshall" Width="200" Margin="5" Click="BtnAffichage_Floyd"/>
 
 
         <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="200" HorizontalAlignment="Center"
