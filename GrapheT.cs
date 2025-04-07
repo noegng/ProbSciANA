@@ -21,6 +21,7 @@ namespace ProbSciANA
         {
             this.arcs = arcs;
             listeAdjacence = new Dictionary<Noeud<T>, List<Noeud<T>>>();
+            noeuds = new List<Noeud<T>>();
             RemplissageListeAdjacence(arcs);
             matriceAdjacence = new int[listeAdjacence.Count,listeAdjacence.Count]; //// 248 Noeud<T>s
             RemplissageMatriceAdjacence();

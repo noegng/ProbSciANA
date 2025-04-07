@@ -60,7 +60,7 @@ namespace ProbSciANA
         dot.AppendLine("digraph G {");
         dot.AppendLine("    layout=neato;"); /// Utilise le moteur neato
         dot.AppendLine("    overlap=false;");
-        dot.AppendLine("    graph [dpi=400];");
+        dot.AppendLine("    graph [dpi=300];");
 
         /// Creation de chaque sommet avec sa position   
         foreach (Noeud<T> vertex in noeuds)
@@ -142,7 +142,7 @@ namespace ProbSciANA
         dot.AppendLine("digraph G {");
         dot.AppendLine("    layout=neato;"); /// Utilise le moteur neato
         dot.AppendLine("    overlap=false;");
-        dot.AppendLine("    graph [dpi=400];");
+        dot.AppendLine("    graph [dpi=300];");
         ///Creation du premier sommet (impossible dans la boucle foreach)
         foreach (Noeud<T> vertex in noeuds)
         {

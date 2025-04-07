@@ -455,17 +455,21 @@ public partial class ConnexionView : Page
 
         private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
         {
-            Program.Graphe.AffichageDijkstra(Program.Noeuds[1],Program.Noeuds[100]);
+            int tempsTrajet = Program.Graphe.AffichageDijkstra(Program.Noeuds[1],Program.Noeuds[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Noeuds[1].Valeur.nom} et {Program.Noeuds[100].Valeur.nom} : {tempsTrajet} minutes.");
         }
 
         private void BtnAffichage_BF(object sender, RoutedEventArgs e)
         {
-            Program.Graphe.AffichageBellmanFord(Program.Noeuds[1],Program.Noeuds[100]);
+            int tempsTrajet = Program.Graphe.AffichageBellmanFord(Program.Noeuds[1],Program.Noeuds[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Noeuds[1].Valeur.nom} et {Program.Noeuds[100].Valeur.nom} : {tempsTrajet} minutes.");
         }
         private void BtnAffichage_Floyd(object sender, RoutedEventArgs e)
         {
-            Program.Graphe.AffichageFloydWarshall(Program.Noeuds[1],Program.Noeuds[100]);
+            int tempsTrajet = Program.Graphe.AffichageFloydWarshall(Program.Noeuds[1],Program.Noeuds[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Noeuds[1].Valeur.nom} et {Program.Noeuds[100].Valeur.nom} : {tempsTrajet} minutes.");
         }
+        
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
         {
@@ -479,9 +483,4 @@ public partial class ConnexionView : Page
     }
 
 #endregion
-
-
-
-   
-
 }
