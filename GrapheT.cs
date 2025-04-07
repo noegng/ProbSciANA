@@ -2,25 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ProbSciANA
 {
-    public class Graphe<T> // Graphe de noeuds
+    public class Graphe<T> //// Graphe de noeuds
     {
         private Dictionary<Noeud<T>, List<Noeud<T>>> listeAdjacence;
         private int[,] matriceAdjacence;
         private Dictionary<Noeud<T>, int> couleurs;
         private List<Arc<T>> arcs;
-        private int nbCycles = -1; //Détecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
+        private int nbCycles = -1; //// étecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
 
         public Graphe(List<Arc<T>> arcs)
         {
             this.arcs = arcs;
             listeAdjacence = new Dictionary<Noeud<T>, List<Noeud<T>>>();
             RemplissageListeAdjacence(arcs);
-            matriceAdjacence = new int[listeAdjacence.Count,listeAdjacence.Count]; // 248 Noeud<T>s
+            matriceAdjacence = new int[listeAdjacence.Count,listeAdjacence.Count]; //// 248 Noeud<T>s
             RemplissageMatriceAdjacence();
         }
         #region Propriétés
@@ -51,24 +52,24 @@ namespace ProbSciANA
 
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
-                couleurs[sommet] = 0; // blanc
+                couleurs[sommet] = 0; //// blanc
             }
 
             file.Enqueue(sommetDepart);
-            couleurs[sommetDepart] = 1; // jaune
+            couleurs[sommetDepart] = 1; //// jaune
 
             while (file.Count > 0)
             {
                 Noeud<T> sommet = file.Dequeue();
                 foreach (Noeud<T> voisin in listeAdjacence[sommet])
                 {
-                    if (couleurs[voisin] == 0) // blanc
+                    if (couleurs[voisin] == 0) //// blanc
                     {
                         file.Enqueue(voisin);
-                        couleurs[voisin] = 1; // jaune
+                        couleurs[voisin] = 1; //// jaune
                     }
                 }
-                couleurs[sommet] = 2; // rouge
+                couleurs[sommet] = 2; //// rouge
                 visite.Add(sommet);
             }
 
@@ -83,11 +84,11 @@ namespace ProbSciANA
 
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
-                couleurs[sommet] = 0; // blanc
+                couleurs[sommet] = 0; //// blanc
             }
 
             pile.Push(sommetDepart);
-            couleurs[sommetDepart] = 1; // jaune
+            couleurs[sommetDepart] = 1; //// jaune
 
             while (pile.Count > 0)
             {
@@ -96,10 +97,10 @@ namespace ProbSciANA
 
                 foreach (Noeud<T> voisin in listeAdjacence[sommet])
                 {
-                    if (couleurs[voisin] == 0) // blanc
+                    if (couleurs[voisin] == 0) //// blanc
                     {
                         pile.Push(voisin);
-                        couleurs[voisin] = 1; // jaune
+                        couleurs[voisin] = 1; //// jaune
                         aExploréUnVoisin = true;
                         break;
                     }
@@ -107,7 +108,7 @@ namespace ProbSciANA
 
                 if (!aExploréUnVoisin)
                 {
-                    couleurs[sommet] = 2; // rouge
+                    couleurs[sommet] = 2; //// rouge
                     pile.Pop();
                     visite.Add(sommet);
                 }
@@ -123,7 +124,7 @@ namespace ProbSciANA
             nbCycles = 0;
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
-                couleurs[sommet] = 0; // blanc
+                couleurs[sommet] = 0; //// blanc
             }
 
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
@@ -139,7 +140,7 @@ namespace ProbSciANA
 
         private void DFSrec(Noeud<T> sommet, HashSet<Noeud<T>> visite, bool rechercheCycle)
         {
-            couleurs[sommet] = 1; // jaune
+            couleurs[sommet] = 1; //// jaune
             visite.Add(sommet);
 
             foreach (Noeud<T> voisin in listeAdjacence[sommet])
@@ -155,7 +156,7 @@ namespace ProbSciANA
                 }
             }
 
-            couleurs[sommet] = 2; // rouge
+            couleurs[sommet] = 2; //// rouge
         }
 
         public void EstConnexe()
@@ -176,8 +177,8 @@ namespace ProbSciANA
             DFSRécursif(true);
             Console.WriteLine(nbCycles + " cycles trouvés dans le graphe.");
         }
-        //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
-        // 
+        //// alculer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
+        //// 
         public void DFStoString(Noeud<T> sommetDepart)
         {
             Console.Write("Parcours en Profondeur (DFS): ");
@@ -211,7 +212,7 @@ namespace ProbSciANA
             {
                 if (listeAdjacence.Count == 0)
                 {
-                    listeAdjacence.Add(arete.IdPrevious, new List<Noeud<T>> { arete.IdNext }); //on fait arete.IdPrevious.Id pour avoir le nom de la Noeud<T> (après vérification toutes les Noeud<T>s se trouvent dans arete.IdPrevious.Id)
+                    listeAdjacence.Add(arete.IdPrevious, new List<Noeud<T>> { arete.IdNext }); //// n fait arete.IdPrevious.Id pour avoir le nom de la Noeud<T> (après vérification toutes les Noeud<T>s se trouvent dans arete.IdPrevious.Id)
                 }
                 else if (listeAdjacence.ContainsKey(arete.IdPrevious))
                 {
@@ -242,14 +243,14 @@ namespace ProbSciANA
                 Console.WriteLine();
             }
         }
-//A TESTER vérifier si id s'incrémente a chaque création de noeud
+////  TESTER vérifier si id s'incrémente a chaque création de noeud
         public void RemplissageMatriceAdjacence()
         {
             foreach (Arc<T> arc in arcs)
             {
                 if ( arc.IdPrevious != null && arc.IdNext != null)
                 {
-                    matriceAdjacence[Convert.ToInt32(arc.IdPrevious.IdBrute)-1, Convert.ToInt32(arc.IdNext.IdBrute)-1] = 1; // -1 car les Noeud<T> commencent à 1                   
+                    matriceAdjacence[Convert.ToInt32(arc.IdPrevious.IdBrute)-1, Convert.ToInt32(arc.IdNext.IdBrute)-1] = 1; //// -1 car les Noeud<T> commencent à 1                   
                 }
             }
         }
@@ -277,16 +278,21 @@ namespace ProbSciANA
         }
         #endregion
         #region Méthodes de recherche de chemin
-        public Dictionary<Noeud<T>, int> Dijkstra(Noeud<T> sommetDepart)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        //// <summary>
+        //// Renvoie le temps minimal d'un noeud par rapport au sommet de départ.
+        //// </summary>
+        //// <param name="sommetDepart"></param>
+        //// <returns></returns>
+        public Dictionary<Noeud<T>, int> Dijkstra(Noeud<T> sommetDepart)   //// envoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
         {
             Dictionary<Noeud<T>, int> distances = new Dictionary<Noeud<T>, int>();
             HashSet<Noeud<T>> visites = new HashSet<Noeud<T>>();
-            PriorityQueue<Noeud<T>, int> filePriorite = new PriorityQueue<Noeud<T>, int>(); // On utilise une priority queue pour gérer les sommets à explorer
-            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
+            PriorityQueue<Noeud<T>, int> filePriorite = new PriorityQueue<Noeud<T>, int>(); //// On utilise une priority queue pour gérer les sommets à explorer
+            string idLignePrécédent = ""; //// On initialise l'id de la ligne précédente à une chaîne vide
 
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
-                distances[sommet] = int.MaxValue; // On initialise les distances à l'infini
+                distances[sommet] = int.MaxValue; //// On initialise les distances à l'infini
             }
 
             distances[sommetDepart] = 0;
@@ -294,325 +300,206 @@ namespace ProbSciANA
 
             while (filePriorite.Count > 0)
             {
-                Noeud<T> sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
+                Noeud<T> sommetActuel = filePriorite.Dequeue(); //// On prend le sommet avec la distance la plus courte
                 visites.Add(sommetActuel);  
                 int i = 0;
-                foreach (Arc<T> arcVoisin in arcs) // On parcourt les voisins du sommet actuel
+                foreach (Arc<T> arcVoisin in arcs) //// On parcourt les voisins du sommet actuel
                 {
-                    if (arcVoisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
+                    if (arcVoisin.IdPrevious == sommetActuel) //// On vérifie si le voisin est bien un voisin du sommet actuel
                     { 
                         int tempsChangement = 0;
-                        if (idLignePrécédent != arcVoisin.IdLigne && i != 0) // On vérifie si on change de ligne
+                        if (idLignePrécédent != arcVoisin.IdLigne && i != 0) //// On vérifie si on change de ligne
                         {
-                            tempsChangement = arcVoisin.IdPrevious.TempsChangement; // On met à jour le temps de changement
+                            tempsChangement = arcVoisin.IdPrevious.TempsChangement; //// On met à jour le temps de changement
                         }
 
-                        if (!visites.Contains(arcVoisin.IdNext)) // On vérifie si le voisin n'a pas déjà été visité
+                        if (!visites.Contains(arcVoisin.IdNext)) //// On vérifie si le voisin n'a pas déjà été visité
                         {
-                            // On met à jour la distance si on trouve un chemin plus court
-                            int nouvelleDistance = distances[sommetActuel] + arcVoisin.Poids + tempsChangement; // On cast les sommets en Noeud<T> pour utiliser la classe Arc<T>
+                            //// On met à jour la distance si on trouve un chemin plus court
+                            int nouvelleDistance = distances[sommetActuel] + arcVoisin.Poids + tempsChangement; //// On cast les sommets en Noeud<T> pour utiliser la classe Arc<T>
                             if (nouvelleDistance < distances[arcVoisin.IdNext])
                             {
                                 distances[arcVoisin.IdNext] = nouvelleDistance;
                                 filePriorite.Enqueue(arcVoisin.IdNext, nouvelleDistance);
                             }
                         }
-                        idLignePrécédent = arcVoisin.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
+                        idLignePrécédent = arcVoisin.IdLigne; //// On mémorise l'id de la ligne pour le prochain sommet
                     }
                 }
             }
 
             return distances;
         }
-        //Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
-        public (List<Arc<T>>, int) DijkstraChemin(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)   //Renvoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        //// Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
+        public (List<Arc<T>>, int) DijkstraChemin(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
         {
-            Dictionary<Noeud<T>, int> distances = new Dictionary<Noeud<T>, int>();
-            HashSet<Noeud<T>> visites = new HashSet<Noeud<T>>();
-            PriorityQueue<Noeud<T>, int> filePriorite = new PriorityQueue<Noeud<T>, int>(); // On utilise une priority queue pour gérer les sommets à explorer
-            Dictionary<Noeud<T>, Arc<T>> predecesseurs = new Dictionary<Noeud<T>, Arc<T>>(); // Pour reconstruire le chemin
-            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
+            var distances = new Dictionary<Noeud<T>, int>();
+            var visites = new HashSet<Noeud<T>>();
+            var filePriorite = new PriorityQueue<Noeud<T>, int>();
+            var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
 
+            //// Initialisation des sommet a l'infini.
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
-                distances[sommet] = int.MaxValue; // On initialise les distances à l'infini
-                predecesseurs[sommet] = null; // On initialise les prédécesseurs à null
+                distances[sommet] = int.MaxValue;
             }
-
             distances[sommetDepart] = 0;
             filePriorite.Enqueue(sommetDepart, 0);
 
             while (filePriorite.Count > 0)
             {
-                Noeud<T> sommetActuel = filePriorite.Dequeue(); // On prend le sommet avec la distance la plus courte
-                visites.Add(sommetActuel); 
-
-                if (sommetActuel.Equals(sommetArrivee)) // Si on a atteint le sommet d'arrivée
-                {
+                Noeud<T> sommetActuel = filePriorite.Dequeue();
+                visites.Add(sommetActuel);
+                if (sommetActuel.Equals(sommetArrivee)){
                     break;
                 }
-                int  i = 0;
-                foreach (Arc<T> voisin in arcs) // On parcourt les voisins du sommet actuel
+                //// Parcours des arcs sortants du sommet actuel
+                foreach (Arc<T> arc in arcs)
                 {
-                    if (voisin.IdPrevious == sommetActuel) // On vérifie si le voisin est bien un voisin du sommet actuel
-                    { 
+                    if (arc.IdPrevious.Equals(sommetActuel))//// On vérifie si le voisin est bien un voisin du sommet actuel
+                    {
+                        Noeud<T> voisin = arc.IdNext;
+                        if (visites.Contains(voisin)){
+                            continue;
+                        }   
+                        //// Ligne précédente = ligne de l'arc ayant permis d'arriver au sommet actuel
+                        string idLignePrecedente = null;
+                        if (predecesseurs.ContainsKey(sommetActuel) && predecesseurs[sommetActuel] != null)
+                        {
+                            idLignePrecedente = predecesseurs[sommetActuel].IdLigne;
+                        }
                         int tempsChangement = 0;
-                        if (idLignePrécédent != voisin.IdLigne && i != 0) // On vérifie si on change de ligne et i != 0 pour éviter la 1ère occcurence car forcément vrai 
+                        if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne)
                         {
-                            tempsChangement = voisin.IdPrevious.TempsChangement; // On met à jour le temps de changement
+                            tempsChangement = sommetActuel.TempsChangement;
                         }
-
-                        if (!visites.Contains(voisin.IdNext)) // On vérifie si le voisin n'a pas déjà été visité
+                        int nouvelleDistance = distances[sommetActuel] + arc.Poids + tempsChangement;
+                        if (nouvelleDistance < distances[voisin])
                         {
-                            // On met à jour la distance si on trouve un chemin plus court
-                            int nouvelleDistance = distances[sommetActuel] + voisin.Poids + tempsChangement; // On cast les sommets en Noeud<T> pour utiliser la classe Arete
-                            if (nouvelleDistance < distances[voisin.IdNext])
-                            {
-                                distances[voisin.IdNext] = nouvelleDistance;
-                                predecesseurs[voisin.IdNext] = voisin; // On met à jour le prédécesseur
-                                filePriorite.Enqueue(voisin.IdNext, nouvelleDistance);
-                            }
+                            distances[voisin] = nouvelleDistance;
+                            predecesseurs[voisin] = arc;
+                            filePriorite.Enqueue(voisin, nouvelleDistance);
                         }
-                        idLignePrécédent = voisin.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
-                        i++;
                     }
-                    
                 }
             }
-            // Reconstruire le chemin
+
+            //// Reconstruction du chemin
             List<Arc<T>> cheminAretes = new List<Arc<T>>();
             Noeud<T> courant = sommetArrivee;
-
-            while (predecesseurs[courant] != null)
+            while (predecesseurs.ContainsKey(courant) && predecesseurs[courant] != null)
             {
-                    Arc<T> arc = predecesseurs[courant];
-                    cheminAretes.Add(arc);
-                    courant = arc.IdPrevious;
+                Arc<T> arc = predecesseurs[courant];
+                cheminAretes.Add(arc);
+                courant = arc.IdPrevious.Equals(courant) ? arc.IdNext : arc.IdPrevious;
             }
-            cheminAretes.Reverse(); // Important pour avoir le chemin dans le bon sens
+            cheminAretes.Reverse();
             return (cheminAretes, distances[sommetArrivee]);
         }
-        public (List<Arc<T>>, int) DijkstraChemin2(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
-{
-    var distances = new Dictionary<Noeud<T>, int>();
-    var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
-    var lignePrecedente = new Dictionary<Noeud<T>, string>();
-    var filePriorite = new PriorityQueue<Noeud<T>, int>();
-    var visites = new HashSet<Noeud<T>>();
 
-    foreach (var sommet in listeAdjacence.Keys)
-    {
-        distances[sommet] = int.MaxValue;
-        predecesseurs[sommet] = null;
-    }
-
-    distances[sommetDepart] = 0;
-    lignePrecedente[sommetDepart] = "";
-    filePriorite.Enqueue(sommetDepart, 0);
-
-    while (filePriorite.Count > 0)
-    {
-        var sommetActuel = filePriorite.Dequeue();
-        visites.Add(sommetActuel);
-
-        if (sommetActuel.Equals(sommetArrivee))
-            break;
-
-        foreach (var arc in arcs.Where(a => a.IdPrevious.Equals(sommetActuel)))
-        {
-            if (arc.IdPrevious == sommetActuel){
-
-
-            int tempsChangement = 0;
-            if (lignePrecedente.TryGetValue(sommetActuel, out string ligneActuelle))
-            {
-                if (ligneActuelle != arc.IdLigne)
-                    tempsChangement = arc.IdPrevious.TempsChangement;
-            }
-
-            int nouvelleDistance = distances[sommetActuel] + arc.Poids + tempsChangement;
-
-            if (nouvelleDistance < distances[arc.IdNext])
-            {
-                distances[arc.IdNext] = nouvelleDistance;
-                predecesseurs[arc.IdNext] = arc;
-                lignePrecedente[arc.IdNext] = arc.IdLigne;
-                filePriorite.Enqueue(arc.IdNext, nouvelleDistance);
-            }
-            }
-        }
-    }
-
-    var chemin = new List<Arc<T>>();
-    var courant = sommetArrivee;
-
-    while (predecesseurs[courant] != null)
-    {
-        var arc = predecesseurs[courant];
-        chemin.Add(arc);
-        courant = arc.IdPrevious;
-    }
-
-    chemin.Reverse();
-    return (chemin, distances[sommetArrivee]);
-}
-public (List<Arc<T>>, int) BellmanFordChemin2(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
-{
-    var distances = new Dictionary<Noeud<T>, int>();
-    var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
-    var lignePrecedente = new Dictionary<Noeud<T>, string>();
-
-    foreach (var sommet in listeAdjacence.Keys)
-    {
-        distances[sommet] = int.MaxValue;
-        predecesseurs[sommet] = null;
-    }
-
-    distances[sommetDepart] = 0;
-    lignePrecedente[sommetDepart] = "";
-
-    for (int i = 0; i < listeAdjacence.Count - 1; i++)
-    {
-        foreach (var arc in arcs)
-        {
-            if (distances[arc.IdPrevious] == int.MaxValue)
-                continue;
-
-            int tempsChangement = 0;
-            if (lignePrecedente.TryGetValue(arc.IdPrevious, out string ligneActuelle))
-            {
-                if (ligneActuelle != arc.IdLigne)
-                    tempsChangement = arc.IdPrevious.TempsChangement;
-            }
-
-            int nouvelleDistance = distances[arc.IdPrevious] + arc.Poids + tempsChangement;
-
-            if (nouvelleDistance < distances[arc.IdNext])
-            {
-                distances[arc.IdNext] = nouvelleDistance;
-                predecesseurs[arc.IdNext] = arc;
-                lignePrecedente[arc.IdNext] = arc.IdLigne;
-            }
-        }
-    }
-
-    // Détection de cycle négatif (facultatif ici si tu sais qu’il n’y en a pas)
-    foreach (var arc in arcs)
-    {
-        int tempsChangement = 0;
-        if (lignePrecedente.TryGetValue(arc.IdPrevious, out string ligneActuelle))
-        {
-            if (ligneActuelle != arc.IdLigne)
-                tempsChangement = arc.IdPrevious.TempsChangement;
-        }
-
-        if (distances[arc.IdPrevious] != int.MaxValue &&
-            distances[arc.IdPrevious] + arc.Poids + tempsChangement < distances[arc.IdNext])
-        {
-            throw new InvalidOperationException("Cycle de poids négatif détecté.");
-        }
-    }
-
-    var chemin = new List<Arc<T>>();
-    var courant = sommetArrivee;
-
-    while (predecesseurs[courant] != null)
-    {
-        var arc = predecesseurs[courant];
-        chemin.Add(arc);
-        courant = arc.IdPrevious;
-    }
-
-    chemin.Reverse();
-    return (chemin, distances[sommetArrivee]);
-}
-
-
-        //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
+        //// Calculer le chemin le plus court entre un sommet de départ et tous les autres sommets avec l'algorithme de Bellman-Ford
         public Dictionary<Noeud<T>, int> BellmanFord(Noeud<T> sommetDepart)
         {
-            Dictionary<Noeud<T>, int> distances = new Dictionary<Noeud<T>, int>();
-            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
-
-            foreach (Noeud<T> sommet in listeAdjacence.Keys)
+            var distances = new Dictionary<Noeud<T>, int>();
+            var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
+        
+            //// Initialisation des distances et prédécesseurs à l'infini
+            foreach (var sommet in listeAdjacence.Keys)
             {
                 distances[sommet] = int.MaxValue;
+                predecesseurs[sommet] = null;
             }
-
             distances[sommetDepart] = 0;
-
+        
             for (int i = 0; i < listeAdjacence.Count - 1; i++)
             {
                 foreach (Arc<T> arc in arcs)
                 {
-                    if (arc.IdPrevious.IdBrute == i) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une Noeud)
+                    var noeudPrécédent = arc.IdPrevious;
+                    var noeudSuivant = arc.IdNext;        
+                    if (distances[noeudPrécédent] == int.MaxValue){
+                        continue;
+                    }
+        
+                    //// Ligne précédente = ligne de l'arc ayant permis d'arriver au sommet actuel
+                    string idLignePrecedente = null;
+                    if (predecesseurs.ContainsKey(noeudPrécédent) && predecesseurs[noeudPrécédent] != null)
                     {
+                        idLignePrecedente = predecesseurs[noeudPrécédent].IdLigne;
+                    }       
                     int tempsChangement = 0;
-                    if (idLignePrécédent != arc.IdLigne && i != 0) // On vérifie si on change de ligne
+                    if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne)
                     {
-                        tempsChangement = arc.IdPrevious.TempsChangement; // On met à jour le temps de changement
-                    }
-                    if ((distances[arc.IdPrevious] != int.MaxValue) && (distances[arc.IdPrevious] + arc.Poids + arc.IdPrevious.TempsChangement < distances[arc.IdNext]))
+                        tempsChangement = noeudPrécédent.TempsChangement;
+                    }        
+                    int nouvelleDistance = distances[noeudPrécédent] + arc.Poids + tempsChangement;
+                    if (nouvelleDistance < distances[noeudSuivant])
                     {
-                        distances[arc.IdNext] = distances[arc.IdPrevious] + arc.Poids + arc.IdPrevious.TempsChangement;
+                        distances[noeudSuivant] = nouvelleDistance;
+                        predecesseurs[noeudSuivant] = arc;
                     }
-                    }
-                    idLignePrécédent = arc.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
                 }
             }
-
             return distances;
         }
-        //Calculer et Renvoie le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
+        //// Calculer et Renvoie le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
         public (List<Arc<T>>, int) BellmanFordChemin(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
         {
-            Dictionary<Noeud<T>, int> distances = new Dictionary<Noeud<T>, int>();
-            Dictionary<Noeud<T>, Arc<T>> predecesseurs = new Dictionary<Noeud<T>, Arc<T>>(); // Pour reconstruire le chemin
-            string idLignePrécédent = ""; // On initialise l'id de la ligne précédente à une chaîne vide
-
-            foreach (Noeud<T> sommet in listeAdjacence.Keys)
+            var distances = new Dictionary<Noeud<T>, int>();
+            var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
+        
+            //// Initialisation des distances et prédécesseurs à l'infini
+            foreach (var sommet in listeAdjacence.Keys)
             {
                 distances[sommet] = int.MaxValue;
-                predecesseurs[sommet] = null; // On initialise les prédécesseurs à null
+                predecesseurs[sommet] = null;
             }
-
             distances[sommetDepart] = 0;
-
-
+        
             for (int i = 0; i < listeAdjacence.Count - 1; i++)
             {
                 foreach (Arc<T> arc in arcs)
                 {
-                    if (arc.IdPrevious.IdBrute == i) // On vérifie si le voisin est bien un voisin du sommet actuel (L'id d'une Noeud)
+                    var noeudPrécédent = arc.IdPrevious;
+                    var noeudSuivant = arc.IdNext;        
+                    if (distances[noeudPrécédent] == int.MaxValue){
+                        continue;
+                    }
+        
+                    //// Ligne précédente = ligne de l'arc ayant permis d'arriver au sommet actuel
+                    string idLignePrecedente = null;
+                    if (predecesseurs.ContainsKey(noeudPrécédent) && predecesseurs[noeudPrécédent] != null)
                     {
+                        idLignePrecedente = predecesseurs[noeudPrécédent].IdLigne;
+                    }       
                     int tempsChangement = 0;
-                    if (idLignePrécédent != arc.IdLigne && i != 0) // On vérifie si on change de ligne
+                    if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne)
                     {
-                        tempsChangement = arc.IdPrevious.TempsChangement; // On met à jour le temps de changement
-                    }
-                    if ((distances[arc.IdPrevious] != int.MaxValue) && (distances[arc.IdPrevious] + arc.Poids + arc.IdPrevious.TempsChangement < distances[arc.IdNext]))
+                        tempsChangement = noeudPrécédent.TempsChangement;
+                    }        
+                    int nouvelleDistance = distances[noeudPrécédent] + arc.Poids + tempsChangement;
+                    if (nouvelleDistance < distances[noeudSuivant])
                     {
-                        distances[arc.IdNext] = distances[arc.IdPrevious] + arc.Poids + arc.IdPrevious.TempsChangement;
-                        predecesseurs[arc.IdNext] = arc; // On met à jour le prédécesseur
+                        distances[noeudSuivant] = nouvelleDistance;
+                        predecesseurs[noeudSuivant] = arc;
                     }
-                    }
-                    idLignePrécédent = arc.IdLigne; // On mémorise l'id de la ligne pour le prochain sommet
                 }
             }
-            // Reconstruire le chemin
-            List<Arc<T>> cheminAretes = new List<Arc<T>>();
-            Noeud<T> courant = sommetArrivee;
-
+        
+            /// Reconstruction du chemin
+            var chemin = new List<Arc<T>>();
+            var courant = sommetArrivee;
             while (predecesseurs[courant] != null)
             {
-                    Arc<T> arete = predecesseurs[courant];
-                    cheminAretes.Add(arete);
-                    courant = arete.IdPrevious;
+                var arc = predecesseurs[courant];
+                chemin.Add(arc);
+                courant = arc.IdPrevious;
             }
-            cheminAretes.Reverse(); // Important pour avoir le chemin dans le bon sens
-            return (cheminAretes, distances[sommetArrivee]);
+            chemin.Reverse();
+            return (chemin, distances[sommetArrivee]);
         }
-        //Calculer le chemin le plus court entre deux sommets avec l'algorithme de Floyd-Warshall
+
+        //// Calculer le chemin le plus court entre deux sommets avec l'algorithme de Floyd-Warshall
         public Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>> FloydWarshall()
         {
             Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>> distances = new Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>>();
@@ -637,7 +524,7 @@ public (List<Arc<T>>, int) BellmanFordChemin2(Noeud<T> sommetDepart, Noeud<T> so
             {
                 foreach (var voisin in listeAdjacence[sommet])
                 {
-                    distances[sommet][voisin] = 1; // On suppose que chaque arête a un poids de 1
+                    distances[sommet][voisin] = 1; //// On suppose que chaque arête a un poids de 1
                 }
             }
 
@@ -657,6 +544,273 @@ public (List<Arc<T>>, int) BellmanFordChemin2(Noeud<T> sommetDepart, Noeud<T> so
 
             return distances;
         }
+        public Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>> FloydWarshall2()
+        {
+            var distances = new Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>>();
+            var lignes = new Dictionary<(Noeud<T>, Noeud<T>), string>();
+        
+            /// Initialisation des distances et lignes
+            foreach (var i in listeAdjacence.Keys)
+            {
+                distances[i] = new Dictionary<Noeud<T>, int>();
+                foreach (var j in listeAdjacence.Keys)
+                {
+                    if (i.Equals(j))
+                    {
+                        distances[i][j] = 0;
+                    }
+                    else
+                    {
+                        distances[i][j] = int.MaxValue;
+                    }
+                }
+            }
+        
+            /// Mise à jour avec les arcs existants
+            foreach (var arc in arcs)
+            {
+                distances[arc.IdPrevious][arc.IdNext] = arc.Poids;
+                lignes[(arc.IdPrevious, arc.IdNext)] = arc.IdLigne;
+        
+                /// Si le graphe est non orienté
+                if (!arc.SensUnique)
+                {
+                    distances[arc.IdNext][arc.IdPrevious] = arc.Poids;
+                    lignes[(arc.IdNext, arc.IdPrevious)] = arc.IdLigne;
+                }
+            }
+        
+            /// Algorithme de Floyd-Warshall avec gestion du changement de ligne
+            foreach (var k in listeAdjacence.Keys)
+            {
+                foreach (var i in listeAdjacence.Keys)
+                {
+                    foreach (var j in listeAdjacence.Keys)
+                    {
+                        if (distances[i][k] == int.MaxValue || distances[k][j] == int.MaxValue)
+                            continue;
+        
+                        int tempsChangement = 0;
+        
+                        /// On récupère les lignes i → k et k → j si elles existent
+                        lignes.TryGetValue((i, k), out string ligneIK);
+                        lignes.TryGetValue((k, j), out string ligneKJ);
+        
+                        if (ligneIK != null && ligneKJ != null && ligneIK != ligneKJ)
+                        {
+                            tempsChangement = k.TempsChangement;
+                        }
+        
+                        int nouvelleDistance = distances[i][k] + distances[k][j] + tempsChangement;
+        
+                        if (nouvelleDistance < distances[i][j])
+                        {
+                            distances[i][j] = nouvelleDistance;
+                            lignes[(i, j)] = ligneIK ?? ligneKJ; /// On mémorise la ligne dominante
+                        }
+                    }
+                }
+            }
+        
+            return distances;
+        }
+        public (List<Arc<T>>, int) FloydWarshallChemin(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
+        {
+            var distances = new Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>>();
+            var predecesseurs = new Dictionary<Noeud<T>, Dictionary<Noeud<T>, Noeud<T>>>();
+            var lignes = new Dictionary<(Noeud<T>, Noeud<T>), string>();
+
+            /// Initialisation
+            foreach (var i in listeAdjacence.Keys)
+            {
+                distances[i] = new Dictionary<Noeud<T>, int>();
+                predecesseurs[i] = new Dictionary<Noeud<T>, Noeud<T>>();
+
+                foreach (var j in listeAdjacence.Keys)
+                {
+                    if (i.Equals(j))
+                    {
+                        distances[i][j] = 0;
+                    }
+                    else
+                    {
+                        distances[i][j] = int.MaxValue;
+                    }
+                    predecesseurs[i][j] = null;
+                }
+            }
+
+            /// Initialisation avec les arcs (graphe orienté : un seul sens)
+            foreach (var arc in arcs)
+            {
+                distances[arc.IdPrevious][arc.IdNext] = arc.Poids;
+                predecesseurs[arc.IdPrevious][arc.IdNext] = arc.IdPrevious;
+                lignes[(arc.IdPrevious, arc.IdNext)] = arc.IdLigne;
+            }
+
+            foreach (var k in listeAdjacence.Keys)
+            {
+                foreach (var i in listeAdjacence.Keys)
+                {
+                    foreach (var j in listeAdjacence.Keys)
+                    {
+                        if (distances[i][k] == int.MaxValue || distances[k][j] == int.MaxValue)
+                            continue;
+
+                        lignes.TryGetValue((i, k), out string ligneIK);
+                        lignes.TryGetValue((k, j), out string ligneKJ);
+
+                        int tempsChangement = 0;
+                        if (ligneIK != null && ligneKJ != null && ligneIK != ligneKJ)
+                        {
+                            tempsChangement = k.TempsChangement;
+                        }
+
+                        int nouvelleDistance = distances[i][k] + distances[k][j] + tempsChangement;
+
+                        if (nouvelleDistance < distances[i][j])
+                        {
+                            distances[i][j] = nouvelleDistance;
+                            predecesseurs[i][j] = predecesseurs[k][j];
+                            lignes[(i, j)] = ligneIK ?? ligneKJ;
+                        }
+                    }
+                }
+            }
+
+            /// Reconstruction du chemin
+            List<Noeud<T>> cheminNoeuds = new List<Noeud<T>>();
+            Noeud<T> courant = sommetArrivee;
+
+            while (courant != null && !courant.Equals(sommetDepart))
+            {
+                cheminNoeuds.Insert(0, courant);
+                courant = predecesseurs[sommetDepart][courant];
+            }
+
+            if (courant == null)
+                return (new List<Arc<T>>(), int.MaxValue); /// Pas de chemin remontable
+
+            cheminNoeuds.Insert(0, sommetDepart); ///On met le sommet de départ au début
+
+            /// Traduction en arcs
+            List<Arc<T>> cheminArcs = new List<Arc<T>>();
+            for (int i = 0; i < cheminNoeuds.Count - 1; i++)
+            {
+                Noeud<T> from = cheminNoeuds[i];
+                Noeud<T> to = cheminNoeuds[i + 1];
+
+                Arc<T> arc = arcs.FirstOrDefault(a =>
+                    a.IdPrevious.Equals(from) && a.IdNext.Equals(to)); /// Graphe orienté : un seul sens
+
+                if (arc != null)
+                    cheminArcs.Add(arc);
+                else
+                    return (new List<Arc<T>>(), int.MaxValue); /// Arc manquant (cas anormal)
+            }
+
+            return (cheminArcs, distances[sommetDepart][sommetArrivee]);
+        }
+        public (List<Arc<T>>, int) FloydWarshallCheminNonOrienté(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
+        {
+            var distances = new Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>>();
+            var predecesseurs = new Dictionary<Noeud<T>, Dictionary<Noeud<T>, Noeud<T>>>();
+            var lignes = new Dictionary<(Noeud<T>, Noeud<T>), string>();
+        
+            /// Initialisation des distances et prédecesseurs
+            foreach (var i in listeAdjacence.Keys)
+            {
+                distances[i] = new Dictionary<Noeud<T>, int>();
+                predecesseurs[i] = new Dictionary<Noeud<T>, Noeud<T>>();
+                foreach (var j in listeAdjacence.Keys)
+                {
+                    if (i.Equals(j))
+                    {
+                        distances[i][j] = 0;
+                    }
+                    else
+                    {
+                        distances[i][j] = int.MaxValue;
+                    }
+                    predecesseurs[i][j] = null;
+                }
+            }        
+            /// Initialisation avec les arcs
+            foreach (var arc in arcs)
+            {
+                distances[arc.IdPrevious][arc.IdNext] = arc.Poids;
+                predecesseurs[arc.IdPrevious][arc.IdNext] = arc.IdPrevious;
+                lignes[(arc.IdPrevious, arc.IdNext)] = arc.IdLigne;      
+                if (!arc.SensUnique) /// NON ORIENTE
+                {
+                    distances[arc.IdNext][arc.IdPrevious] = arc.Poids;
+                    predecesseurs[arc.IdNext][arc.IdPrevious] = arc.IdNext;
+                    lignes[(arc.IdNext, arc.IdPrevious)] = arc.IdLigne;
+                }
+            }
+    
+            foreach (var k in listeAdjacence.Keys)
+            {
+                foreach (var i in listeAdjacence.Keys)
+                {
+                    foreach (var j in listeAdjacence.Keys)
+                    {
+                        if (distances[i][k] == int.MaxValue || distances[k][j] == int.MaxValue){
+                            continue;
+                        }
+                        lignes.TryGetValue((i, k), out string ligneIK);
+                        lignes.TryGetValue((k, j), out string ligneKJ);
+        
+                        int tempsChangement = 0;
+                        if (ligneIK != null && ligneKJ != null && ligneIK != ligneKJ)
+                        {
+                            tempsChangement = k.TempsChangement;
+                        }
+                        int nouvelleDistance = distances[i][k] + distances[k][j] + tempsChangement;
+                        if (nouvelleDistance < distances[i][j])
+                        {
+                            distances[i][j] = nouvelleDistance;
+                            predecesseurs[i][j] = predecesseurs[k][j];  /// On garde l'avant-dernier nœud avant j
+                            lignes[(i, j)] = ligneIK ?? ligneKJ;
+                        }
+                    }
+                }
+            }
+        
+            /// Reconstruction du chemin        
+            var cheminNoeuds = new List<Noeud<T>>();
+            var courant = sommetArrivee;
+        
+            /// Remontée depuis l’arrivée jusqu’au départ
+            while (courant != null && !courant.Equals(sommetDepart))
+            {
+                cheminNoeuds.Insert(0, courant);
+                courant = predecesseurs[sommetDepart][courant];
+            }
+        
+            if (courant == null)
+                return (new List<Arc<T>>(), int.MaxValue);
+        
+            cheminNoeuds.Insert(0, sommetDepart);////On met le sommet de départ au début
+        
+            /// Traduction Noeuds → Arcs
+            var cheminArcs = new List<Arc<T>>();
+            for (int i = 0; i < cheminNoeuds.Count - 1; i++)
+            {
+                Noeud<T> from = cheminNoeuds[i];
+                Noeud<T> to = cheminNoeuds[i + 1];
+        
+                Arc<T> arc = arcs.FirstOrDefault(a =>
+                    a.IdPrevious.Equals(from) && a.IdNext.Equals(to) ||
+                    (!a.SensUnique && a.IdPrevious.Equals(to) && a.IdNext.Equals(from)));
+        
+                if (arc != null)
+                    cheminArcs.Add(arc);
+            }
+        
+            return (cheminArcs, distances[sommetDepart][sommetArrivee]);
+        }
+        
         #endregion
     }
     

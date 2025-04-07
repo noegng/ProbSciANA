@@ -23,6 +23,7 @@
             <Button Style="{StaticResource MenuButtonStyle}" Content="Modifier" Click="BtnModifier_Click"/>
             <Button Style="{StaticResource MenuButtonStyle}" Content="Trier par nom" Click="BtnTrierNom_Click"/>
             <Button Style="{StaticResource MenuButtonStyle}" Content="Trier par adresse" Click="BtnTrierAdresse_Click"/>
+            <Button Style="{StaticResource MenuButtonStyle}" Content="Trier par Achats" Click="BtnTrierAchats_Click"/>
         </StackPanel>
 
         <!-- Liste des clients -->
