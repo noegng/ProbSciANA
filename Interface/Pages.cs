@@ -231,19 +231,7 @@ private List<Livraison> livraisons;
 
         private void BtnLivrer(object sender, RoutedEventArgs e)
         {
-            string excelFilePath = "Metro_Arcs_Par_Station_IDs.xlsx"; // Chemin vers le fichier Excel
-            var graphe = Program<(int id, string nom)>.InitializeData(excelFilePath);
-            if (LivraisonsListView.SelectedItem is Livraison livraison)
-            {
-                /// Logique pour livrer le plat
-                MessageBox.Show($"Livraison de {livraison.NomPlat} à {livraison.NomClient}");
-                graphe.DijkstraChemin(livraison.IdStationDepart, livraison.IdStationArrivee);
-                
-            }
-            else
-            {
-                MessageBox.Show("Veuillez sélectionner une livraison.");
-            }
+            MessageBox.Show("Livrer un plat");
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
