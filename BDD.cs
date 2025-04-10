@@ -8,8 +8,14 @@ namespace ProbSciANA
     {
         public static string connectionString = "SERVER=localhost;PORT=3306;user=root;password=root;database=pbsciana;";
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
+        public static List<Commande> commandes = new List<Commande>();
+        public static List<Livraison> livraisons = new List<Livraison>();
         public static Dictionary<Utilisateur,double> clients = new Dictionary<Utilisateur,double>();
-        public static void GetUtilisateurs()
+
+        
+
+
+        public static void RefreshUtilisateurs()
         {
             utilisateurs.Clear();
             using (MySqlConnection connection = new MySqlConnection(connectionString))
@@ -31,7 +37,6 @@ namespace ProbSciANA
                 {
                     using (var reader = command.ExecuteReader())
                     {
-                        int i = 0;
                         while(reader.Read())
                         {
                             utilisateurs.Add(new Utilisateur(
@@ -47,7 +52,6 @@ namespace ProbSciANA
                             reader.GetDateTime("date_inscription"),
                             reader.GetString("mdp")
                             ));
-                            i++;
                         }
                     }
                 }
@@ -90,9 +94,9 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void GetClientsByAchats(string order)
+        public static void RefreshClientsByAchats(string order)
         {
-            GetUtilisateurs();
+            RefreshUtilisateurs();
             clients.Clear();
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
@@ -124,16 +128,78 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-    }
+        public static void RefreshCommandes()
+        {
+            commandes.Clear();
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = @"SELECT * FROM Commande;";
 
-public class Livraison
-{
-    public string NomPlat { get; set; }
-    public string NomClient { get; set; }
-    public string AdresseLivraison { get; set; }
-    public Noeud<(int id, string nom)> IdStationDepart { get; set; } /// Station du cuisinier
-    public Noeud<(int id, string nom)> IdStationArrivee { get; set; } // Station du client
-}
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        int i = 0;
+                        while(reader.Read())
+                        {
+                            commandes.Add(new Commande(
+                            reader.GetInt32("id_commande"),
+                            reader.GetString("nom"),
+                            reader.GetDouble("prix"),
+                            reader.GetString("statut"),
+                            reader.GetDateTime("date_commande"),
+                            reader.GetInt32("id_client"),
+                            reader.GetInt32("id_cuisinier")
+                            ));
+                            i++;
+                        }
+                    }
+                }
+                connection.Close();
+            }
+        }
+        public static void RefreshLivraisons()
+        {
+            livraisons.Clear();
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = @"SELECT * FROM Livraison;";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while(reader.Read())
+                        {
+                            livraisons.Add(new Livraison(
+                            reader.GetInt32("id_livraison"),
+                            reader.GetDateTime("date_livraison"),
+                            reader.GetString("statut"),
+                            reader.GetInt32("id_trajet"),
+                            reader.GetInt32("id_commande")
+                            ));
+                        }
+                    }
+                }
+                connection.Close();
+            }
+        }
+        public static void DeleteById(string table, int id)
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+                string query = $"DELETE FROM {table} WHERE id_utilisateur = @id";
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+    }
 
     public class Utilisateur
     {
@@ -145,11 +211,11 @@ public class Livraison
         private string adresse;
         private string telephone;
         private string email;
-        private Noeud<(int id, string nom)> station;
+        private string station;
         private DateTime date_inscription;
         private string mdp;
 
-        public Utilisateur(int id_utilisateur, bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, Noeud<(int id, string nom)> station, DateTime date_inscription, string mdp)
+        public Utilisateur(int id_utilisateur, bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string station, DateTime date_inscription, string mdp)
         {
             this.id_utilisateur = id_utilisateur;
             this.estClient = estClient;
@@ -163,7 +229,7 @@ public class Livraison
             this.date_inscription = date_inscription;
             this.mdp = mdp;
         }
-        public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, Noeud<(int id, string nom)> station, string mdp)
+        public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string station, string mdp)
         {
             this.estClient = estClient;
             this.estCuisinier = estCuisinier;
@@ -197,7 +263,7 @@ public class Livraison
                 }
                 if(!value && estClient)
                 {
-                    estClient = value; Delete("Client_", this.id_utilisateur);
+                    estClient = value; Requetes.DeleteById("Client_", this.id_utilisateur);
                 }
             }
         }
@@ -212,7 +278,7 @@ public class Livraison
                 }
                 if(!value && estCuisinier)
                 {
-                    estCuisinier = value; Delete("Cuisinier", this.id_utilisateur);
+                    estCuisinier = value; Requetes.DeleteById("Cuisinier", this.id_utilisateur);
                 }
             }
         }
@@ -241,7 +307,7 @@ public class Livraison
             get { return email; }
             set { email = value; Update("email", value); }
         }
-        public Noeud<(int id, string nom)> Station
+        public string Station
         {
             get { return station; }
             set { station = value; Update("station", value); }
@@ -316,20 +382,7 @@ public class Livraison
                 }
             }
         }
-        public static void Delete(string table, int id_utilisateur)
-        {
-            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
-            {
-                connection.Open();
-                string query = $"DELETE FROM {table} WHERE id_utilisateur = @id";
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.Parameters.AddWithValue("@id", id_utilisateur);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-        public void Update(string champ, Noeud<(int id, string nom)> value)
+        public void Update(string champ, string value)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -373,5 +426,141 @@ public class Livraison
             }
         }
     }
-    
+
+    public class Commande
+    {
+        private int id_commande {get; set;}
+        private string nom {get; set;}
+        private double prix {get; set;}
+        private string statut {get; set;}
+        private DateTime date_commande {get; set;}
+        private int id_client {get; set;}
+        private int id_cuisinier {get; set;}
+        public Commande(int id_commande, string nom, double prix, string statut, DateTime date_commande, int id_client, int id_cuisinier)
+        {
+            this.id_commande = id_commande;
+            this.id_client = id_client;
+            this.id_cuisinier = id_cuisinier;
+            this.nom = nom;
+            this.prix = prix;
+            this.statut = statut;
+            this.date_commande = date_commande;
+        }
+
+        public Commande(string nom, double prix, string statut, DateTime date_commande, int id_client, int id_cuisinier)
+        {
+            this.nom = nom;
+            this.prix = prix;
+            this.statut = statut;
+            this.date_commande = date_commande;
+            this.id_client = id_client;
+            this.id_cuisinier = id_cuisinier;
+            InsertCommande();
+            Getid();
+            Requetes.commandes.Add(this);
+        }
+
+        public void InsertCommande()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+
+                string query = @"INSERT INTO Commande (nom, prix, statut, date_commande, id_client, id_cuisinier)
+                                VALUES (@nom, @prix, @statut, @date_commande, @id_client, @id_cuisinier);";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@nom", nom);
+                    command.Parameters.AddWithValue("@prix", prix);
+                    command.Parameters.AddWithValue("@statut", statut);
+                    command.Parameters.AddWithValue("@date_commande", date_commande.ToString("yyyy-MM-dd HH:mm:ss"));
+                    command.Parameters.AddWithValue("@id_client", id_client);
+                    command.Parameters.AddWithValue("@id_cuisinier", id_cuisinier);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+        private void Getid()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT LAST_INSERT_ID();";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    id_commande = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+                }
+            }
+        }
+    }
+
+    public class Livraison
+    {
+        private int id_livraison {get; set;}
+        private string stationCuisinier {get; set;}
+        private string stationClient {get; set;}
+        private DateTime date_livraison {get; set;}
+        private string statut {get; set;}
+        private int id_trajet {get; set;}
+        private int id_commande {get; set;}
+        
+        public Livraison(int id_livraison, DateTime date_livraison, string statut, int id_trajet, int id_commande)
+        {
+            this.id_livraison = id_livraison;
+            this.date_livraison = date_livraison;
+            this.statut = statut;
+            this.id_trajet = id_trajet;
+            this.id_commande = id_commande;
+        }
+
+        public Livraison(DateTime date_livraison, string statut, int id_trajet, int id_commande)
+        {
+            this.date_livraison = date_livraison;
+            this.statut = statut;
+            this.id_trajet = id_trajet;
+            this.id_commande = id_commande;
+            InsertLivraison();
+            Getid();
+            Requetes.livraisons.Add(this);
+        }
+
+        public void InsertLivraison()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+
+                string query = @"INSERT INTO Livraison (date_livraison, statut, id_trajet, id_commande)
+                                VALUES (@station, @date_livraison, @statut, @id_trajet, @id_commande);";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@date_livraison", date_livraison.ToString("yyyy-MM-dd HH:mm:ss"));
+                    command.Parameters.AddWithValue("@statut", statut);
+                    command.Parameters.AddWithValue("@id_trajet", id_trajet);
+                    command.Parameters.AddWithValue("@id_commande", id_commande);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+        private void Getid()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT LAST_INSERT_ID();";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    id_livraison = Convert.ToInt32(cmd.ExecuteScalar().ToString());
+                }
+            }
+        }
+    }
 }
