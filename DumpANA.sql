@@ -28,7 +28,7 @@ CREATE TABLE `avis` (
   `id_avis` int NOT NULL AUTO_INCREMENT,
   `note` tinyint NOT NULL,
   `commentaire` text,
-  `date_avis` datetime DEFAULT CURRENT_TIMESTAMP,
+  `date_avis` date DEFAULT NULL,
   `id_Client_` int NOT NULL,
   `id_cuisinier` int NOT NULL,
   PRIMARY KEY (`id_avis`),
@@ -46,7 +46,7 @@ CREATE TABLE `avis` (
 
 LOCK TABLES `avis` WRITE;
 /*!40000 ALTER TABLE `avis` DISABLE KEYS */;
-INSERT INTO `avis` VALUES (1,5,'Excellent service','2025-03-01 00:00:00',1,2),(2,4,'Bon plat','2025-03-02 00:00:00',2,3),(3,3,'Moyen, à améliorer','2025-03-03 00:00:00',3,5),(4,5,'Très bon, recommandé','2025-03-04 00:00:00',4,7),(5,2,'Pas satisfait','2025-03-05 00:00:00',5,8),(6,4,'Bonne expérience','2025-03-06 00:00:00',6,10),(7,5,'Meilleur plat jamais vu','2025-03-07 00:00:00',7,2),(8,3,'Correct','2025-03-08 00:00:00',8,3),(9,4,'Bon rapport qualité-prix','2025-03-09 00:00:00',9,5),(10,5,'Service impeccable','2025-03-10 00:00:00',10,7);
+INSERT INTO `avis` VALUES (3,3,'Moyen, à améliorer','2025-03-03',3,5),(4,5,'Très bon, recommandé','2025-03-04',4,7),(5,2,'Pas satisfait','2025-03-05',5,8),(6,4,'Bonne expérience','2025-03-06',6,10),(8,3,'Correct','2025-03-08',8,3),(9,4,'Bon rapport qualité-prix','2025-03-09',9,5);
 /*!40000 ALTER TABLE `avis` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -70,7 +70,7 @@ CREATE TABLE `client_` (
 
 LOCK TABLES `client_` WRITE;
 /*!40000 ALTER TABLE `client_` DISABLE KEYS */;
-INSERT INTO `client_` VALUES (1),(2),(3),(4),(5),(6),(7),(8),(9),(10);
+INSERT INTO `client_` VALUES (1),(3),(4),(5),(6),(7),(8),(9),(10);
 /*!40000 ALTER TABLE `client_` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,15 +86,16 @@ CREATE TABLE `commande` (
   `nom` varchar(50) DEFAULT NULL,
   `prix` decimal(6,2) DEFAULT NULL,
   `statut` enum('en cours','faite','livrée') DEFAULT NULL,
-  `date_commande` datetime DEFAULT NULL,
-  `id_client` int DEFAULT NULL,
-  `id_cuisinier` int DEFAULT NULL,
+  `date_commande` date DEFAULT NULL,
+  `id_client` int NOT NULL,
+  `id_cuisinier` int NOT NULL,
   PRIMARY KEY (`id_commande`),
   KEY `id_client` (`id_client`),
   KEY `id_cuisinier` (`id_cuisinier`),
-  CONSTRAINT `commande_ibfk_1` FOREIGN KEY (`id_client`) REFERENCES `client_` (`id_utilisateur`) ON DELETE SET NULL,
-  CONSTRAINT `commande_ibfk_2` FOREIGN KEY (`id_cuisinier`) REFERENCES `cuisinier` (`id_utilisateur`) ON DELETE SET NULL,
-  CONSTRAINT `commande_chk_1` CHECK ((`prix` >= 0))
+  CONSTRAINT `commande_ibfk_1` FOREIGN KEY (`id_client`) REFERENCES `client_` (`id_utilisateur`) ON DELETE CASCADE,
+  CONSTRAINT `commande_ibfk_2` FOREIGN KEY (`id_cuisinier`) REFERENCES `cuisinier` (`id_utilisateur`) ON DELETE CASCADE,
+  CONSTRAINT `commande_chk_1` CHECK ((`prix` >= 0)),
+  CONSTRAINT `diff_client_cuisinier` CHECK ((`id_client` <> `id_cuisinier`))
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -104,7 +105,7 @@ CREATE TABLE `commande` (
 
 LOCK TABLES `commande` WRITE;
 /*!40000 ALTER TABLE `commande` DISABLE KEYS */;
-INSERT INTO `commande` VALUES (1,'Commande 1',20.00,'en cours','2025-03-01 10:15:00',1,2),(2,'Commande 2',35.50,'faite','2025-03-02 12:30:00',2,3),(3,'Commande 3',15.75,'livrée','2025-03-03 09:45:00',3,5),(4,'Commande 4',40.00,'en cours','2025-03-04 18:00:00',4,7),(5,'Commande 5',22.50,'faite','2025-03-05 14:20:00',5,8),(6,'Commande 6',30.00,'livrée','2025-03-06 11:05:00',6,10),(7,'Commande 7',18.25,'en cours','2025-03-07 17:30:00',7,2),(8,'Commande 8',27.80,'faite','2025-03-08 13:10:00',8,3),(9,'Commande 9',33.00,'livrée','2025-03-09 16:45:00',9,5),(10,'Commande 10',25.50,'en cours','2025-03-10 08:50:00',10,7);
+INSERT INTO `commande` VALUES (3,'Commande 3',15.75,'livrée','2025-03-03',3,5),(4,'Commande 4',40.00,'en cours','2025-03-04',4,7),(5,'Commande 5',22.50,'faite','2025-03-05',5,8),(6,'Commande 6',30.00,'livrée','2025-03-06',6,10),(8,'Commande 8',27.80,'faite','2025-03-08',8,3),(9,'Commande 9',33.00,'livrée','2025-03-09',9,5),(10,'Commande 10',25.50,'en cours','2025-03-10',10,7);
 /*!40000 ALTER TABLE `commande` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,8 +148,7 @@ DROP TABLE IF EXISTS `cuisine`;
 CREATE TABLE `cuisine` (
   `id_cuisinier` int NOT NULL,
   `id_plat` int NOT NULL,
-  `plat_du_jour` tinyint(1) DEFAULT NULL,
-  `date_cuisine` datetime NOT NULL,
+  `date_cuisine` date NOT NULL,
   `statut` enum('à faire','en cours','fait','livré') DEFAULT NULL,
   PRIMARY KEY (`id_cuisinier`,`id_plat`,`date_cuisine`),
   KEY `id_plat` (`id_plat`),
@@ -163,7 +163,7 @@ CREATE TABLE `cuisine` (
 
 LOCK TABLES `cuisine` WRITE;
 /*!40000 ALTER TABLE `cuisine` DISABLE KEYS */;
-INSERT INTO `cuisine` VALUES (2,1,0,'2025-03-01 11:00:00','fait'),(2,7,1,'2025-03-07 17:00:00','fait'),(3,2,0,'2025-03-02 12:00:00','fait'),(3,8,0,'2025-03-08 18:00:00','fait'),(5,3,0,'2025-03-03 13:00:00','fait'),(5,9,0,'2025-03-09 19:00:00','fait'),(7,4,0,'2025-03-04 14:00:00','fait'),(7,10,0,'2025-03-10 20:00:00','fait'),(8,5,0,'2025-03-05 15:00:00','fait'),(10,6,0,'2025-03-06 16:00:00','fait');
+INSERT INTO `cuisine` VALUES (3,2,'2025-03-02','fait'),(3,8,'2025-03-08','fait'),(5,3,'2025-03-03','fait'),(5,9,'2025-03-09','fait'),(7,4,'2025-03-04','fait'),(7,10,'2025-03-10','fait'),(8,5,'2025-03-05','fait'),(10,6,'2025-03-06','fait');
 /*!40000 ALTER TABLE `cuisine` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -187,7 +187,7 @@ CREATE TABLE `cuisinier` (
 
 LOCK TABLES `cuisinier` WRITE;
 /*!40000 ALTER TABLE `cuisinier` DISABLE KEYS */;
-INSERT INTO `cuisinier` VALUES (2),(3),(5),(7),(8),(10);
+INSERT INTO `cuisinier` VALUES (3),(5),(7),(8),(10);
 /*!40000 ALTER TABLE `cuisinier` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -212,7 +212,7 @@ CREATE TABLE `entreprise` (
 
 LOCK TABLES `entreprise` WRITE;
 /*!40000 ALTER TABLE `entreprise` DISABLE KEYS */;
-INSERT INTO `entreprise` VALUES (2,'Responsable A'),(4,'Responsable B'),(6,'Responsable C'),(8,'Responsable D'),(10,'Responsable E');
+INSERT INTO `entreprise` VALUES (4,'Responsable B'),(6,'Responsable C'),(8,'Responsable D'),(10,'Responsable E');
 /*!40000 ALTER TABLE `entreprise` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -250,14 +250,15 @@ DROP TABLE IF EXISTS `livraison`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `livraison` (
   `id_livraison` int NOT NULL AUTO_INCREMENT,
-  `date_livraison` datetime DEFAULT NULL,
+  `station` varchar(50) DEFAULT NULL,
+  `date_livraison` date DEFAULT NULL,
   `statut` enum('à faire','en cours','finie') DEFAULT NULL,
-  `id_trajet` int DEFAULT NULL,
+  `id_trajet` int NOT NULL,
   `id_commande` int NOT NULL,
   PRIMARY KEY (`id_livraison`),
   KEY `id_trajet` (`id_trajet`),
   KEY `id_commande` (`id_commande`),
-  CONSTRAINT `livraison_ibfk_1` FOREIGN KEY (`id_trajet`) REFERENCES `trajet` (`id_trajet`) ON DELETE SET NULL,
+  CONSTRAINT `livraison_ibfk_1` FOREIGN KEY (`id_trajet`) REFERENCES `trajet` (`id_trajet`),
   CONSTRAINT `livraison_ibfk_2` FOREIGN KEY (`id_commande`) REFERENCES `commande` (`id_commande`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -268,7 +269,7 @@ CREATE TABLE `livraison` (
 
 LOCK TABLES `livraison` WRITE;
 /*!40000 ALTER TABLE `livraison` DISABLE KEYS */;
-INSERT INTO `livraison` VALUES (1,'2025-03-11 10:00:00','à faire',1,1),(2,'2025-03-12 11:00:00','en cours',2,2),(3,'2025-03-13 12:00:00','finie',3,3),(4,'2025-03-14 13:00:00','à faire',4,4),(5,'2025-03-15 14:00:00','en cours',5,5),(6,'2025-03-16 15:00:00','finie',6,6),(7,'2025-03-17 16:00:00','à faire',7,7),(8,'2025-03-18 17:00:00','en cours',8,8),(9,'2025-03-19 18:00:00','finie',9,9),(10,'2025-03-20 19:00:00','à faire',10,10);
+INSERT INTO `livraison` VALUES (3,'Station C','2025-03-13','finie',3,3),(4,'Station D','2025-03-14','à faire',4,4),(5,'Station E','2025-03-15','en cours',5,5),(6,'Station F','2025-03-16','finie',6,6),(8,'Station H','2025-03-18','en cours',8,8),(9,'Station I','2025-03-19','finie',9,9),(10,'Station J','2025-03-20','à faire',10,10);
 /*!40000 ALTER TABLE `livraison` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -355,7 +356,7 @@ CREATE TABLE `requiert` (
 
 LOCK TABLES `requiert` WRITE;
 /*!40000 ALTER TABLE `requiert` DISABLE KEYS */;
-INSERT INTO `requiert` VALUES (1,1,2),(2,2,1),(3,3,1),(4,4,2),(5,5,1),(6,6,1),(7,7,1),(8,8,2),(9,9,1),(10,10,1);
+INSERT INTO `requiert` VALUES (3,3,1),(4,4,2),(5,5,1),(6,6,1),(8,8,2),(9,9,1),(10,10,1);
 /*!40000 ALTER TABLE `requiert` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -384,7 +385,7 @@ CREATE TABLE `trajet` (
 
 LOCK TABLES `trajet` WRITE;
 /*!40000 ALTER TABLE `trajet` DISABLE KEYS */;
-INSERT INTO `trajet` VALUES (1,'Chemin A',15,2),(2,'Chemin B',20,3),(3,'Chemin C',10,5),(4,'Chemin D',25,7),(5,'Chemin E',18,8),(6,'Chemin F',22,10),(7,'Chemin G',17,2),(8,'Chemin H',19,3),(9,'Chemin I',14,5),(10,'Chemin J',16,7);
+INSERT INTO `trajet` VALUES (2,'Chemin B',20,3),(3,'Chemin C',10,5),(4,'Chemin D',25,7),(5,'Chemin E',18,8),(6,'Chemin F',22,10),(8,'Chemin H',19,3),(9,'Chemin I',14,5),(10,'Chemin J',16,7);
 /*!40000 ALTER TABLE `trajet` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -399,14 +400,14 @@ CREATE TABLE `utilisateur` (
   `id_utilisateur` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(50) DEFAULT NULL,
   `prenom` varchar(50) DEFAULT NULL,
-  `adresse` varchar(100) DEFAULT NULL,
-  `telephone` varchar(10) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
+  `adresse` varchar(100) DEFAULT NULL,
+  `role` varchar(50) DEFAULT NULL,
+  `MotDePasse` varchar(50) DEFAULT NULL,
   `station` varchar(50) DEFAULT NULL,
-  `date_inscription` datetime DEFAULT CURRENT_TIMESTAMP,
-  `mdp` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`id_utilisateur`),
   UNIQUE KEY `email` (`email`)
+  
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -416,7 +417,18 @@ CREATE TABLE `utilisateur` (
 
 LOCK TABLES `utilisateur` WRITE;
 /*!40000 ALTER TABLE `utilisateur` DISABLE KEYS */;
-INSERT INTO `utilisateur` VALUES (1,'Dupont','Jean','10 Rue de Paris, 75001 Paris','0102030405','jean.dupont@example.com','Station A','2025-02-25 10:00:00','mdp1234'),(2,'Martin','Alice','15 Avenue de la République, 75011 Paris','0102030406','alice.martin@example.com','Station B','2025-02-26 11:00:00','mdp1234'),(3,'Durand','Pierre','20 Boulevard Voltaire, 75012 Paris','0102030407','pierre.durand@example.com','Station C','2025-02-27 12:00:00','mdp1234'),(4,'Leroy','Sophie','5 Rue Victor Hugo, 75002 Paris','0102030408','sophie.leroy@example.com','Station D','2025-02-28 13:00:00','mdp1234'),(5,'Moreau','Julien','8 Rue de la Paix, 75008 Paris','0102030409','julien.moreau@example.com','Station E','2025-03-01 14:00:00','mdp1234'),(6,'Simon','Claire','12 Rue Lafayette, 75009 Paris','0102030410','claire.simon@example.com','Station F','2025-03-02 15:00:00','mdp1234'),(7,'Laurent','Marc','22 Avenue Mozart, 75016 Paris','0102030411','marc.laurent@example.com','Station G','2025-03-03 16:00:00','mdp1234'),(8,'Garnier','Emma','18 Rue de Rivoli, 75004 Paris','0102030412','emma.garnier@example.com','Station H','2025-03-04 17:00:00','mdp1234'),(9,'Roux','Lucas','7 Rue du Bac, 75007 Paris','0102030413','lucas.roux@example.com','Station I','2025-03-05 18:00:00','mdp1234'),(10,'Morel','Léa','3 Boulevard Saint-Germain, 75006 Paris','0102030414','lea.morel@example.com','Station J','2025-03-06 19:00:00','mdp1234');
+INSERT INTO utilisateur (id_utilisateur, nom, prenom, email, adresse, role, MotDePasse, station)
+VALUES
+(1, 'Martin', 'Alice', 'alice.martin@example.com', '12 rue de Paris', 'Client', 'alice123', 'République'),
+(2, 'Durand', 'Paul', 'paul.durand@example.com', '45 avenue Victor Hugo', 'Cuisinier', 'paulcuisine', 'Nation'),
+(3, 'Leroy', 'Camille', 'camille.leroy@example.com', '7 rue Lafayette', 'Client', 'camille2024', 'Gare du Nord'),
+(4, 'Bernard', 'Luc', 'luc.bernard@example.com', '88 boulevard Haussmann', 'Cuisinier', 'lucfood', 'Châtelet'),
+(5, 'Petit', 'Sophie', 'sophie.petit@example.com', '31 rue Mouffetard', 'Client', 'sophiepass', 'Montparnasse'),
+(6, 'Garcia', 'Julien', 'julien.garcia@example.com', '9 rue Oberkampf', 'Cuisinier', 'juliencook', 'Belleville'),
+(7, 'Roux', 'Chloé', 'chloe.roux@example.com', '55 rue de Rivoli', 'Client', 'chloe1234', 'Bastille'),
+(8, 'Moreau', 'Nicolas', 'nicolas.moreau@example.com', '23 rue Saint-Honoré', 'Cuisinier', 'nicofood', 'Opéra'),
+(9, 'Fournier', 'Emma', 'emma.fournier@example.com', '18 rue de Rennes', 'Client', 'emmaclient', 'Denfert-Rochereau'),
+(10, 'Lopez', 'Antoine', 'antoine.lopez@example.com', '102 rue Lecourbe', 'Cuisinier', 'antoinechef', 'La Motte-Picquet');
 /*!40000 ALTER TABLE `utilisateur` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -429,4 +441,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-04 19:05:29
+-- Dump completed on 2025-04-01 19:50:20

@@ -10,6 +10,7 @@ using System.Diagnostics;
 using OfficeOpenXml.Utils;
 using Org.BouncyCastle.Asn1.Misc;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 
 namespace ProbSciANA
@@ -142,6 +143,23 @@ namespace ProbSciANA
         public void AffichageImage()
         {
             Graphviz<(int id, string nom)>.GenerateGraphImage(Noeuds, Arcs);
+        }
+        public void CheminOptimal(Graphe<(int id, string nom)> graphe, List<Noeud<(int id, string nom)>> stations){
+            int nbCheminPossible = 1;
+            for (int i = 2; i <= stations.Count-1; i++) /// -1 car on fait une permutation mais seuelement entre les stations intermédiaires avec Départ fixe
+            {
+                nbCheminPossible *= i;
+            }
+            int valeurMin = int.MaxValue;
+            int tempsTraj = 0;
+            for (int i = 0; i < nbCheminPossible ; i++){
+                for(int j = 0; i < stations.Count-1 ; j++){
+                    tempsTraj += graphe.Dijkstra(stations[j])[stations[j+1]];
+                }
+                if(tempsTraj<valeurMin){
+                    valeurMin = tempsTraj;
+                }
+            }
         }
         
         
