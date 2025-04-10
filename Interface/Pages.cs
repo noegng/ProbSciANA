@@ -258,6 +258,73 @@ private List<Livraison> livraisons;
 
     }
 
+
+    #region Plat
+
+    public partial class PlatView : Page
+    {
+        public PlatView()
+        {
+            InitializeComponent();
+        }
+
+        private void BtnAjouterPlat_Click(object sender, RoutedEventArgs e)
+        {
+            string nomPlat = NomPlatTextBox.Text;
+            string typePlat = (TypePlatComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
+            string nationalite = NationaliteTextBox.Text;
+            string regimeAlimentaire = RegimeTextBox.Text;
+            string ingredients = IngredientsTextBox.Text;
+            string prixParPersonne = PrixTextBox.Text;
+            string nombrePersonnes = NombrePersonnesTextBox.Text;
+            DateTime? dateFabrication = DateFabricationDatePicker.SelectedDate;
+            DateTime? datePeremption = DatePeremptionDatePicker.SelectedDate;
+
+            if (string.IsNullOrWhiteSpace(nomPlat) || string.IsNullOrWhiteSpace(typePlat) ||
+            string.IsNullOrWhiteSpace(nationalite) || string.IsNullOrWhiteSpace(regimeAlimentaire) ||
+            string.IsNullOrWhiteSpace(ingredients) || string.IsNullOrWhiteSpace(prixParPersonne) ||
+            string.IsNullOrWhiteSpace(nombrePersonnes) || !dateFabrication.HasValue || !datePeremption.HasValue)
+            {
+            MessageBox.Show("Veuillez remplir tous les champs.");
+            return;
+            }
+
+            try
+            {
+            var nouveauPlat = new Plat
+            {
+                Nom = nomPlat,
+                Type = typePlat,
+                Nationalite = nationalite,
+                RegimeAlimentaire = regimeAlimentaire,
+                Ingredients = ingredients,
+                PrixParPersonne = double.Parse(prixParPersonne),
+                NombrePersonnes = int.Parse(nombrePersonnes),
+                DateFabrication = dateFabrication.Value,
+                DatePeremption = datePeremption.Value
+            };
+
+            Requetes.AjouterPlat(nouveauPlat);
+            MessageBox.Show("Plat ajouté avec succès !");
+            NavigationService?.GoBack();
+            }
+            catch (Exception ex)
+            {
+            MessageBox.Show("Erreur lors de l'ajout du plat : " + ex.Message);
+            }
+        }
+
+        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.GoBack();
+        }
+        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+
+    }
+
 #endregion
 
 #region Page Vue Admin
