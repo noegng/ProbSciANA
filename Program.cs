@@ -10,6 +10,9 @@ using System.Diagnostics;
 using OfficeOpenXml.Utils;
 using Org.BouncyCastle.Asn1.Misc;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 
 namespace ProbSciANA
@@ -32,6 +35,8 @@ namespace ProbSciANA
             Graphe<(int id, string nom)> graphe = new Graphe<(int id, string nom)>(Aretes);
             return graphe;
         }
+
+
 
 
         
@@ -61,6 +66,38 @@ namespace ProbSciANA
             Console.ReadKey();
         }
       */
+
+       public static async Task<NominatimResult> FetchCoordinatesFromNominatim(string address)
+    {
+        string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
+
+        using HttpClient client = new HttpClient();
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("MyGeoApp/1.0 (noe.guenego@gmail.com)");
+
+        HttpResponseMessage response = await client.GetAsync(url);
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        string jsonResponse = await response.Content.ReadAsStringAsync();
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var results = JsonSerializer.Deserialize<List<NominatimResult>>(jsonResponse, options);
+
+        return results != null && results.Count > 0 ? results[0] : null;
+    }
+
+    public class NominatimResult
+{
+    public string lat { get; set; }
+    public string lon { get; set; }
+    public string display_name { get; set; }
+}
+
+
         static (List<Noeud<(int id,string nom)>>, List<Arc<(int id,string nom)>>) LectureFichierExcel(string excelFilePath){
             var noeuds = new List<Noeud<(int id,string nom)>>();
             var arcs = new List<Arc<(int id,string nom)>>(); 
