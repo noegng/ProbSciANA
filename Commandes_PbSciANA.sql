@@ -80,6 +80,21 @@ JOIN Trajet t ON l.id_trajet = t.id_trajet
 JOIN Utilisateur uu ON t.id_utilisateur = uu.id_utilisateur
 ORDER BY l.id_livraison;
 
+SELECT * FROM Utilisateur;
+
+SELECT 
+  u.*,
+  CASE WHEN cl.id_utilisateur IS NOT NULL THEN TRUE ELSE FALSE END AS estClient,
+  CASE WHEN cu.id_utilisateur IS NOT NULL THEN TRUE ELSE FALSE END AS estCuisinier,
+  CASE WHEN e.id_utilisateur IS NOT NULL THEN TRUE ELSE FALSE END AS estEntreprise,
+  e.nom_referent
+FROM utilisateur u
+LEFT JOIN client_ cl ON cl.id_utilisateur = u.id_utilisateur
+LEFT JOIN cuisinier cu ON cu.id_utilisateur = u.id_utilisateur
+LEFT JOIN entreprise e ON e.id_utilisateur = u.id_utilisateur;
+
+Select * from avis;
+
 #****************** MODULE CLIENT *****************#
 
 SELECT u.id_utilisateur, u.nom, u.prenom, SUM(cmd.prix) AS total_achats

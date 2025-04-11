@@ -74,47 +74,32 @@ INSERT INTO Ingredient (nom) VALUES
 --------------------------
 -- Table Avis
 --------------------------
-INSERT INTO Avis (note, commentaire, date_avis, id_Client_, id_cuisinier) VALUES
-(5, 'Excellent service', '2025-03-01', 1, 2),
-(4, 'Bon plat', '2025-03-02', 2, 3),
-(3, 'Moyen, à améliorer', '2025-03-03', 3, 5),
-(5, 'Très bon, recommandé', '2025-03-04', 4, 7),
-(2, 'Pas satisfait', '2025-03-05', 5, 8),
-(4, 'Bonne expérience', '2025-03-06', 6, 10),
-(5, 'Meilleur plat jamais vu', '2025-03-07', 7, 2),
-(3, 'Correct', '2025-03-08', 8, 3),
-(4, 'Bon rapport qualité-prix', '2025-03-09', 9, 5),
-(5, 'Service impeccable', '2025-03-10', 10, 7);
+INSERT INTO Avis (note, commentaire, id_client_, id_cuisinier) VALUES
+(5, 'Excellent service', 1, 2),
+(4, 'Bon plat', 2, 3),
+(3, 'Moyen, à améliorer', 3, 5),
+(5, 'Très bon, recommandé', 4, 7),
+(2, 'Pas satisfait', 5, 8),
+(4, 'Bonne expérience', 6, 10),
+(5, 'Meilleur plat jamais vu', 7, 2),
+(3, 'Correct', 8, 3),
+(4, 'Bon rapport qualité-prix', 9, 5),
+(5, 'Service impeccable', 10, 7);
 
 --------------------------
 -- Table Commande
 --------------------------
-INSERT INTO Commande (nom, prix, statut, date_commande, id_client, id_cuisinier) VALUES
-('Commande 1', 20.00, 'en cours', '2025-03-01 10:15:00', 1, 2),
-('Commande 2', 35.50, 'faite', '2025-03-02 12:30:00', 2, 3),
-('Commande 3', 15.75, 'livrée', '2025-03-03 09:45:00', 3, 5),
-('Commande 4', 40.00, 'en cours', '2025-03-04 18:00:00', 4, 7),
-('Commande 5', 22.50, 'faite', '2025-03-05 14:20:00', 5, 8),
-('Commande 6', 30.00, 'livrée', '2025-03-06 11:05:00', 6, 10),
-('Commande 7', 18.25, 'en cours', '2025-03-07 17:30:00', 7, 2),
-('Commande 8', 27.80, 'faite', '2025-03-08 13:10:00', 8, 3),
-('Commande 9', 33.00, 'livrée', '2025-03-09 16:45:00', 9, 5),
-('Commande 10', 25.50, 'en cours', '2025-03-10 08:50:00', 10, 7);
-
---------------------------
--- Table Trajet
---------------------------
-INSERT INTO Trajet (chemin_optimal, temps_optimal, id_utilisateur) VALUES
-('Chemin A', 15, 2),
-('Chemin B', 20, 3),
-('Chemin C', 10, 5),
-('Chemin D', 25, 7),
-('Chemin E', 18, 8),
-('Chemin F', 22, 10),
-('Chemin G', 17, 2),
-('Chemin H', 19, 3),
-('Chemin I', 14, 5),
-('Chemin J', 16, 7);
+INSERT INTO Commande (nom, prix, statut, id_client, id_cuisinier) VALUES
+('Commande 1', 20.00, 'en cours', 1, 2),
+('Commande 2', 35.50, 'faite', 2, 3),
+('Commande 3', 15.75, 'livrée', 3, 5),
+('Commande 4', 40.00, 'en cours', 4, 7),
+('Commande 5', 22.50, 'faite', 5, 8),
+('Commande 6', 30.00, 'livrée', 6, 10),
+('Commande 7', 18.25, 'en cours', 7, 2),
+('Commande 8', 27.80, 'faite', 8, 3),
+('Commande 9', 33.00, 'livrée', 9, 5),
+('Commande 10', 25.50, 'en cours', 10, 7);
 
 --------------------------
 -- Table Livraison

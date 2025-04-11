@@ -106,14 +106,11 @@ public partial class ConnexionView : Page
         public ConnexionView()
         {
             InitializeComponent();
-            Requetes.GetUtilisateurs();
-            utilisateurs = new Dictionary<string, Utilisateur>();
+            Utilisateur.Refreshes();
 
-            foreach (var utilisateur in Requetes.utilisateurs)
+            foreach (var utilisateur in Utilisateur.utilisateurs)
             {
-                string display = utilisateur.Prenom + " " + utilisateur.Nom;
-                utilisateurs[display] = utilisateur;
-                UserComboBox.Items.Add(display);
+                UserComboBox.Items.Add(utilisateur.Prenom + " " + utilisateur.Nom);
             }
         }
 
@@ -267,45 +264,45 @@ public partial class ConnexionView : Page
         public ClientsView()
         {
             InitializeComponent();
-            Requetes.GetUtilisateurs();
+            Utilisateur.Refreshes();
             LoadClients();
         }
 
         private void LoadClients(string orderBy = "u.nom")
         {
-           
-        /// Récupérer tous les clients
-    clients = Requetes.utilisateurs.FindAll(u => u.EstClient);
+            Utilisateur.Refreshes(); /// Assurez-vous que la liste des utilisateurs est à jour
+            /// Récupérer tous les clients
+            clients = Utilisateur.utilisateurs.FindAll(u => u.EstClient);
 
-    /// Appliquer le tri en fonction de `orderBy`
-    switch (orderBy)
-    {
-        case "u.nom":
-            clients.Sort((a, b) => a.Nom.CompareTo(b.Nom));
-            break;
-
-        case "u.adresse":
-            clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
-            break;
-
-        case "achats":
-            /// Récupérer les clients triés par leurs achats
-            Requetes.GetClientsByAchats(orderBy);
-            clients.Sort((a, b) =>
+            /// Appliquer le tri en fonction de `orderBy`
+            switch (orderBy)
             {
-                double achatsA = Requetes.clients.ContainsKey(a) ? Requetes.clients[a] : 0;
-                double achatsB = Requetes.clients.ContainsKey(b) ? Requetes.clients[b] : 0;
-                return achatsB.CompareTo(achatsA); /// Tri décroissant par montant des achats
-            });
-            break;
+                case "u.nom":
+                    clients.Sort((a, b) => a.Nom.CompareTo(b.Nom));
+                    break;
 
-        default:
-            break;
-    }
+                case "u.adresse":
+                    clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
+                    break;
 
-    /// Mettre à jour la source de données de la ListView
-    ClientsListView.ItemsSource = null;
-    ClientsListView.ItemsSource = clients;
+                case "achats":
+                    /// Récupérer les clients triés par leurs achats
+                    Requetes.GetClientsByAchat(orderBy);
+                    clients.Sort((a, b) =>
+                    {
+                        double achatsA = Requetes.clients.ContainsKey(a) ? Requetes.clients[a] : 0;
+                        double achatsB = Requetes.clients.ContainsKey(b) ? Requetes.clients[b] : 0;
+                        return achatsB.CompareTo(achatsA); /// Tri décroissant par montant des achats
+                    });
+                    break;
+
+                default:
+                    break;
+            }
+
+            /// Mettre à jour la source de données de la ListView
+            ClientsListView.ItemsSource = null;
+            ClientsListView.ItemsSource = clients;
         }
 
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
@@ -352,13 +349,13 @@ public partial class ConnexionView : Page
         public CuisiniersView()
         {
             InitializeComponent();
-            Requetes.GetUtilisateurs();
+            Utilisateur.Refreshes();
             LoadCuisiniers();
         }
 
         private void LoadCuisiniers(string orderBy = "u.nom")
         {
-            cuisiniers = Requetes.utilisateurs.FindAll(u => u.EstCuisinier);
+            cuisiniers = Utilisateur.utilisateurs.FindAll(u => u.EstCuisinier);
             if (orderBy == "adresse")
                 cuisiniers.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
             else
@@ -434,9 +431,5 @@ public partial class ConnexionView : Page
     }
 
 #endregion
-
-
-
-   
 
 }

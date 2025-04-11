@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS Plat(
 DROP TABLE IF EXISTS Ingredient;
 CREATE TABLE IF NOT EXISTS Ingredient(
    id_ingredient INT PRIMARY KEY AUTO_INCREMENT,
-   nom VARCHAR(50) UNIQUE
+   nom VARCHAR(50) UNIQUE,
+   regime VARCHAR(50)
 );
 
 DROP TABLE IF EXISTS Avis;
@@ -77,20 +78,11 @@ CREATE TABLE IF NOT EXISTS Commande(
    nom VARCHAR(50),
    prix DECIMAL(6,2) CHECK (prix >=0),
    statut ENUM('en cours','faite','livrée'),
-   date_commande DATETIME,
+   date_commande DATETIME DEFAULT NOW(),
    id_client INT NULL,
    id_cuisinier INT NULL,
    FOREIGN KEY(id_client) REFERENCES Client_(id_utilisateur) ON DELETE SET NULL,
    FOREIGN KEY(id_cuisinier) REFERENCES Cuisinier(id_utilisateur) ON DELETE SET NULL
-);
-
-DROP TABLE IF EXISTS Trajet;
-CREATE TABLE IF NOT EXISTS Trajet(
-   id_trajet INT PRIMARY KEY AUTO_INCREMENT,
-   chemin_optimal VARCHAR(50),
-   temps_optimal INT CHECK (temps_optimal >=0),
-   id_utilisateur INT NOT NULL,
-   FOREIGN KEY(id_utilisateur) REFERENCES Cuisinier(id_utilisateur) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS Livraison;
@@ -98,9 +90,9 @@ CREATE TABLE IF NOT EXISTS Livraison(
    id_livraison INT PRIMARY KEY AUTO_INCREMENT,
    date_livraison DATETIME,
    statut ENUM('à faire', 'en cours', 'finie'),
-   id_trajet INT NULL,
+   id_utilisateur INT NULL,
    id_commande INT NOT NULL,
-   FOREIGN KEY(id_trajet) REFERENCES Trajet(id_trajet) ON DELETE SET NULL,
+   FOREIGN KEY(id_utilisateur) REFERENCES Cuisiner(id_utilisateur) ON DELETE SET NULL,
    FOREIGN KEY(id_commande) REFERENCES Commande(id_commande) ON DELETE CASCADE
 );
 
