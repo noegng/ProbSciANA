@@ -7,6 +7,7 @@
         <Button Style="{StaticResource MenuButtonStyle}" Content="Test affichage Dijkstra" Width="200" Margin="5" Click="BtnAffichage_Djikstra"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Test affichage Bellman-Ford" Width="200" Margin="5" Click="BtnAffichage_BF"/>
         <Button Style="{StaticResource MenuButtonStyle}" Content="Test affichage Floyd-Warshall" Width="200" Margin="5" Click="BtnAffichage_Floyd"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Test Chemin Optimal" Width="200" Margin="5" Click="BtnCheminOptimal"/>
         <TextBlock Text="Le temps de trajet est de : {Binding TempsTrajet}" 
                    FontSize="18" 
                    Margin="10"/>

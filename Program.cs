@@ -144,20 +144,22 @@ namespace ProbSciANA
         {
             Graphviz<(int id, string nom)>.GenerateGraphImage(Stations, Arcs);
         }
-        public void CheminOptimal(Graphe<(int id, string nom)> graphe, List<Noeud<(int id, string nom)>> stations){
+        public int CheminOptimal(Graphe<(int id, string nom)> graphe, List<Noeud<(int id, string nom)>> stations){
             int valeurMin = int.MaxValue;
             Noeud<(int id, string nom)> stationDépart = stations[0];
             stations.RemoveAt(0);
             List<List<Noeud<(int id, string nom)>>> listCheminPossible = Permutations(stations);
             foreach(List<Noeud<(int id, string nom)>> chemin in listCheminPossible){
                 int tempsTraj = graphe.Dijkstra(stationDépart)[chemin[0]];
-                for(int j = 0; j < chemin.Count; j++){
+                for(int j = 0; j < chemin.Count-1; j++){
                     tempsTraj += graphe.Dijkstra(chemin[j])[chemin[j+1]];
                 }
                 if(tempsTraj<valeurMin){
                     valeurMin = tempsTraj;
                 }
+                Console.WriteLine("Temps :" + valeurMin);
             }
+            return valeurMin;
         }
 public static List<List<Noeud<(int id, string nom)>>> Permutations(List<Noeud<(int id, string nom)>> liste)
 {

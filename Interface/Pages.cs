@@ -469,6 +469,20 @@ public partial class ConnexionView : Page
             int tempsTrajet = Program.GrapheMétro.AffichageFloydWarshall(Program.Stations[1],Program.Stations[100]);
             MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
         }
+        private void BtnCheminOptimal(object sender, RoutedEventArgs e)
+        {
+            List<Noeud<(int id, string nom)>> Liste = new List<Noeud<(int id, string nom)>>();
+            Liste.Add(Program.Stations[1]);
+            Liste.Add(Program.Stations[20]);
+            Liste.Add(Program.Stations[40]);
+            Liste.Add(Program.Stations[60]);
+            Liste.Add(Program.Stations[80]);
+            Liste.Add(Program.Stations[100]);
+            Liste.Add(Program.Stations[120]);
+            var programInstance = new Program();
+            int tempsTrajet = programInstance.CheminOptimal(Program.GrapheMétro, Liste);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[80].Valeur.nom} en passant par {Program.Stations[20].Valeur.nom}; {Program.Stations[40].Valeur.nom} ;{Program.Stations[60].Valeur.nom} est de : {tempsTrajet} minutes.");
+        }
         
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
