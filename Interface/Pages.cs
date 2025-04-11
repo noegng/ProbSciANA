@@ -204,8 +204,8 @@ public partial class ConnexionView : Page
 
         private void AfficherGraphe_Click(object sender, RoutedEventArgs e)
         {
-            var graphe = Program.Graphe;
-            var stations = Program.Noeuds;
+            var graphe = Program.GrapheMétro;
+            var stations = Program.Stations;
             var arcs = Program.Arcs;
 
         Graphviz<(int id, string nom)>.GenerateGraphImage(stations, arcs);
@@ -455,19 +455,19 @@ public partial class ConnexionView : Page
 
         private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
         {
-            int tempsTrajet = Program.Graphe.AffichageDijkstra(Program.Noeuds[1],Program.Noeuds[100]);
-            MessageBox.Show($"Temps de trajet entre {Program.Noeuds[1].Valeur.nom} et {Program.Noeuds[100].Valeur.nom} : {tempsTrajet} minutes.");
+            int tempsTrajet = Program.GrapheMétro.AffichageDijkstra(Program.Stations[1],Program.Stations[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
         }
 
         private void BtnAffichage_BF(object sender, RoutedEventArgs e)
         {
-            int tempsTrajet = Program.Graphe.AffichageBellmanFord(Program.Noeuds[1],Program.Noeuds[100]);
-            MessageBox.Show($"Temps de trajet entre {Program.Noeuds[1].Valeur.nom} et {Program.Noeuds[100].Valeur.nom} : {tempsTrajet} minutes.");
+            int tempsTrajet = Program.GrapheMétro.AffichageBellmanFord(Program.Stations[1],Program.Stations[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
         }
         private void BtnAffichage_Floyd(object sender, RoutedEventArgs e)
         {
-            int tempsTrajet = Program.Graphe.AffichageFloydWarshall(Program.Noeuds[1],Program.Noeuds[100]);
-            MessageBox.Show($"Temps de trajet entre {Program.Noeuds[1].Valeur.nom} et {Program.Noeuds[100].Valeur.nom} : {tempsTrajet} minutes.");
+            int tempsTrajet = Program.GrapheMétro.AffichageFloydWarshall(Program.Stations[1],Program.Stations[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
         }
         
 

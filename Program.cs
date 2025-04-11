@@ -22,16 +22,16 @@ namespace ProbSciANA
         public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
 
         // Liste des stations et des arêtes
-        public static List<Noeud<(int id, string nom)>> Noeuds { get;  set; }
+        public static List<Noeud<(int id, string nom)>> Stations { get;  set; }
         public static List<Arc<(int id, string nom)>> Arcs { get;  set; }
-        public static Graphe<(int id, string nom)> Graphe { get;  set; }
+        public static Graphe<(int id, string nom)> GrapheMétro { get;  set; }
 
         // Méthode pour initialiser les données
         public static void InitializeData(string excelFilePath)
         {
             // Charger les données depuis le fichier Excel
-            (Noeuds,Arcs) = LectureFichierExcel(excelFilePath);
-            Graphe = new Graphe<(int id, string nom)>(Arcs); // Créer le graphe à partir des arêtes
+            (Stations,Arcs) = LectureFichierExcel(excelFilePath);
+            GrapheMétro = new Graphe<(int id, string nom)>(Arcs); // Créer le graphe à partir des arêtes
         }
 
 
@@ -57,7 +57,7 @@ namespace ProbSciANA
             ///TestDijkstraChemin(graphePondéré, noeuds); /// Test de l'algorithme de Dijkstra avec vitesses moyennes
             ///TestBellmanFordChemin(graphePondéré, noeuds);
 
-            ///AffichageImage(noeuds, arcs); /// Affichage de l'image du graphe
+            ///AffichageImageMétro(noeuds, arcs); /// Affichage de l'image du graphe
             Console.WriteLine("Appuyez sur une touche pour quitter...");
             Console.ReadKey();
         }
@@ -140,28 +140,48 @@ namespace ProbSciANA
             }
             return (noeuds, arcs);
         }
-        public void AffichageImage()
+        public void AffichageImageMétro()
         {
-            Graphviz<(int id, string nom)>.GenerateGraphImage(Noeuds, Arcs);
+            Graphviz<(int id, string nom)>.GenerateGraphImage(Stations, Arcs);
         }
         public void CheminOptimal(Graphe<(int id, string nom)> graphe, List<Noeud<(int id, string nom)>> stations){
-            int nbCheminPossible = 1;
-            for (int i = 2; i <= stations.Count-1; i++) /// -1 car on fait une permutation mais seuelement entre les stations intermédiaires avec Départ fixe
-            {
-                nbCheminPossible *= i;
-            }
             int valeurMin = int.MaxValue;
-            int tempsTraj = 0;
-            for (int i = 0; i < nbCheminPossible ; i++){
-                for(int j = 0; i < stations.Count-1 ; j++){     /// FAire permutation
-                    tempsTraj += graphe.Dijkstra(stations[j])[stations[j+1]];
+            Noeud<(int id, string nom)> stationDépart = stations[0];
+            stations.RemoveAt(0);
+            List<List<Noeud<(int id, string nom)>>> listCheminPossible = Permutations(stations);
+            foreach(List<Noeud<(int id, string nom)>> chemin in listCheminPossible){
+                int tempsTraj = graphe.Dijkstra(stationDépart)[chemin[0]];
+                for(int j = 0; j < chemin.Count; j++){
+                    tempsTraj += graphe.Dijkstra(chemin[j])[chemin[j+1]];
                 }
                 if(tempsTraj<valeurMin){
                     valeurMin = tempsTraj;
                 }
             }
         }
-        
+public static List<List<Noeud<(int id, string nom)>>> Permutations(List<Noeud<(int id, string nom)>> liste)
+{
+    var resultats = new List<List<Noeud<(int id, string nom)>>>();
+    Permuter(liste, 0, resultats);
+    return resultats;
+}
+
+private static void Permuter(List<Noeud<(int id, string nom)>> liste, int index, List<List<Noeud<(int id, string nom)>>> resultats)
+{
+    if (index == liste.Count)
+    {
+        resultats.Add(new List<Noeud<(int id, string nom)>>(liste));
+        return;
+    }
+
+    for (int i = index; i < liste.Count; i++)
+    {
+        (liste[index], liste[i]) = (liste[i], liste[index]); // change de place
+        Permuter(liste, index + 1, resultats);
+        (liste[index], liste[i]) = (liste[i], liste[index]); // inverse le changement
+    }
+}
+
         
         #region Etape 1
         static void Etape1()

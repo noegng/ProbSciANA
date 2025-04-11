@@ -25,9 +25,9 @@ namespace ProbSciANA.Interface
             Program.InitializeData(ExcelFilePath);
 
             /// Accéder aux variables du graphe présent dans program
-            graphe = Program.Graphe;
+            graphe = Program.GrapheMétro;
             Arcs = Program.Arcs;
-            Stations = Program.Noeuds;
+            Stations = Program.Stations;
 
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
