@@ -153,7 +153,7 @@ namespace ProbSciANA
             int valeurMin = int.MaxValue;
             int tempsTraj = 0;
             for (int i = 0; i < nbCheminPossible ; i++){
-                for(int j = 0; i < stations.Count-1 ; j++){
+                for(int j = 0; i < stations.Count-1 ; j++){     /// FAire permutation
                     tempsTraj += graphe.Dijkstra(stations[j])[stations[j+1]];
                 }
                 if(tempsTraj<valeurMin){
