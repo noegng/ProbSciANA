@@ -8,7 +8,7 @@ namespace ProbSciANA
 {
     public class Noeud<T>
     {
-        private T valeur;  /// VAleur unique du noeud
+        private T valeur;  /// Valeur unique du noeud
         private int tempsChangement; /// Temps de changement (si exitant)
         private int idBrute = 0;
         public static int Compteur = 0;

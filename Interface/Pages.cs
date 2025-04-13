@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using MySql.Data.MySqlClient;
+using System.Threading.Tasks;
 
 namespace ProbSciANA.Interface
 {
@@ -18,6 +19,7 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             
+            
         }
 
         private void BtnModeUtilisateur_Click(object sender, RoutedEventArgs e)
@@ -27,7 +29,7 @@ namespace ProbSciANA.Interface
 
         private void BtnModeAdmin_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+         NavigationService?.Navigate(new AdminDashboardView());
         }
     }
 #endregion
@@ -106,7 +108,7 @@ public partial class ConnexionView : Page
         public ConnexionView()
         {
             InitializeComponent();
-            Requetes.GetUtilisateurs();
+            Requetes.RefreshUtilisateurs();
             utilisateurs = new Dictionary<string, Utilisateur>();
 
             foreach (var utilisateur in Requetes.utilisateurs)
@@ -186,42 +188,16 @@ private List<Livraison> livraisons;
         public CuisinierDashboardView()
         {
             InitializeComponent();
-            LoadLivraisons();
+            
         }
         private void LoadLivraisons()
     {
-        // Exemple de données de livraison
-        livraisons = new List<Livraison>
-        {
-            new Livraison
-            {
-                NomPlat = "Pizza",
-                NomClient = "Jean Dupont",
-                AdresseLivraison = "123 Rue de Paris",
-                IdStationDepart = Noeud<(int id, string nom)>,
-                IdStationArrivee = 5
-            },
-            new Livraison
-            {
-                NomPlat = "Sushi",
-                NomClient = "Marie Curie",
-                AdresseLivraison = "456 Avenue Einstein",
-                IdStationDepart = 2,
-                IdStationArrivee = 8
-            },
-            new Livraison
-            {
-                NomPlat = "Burger",
-                NomClient = "Albert Einstein",
-                AdresseLivraison = "789 Boulevard Newton",
-                IdStationDepart = 3,
-                IdStationArrivee = 10
-            }
-        };
 
-        // Lier la liste à une ListView (si nécessaire)
-        LivraisonsListView.ItemsSource = livraisons;
+             /// Exemple de données de livraison
+
     }
+       
+       
       
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
@@ -229,9 +205,10 @@ private List<Livraison> livraisons;
             MessageBox.Show("Ajouter un plat");
         }
 
-        private void BtnLivrer(object sender, RoutedEventArgs e)
+        private async void BtnLivrer(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Livrer un plat");
+            await Program.UtiliserGetCoordonnees();
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
@@ -246,8 +223,9 @@ private List<Livraison> livraisons;
 
     }
 
+#endregion
 
-    #region Plat
+#region Plat
 
     public partial class PlatView : Page
     {
@@ -258,48 +236,48 @@ private List<Livraison> livraisons;
 
         private void BtnAjouterPlat_Click(object sender, RoutedEventArgs e)
         {
-            string nomPlat = NomPlatTextBox.Text;
-            string typePlat = (TypePlatComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
-            string nationalite = NationaliteTextBox.Text;
-            string regimeAlimentaire = RegimeTextBox.Text;
-            string ingredients = IngredientsTextBox.Text;
-            string prixParPersonne = PrixTextBox.Text;
-            string nombrePersonnes = NombrePersonnesTextBox.Text;
-            DateTime? dateFabrication = DateFabricationDatePicker.SelectedDate;
-            DateTime? datePeremption = DatePeremptionDatePicker.SelectedDate;
+            // string nomPlat = NomPlatTextBox.Text;
+            // string typePlat = (TypePlatComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
+            // string nationalite = NationaliteTextBox.Text;
+            // string regimeAlimentaire = RegimeTextBox.Text;
+            // string ingredients = IngredientsTextBox.Text;
+            // string prixParPersonne = PrixTextBox.Text;
+            // string nombrePersonnes = NombrePersonnesTextBox.Text;
+            // DateTime? dateFabrication = DateFabricationDatePicker.SelectedDate;
+            // DateTime? datePeremption = DatePeremptionDatePicker.SelectedDate;
 
-            if (string.IsNullOrWhiteSpace(nomPlat) || string.IsNullOrWhiteSpace(typePlat) ||
-            string.IsNullOrWhiteSpace(nationalite) || string.IsNullOrWhiteSpace(regimeAlimentaire) ||
-            string.IsNullOrWhiteSpace(ingredients) || string.IsNullOrWhiteSpace(prixParPersonne) ||
-            string.IsNullOrWhiteSpace(nombrePersonnes) || !dateFabrication.HasValue || !datePeremption.HasValue)
-            {
-            MessageBox.Show("Veuillez remplir tous les champs.");
-            return;
-            }
+            // if (string.IsNullOrWhiteSpace(nomPlat) || string.IsNullOrWhiteSpace(typePlat) ||
+            // string.IsNullOrWhiteSpace(nationalite) || string.IsNullOrWhiteSpace(regimeAlimentaire) ||
+            // string.IsNullOrWhiteSpace(ingredients) || string.IsNullOrWhiteSpace(prixParPersonne) ||
+            // string.IsNullOrWhiteSpace(nombrePersonnes) || !dateFabrication.HasValue || !datePeremption.HasValue)
+            // {
+            // MessageBox.Show("Veuillez remplir tous les champs.");
+            // return;
+            // }
 
-            try
-            {
-            var nouveauPlat = new Plat
-            {
-                Nom = nomPlat,
-                Type = typePlat,
-                Nationalite = nationalite,
-                RegimeAlimentaire = regimeAlimentaire,
-                Ingredients = ingredients,
-                PrixParPersonne = double.Parse(prixParPersonne),
-                NombrePersonnes = int.Parse(nombrePersonnes),
-                DateFabrication = dateFabrication.Value,
-                DatePeremption = datePeremption.Value
-            };
+            // try
+            // {
+            // var nouveauPlat = new Plat
+            // {
+            //     Nom = nomPlat,
+            //     Type = typePlat,
+            //     Nationalite = nationalite,
+            //     RegimeAlimentaire = regimeAlimentaire,
+            //     Ingredients = ingredients,
+            //     PrixParPersonne = double.Parse(prixParPersonne),
+            //     NombrePersonnes = int.Parse(nombrePersonnes),
+            //     DateFabrication = dateFabrication.Value,
+            //     DatePeremption = datePeremption.Value
+            // };
 
-            Requetes.AjouterPlat(nouveauPlat);
-            MessageBox.Show("Plat ajouté avec succès !");
-            NavigationService?.GoBack();
-            }
-            catch (Exception ex)
-            {
-            MessageBox.Show("Erreur lors de l'ajout du plat : " + ex.Message);
-            }
+            // Requetes.AjouterPlat(nouveauPlat);
+            // MessageBox.Show("Plat ajouté avec succès !");
+            // NavigationService?.GoBack();
+            // }
+            // catch (Exception ex)
+            // {
+            // MessageBox.Show("Erreur lors de l'ajout du plat : " + ex.Message);
+            // }
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
@@ -323,6 +301,9 @@ private List<Livraison> livraisons;
             InitializeComponent();
         }
 
+        
+        
+
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ClientsView());
@@ -340,7 +321,7 @@ private List<Livraison> livraisons;
 
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesView());   
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
@@ -362,7 +343,7 @@ private List<Livraison> livraisons;
         public ClientsView()
         {
             InitializeComponent();
-            Requetes.GetUtilisateurs();
+            Requetes.RefreshUtilisateurs();
             LoadClients();
         }
 
@@ -385,13 +366,7 @@ private List<Livraison> livraisons;
 
         case "achats":
             /// Récupérer les clients triés par leurs achats
-            Requetes.GetClientsByAchats(orderBy);
-            clients.Sort((a, b) =>
-            {
-                double achatsA = Requetes.clients.ContainsKey(a) ? Requetes.clients[a] : 0;
-                double achatsB = Requetes.clients.ContainsKey(b) ? Requetes.clients[b] : 0;
-                return achatsB.CompareTo(achatsA); /// Tri décroissant par montant des achats
-            });
+            Requetes.RefreshClientsByAchats(orderBy);
             break;
 
         default:
@@ -447,38 +422,38 @@ private List<Livraison> livraisons;
         public CuisiniersView()
         {
             InitializeComponent();
-            Requetes.GetUtilisateurs();
+          
             LoadCuisiniers();
         }
 
-        private void LoadCuisiniers(string orderBy = "u.nom")
+        private void LoadCuisiniers()
         {
-            cuisiniers = Requetes.utilisateurs.FindAll(u => u.EstCuisinier);
-            if (orderBy == "adresse")
-                cuisiniers.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
-            else
-                cuisiniers.Sort((a, b) => a.Nom.CompareTo(b.Nom));
+            // cuisiniers = Requetes.utilisateurs.FindAll(u => u.EstCuisinier);
+            // if (orderBy == "adresse")
+            //     cuisiniers.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
+            // else
+            //     cuisiniers.Sort((a, b) => a.Nom.CompareTo(b.Nom));
 
-            CuisiniersListView.ItemsSource = null;
-            CuisiniersListView.ItemsSource = cuisiniers;
+            // CuisiniersListView.ItemsSource = null;
+            // CuisiniersListView.ItemsSource = cuisiniers;
         }
 
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
-            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
-            {
-                cuisinier.EstCuisinier = false; // Déclenche suppression automatique
-                LoadCuisiniers();
-            }
+            // if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
+            // {
+            //     cuisinier.EstCuisinier = false; // Déclenche suppression automatique
+            //     LoadCuisiniers();
+            // }
         }
 
         private void BtnModifier_Click(object sender, RoutedEventArgs e)
         {
-            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
-            {
-                cuisinier.Nom = cuisinier.Nom + " (modifié)";
-                LoadCuisiniers();
-            }
+            // if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
+            // {
+            //     cuisinier.Nom = cuisinier.Nom + " (modifié)";
+            //     LoadCuisiniers();
+            // }
         }
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
@@ -486,8 +461,8 @@ private List<Livraison> livraisons;
             NavigationService?.Navigate(new LoginView());
         }
 
-        private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("nom");
-        private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("adresse");
+        // private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("nom");
+        // private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("adresse");
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());

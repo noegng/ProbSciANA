@@ -33,8 +33,8 @@
             <TextBlock Text="Ingrédients :" Margin="5,0,0,5"/>
             <ListBox x:Name="IngredientsListBox" Width="200" Height="100" Margin="5"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBox x:Name="NewIngredientTextBox" Width="140" Margin="5,0,10,0" PlaceholderText="Ajouter un ingrédient"/>
-                <Button Style="{StaticResource MenuButtonStyle}" Content="Ajouter" Width="50" Click="BtnAjouterIngredient_Click"/>
+                <TextBox x:Name="NewIngredientTextBox" Text="Ajouter un ingrédient" Width="140" Margin="5,0,10,0"/>
+                <Button Style="{StaticResource MenuButtonStyle}" Content="Ajouter" Width="50" />
             </StackPanel>
 
             <TextBlock Text="Prix par personne :" Margin="5,0,0,5"/>

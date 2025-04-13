@@ -66,35 +66,74 @@ namespace ProbSciANA
             Console.ReadKey();
         }
       */
+public async Task ExempleUtilisation()
+{
+    string adresse = "123 Rue de Paris, France";
+    var noeud = await Program.GetCoordonnees<T>(adresse);
 
-       public static async Task<NominatimResult> FetchCoordinatesFromNominatim(string address)
+    if (noeud != null)
     {
-        string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
-
-        using HttpClient client = new HttpClient();
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("MyGeoApp/1.0 (noe.guenego@gmail.com)");
-
-        HttpResponseMessage response = await client.GetAsync(url);
-        if (!response.IsSuccessStatusCode)
-            return null;
-
-        string jsonResponse = await response.Content.ReadAsStringAsync();
-
-        var options = new JsonSerializerOptions
+        Console.WriteLine($"Noeud créé : {noeud.Valeur}, Latitude : {noeud.Latitude}, Longitude : {noeud.Longitude}");
+    }
+    else
+    {
+        Console.WriteLine("Impossible de récupérer les coordonnées.");
+    }
+}
+    public static async Task UtiliserGetCoordonnees()
         {
-            PropertyNameCaseInsensitive = true
-        };
+            string adresse = "10 rue de Rivoli, Paris";
+            Console.WriteLine($"Adresse : {adresse}");
+            // Appel de la méthode statique
+            var noeud = await Program.GetCoordonnees<string>(adresse);
+            Console.WriteLine("Recherche des coordonnées");
+            if (noeud != null)
+            {
+                Console.WriteLine($"Noeud créé : {noeud.Valeur}, Latitude : {noeud.Latitude}, Longitude : {noeud.Longitude}");
+            }
+            else
+            {
+                Console.WriteLine("Impossible de récupérer les coordonnées.");
+            }
+        }
+     public static async Task<Noeud<string>> GetCoordonnees<T>(string address)
+{
+    string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
 
-        var results = JsonSerializer.Deserialize<List<NominatimResult>>(jsonResponse, options);
+    using HttpClient client = new HttpClient();
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("MyGeoApp/1.0 (noe.guenego@gmail.com)");
 
-        return results != null && results.Count > 0 ? results[0] : null;
+    HttpResponseMessage response = await client.GetAsync(url);
+    if (!response.IsSuccessStatusCode)
+        return null;
+
+    string jsonResponse = await response.Content.ReadAsStringAsync();
+
+    var options = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    var results = JsonSerializer.Deserialize<List<NominatimResult>>(jsonResponse, options);
+
+    if (results != null && results.Count > 0)
+    {
+        var result = results[0];
+        double latitude = double.Parse(result.Lat, System.Globalization.CultureInfo.InvariantCulture);
+        double longitude = double.Parse(result.Lon, System.Globalization.CultureInfo.InvariantCulture);
+
+        // Créer un Noeud<T> avec les coordonnées récupérées
+        return new Noeud<string>(address, 0, longitude, latitude);
     }
 
-    public class NominatimResult
+    return null;
+}
+
+  public class NominatimResult
 {
-    public string lat { get; set; }
-    public string lon { get; set; }
-    public string display_name { get; set; }
+    public string Lat { get; set; } // Latitude
+    public string Lon { get; set; } // Longitude
+    public string DisplayName { get; set; } // Nom affiché (optionnel)
 }
 
 
@@ -109,7 +148,7 @@ namespace ProbSciANA
                 var worksheet = package.Workbook.Worksheets[2]; /// On prend la deuxième feuille
                 /// Les données commencent à la ligne 2 (la ligne 1 contient les titres)
                 int i=2;
-                while(worksheet.Cells[i, 5].Value != null) /// n commence par les vitesses moyennes
+                while(worksheet.Cells[i, 5].Value != null) /// On commence par les vitesses moyennes
                 {
                     string IdLigne = worksheet.Cells[i, 5].Value.ToString();
                     double VitesseMoyenne = double.Parse(worksheet.Cells[i, 6].Value.ToString());
