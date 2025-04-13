@@ -31,6 +31,11 @@ namespace ProbSciANA.Interface
         {
          NavigationService?.Navigate(new AdminDashboardView());
         }
+        private void BtnModeTest_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new Test());
+        }
+
     }
 #endregion
 
@@ -188,7 +193,7 @@ private List<Livraison> livraisons;
         public CuisinierDashboardView()
         {
             InitializeComponent();
-            
+            string excelFilePath = App.ExcelFilePath;
         }
         private void LoadLivraisons()
     {
@@ -203,6 +208,7 @@ private List<Livraison> livraisons;
         {
             /// Logique pour ajouter un plat
             MessageBox.Show("Ajouter un plat");
+
         }
 
         private async void BtnLivrer(object sender, RoutedEventArgs e)
@@ -392,7 +398,10 @@ private List<Livraison> livraisons;
             if (ClientsListView.SelectedItem is Utilisateur client)
             {
                 /// Exemple : mise à jour du nom pour test
-                client.Nom = client.Nom + " (modifié)";
+                if (!client.Nom.Contains("(modifié)"))
+                {
+                    client.Nom = client.Nom + " (modifié)";
+                }
                 LoadClients();
             }
         }
