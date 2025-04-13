@@ -368,7 +368,13 @@ namespace ProbSciANA
                             adresse = reader.GetString("adresse");
                             telephone = reader.GetString("telephone");
                             email = reader.GetString("email");
-                            station = new Noeud<(int id, string nom)>(id,reader.GetString("station"));
+                            for(int i = 0; i < Program.Stations.Count; i++)
+                            {
+                                if (Program.Stations[i].Valeur.nom == reader.GetString("station"))
+                                {
+                                    station = Program.Stations[i];
+                                }
+                            }
                             date_inscription = reader.GetDateTime("date_inscription");
                             mdp = reader.GetString("mdp");
                             estClient = reader.GetBoolean("estClient");

@@ -17,7 +17,6 @@ namespace ProbSciANA.Interface
         public StartView()
         {
             InitializeComponent();
-            
         }
 
         private void BtnModeUtilisateur_Click(object sender, RoutedEventArgs e)
@@ -130,8 +129,7 @@ public partial class ConnexionView : Page
             string nomUtilisateur = UserComboBox.SelectedItem.ToString();
             string motDePasseEntre = PasswordBox.Password;
 
-            if (utilisateurs.TryGetValue(nomUtilisateur, out var utilisateur)
-                && motDePasseEntre == utilisateur.Mdp)
+            if (utilisateurs.TryGetValue(nomUtilisateur, out var utilisateur) && motDePasseEntre == utilisateur.Mdp)
             {
                 MessageBox.Show($"Connexion réussie : {nomUtilisateur}");
 
@@ -182,9 +180,6 @@ public partial class ConnexionView : Page
 #region Page Vue Cuisinier
     public partial class CuisinierDashboardView : Page
     {
-        
-
-
         public CuisinierDashboardView()
         {
             InitializeComponent();
@@ -205,11 +200,10 @@ public partial class ConnexionView : Page
             var stations = Program.Stations;
             var arcs = Program.Arcs;
 
-        Graphviz<(int id, string nom)>.GenerateGraphImage(stations, arcs);
-        graphe.AffichageDijkstra(stations[10],stations[80]);
-        graphe.AffichageBellmanFord(stations[10],stations[80]);
-        graphe.AffichageFloydWarshall(stations[10],stations[80]);
-
+            Graphviz<(int id, string nom)>.GenerateGraphImage(stations, arcs);
+            graphe.AffichageDijkstra(stations[10],stations[80]);
+            graphe.AffichageBellmanFord(stations[10],stations[80]);
+            graphe.AffichageFloydWarshall(stations[10],stations[80]);
         }
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
         {
@@ -219,10 +213,7 @@ public partial class ConnexionView : Page
         {
             NavigationService?.Navigate(new StartView());
         }
-
-
     }
-
 #endregion
 
 #region Page Vue Admin
@@ -442,6 +433,7 @@ public partial class ConnexionView : Page
     }
 
 #endregion
+
 #region Test
     public partial class Test : Page
     {
@@ -449,49 +441,29 @@ public partial class ConnexionView : Page
         {
             InitializeComponent();
         }
-
-        private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
+        private void Btn1(object sender, RoutedEventArgs e)
         {
-            int tempsTrajet = Program.GrapheMétro.AffichageDijkstra(Program.Stations[1],Program.Stations[100]);
-            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+            // Logique pour le bouton 1
+            MessageBox.Show("Bouton 1 cliqué !");
         }
-
-        private void BtnAffichage_BF(object sender, RoutedEventArgs e)
+        private void Btn2(object sender, RoutedEventArgs e)
         {
-            int tempsTrajet = Program.GrapheMétro.AffichageBellmanFord(Program.Stations[1],Program.Stations[100]);
-            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+            // Logique pour le bouton 2
+            MessageBox.Show("Bouton 2 cliqué !");
         }
-        private void BtnAffichage_Floyd(object sender, RoutedEventArgs e)
+        private void Btn3(object sender, RoutedEventArgs e)
         {
-            int tempsTrajet = Program.GrapheMétro.AffichageFloydWarshall(Program.Stations[1],Program.Stations[100]);
-            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+            // Logique pour le bouton 3
+            MessageBox.Show("Bouton 3 cliqué !");
         }
-        private void BtnCheminOptimal(object sender, RoutedEventArgs e)
-        {
-            List<Noeud<(int id, string nom)>> Liste = new List<Noeud<(int id, string nom)>>();
-            Liste.Add(Program.Stations[1]);
-            Liste.Add(Program.Stations[20]);
-            Liste.Add(Program.Stations[40]);
-            Liste.Add(Program.Stations[60]);
-            Liste.Add(Program.Stations[80]);
-            Liste.Add(Program.Stations[100]);
-            Liste.Add(Program.Stations[120]);
-            var programInstance = new Program();
-            int tempsTrajet = programInstance.CheminOptimal(Program.GrapheMétro, Liste);
-            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[80].Valeur.nom} en passant par {Program.Stations[20].Valeur.nom}; {Program.Stations[40].Valeur.nom} ;{Program.Stations[60].Valeur.nom} est de : {tempsTrajet} minutes.");
-        }
-        
-
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.GoBack();
         }
-
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
         }
     }
-
 #endregion
 }
