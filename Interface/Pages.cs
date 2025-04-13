@@ -193,7 +193,6 @@ private List<Livraison> livraisons;
         public CuisinierDashboardView()
         {
             InitializeComponent();
-            string excelFilePath = App.ExcelFilePath;
         }
         private void LoadLivraisons()
     {
@@ -349,7 +348,7 @@ private List<Livraison> livraisons;
         public ClientsView()
         {
             InitializeComponent();
-            Requetes.RefreshUtilisateurs();
+            Utilisateur.Refreshes();
             LoadClients();
         }
 
