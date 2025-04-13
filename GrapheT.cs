@@ -12,6 +12,7 @@ namespace ProbSciANA
     {
         private Dictionary<Noeud<T>, List<Noeud<T>>> listeAdjacence;
         private int[,] matriceAdjacence;
+        private List<Noeud<T>> noeuds;
         private Dictionary<Noeud<T>, int> couleurs;
         private List<Arc<T>> arcs;
         private int nbCycles = -1; //// étecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
@@ -20,9 +21,13 @@ namespace ProbSciANA
         {
             this.arcs = arcs;
             listeAdjacence = new Dictionary<Noeud<T>, List<Noeud<T>>>();
+            noeuds = new List<Noeud<T>>();
             RemplissageListeAdjacence(arcs);
             matriceAdjacence = new int[listeAdjacence.Count,listeAdjacence.Count]; //// 248 Noeud<T>s
             RemplissageMatriceAdjacence();
+            foreach(Noeud<T> noeud in listeAdjacence.Keys){
+                noeuds.Add(noeud);
+            }
         }
         #region Propriétés
         public Dictionary<Noeud<T>, List<Noeud<T>>> ListeAdjacence
@@ -41,6 +46,11 @@ namespace ProbSciANA
         public List<Arc<T>> Arcs{
             get { return arcs; }
             set { arcs = value; }
+        }
+        public List<Noeud<T>> Noeuds
+        {
+            get { return noeuds; }
+            set { noeuds = value; }
         }
         #endregion
         #region Méthodes de parcours
@@ -811,6 +821,27 @@ namespace ProbSciANA
             return (cheminArcs, distances[sommetDepart][sommetArrivee]);
         }
         
+        #endregion
+        #region Affichage
+        public int AffichageDijkstra(Noeud<T> depart,Noeud<T> arrivee )
+        {
+            (List<Arc<T>> chemin , int plusPetiteDistance) = DijkstraChemin(depart, arrivee); /// Calcul du chemin le plus court
+            Graphviz<T>.GenerateChemin(chemin, noeuds);
+            return plusPetiteDistance;
+        }
+        public int AffichageBellmanFord(Noeud<T> depart,Noeud<T> arrivee )
+        {
+            (List<Arc<T>> chemin , int plusPetiteDistance) = BellmanFordChemin(depart, arrivee); /// Calcul du chemin le plus court
+            Graphviz<T>.GenerateChemin(chemin, noeuds);
+            return plusPetiteDistance;
+        }
+        public int AffichageFloydWarshall(Noeud<T> depart,Noeud<T> arrivee )
+        {
+            (List<Arc<T>> chemin , int plusPetiteDistance) = FloydWarshallChemin(depart, arrivee); /// Calcul du chemin le plus court
+            Graphviz<T>.GenerateChemin(chemin, noeuds);
+            return plusPetiteDistance;
+        }
+
         #endregion
     }
     

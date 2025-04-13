@@ -24,19 +24,13 @@ namespace ProbSciANA.Interface
             /// Initialiser les données
             Program.InitializeData(ExcelFilePath);
 
-            /// Accéder à la variable graphe
-            var graphe1 = Program.graphe;
-            graphe = graphe1;
-            
-
-            var arcs = Program.Arcs;
-            Arcs = arcs;
-            /// Exemple : Afficher les noeuds du graphe
-            var stations = Program.Stations;
-            Stations = stations;
+            /// Accéder aux variables du graphe présent dans program
+            graphe = Program.GrapheMétro;
+            Arcs = Program.Arcs;
+            Stations = Program.Stations;
 
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
         }
-    }
+            }
 }
