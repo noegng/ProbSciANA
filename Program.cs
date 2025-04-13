@@ -147,6 +147,7 @@ namespace ProbSciANA
         public int CheminOptimal(Graphe<(int id, string nom)> graphe, List<Noeud<(int id, string nom)>> stations){
             int valeurMin = int.MaxValue;
             Noeud<(int id, string nom)> stationDépart = stations[0];
+            List<Noeud<(int id, string nom)>> cheminLePlusCourt = null;
             stations.RemoveAt(0);
             List<List<Noeud<(int id, string nom)>>> listCheminPossible = Permutations(stations);
             foreach(List<Noeud<(int id, string nom)>> chemin in listCheminPossible){
@@ -156,8 +157,13 @@ namespace ProbSciANA
                 }
                 if(tempsTraj<valeurMin){
                     valeurMin = tempsTraj;
+                    cheminLePlusCourt = chemin;
                 }
                 Console.WriteLine("Temps :" + valeurMin);
+            }
+            Console.Write(stationDépart);
+            foreach(Noeud<(int id, string nom)> station in cheminLePlusCourt){
+                Console.Write(" -> " + station);
             }
             return valeurMin;
         }
