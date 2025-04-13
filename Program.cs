@@ -66,20 +66,7 @@ namespace ProbSciANA
             Console.ReadKey();
         }
       */
-public async Task ExempleUtilisation()
-{
-    string adresse = "123 Rue de Paris, France";
-    var noeud = await Program.GetCoordonnees<T>(adresse);
 
-    if (noeud != null)
-    {
-        Console.WriteLine($"Noeud créé : {noeud.Valeur}, Latitude : {noeud.Latitude}, Longitude : {noeud.Longitude}");
-    }
-    else
-    {
-        Console.WriteLine("Impossible de récupérer les coordonnées.");
-    }
-}
     public static async Task UtiliserGetCoordonnees()
         {
             string adresse = "10 rue de Rivoli, Paris";
@@ -137,7 +124,7 @@ public async Task ExempleUtilisation()
 }
 
 
-        static (List<Noeud<(int id,string nom)>>, List<Arc<(int id,string nom)>>) LectureFichierExcel(string excelFilePath){
+        public static (List<Noeud<(int id,string nom)>>, List<Arc<(int id,string nom)>>) LectureFichierExcel(string excelFilePath){
             var noeuds = new List<Noeud<(int id,string nom)>>();
             var arcs = new List<Arc<(int id,string nom)>>(); 
             var VitessesMoyennes = new Dictionary<string, double>();
@@ -215,7 +202,7 @@ public async Task ExempleUtilisation()
             }
             return (noeuds, arcs);
         }
-        static void AffichageImage(List<Noeud<(int id, string nom)>> noeuds, List<Arc<(int id,string nom)>> arcs)
+        public static void AffichageImage(List<Noeud<(int id, string nom)>> noeuds, List<Arc<(int id,string nom)>> arcs)
         {
             Graphviz<(int id, string nom)>.GenerateGraphImage(noeuds, arcs);
         }
@@ -368,7 +355,7 @@ public async Task ExempleUtilisation()
         }
         #endregion
         #region Test
-        static void TestDijkstra(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestDijkstra(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
         {
             var sw = Stopwatch.StartNew();
             /// Test de l'algorithme de Dijkstra
@@ -386,7 +373,7 @@ public async Task ExempleUtilisation()
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetitTemps + " min.");
         }
-        static void TestDijkstraChemin(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestDijkstraChemin(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
         {
             /// Test de l'algorithme de Dijkstra
             var sw = Stopwatch.StartNew();
@@ -420,7 +407,7 @@ public async Task ExempleUtilisation()
             Graphviz<(int id, string nom)>.GenerateChemin(chemin, noeuds);
         }
 
-        static void TestBellmanFord(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestBellmanFord(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
         {
             Noeud<(int id, string nom)> depart = noeuds[0]; /// Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = noeuds[174]; /// Noeud<(int id, string nom)> d'arrivée
@@ -437,7 +424,7 @@ public async Task ExempleUtilisation()
             Console.WriteLine($"Temps écoulé : {sw.ElapsedMilliseconds} ms");
             Console.WriteLine("Le temps le plus court entre " + depart.Valeur.nom + " et " + arrivee.Valeur.nom + " est de " + plusPetitTemps + " min.");
         }
-        static void TestBellmanFordChemin(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestBellmanFordChemin(Graphe<(int id,string nom)> graphePondéré,List<Noeud<(int id,string nom)>> noeuds)
         {
             Noeud<(int id, string nom)> depart = noeuds[0]; /// Noeud<(int id, string nom)> de départ
             Noeud<(int id, string nom)> arrivee = noeuds[174]; /// Noeud<(int id, string nom)> d'arrivée
@@ -467,7 +454,7 @@ public async Task ExempleUtilisation()
             }
             Graphviz<(int id, string nom)>.GenerateChemin(chemin, noeuds);
         }
-        static void TestFloydWarshall(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
+        public static void TestFloydWarshall(Graphe<(int id,string nom)> graphePondéré, List<Noeud<(int id,string nom)>> noeuds)
         {
             var sw = Stopwatch.StartNew();
             /// Test de l'algorithme de Dijkstra
