@@ -22,7 +22,6 @@ namespace ProbSciANA
             this.valeur = valeur;
             tempsChangement = temps;
             idBrute++;
-
         }
         public Noeud(T valeur, int temps, double longitude, double latitude) /// valeur par défaut
         {
@@ -31,7 +30,12 @@ namespace ProbSciANA
             Longitude = longitude;
             Latitude = latitude;
             Compteur++;
-            this.idBrute = Compteur;
+            idBrute = Compteur;
+        }
+        public Noeud(T valeur)
+        {
+            this.valeur = valeur;
+            
         }
         #region Propriétés
         public T Valeur
@@ -54,7 +58,7 @@ namespace ProbSciANA
         {
             return obj is Noeud<T> autre && EqualityComparer<T>.Default.Equals(Valeur, autre.Valeur);
         }
-
+        
         public override int GetHashCode()
         {
             return EqualityComparer<T>.Default.GetHashCode(Valeur);
