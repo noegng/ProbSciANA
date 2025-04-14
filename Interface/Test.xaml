@@ -4,10 +4,9 @@
       Title="Test">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock Text="Tester les méthodes" FontSize="20" Margin="0,0,0,20"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Test affichage Dijkstra" Width="200" Margin="5" Click="BtnAffichage_Djikstra"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Test affichage Bellman-Ford" Width="200" Margin="5" Click="BtnAffichage_BF"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Test affichage Floyd-Warshall" Width="200" Margin="5" Click="BtnAffichage_Floyd"/>
-        <Button Style="{StaticResource MenuButtonStyle}" Content="Test Chemin Optimal" Width="200" Margin="5" Click="BtnCheminOptimal"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Btn1" Width="200" Margin="5" Click="Btn1"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Btn2" Width="200" Margin="5" Click="Btn2"/>
+        <Button Style="{StaticResource MenuButtonStyle}" Content="Btn3" Width="200" Margin="5" Click="Btn3"/>
         <TextBlock Text="Le temps de trajet est de : {Binding TempsTrajet}" 
                    FontSize="18" 
                    Margin="10"/>

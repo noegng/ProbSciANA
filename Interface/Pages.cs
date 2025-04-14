@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using MySql.Data.MySqlClient;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace ProbSciANA.Interface
 {
@@ -45,7 +46,7 @@ namespace ProbSciANA.Interface
             InitializeComponent();
         }
 
-        private async Task BtnValider_Click(object sender, RoutedEventArgs e)
+        private async void BtnValider_Click(object sender, RoutedEventArgs e)
         {
             string nom = NomTextBox.Text;
             string prenom = PrenomTextBox.Text;
@@ -60,6 +61,11 @@ namespace ProbSciANA.Interface
                 string.IsNullOrWhiteSpace(role))
             {
                 MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
+                return;
+            }
+            else if (!email.Contains("@"))
+            {
+                MessageBox.Show("Veuillez entrer une adresse e-mail valide.");
                 return;
             }
 
@@ -93,9 +99,13 @@ namespace ProbSciANA.Interface
                 else if (role == "Cuisinier")
                     NavigationService?.Navigate(new CuisinierDashboardView());
             }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show("Erreur réseau : " + ex.Message);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur lors de l'enregistrement : " + ex.Message);
+                MessageBox.Show("Erreur inattendue : " + ex.Message);
             }
         }
 
@@ -369,13 +379,9 @@ public partial class ConnexionView : Page
             clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
             break;
 
-                case "achats":
-                    /// Récupérer les clients triés par leurs achats
-                    Requetes.GetClientsByAchat();
-                    break;
         case "achats":
             /// Récupérer les clients triés par leurs achats
-            Requetes.RefreshClientsByAchats(orderBy);
+            Requetes.GetClientsByAchat();
             break;
 
         default:
