@@ -18,8 +18,6 @@ namespace ProbSciANA.Interface
         public StartView()
         {
             InitializeComponent();
-            
-            
         }
 
         private void BtnModeUtilisateur_Click(object sender, RoutedEventArgs e)
@@ -53,7 +51,6 @@ namespace ProbSciANA.Interface
             string prenom = PrenomTextBox.Text;
             string email = EmailTextBox.Text;
             string adresse = AdresseTextBox.Text;
-            string station = StationTextBox.Text;
             string mdp = MdpTextBox.Password;
             var selectedItem = RoleComboBox.SelectedItem as ComboBoxItem;
             string role = selectedItem?.Content.ToString();
@@ -71,12 +68,13 @@ namespace ProbSciANA.Interface
                 var nouvelUtilisateur = new Utilisateur(
                     estClient: role == "Client",
                     estCuisinier: role == "Cuisinier",
+                    estEntreprise: role == "Entreprise",
                     nom,
                     prenom,
                     adresse,
                     "", // téléphone
                     email,
-                    station,
+                    new Noeud<(int id, string nom)>((0, "Station de départ")),
                     mdp);
 
                 MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
@@ -113,14 +111,11 @@ public partial class ConnexionView : Page
         public ConnexionView()
         {
             InitializeComponent();
-            Requetes.RefreshUtilisateurs();
-            utilisateurs = new Dictionary<string, Utilisateur>();
+            Utilisateur.Refreshes();
 
-            foreach (var utilisateur in Requetes.utilisateurs)
+            foreach (var utilisateur in Utilisateur.utilisateurs)
             {
-                string display = utilisateur.Prenom + " " + utilisateur.Nom;
-                utilisateurs[display] = utilisateur;
-                UserComboBox.Items.Add(display);
+                UserComboBox.Items.Add(utilisateur.Prenom + " " + utilisateur.Nom);
             }
         }
 
@@ -135,8 +130,7 @@ public partial class ConnexionView : Page
             string nomUtilisateur = UserComboBox.SelectedItem.ToString();
             string motDePasseEntre = PasswordBox.Password;
 
-            if (utilisateurs.TryGetValue(nomUtilisateur, out var utilisateur)
-                && motDePasseEntre == utilisateur.Mdp)
+            if (utilisateurs.TryGetValue(nomUtilisateur, out var utilisateur) && motDePasseEntre == utilisateur.Mdp)
             {
                 MessageBox.Show($"Connexion réussie : {nomUtilisateur}");
 
@@ -187,9 +181,6 @@ public partial class ConnexionView : Page
 #region Page Vue Cuisinier
     public partial class CuisinierDashboardView : Page
     {
-        
-private List<Livraison> livraisons;
-
         public CuisinierDashboardView()
         {
             InitializeComponent();
@@ -354,9 +345,9 @@ private List<Livraison> livraisons;
 
         private void LoadClients(string orderBy = "u.nom")
         {
-           
-        /// Récupérer tous les clients
-    clients = Requetes.utilisateurs.FindAll(u => u.EstClient);
+            Utilisateur.Refreshes(); /// Assurez-vous que la liste des utilisateurs est à jour
+            /// Récupérer tous les clients
+            clients = Utilisateur.utilisateurs.FindAll(u => u.EstClient);
 
     /// Appliquer le tri en fonction de `orderBy`
     switch (orderBy)
@@ -369,17 +360,14 @@ private List<Livraison> livraisons;
             clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
             break;
 
-<<<<<<< Updated upstream
-        case "achats":
-            /// Récupérer les clients triés par leurs achats
-            Requetes.RefreshClientsByAchats(orderBy);
-            break;
-=======
                 case "achats":
                     /// Récupérer les clients triés par leurs achats
                     Requetes.GetClientsByAchat();
                     break;
->>>>>>> Stashed changes
+        case "achats":
+            /// Récupérer les clients triés par leurs achats
+            Requetes.RefreshClientsByAchats(orderBy);
+            break;
 
         default:
             break;
@@ -437,7 +425,7 @@ private List<Livraison> livraisons;
         public CuisiniersView()
         {
             InitializeComponent();
-          
+            Utilisateur.Refreshes();
             LoadCuisiniers();
         }
 
@@ -455,20 +443,20 @@ private List<Livraison> livraisons;
 
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
-            // if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
-            // {
-            //     cuisinier.EstCuisinier = false; // Déclenche suppression automatique
-            //     LoadCuisiniers();
-            // }
+            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
+            {
+                cuisinier.EstCuisinier = false; // Déclenche suppression automatique
+                LoadCuisiniers();
+            }
         }
 
         private void BtnModifier_Click(object sender, RoutedEventArgs e)
         {
-            // if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
-            // {
-            //     cuisinier.Nom = cuisinier.Nom + " (modifié)";
-            //     LoadCuisiniers();
-            // }
+            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier && !cuisinier.Nom.Contains("(modifié)"))
+            {
+                cuisinier.Nom = cuisinier.Nom + " (modifié)";
+                LoadCuisiniers();
+            }
         }
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
@@ -520,8 +508,36 @@ private List<Livraison> livraisons;
 
 #endregion
 
-
-
-   
-
+#region Test
+    public partial class Test : Page
+    {
+        public Test()
+        {
+            InitializeComponent();
+        }
+        private void Btn1(object sender, RoutedEventArgs e)
+        {
+            // Logique pour le bouton 1
+            MessageBox.Show("Bouton 1 cliqué !");
+        }
+        private void Btn2(object sender, RoutedEventArgs e)
+        {
+            // Logique pour le bouton 2
+            MessageBox.Show("Bouton 2 cliqué !");
+        }
+        private void Btn3(object sender, RoutedEventArgs e)
+        {
+            // Logique pour le bouton 3
+            MessageBox.Show("Bouton 3 cliqué !");
+        }
+        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.GoBack();
+        }
+        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+    }
+#endregion
 }
