@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace ProbSciANA
 {
@@ -66,5 +67,28 @@ namespace ProbSciANA
         {
             return Valeur.ToString();
         }
+
+public static Noeud<(int, string)> TrouverStationLaPlusProche(Noeud<string> noeud, List<Noeud<(int, string)>> stations)
+{
+    Noeud<(int, string)> stationLaPlusProche = null;
+    double distanceMinimale = double.MaxValue;
+
+    foreach (var station in stations)
+    {
+        double distance = Arc<T>.CalculerDistanceHaversine(
+            noeud.Latitude, noeud.Longitude,
+            station.Latitude, station.Longitude
+        );
+
+        if (distance < distanceMinimale)
+        {
+            distanceMinimale = distance;
+            stationLaPlusProche = station;
+        }
+    }
+
+    return stationLaPlusProche;
+}
+
     }
 }

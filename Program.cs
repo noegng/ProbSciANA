@@ -34,6 +34,7 @@ namespace ProbSciANA
             // Charger les données depuis le fichier Excel
             (Stations,Arcs) = LectureFichierExcel(excelFilePath);
             GrapheMétro = new Graphe<(int id, string nom)>(Arcs); // Créer le graphe à partir des arêtes
+            return GrapheMétro;
         }
 
 
@@ -83,8 +84,22 @@ namespace ProbSciANA
                 Console.WriteLine("Impossible de récupérer les coordonnées.");
             }
         }
+
+        public static Noeud<(int, string)> AssocierNoeud(Noeud<string> noeudString, List<Noeud<(int, string)>> noeudsExistants)
+        {
+    foreach (var noeud in noeudsExistants)
+    {
+        if (Math.Abs(noeud.Longitude - noeudString.Longitude) < 0.00001 &&
+            Math.Abs(noeud.Latitude - noeudString.Latitude) < 0.00001)
+        {
+            return noeud; /// Retourne le noeud correspondant
+        }
+    }
+    return null; /// Aucun noeud correspondant trouvé
+        }
+
      public static async Task<Noeud<string>> GetCoordonnees<T>(string address)
-{
+        {
     string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
 
     using HttpClient client = new HttpClient();

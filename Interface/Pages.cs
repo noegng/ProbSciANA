@@ -45,7 +45,7 @@ namespace ProbSciANA.Interface
             InitializeComponent();
         }
 
-        private void BtnValider_Click(object sender, RoutedEventArgs e)
+        private async Task BtnValider_Click(object sender, RoutedEventArgs e)
         {
             string nom = NomTextBox.Text;
             string prenom = PrenomTextBox.Text;
@@ -65,6 +65,15 @@ namespace ProbSciANA.Interface
 
             try
             {
+                var Adresse = await Program.GetCoordonnees<string>(adresse);
+                if (Adresse == null)
+                {
+                    MessageBox.Show("Adresse non trouvée. Veuillez vérifier l'adresse saisie.");
+                    return;
+                }
+                var Station = Noeud<(int id, string nom)>.TrouverStationLaPlusProche(Adresse, Program.Stations); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
+                /// recherche de la station la plus proche avec haversine
+               
                 var nouvelUtilisateur = new Utilisateur(
                     estClient: role == "Client",
                     estCuisinier: role == "Cuisinier",
@@ -74,7 +83,7 @@ namespace ProbSciANA.Interface
                     adresse,
                     "", // téléphone
                     email,
-                    new Noeud<(int id, string nom)>((0, "Station de départ")),
+                    Station,
                     mdp);
 
                 MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
