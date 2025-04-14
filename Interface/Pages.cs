@@ -369,10 +369,17 @@ private List<Livraison> livraisons;
             clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
             break;
 
+<<<<<<< Updated upstream
         case "achats":
             /// Récupérer les clients triés par leurs achats
             Requetes.RefreshClientsByAchats(orderBy);
             break;
+=======
+                case "achats":
+                    /// Récupérer les clients triés par leurs achats
+                    Requetes.GetClientsByAchat();
+                    break;
+>>>>>>> Stashed changes
 
         default:
             break;
