@@ -132,10 +132,11 @@ public partial class ConnexionView : Page
             InitializeComponent();
             Utilisateur.Refreshes();
 
-            foreach (var utilisateur in Utilisateur.utilisateurs)
-            {
-                UserComboBox.Items.Add(utilisateur.Prenom + " " + utilisateur.Nom);
-            }
+           foreach (var utilisateur in Utilisateur.utilisateurs)
+    {
+        string fullName = utilisateur.Prenom + " " + utilisateur.Nom;
+        UserComboBox.Items.Add(fullName);
+    }
         }
 
         private void BtnConnexion_Click(object sender, RoutedEventArgs e)
@@ -146,18 +147,30 @@ public partial class ConnexionView : Page
                 return;
             }
 
-            string nomUtilisateur = UserComboBox.SelectedItem.ToString();
+            var nomUtilisateur = UserComboBox.SelectedItem.ToString();
             string motDePasseEntre = PasswordBox.Password;
 
-            if (utilisateurs.TryGetValue(nomUtilisateur, out var utilisateur) && motDePasseEntre == utilisateur.Mdp)
-            {
-                MessageBox.Show($"Connexion réussie : {nomUtilisateur}");
 
-                if (utilisateur.EstCuisinier)
-                    NavigationService?.Navigate(new CuisinierDashboardView());
-                else if (utilisateur.EstClient)
-                    NavigationService?.Navigate(new UserDashboardView());
+            Utilisateur utilisateurTrouve = null;
+            foreach (var utilisateur in Utilisateur.utilisateurs)
+            {
+        if ($"{utilisateur.Prenom} {utilisateur.Nom}" == nomUtilisateur)
+        {
+            utilisateurTrouve = utilisateur;
+            break;
+        }
             }
+
+             if (utilisateurTrouve != null && motDePasseEntre == utilisateurTrouve.Mdp)
+            {
+        MessageBox.Show($"Connexion réussie : {nomUtilisateur} ");
+
+        // Rediriger en fonction du rôle de l'utilisateur
+        if (utilisateurTrouve.EstCuisinier)
+            NavigationService?.Navigate(new CuisinierDashboardView());
+        else if (utilisateurTrouve.EstClient)
+            NavigationService?.Navigate(new UserDashboardView());
+    }
             else
             {
                 MessageBox.Show("Mot de passe incorrect.");

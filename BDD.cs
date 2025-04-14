@@ -136,7 +136,7 @@ namespace ProbSciANA
                 }
                 if(!value && estEntreprise)
                 {
-                    estEntreprise = value; DeleteMaj(); nom_referent = null;
+                    estEntreprise = value; DeleteMaj(); nom_referent = "";
                 }
             }
         }
@@ -380,7 +380,9 @@ namespace ProbSciANA
                             estClient = reader.GetBoolean("estClient");
                             estCuisinier = reader.GetBoolean("estCuisinier");
                             estEntreprise = reader.GetBoolean("estEntreprise");
-                            nom_referent = reader.GetString("nom_referent");
+                            // if("nom_referent" != null ){
+                            // nom_referent = reader.GetString("nom_referent");
+                            // }
                         }
                     }
                 }
