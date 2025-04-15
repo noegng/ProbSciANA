@@ -1,6 +1,6 @@
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
 using System.Threading.Tasks;
 
 
@@ -37,7 +37,7 @@ namespace ProbSciANA
         public static Dictionary<Utilisateur, double> GetAchatsUtilisateursSQL()
         {
             Dictionary<Utilisateur, double> result = new Dictionary<Utilisateur, double>();
-            
+
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -59,7 +59,7 @@ namespace ProbSciANA
                             int id = reader.GetInt32("id_utilisateur");
                             Utilisateur u = new Utilisateur(id);
                             double total = 0;
-                            if(!reader.IsDBNull(reader.GetOrdinal("total_achats")))
+                            if (!reader.IsDBNull(reader.GetOrdinal("total_achats")))
                             {
                                 total = reader.GetDouble("total_achats");
                             }
@@ -71,17 +71,17 @@ namespace ProbSciANA
             }
             return result;
         }
-    
-    public static async Task MàjStations()
+
+        public static async Task MàjStations()
         {
-            foreach(Utilisateur u in Utilisateur.utilisateurs)
+            foreach (Utilisateur u in Utilisateur.utilisateurs)
             {
                 u.Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(u.Adresse);
                 Console.WriteLine(u.Nom + " " + u.Prenom + " " + u.Adresse);
                 Console.WriteLine(u.Station.Valeur.nom);
             }
         }
-    
+
     }
     public class Utilisateur
     {
@@ -95,7 +95,7 @@ namespace ProbSciANA
         private string adresse;
         private string telephone;
         private string email;
-        private Noeud<(int id,string nom)> station;
+        private Noeud<(int id, string nom)> station;
         private DateTime date_inscription;
         private string mdp;
         private string nom_referent = "";
@@ -104,7 +104,7 @@ namespace ProbSciANA
             this.id_utilisateur = id_utilisateur;
             Refresh();
         }
-        public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, Noeud<(int id, string nom)> station, string mdp, string nom_referent="", bool estEntreprise = false)
+        public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, Noeud<(int id, string nom)> station, string mdp, string nom_referent = "", bool estEntreprise = false)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -112,7 +112,7 @@ namespace ProbSciANA
 
                 string queryInsert = @"INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, mdp)
                                 VALUES (@nom, @prenom, @adresse, @telephone, @email, @station, @mdp);";
-                
+
                 //station = Graphe.getStation(adresse, graphe);
                 //mdp = GetMDP(nom, prenom);
 
@@ -151,13 +151,13 @@ namespace ProbSciANA
         public bool EstClient
         {
             get { return estClient; }
-            set 
-            { 
-                if(value && !estClient)
+            set
+            {
+                if (value && !estClient)
                 {
                     estClient = value; InsertMaj();
                 }
-                if(!value && estClient)
+                if (!value && estClient)
                 {
                     estClient = value; DeleteMaj();
                 }
@@ -166,13 +166,13 @@ namespace ProbSciANA
         public bool EstCuisinier
         {
             get { return estCuisinier; }
-            set 
+            set
             {
-                if(value && !estCuisinier)
+                if (value && !estCuisinier)
                 {
                     estCuisinier = value; InsertMaj();
                 }
-                if(!value && estCuisinier)
+                if (!value && estCuisinier)
                 {
                     estCuisinier = value; DeleteMaj();
                 }
@@ -181,13 +181,13 @@ namespace ProbSciANA
         public bool EstEntreprise
         {
             get { return estEntreprise; }
-            set 
+            set
             {
-                if(value && !estEntreprise)
+                if (value && !estEntreprise)
                 {
                     estEntreprise = value; InsertMaj();
                 }
-                if(!value && estEntreprise)
+                if (!value && estEntreprise)
                 {
                     estEntreprise = value; DeleteMaj(); nom_referent = "";
                 }
@@ -339,7 +339,7 @@ namespace ProbSciANA
         }
         public void DeleteMaj()
         {
-            if(!estClient)
+            if (!estClient)
             {
                 using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
                 {
@@ -352,7 +352,7 @@ namespace ProbSciANA
                     }
                 }
             }
-            if(!estCuisinier)
+            if (!estCuisinier)
             {
                 using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
                 {
@@ -365,7 +365,7 @@ namespace ProbSciANA
                     }
                 }
             }
-            if(!estEntreprise)
+            if (!estEntreprise)
             {
                 using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
                 {
@@ -378,7 +378,7 @@ namespace ProbSciANA
                     }
                 }
             }
-            if(estEntreprise)
+            if (estEntreprise)
             {
                 using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
                 {
@@ -414,14 +414,14 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             nom = reader.GetString("nom");
                             prenom = reader.GetString("prenom");
                             adresse = reader.GetString("adresse");
                             telephone = reader.GetString("telephone");
                             email = reader.GetString("email");
-                            for(int i = 0; i < Program.Stations.Count; i++)
+                            for (int i = 0; i < Program.Stations.Count; i++)
                             {
                                 if (Program.Stations[i].Valeur.nom == reader.GetString("station"))
                                 {
@@ -586,7 +586,7 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_commande", id_commande);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             nom = reader.GetString("nom");
                             prix = reader.GetDouble("prix");
@@ -613,7 +613,7 @@ namespace ProbSciANA
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             commandes.Add(new Commande(reader.GetInt32("id_commande")));
                         }
@@ -632,7 +632,7 @@ namespace ProbSciANA
         private string statut;
         private Utilisateur cuisinier;
         private Commande commande;
-        
+
         public Livraison(int id_livraison)
         {
             this.id_livraison = id_livraison;
@@ -735,7 +735,7 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_livraison", id_livraison);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             date_livraison = reader.GetDateTime("date_livraison");
                             statut = reader.GetString("statut");
@@ -760,7 +760,7 @@ namespace ProbSciANA
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             livraisons.Add(new Livraison(reader.GetInt32("id_livraison")));
                         }
@@ -783,7 +783,7 @@ namespace ProbSciANA
         private string nationalite;
         private DateTime date_peremption;
         private string photo;
-        
+
         public Plat(int id_plat)
         {
             this.id_plat = id_plat;
@@ -913,7 +913,7 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_plat", id_plat);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             nom = reader.GetString("nom");
                             prix = reader.GetDouble("prix");
@@ -942,7 +942,7 @@ namespace ProbSciANA
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             plats.Add(new Plat(reader.GetInt32("id_plat")));
                         }
@@ -1046,7 +1046,7 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_ingredient", id_ingredient);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             nom = reader.GetString("nom");
                             regime = reader.GetString("regime");
@@ -1069,7 +1069,7 @@ namespace ProbSciANA
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             ingredients.Add(new Ingredient(reader.GetInt32("id_ingredient")));
                         }
@@ -1193,7 +1193,7 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_avis", id_avis);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             note = reader.GetInt32("note");
                             commentaire = reader.GetString("commentaire");
@@ -1219,7 +1219,7 @@ namespace ProbSciANA
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             avis.Add(new Avis(reader.GetInt32("id_avis")));
                         }
@@ -1233,11 +1233,11 @@ namespace ProbSciANA
     public class Cuisine
     {
         public static List<Cuisine> cuisines = new List<Cuisine>();
-        private Utilisateur cuisinier {get; set;}
-        private Plat plat {get; set;}
-        private bool plat_du_jour {get; set;}
-        private DateTime date_cuisine {get; set;}
-        private string statut {get; set;}
+        private Utilisateur cuisinier { get; set; }
+        private Plat plat { get; set; }
+        private bool plat_du_jour { get; set; }
+        private DateTime date_cuisine { get; set; }
+        private string statut { get; set; }
 
         public Cuisine(Utilisateur cuisinier, Plat plat)
         {
@@ -1342,7 +1342,7 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_plat", plat.Id_plat);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             plat_du_jour = reader.GetBoolean("plat_du_jour");
                             date_cuisine = reader.GetDateTime("date_cuisine");
@@ -1366,7 +1366,7 @@ namespace ProbSciANA
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             cuisines.Add(new Cuisine(new Utilisateur(reader.GetInt32("id_cuisinier")), new Plat(reader.GetInt32("id_plat"))));
                         }
@@ -1379,10 +1379,10 @@ namespace ProbSciANA
 
     public class Requiert
     {
-        public static List <Requiert> requierts = new List<Requiert>();
-        private Plat plat {get; set;}
-        private Livraison livraison {get; set;}
-        private int quantite {get; set;}
+        public static List<Requiert> requierts = new List<Requiert>();
+        private Plat plat { get; set; }
+        private Livraison livraison { get; set; }
+        private int quantite { get; set; }
 
         public Requiert(Plat plat, Livraison livraison)
         {
@@ -1473,7 +1473,7 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_livraison", livraison.Id_livraison);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             quantite = reader.GetInt32("quantite");
                         }
@@ -1495,7 +1495,7 @@ namespace ProbSciANA
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             requierts.Add(new Requiert(new Plat(reader.GetInt32("id_plat")), new Livraison(reader.GetInt32("id_livraison"))));
                         }
@@ -1505,13 +1505,13 @@ namespace ProbSciANA
             }
         }
     }
-    
+
     public class Compose
     {
         public static List<Compose> composes = new List<Compose>();
-        private Plat plat {get; set;}
-        private Ingredient ingredient {get; set;}
-        private int quantite {get; set;}
+        private Plat plat { get; set; }
+        private Ingredient ingredient { get; set; }
+        private int quantite { get; set; }
 
         public Compose(Plat plat, Ingredient ingredient)
         {
@@ -1602,7 +1602,7 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_ingredient", ingredient.Id_ingredient);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             quantite = reader.GetInt32("quantite");
                         }
@@ -1624,7 +1624,7 @@ namespace ProbSciANA
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             composes.Add(new Compose(new Plat(reader.GetInt32("id_plat")), new Ingredient(reader.GetInt32("id_ingredient"))));
                         }
