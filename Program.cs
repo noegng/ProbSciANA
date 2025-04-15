@@ -135,7 +135,7 @@ namespace ProbSciANA
 {
     public string Lat { get; set; } // Latitude
     public string Lon { get; set; } // Longitude
-    public string DisplayName { get; set; } // Nom affiché (optionnel)
+    
 }
 
 
