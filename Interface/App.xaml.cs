@@ -32,5 +32,5 @@ namespace ProbSciANA.Interface
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
         }
-            }
+    }
 }

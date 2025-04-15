@@ -70,6 +70,13 @@ namespace ProbSciANA
             }
             return result;
         }
+        /*public static void MajStations()
+        {
+            foreach(Utilisateur u in Utilisateur.utilisateurs)
+            {
+                u.Station = Noeud.TrouverStationLaPlusProche(u.Adresse);
+            }
+        }*/
     }
     public class Utilisateur
     {

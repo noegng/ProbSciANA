@@ -21,21 +21,93 @@
             <Button Style="{StaticResource MenuButtonStyle}" Content="Ajouter un client" Click="BtnAjouter_Click"/>
             <Button Style="{StaticResource MenuButtonStyle}" Content="Supprimer" Click="BtnSupprimer_Click"/>
             <Button Style="{StaticResource MenuButtonStyle}" Content="Modifier" Click="BtnModifier_Click"/>
-            <Button Style="{StaticResource MenuButtonStyle}" Content="Trier par nom" Click="BtnTrierNom_Click"/>
-            <Button Style="{StaticResource MenuButtonStyle}" Content="Trier par adresse" Click="BtnTrierAdresse_Click"/>
-            <Button Style="{StaticResource MenuButtonStyle}" Content="Trier par Achats" Click="BtnTrierAchats_Click"/>
         </StackPanel>
 
         <!-- Liste des clients -->
         <ListView x:Name="ClientsListView" Margin="20" SelectionMode="Single">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id_utilisateur}" Width="50"/>
-                    <GridViewColumn Header="Nom" DisplayMemberBinding="{Binding Nom}" Width="120"/>
-                    <GridViewColumn Header="Prénom" DisplayMemberBinding="{Binding Prenom}" Width="120"/>
-                    <GridViewColumn Header="Adresse" DisplayMemberBinding="{Binding Adresse}" Width="180"/>
-                    <GridViewColumn Header="Email" DisplayMemberBinding="{Binding Email}" Width="180"/>
-                    <GridViewColumn Header="Station" DisplayMemberBinding="{Binding Station}" Width="100"/>
+                    <GridViewColumn Width="50">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="Header_ID_Click">ID</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Id_utilisateur"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="120">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="Header_Nom_Click">Nom</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Nom"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="120">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="Header_Prenom_Click">Prénom</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Prenom"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="180">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="Header_Adresse_Click">Adresse</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Adresse"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="180">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="Header_Email_Click">Email</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Email"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="Header_Telephone_Click">Telephone</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Telephone"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="Header_Station_Click">Station</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Station"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="Header_Achats_Click">Achats</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Achats"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="Header_Date_Click">Date d'inscription</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="Date_inscription"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
                 </GridView>
             </ListView.View>
         </ListView>

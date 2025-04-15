@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace ProbSciANA.Interface
 {
@@ -13,17 +14,14 @@ namespace ProbSciANA.Interface
 #region Page Accueil
     public partial class StartView : Page
     {
-        
         public StartView()
         {
             InitializeComponent();
         }
-
         private void BtnModeUtilisateur_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new LoginView());
         }
-
         private void BtnModeAdmin_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new AdminDashboardView());
@@ -32,7 +30,6 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new Test());
         }
-
     }
 #endregion
 
@@ -86,7 +83,7 @@ namespace ProbSciANA.Interface
             catch (Exception ex)
             {
                 MessageBox.Show("Erreur lors de l'enregistrement : " + ex.Message);
-            }
+            }*/
         }
 
         private void BtnSeConnecter_Click(object sender, RoutedEventArgs e)
@@ -110,7 +107,7 @@ public partial class ConnexionView : Page
         public ConnexionView()
         {
             InitializeComponent();
-            Utilisateur.Refreshes();
+            Utilisateur.RefreshAll();
 
             foreach (var utilisateur in Utilisateur.utilisateurs)
             {
@@ -257,84 +254,130 @@ public partial class ConnexionView : Page
 
 #region Page Gestion Clients (admin)
     public partial class ClientsView : Page
-     {
+    {
         private List<Utilisateur> clients;
 
         public ClientsView()
         {
             InitializeComponent();
-            Utilisateur.Refreshes();
             LoadClients();
         }
 
-        private void LoadClients(string orderBy = "u.nom")
+        private bool _triAscendant = true;
+        private string _colonneTriee = "";
+
+        private void SetSorting(string colonne)
         {
-            Utilisateur.Refreshes(); /// Assurez-vous que la liste des utilisateurs est à jour
-            /// Récupérer tous les clients
-            clients = Utilisateur.utilisateurs.FindAll(u => u.EstClient);
-
-            /// Appliquer le tri en fonction de `orderBy`
-            switch (orderBy)
+            if (_colonneTriee == colonne)
             {
-                case "u.nom":
-                    clients.Sort((a, b) => a.Nom.CompareTo(b.Nom));
-                    break;
-
-                case "u.adresse":
-                    clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
-                    break;
-
-                case "achats":
-                    /// Récupérer les clients triés par leurs achats
-                    Requetes.GetClientsByAchat(orderBy);
-                    clients.Sort((a, b) =>
-                    {
-                        double achatsA = Requetes.clients.ContainsKey(a) ? Requetes.clients[a] : 0;
-                        double achatsB = Requetes.clients.ContainsKey(b) ? Requetes.clients[b] : 0;
-                        return achatsB.CompareTo(achatsA); /// Tri décroissant par montant des achats
-                    });
-                    break;
-
-                default:
-                    break;
+                _triAscendant = !_triAscendant;
             }
-
-            /// Mettre à jour la source de données de la ListView
-            ClientsListView.ItemsSource = null;
-            ClientsListView.ItemsSource = clients;
+            else
+            {
+                _colonneTriee = colonne;
+                _triAscendant = true;
+            }
+            LoadClients();
         }
 
-        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        public void LoadClients()
         {
-            if (ClientsListView.SelectedItem is Utilisateur client)
+            var achats = Requetes.GetAchatsUtilisateursSQL();
+
+            var table = new DataTable();
+            table.Columns.Add("Id_utilisateur", typeof(int));
+            table.Columns.Add("Statut", typeof(string));
+            table.Columns.Add("Nom", typeof(string));
+            table.Columns.Add("Prenom", typeof(string));
+            table.Columns.Add("Adresse", typeof(string));
+            table.Columns.Add("Email", typeof(string));
+            table.Columns.Add("Telephone", typeof(string));
+            table.Columns.Add("Station", typeof(string));
+            table.Columns.Add("Achats", typeof(double));
+            table.Columns.Add("Date_inscription", typeof(DateTime));
+
+            foreach (KeyValuePair<Utilisateur, double> kv in achats)
             {
-                client.EstClient = false; /// Déclenche suppression automatique
-                LoadClients();
+                string statut;
+                Utilisateur u = kv.Key;
+                if(u.EstEntreprise)
+                {
+                    statut = "Entreprise";
+                }
+                else
+                {
+                    statut = "Particulier";
+                }
+                string stationNom = "Inconnu";
+                if (u.Station != null && u.Station.Valeur.nom != null)
+                {
+                    stationNom = u.Station.Valeur.nom;
+                }
+                table.Rows.Add(
+                    u.Id_utilisateur,
+                    statut,
+                    u.Nom,
+                    u.Prenom,
+                    u.Adresse,
+                    u.Email,
+                    u.Telephone,
+                    stationNom,
+                    kv.Value,
+                    u.Date_inscription
+                );
             }
+
+            DataView view = table.DefaultView;
+            string direction = "";
+            if (!string.IsNullOrEmpty(_colonneTriee) && table.Columns.Contains(_colonneTriee))
+            {
+                if(_triAscendant)
+                {
+                    direction = "ASC";
+                }
+                else
+                {
+                    direction = "DESC";
+                }
+                view.Sort = $"{_colonneTriee} {direction}";
+            }
+
+            ClientsListView.ItemsSource = view;
         }
 
         private void BtnModifier_Click(object sender, RoutedEventArgs e)
         {
-            if (ClientsListView.SelectedItem is Utilisateur client)
+            if (ClientsListView.SelectedItem is DataRowView row)
             {
-                /// Exemple : mise à jour du nom pour test
-                if (!client.Nom.Contains("(modifié)"))
+                int id = (int)row["Id_utilisateur"];
+                Utilisateur client = Utilisateur.utilisateurs.Find(u => u.Id_utilisateur == id);
+
+                if (client != null && !client.Nom.Contains("(modifié)"))
                 {
-                    client.Nom = client.Nom + " (modifié)";
+                    client.Nom += " (modifié)";
+                    LoadClients();
                 }
-                LoadClients();
             }
         }
-
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new LoginView());
         }
+        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
 
-        private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadClients("u.nom");
-        private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadClients("u.adresse");
-
-        private void BtnTrierAchats_Click(object sender, RoutedEventArgs e) => LoadClients("achats");
+        private void Header_ID_Click(object sender, RoutedEventArgs e) {SetSorting("Id_utilisateur");}
+        private void Header_Statut_Click(object sender, RoutedEventArgs e) {SetSorting("Statut");}
+        private void Header_Nom_Click(object sender, RoutedEventArgs e) {SetSorting("Nom");}
+        private void Header_Prenom_Click(object sender, RoutedEventArgs e) {SetSorting("Prenom");}
+        private void Header_Adresse_Click(object sender, RoutedEventArgs e) {SetSorting("Adresse");}
+        private void Header_Email_Click(object sender, RoutedEventArgs e) {SetSorting("Email");}
+        private void Header_Telephone_Click(object sender, RoutedEventArgs e) {SetSorting("Telephone");}
+        private void Header_Station_Click(object sender, RoutedEventArgs e) {SetSorting("Station");}
+        private void Header_Achats_Click(object sender, RoutedEventArgs e) {SetSorting("Achats");}
+        private void Header_Date_Click(object sender, RoutedEventArgs e) {SetSorting("Date_inscription");}
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
@@ -351,7 +394,7 @@ public partial class ConnexionView : Page
         public CuisiniersView()
         {
             InitializeComponent();
-            Utilisateur.Refreshes();
+            Utilisateur.RefreshAll();
             LoadCuisiniers();
         }
 
