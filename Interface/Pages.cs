@@ -8,10 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
-using MySql.Data.MySqlClient;
 using System.Data;
-using System.Threading.Tasks;
-using System.Net.Http;
 
 namespace ProbSciANA.Interface
 {
