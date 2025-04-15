@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-#nullable enable
+using System.Threading.Tasks;
 
 
-namespace ProbSciANA
+
+namespace ProbSciAlex
 {
     public static class Requetes
     {
@@ -70,13 +71,17 @@ namespace ProbSciANA
             }
             return result;
         }
-        /*public static void MajStations()
+    
+    public static async Task MàjStations()
         {
             foreach(Utilisateur u in Utilisateur.utilisateurs)
             {
-                u.Station = Noeud.TrouverStationLaPlusProche(u.Adresse);
+                u.Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(u.Adresse);
+                Console.WriteLine(u.Nom + " " + u.Prenom + " " + u.Adresse);
+                Console.WriteLine(u.Station.Valeur.nom);
             }
-        }*/
+        }
+    
     }
     public class Utilisateur
     {
@@ -93,7 +98,7 @@ namespace ProbSciANA
         private Noeud<(int id,string nom)> station;
         private DateTime date_inscription;
         private string mdp;
-        private string? nom_referent = null;
+        private string nom_referent = "";
         public Utilisateur(int id_utilisateur)
         {
             this.id_utilisateur = id_utilisateur;
@@ -184,7 +189,7 @@ namespace ProbSciANA
                 }
                 if(!value && estEntreprise)
                 {
-                    estEntreprise = value; DeleteMaj(); nom_referent = null;
+                    estEntreprise = value; DeleteMaj(); nom_referent = "";
                 }
             }
         }
@@ -445,13 +450,13 @@ namespace ProbSciANA
             {
                 connection.Open();
 
-                string query = "SELECT id_utilisateur FROM Utilisateur;";
+                string query = "SELECT id_utilisateur, adresse FROM Utilisateur;";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             utilisateurs.Add(new Utilisateur(reader.GetInt32("id_utilisateur")));
                         }

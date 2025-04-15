@@ -10,7 +10,9 @@ using System.Diagnostics;
 using OfficeOpenXml.Utils;
 using Org.BouncyCastle.Asn1.Misc;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 
 namespace ProbSciANA
@@ -26,12 +28,15 @@ namespace ProbSciANA
         public static Graphe<(int id, string nom)> GrapheMétro { get;  set; }
 
         // Méthode pour initialiser les données
-        public static void InitializeData(string excelFilePath)
+        public static Graphe<(int id, string nom)> InitializeData(string excelFilePath)
         {
             // Charger les données depuis le fichier Excel
             (Stations,Arcs) = LectureFichierExcel(excelFilePath);
             GrapheMétro = new Graphe<(int id, string nom)>(Arcs); // Créer le graphe à partir des arêtes
+            return GrapheMétro;
         }
+
+
 
 
         
@@ -61,6 +66,78 @@ namespace ProbSciANA
             Console.ReadKey();
         }
       */
+
+    public static async Task UtiliserGetCoordonnees()
+        {
+            string adresse = "10 rue de Rivoli, Paris";
+            Console.WriteLine($"Adresse : {adresse}");
+            // Appel de la méthode statique
+            var noeud = await Program.GetCoordonnees<string>(adresse);
+            Console.WriteLine("Recherche des coordonnées");
+            if (noeud != null)
+            {
+                Console.WriteLine($"Noeud créé : {noeud.Valeur}, Latitude : {noeud.Latitude}, Longitude : {noeud.Longitude}");
+            }
+            else
+            {
+                Console.WriteLine("Impossible de récupérer les coordonnées.");
+            }
+        }
+
+        public static Noeud<(int, string)> AssocierNoeud(Noeud<string> noeudString, List<Noeud<(int, string)>> noeudsExistants)
+        {
+    foreach (var noeud in noeudsExistants)
+    {
+        if (Math.Abs(noeud.Longitude - noeudString.Longitude) < 0.00001 &&
+            Math.Abs(noeud.Latitude - noeudString.Latitude) < 0.00001)
+        {
+            return noeud; /// Retourne le noeud correspondant
+        }
+    }
+    return null; /// Aucun noeud correspondant trouvé
+        }
+
+     public static async Task<Noeud<string>> GetCoordonnees<T>(string address)
+        {
+    string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
+
+    using HttpClient client = new HttpClient();
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("MyGeoApp/1.0 (noe.guenego@gmail.com)");
+
+    HttpResponseMessage response = await client.GetAsync(url);
+    if (!response.IsSuccessStatusCode)
+        return null;
+
+    string jsonResponse = await response.Content.ReadAsStringAsync();
+
+    var options = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    var results = JsonSerializer.Deserialize<List<NominatimResult>>(jsonResponse, options);
+
+    if (results != null && results.Count > 0)
+    {
+        var result = results[0];
+        double latitude = double.Parse(result.Lat, System.Globalization.CultureInfo.InvariantCulture);
+        double longitude = double.Parse(result.Lon, System.Globalization.CultureInfo.InvariantCulture);
+
+        // Créer un Noeud<T> avec les coordonnées récupérées
+        return new Noeud<string>(address, 0, longitude, latitude);
+    }
+
+    return null;
+}
+
+  public class NominatimResult
+{
+    public string Lat { get; set; } // Latitude
+    public string Lon { get; set; } // Longitude
+    
+}
+
+
         public static (List<Noeud<(int id,string nom)>>, List<Arc<(int id,string nom)>>) LectureFichierExcel(string excelFilePath){
             var noeuds = new List<Noeud<(int id,string nom)>>();
             var arcs = new List<Arc<(int id,string nom)>>(); 
@@ -72,7 +149,7 @@ namespace ProbSciANA
                 var worksheet = package.Workbook.Worksheets[2]; /// On prend la deuxième feuille
                 /// Les données commencent à la ligne 2 (la ligne 1 contient les titres)
                 int i=2;
-                while(worksheet.Cells[i, 5].Value != null) /// n commence par les vitesses moyennes
+                while(worksheet.Cells[i, 5].Value != null) /// On commence par les vitesses moyennes
                 {
                     string IdLigne = worksheet.Cells[i, 5].Value.ToString();
                     double VitesseMoyenne = double.Parse(worksheet.Cells[i, 6].Value.ToString());
@@ -146,6 +223,7 @@ namespace ProbSciANA
         public int CheminOptimal(Graphe<(int id, string nom)> graphe, List<Noeud<(int id, string nom)>> stations){
             int valeurMin = int.MaxValue;
             Noeud<(int id, string nom)> stationDépart = stations[0];
+            List<Noeud<(int id, string nom)>> cheminLePlusCourt = null;
             stations.RemoveAt(0);
             List<List<Noeud<(int id, string nom)>>> listCheminPossible = Permutations(stations);
             foreach(List<Noeud<(int id, string nom)>> chemin in listCheminPossible){
@@ -155,8 +233,13 @@ namespace ProbSciANA
                 }
                 if(tempsTraj<valeurMin){
                     valeurMin = tempsTraj;
+                    cheminLePlusCourt = chemin;
                 }
                 Console.WriteLine("Temps :" + valeurMin);
+            }
+            Console.Write(stationDépart);
+            foreach(Noeud<(int id, string nom)> station in cheminLePlusCourt){
+                Console.Write(" -> " + station);
             }
             return valeurMin;
         }
