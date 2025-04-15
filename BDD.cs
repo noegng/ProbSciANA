@@ -31,6 +31,15 @@ namespace ProbSciANA
             }
             return clients;
         }
+    
+    public static async Task MàjStations()
+        {
+            foreach(Utilisateur u in Utilisateur.utilisateurs)
+            {
+                u.Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(u.Adresse);
+            }
+        }
+    
     }
     public class Utilisateur
     {
@@ -48,10 +57,9 @@ namespace ProbSciANA
         private DateTime date_inscription;
         private string mdp;
         private string nom_referent;
-        public Utilisateur(int id_utilisateur, Noeud<(int id, string nom)> station=null)
+        public Utilisateur(int id_utilisateur)
         {
             this.id_utilisateur = id_utilisateur;
-            this.station = station;
             Refresh();
         }
 
@@ -392,7 +400,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static async Task Refreshes() // Refreshes the list of utilisateurs
+        public static void Refreshes() // Refreshes the list of utilisateurs
         {
             utilisateurs.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -407,8 +415,7 @@ namespace ProbSciANA
                     {
                         while (reader.Read())
                         {
-                            var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(reader.GetString("adresse"), Program.Stations);
-                            utilisateurs.Add(new Utilisateur(reader.GetInt32("id_utilisateur"), station));
+                            utilisateurs.Add(new Utilisateur(reader.GetInt32("id_utilisateur")));
                         }
                     }
                 }
