@@ -17,10 +17,9 @@ using System.Threading.Tasks;
 
 namespace ProbSciANA
 {
-     public class Program
+    public class Program
     {
         ///Chaîne de connexion SQL
-         
         public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
 
         // Liste des stations et des arêtes
