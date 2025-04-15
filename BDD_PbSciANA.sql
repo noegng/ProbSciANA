@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS Livraison(
    statut ENUM('à faire', 'en cours', 'finie'),
    id_utilisateur INT NULL,
    id_commande INT NOT NULL,
-   FOREIGN KEY(id_utilisateur) REFERENCES Cuisiner(id_utilisateur) ON DELETE SET NULL,
+   FOREIGN KEY(id_utilisateur) REFERENCES Cuisinier(id_utilisateur) ON DELETE SET NULL,
    FOREIGN KEY(id_commande) REFERENCES Commande(id_commande) ON DELETE CASCADE
 );
 
@@ -127,4 +127,3 @@ CREATE TABLE IF NOT EXISTS Requiert(
    FOREIGN KEY(id_plat) REFERENCES Plat(id_plat),
    FOREIGN KEY(id_livraison) REFERENCES Livraison(id_livraison) ON DELETE CASCADE
 );
-

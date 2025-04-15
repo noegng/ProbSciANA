@@ -1,58 +1,98 @@
 using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
+#nullable enable
+
 
 namespace ProbSciANA
 {
     public static class Requetes
     {
         public static string connectionString = "SERVER=localhost;PORT=3306;user=root;password=root;database=pbsciana;";
-        //Program.IntializeData();
-        //public static Graphe<(int id, string nom)> graphe = new Graphe<(int id, string nom)>(Program.Arcs);
-        public static List<Utilisateur> GetClientsByAchat() //Trie les utilisateurs par nombre d'achats
+        public static Dictionary<Utilisateur, double> GetAchatsUtilisateurs(string orderBy)
         {
-            Commande.Refreshes();
-            List<Utilisateur> clients = new List<Utilisateur>();
-            foreach(Commande commande in Commande.commandes)
+            Commande.RefreshAll(); // recharge toutes les commandes
+            Utilisateur.RefreshAll(); // recharge tous les utilisateurs
+
+            Dictionary<Utilisateur, double> result = new Dictionary<Utilisateur, double>();
+
+            foreach (Utilisateur u in Utilisateur.utilisateurs)
             {
-                if(commande.Client != null && !clients.Contains(commande.Client))
+                double total = 0;
+
+                foreach (Commande c in Commande.commandes)
                 {
-                    clients.Add(commande.Client);
+                    if (c.Client != null && c.Client.Id_utilisateur == u.Id_utilisateur)
+                    {
+                        total += c.Prix;
+                    }
                 }
+
+                result[u] = total;
             }
-            Utilisateur.Refreshes();
-            foreach(Utilisateur u in Utilisateur.utilisateurs)
+
+            return result;
+        }
+        public static Dictionary<Utilisateur, double> GetAchatsUtilisateursSQL()
+        {
+            Dictionary<Utilisateur, double> result = new Dictionary<Utilisateur, double>();
+            
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
-                if(!clients.Contains(u) && u.EstClient)
+                connection.Open();
+
+                string query = $@"
+                    SELECT u.id_utilisateur, SUM(cmd.prix) AS total_achats
+                    FROM client_ c
+                    JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
+                    LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
+                    GROUP BY u.id_utilisateur
+                    ORDER BY u.id_utilisateur ASC;";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
-                    clients.Add(u);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32("id_utilisateur");
+                            Utilisateur u = new Utilisateur(id);
+                            double total = 0;
+                            if(!reader.IsDBNull(reader.GetOrdinal("total_achats")))
+                            {
+                                total = reader.GetDouble("total_achats");
+                            }
+                            result[u] = total;
+                        }
+                    }
                 }
+                connection.Close();
             }
-            return clients;
+            return result;
         }
     }
     public class Utilisateur
     {
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
         private int id_utilisateur;
-        private bool estClient;
-        private bool estCuisinier;
-        private bool estEntreprise;
-        private string nom = null;
-        private string prenom = null;
+        private bool estClient = false;
+        private bool estCuisinier = false;
+        private bool estEntreprise = false;
+        private string nom;
+        private string prenom;
         private string adresse;
         private string telephone;
         private string email;
         private Noeud<(int id,string nom)> station;
         private DateTime date_inscription;
         private string mdp;
-        private string nom_referent;
+        private string? nom_referent = null;
         public Utilisateur(int id_utilisateur)
         {
             this.id_utilisateur = id_utilisateur;
             Refresh();
         }
-        public Utilisateur(bool estClient, bool estCuisinier, bool estEntreprise, string nom, string prenom, string adresse, string telephone, string email, Noeud<(int id, string nom)> station, string mdp, string nom_referent="")
+        public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, Noeud<(int id, string nom)> station, string mdp, string nom_referent="", bool estEntreprise = false)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -61,7 +101,8 @@ namespace ProbSciANA
                 string queryInsert = @"INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, mdp)
                                 VALUES (@nom, @prenom, @adresse, @telephone, @email, @station, @mdp);";
                 
-                //station = Graphe.getStation(adresse, graphe); 
+                //station = Graphe.getStation(adresse, graphe);
+                //mdp = GetMDP(nom, prenom);
 
                 using (MySqlCommand command = new MySqlCommand(queryInsert, connection))
                 {
@@ -330,7 +371,7 @@ namespace ProbSciANA
                 using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
                 {
                     connection.Open();
-                    string query = "DELETE FROM Particuulier WHERE id_utilisateur = @id_utilisateur;";
+                    string query = "DELETE FROM Particulier WHERE id_utilisateur = @id_utilisateur;";
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
@@ -380,14 +421,17 @@ namespace ProbSciANA
                             estClient = reader.GetBoolean("estClient");
                             estCuisinier = reader.GetBoolean("estCuisinier");
                             estEntreprise = reader.GetBoolean("estEntreprise");
-                            nom_referent = reader.GetString("nom_referent");
+                            if (!reader.IsDBNull(reader.GetOrdinal("nom_referent")))
+                            {
+                                nom_referent = reader.GetString("nom_referent");
+                            }
                         }
                     }
                 }
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of utilisateurs
+        public static void RefreshAll() // Refreshes the list of utilisateurs
         {
             utilisateurs.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -544,7 +588,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of commandes
+        public static void RefreshAll() // Refreshes the list of commandes
         {
             commandes.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -691,7 +735,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of livraisons
+        public static void RefreshAll() // Refreshes the list of livraisons
         {
             livraisons.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -873,7 +917,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of plats
+        public static void RefreshAll() // Refreshes the list of plats
         {
             plats.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -1000,7 +1044,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of ingredients
+        public static void RefreshAll() // Refreshes the list of ingredients
         {
             ingredients.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -1150,7 +1194,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of avis
+        public static void RefreshAll() // Refreshes the list of avis
         {
             avis.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -1297,7 +1341,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of cuisines
+        public static void RefreshAll() // Refreshes the list of cuisines
         {
             cuisines.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -1426,7 +1470,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of requierts
+        public static void RefreshAll() // Refreshes the list of requierts
         {
             requierts.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -1555,7 +1599,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of composes
+        public static void RefreshAll() // Refreshes the list of composes
         {
             composes.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))

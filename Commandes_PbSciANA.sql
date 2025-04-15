@@ -82,8 +82,7 @@ ORDER BY l.id_livraison;
 
 SELECT * FROM Utilisateur;
 
-SELECT 
-  u.*,
+SELECT u.*,
   CASE WHEN cl.id_utilisateur IS NOT NULL THEN TRUE ELSE FALSE END AS estClient,
   CASE WHEN cu.id_utilisateur IS NOT NULL THEN TRUE ELSE FALSE END AS estCuisinier,
   CASE WHEN e.id_utilisateur IS NOT NULL THEN TRUE ELSE FALSE END AS estEntreprise,
@@ -102,14 +101,14 @@ FROM client_ c
 JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
 LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
 GROUP BY u.id_utilisateur
-ORDER BY u.nom ASC, u.numero ASC;
+ORDER BY u.adresse ASC, u.nom ASC;
 
 SELECT u.id_utilisateur, u.nom, u.prenom, SUM(cmd.prix) AS total_achats
 FROM client_ c
 JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
 LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
 GROUP BY u.id_utilisateur
-ORDER BY u.nom DESC, u.numero ASC;
+ORDER BY u.nom DESC, u.adresse ASC;
 
 SELECT u.id_utilisateur, u.nom, u.prenom, SUM(cmd.prix) AS total_achats
 FROM client_ c
@@ -117,6 +116,13 @@ JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
 LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
 GROUP BY u.id_utilisateur
 ORDER BY total_achats DESC;
+
+SELECT u.id_utilisateur, u.nom, u.prenom, SUM(cmd.prix) AS total_achats
+                    FROM client_ c
+                    JOIN utilisateur u ON c.id_utilisateur = u.id_utilisateur
+                    LEFT JOIN commande cmd ON cmd.id_client = c.id_utilisateur
+                    GROUP BY u.id_utilisateur
+                    ORDER BY c.estEntreprise, u.id_utilisateur ASC;
 
 #****************** MODULE CUISINIER *****************#
 SELECT DISTINCT u.id_utilisateur, u.nom, u.prenom, u.email, cmd.date_commande
