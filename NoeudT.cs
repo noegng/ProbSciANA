@@ -1,6 +1,8 @@
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -72,15 +74,16 @@ namespace ProbSciANA
             return Valeur.ToString();
         }
 
-public static Noeud<(int, string)> TrouverStationLaPlusProche(Noeud<string> noeud, List<Noeud<(int, string)>> stations)
-{
-    Noeud<(int, string)> stationLaPlusProche = null;
-    double distanceMinimale = double.MaxValue;
+public async static Task<Noeud<(int, string)>> TrouverStationLaPlusProche(string adresse, List<Noeud<(int, string)>> stations)
+        {
+            var Adresse = await Program.GetCoordonnees<string>(adresse);
+            Noeud<(int, string)> stationLaPlusProche = null;
+            double distanceMinimale = double.MaxValue;
 
     foreach (var station in stations)
     {
         double distance = Arc<T>.CalculerDistanceHaversine(
-            noeud.Latitude, noeud.Longitude,
+            Adresse.Latitude, Adresse.Longitude,
             station.Latitude, station.Longitude
         );
 
@@ -89,10 +92,9 @@ public static Noeud<(int, string)> TrouverStationLaPlusProche(Noeud<string> noeu
             distanceMinimale = distance;
             stationLaPlusProche = station;
         }
-    }
-
-    return stationLaPlusProche;
-}
+            }
+            return stationLaPlusProche;
+        }
 
     }
 }

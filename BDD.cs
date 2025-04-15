@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
+using System.Threading.Tasks;
 
 namespace ProbSciANA
 {
@@ -47,11 +48,13 @@ namespace ProbSciANA
         private DateTime date_inscription;
         private string mdp;
         private string nom_referent;
-        public Utilisateur(int id_utilisateur)
+        public Utilisateur(int id_utilisateur, Noeud<(int id, string nom)> station=null)
         {
             this.id_utilisateur = id_utilisateur;
+            this.station = station;
             Refresh();
         }
+
         public Utilisateur(bool estClient, bool estCuisinier, bool estEntreprise, string nom, string prenom, string adresse, string telephone, string email, Noeud<(int id, string nom)> station, string mdp, string nom_referent="")
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -389,22 +392,23 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void Refreshes() // Refreshes the list of utilisateurs
+        public static async Task Refreshes() // Refreshes the list of utilisateurs
         {
             utilisateurs.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
                 connection.Open();
 
-                string query = "SELECT id_utilisateur FROM Utilisateur;";
+                string query = "SELECT id_utilisateur, adresse FROM Utilisateur;";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
-                            utilisateurs.Add(new Utilisateur(reader.GetInt32("id_utilisateur")));
+                            var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(reader.GetString("adresse"), Program.Stations);
+                            utilisateurs.Add(new Utilisateur(reader.GetInt32("id_utilisateur"), station));
                         }
                     }
                 }

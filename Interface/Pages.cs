@@ -71,13 +71,13 @@ namespace ProbSciANA.Interface
 
             try
             {
-                var Adresse = await Program.GetCoordonnees<string>(adresse);
-                if (Adresse == null)
+
+                if (adresse == null)
                 {
                     MessageBox.Show("Adresse non trouvée. Veuillez vérifier l'adresse saisie.");
                     return;
                 }
-                var Station = Noeud<(int id, string nom)>.TrouverStationLaPlusProche(Adresse, Program.Stations); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
+                var Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse, Program.Stations); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
                 /// recherche de la station la plus proche avec haversine
                
                 var nouvelUtilisateur = new Utilisateur(
@@ -130,13 +130,18 @@ public partial class ConnexionView : Page
         public ConnexionView()
         {
             InitializeComponent();
-            Utilisateur.Refreshes();
+            _ = InitializeUtilisateursAsync();
 
-           foreach (var utilisateur in Utilisateur.utilisateurs)
-    {
-        string fullName = utilisateur.Prenom + " " + utilisateur.Nom;
-        UserComboBox.Items.Add(fullName);
-    }
+            foreach (var utilisateur in Utilisateur.utilisateurs)
+            {
+                string fullName = utilisateur.Prenom + " " + utilisateur.Nom;
+                UserComboBox.Items.Add(fullName);
+            }
+        }
+
+        private async Task InitializeUtilisateursAsync()
+        {
+            await Utilisateur.Refreshes();
         }
 
         private void BtnConnexion_Click(object sender, RoutedEventArgs e)
