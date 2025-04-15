@@ -1,14 +1,17 @@
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace ProbSciANA
 {
     public class Noeud<T>
     {
-        private T valeur;  /// VAleur unique du noeud
+        private T valeur;  /// Valeur unique du noeud
         private int tempsChangement; /// Temps de changement (si exitant)
         private int idBrute = 0;
         public static int Compteur = 0;
@@ -21,7 +24,6 @@ namespace ProbSciANA
             this.valeur = valeur;
             tempsChangement = temps;
             idBrute++;
-
         }
         public Noeud(T valeur, int temps, double longitude, double latitude) /// valeur par défaut
         {
@@ -30,7 +32,12 @@ namespace ProbSciANA
             Longitude = longitude;
             Latitude = latitude;
             Compteur++;
-            this.idBrute = Compteur;
+            idBrute = Compteur;
+        }
+        public Noeud(T valeur)
+        {
+            this.valeur = valeur;
+            
         }
         #region Propriétés
         public T Valeur
@@ -53,7 +60,7 @@ namespace ProbSciANA
         {
             return obj is Noeud<T> autre && EqualityComparer<T>.Default.Equals(Valeur, autre.Valeur);
         }
-
+        
         public override int GetHashCode()
         {
             return EqualityComparer<T>.Default.GetHashCode(Valeur);
@@ -66,5 +73,28 @@ namespace ProbSciANA
         {
             return Valeur.ToString();
         }
+
+public async static Task<Noeud<(int, string)>> TrouverStationLaPlusProche(string adresse)
+        {
+            var Adresse = await Program.GetCoordonnees<string>(adresse);
+            Noeud<(int, string)> stationLaPlusProche = null;
+            double distanceMinimale = double.MaxValue;
+
+    foreach (var station in Program.Stations)
+    {
+        double distance = Arc<T>.CalculerDistanceHaversine(
+            Adresse.Latitude, Adresse.Longitude,
+            station.Latitude, station.Longitude
+        );
+
+        if (distance < distanceMinimale)
+        {
+            distanceMinimale = distance;
+            stationLaPlusProche = station;
+        }
+            }
+            return stationLaPlusProche;
+        }
+
     }
 }

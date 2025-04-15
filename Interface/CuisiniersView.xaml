@@ -17,9 +17,9 @@
             <Button Style="{StaticResource MenuButtonStyle}" Content="Modifier" Margin="10"
                     Click="BtnModifier_Click"/>
             <Button Style="{StaticResource MenuButtonStyle}" Content="Trier par nom" Margin="10"
-                    Click="BtnTrierNom_Click"/>
+                    />
             <Button Style="{StaticResource MenuButtonStyle}" Content="Trier par adresse" Margin="10"
-                    Click="BtnTrierAdresse_Click"/>
+                    />
         </StackPanel>
 
         <!-- Liste des cuisiniers -->

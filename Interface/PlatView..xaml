@@ -1,0 +1,57 @@
+<Page x:Class="ProbSciANA.Interface.PlatView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="PlatView">
+
+    <Grid>
+        <TextBlock Text="Ajouter un plat"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center"
+             FontSize="24"
+             FontWeight="Bold" />
+
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
+            <TextBlock Text="Nom du plat :" Margin="5,0,0,5"/>
+            <TextBox x:Name="NomPlatTextBox" Width="200" Margin="5"/>
+
+            <TextBlock Text="Type de plat :" Margin="5,0,0,5"/>
+            <ComboBox x:Name="TypePlatComboBox" Width="200" Margin="5">
+                <ComboBoxItem Content="Entrée"/>
+                <ComboBoxItem Content="Plat principal"/>
+                <ComboBoxItem Content="Dessert"/>
+            </ComboBox>
+
+            <TextBlock Text="Nationalité :" Margin="5,0,0,5"/>
+            <TextBox x:Name="NationaliteTextBox" Width="200" Margin="5"/>
+
+            <TextBlock Text="Régime alimentaire :" Margin="5,0,0,5"/>
+            <TextBox x:Name="RegimeTextBox" Width="200" Margin="5"/>
+
+            <TextBlock Text="Ingrédients :" Margin="5,0,0,5"/>
+            <ListBox x:Name="IngredientsListBox" Width="200" Height="100" Margin="5"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBox x:Name="NewIngredientTextBox" Text="Ajouter un ingrédient" Width="140" Margin="5,0,10,0"/>
+                <Button Style="{StaticResource MenuButtonStyle}" Content="Ajouter" Width="50" />
+            </StackPanel>
+
+            <TextBlock Text="Prix par personne :" Margin="5,0,0,5"/>
+            <TextBox x:Name="PrixTextBox" Width="200" Margin="5"/>
+
+            <TextBlock Text="Nombre de personnes :" Margin="5,0,0,5"/>
+            <TextBox x:Name="NombrePersonnesTextBox" Width="200" Margin="5"/>
+
+            <TextBlock Text="Date de fabrication :" Margin="5,0,0,5"/>
+            <DatePicker x:Name="DateFabricationDatePicker" Width="200" Margin="5"/>
+
+            <TextBlock Text="Date de péremption :" Margin="5,0,0,5"/>
+            <DatePicker x:Name="DatePeremptionDatePicker" Width="200" Margin="5"/>
+
+            <Button Style="{StaticResource MenuButtonStyle}" Content="Ajouter le plat" Width="200" Margin="5" Click="BtnAjouterPlat_Click"/>
+            <Button Style="{StaticResource MenuButtonStyle}" Content="Retour" Width="200" Margin="5" Click="BtnRetour_Click"/>
+            <Button Style="{StaticResource MenuButtonStyle}" Content="Retour à l'accueil" Width="200" Margin="5" Click="BtnRetourAccueil_Click"/>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -51,7 +51,7 @@ namespace ProbSciANA
     numéroImage++;
     /// Chemins pour le fichier DOT et l'image PNG
     string dotFilePath = "graphe"+numéroImage+".dot";
-    string pngFilePath = "graphe."+numéroImage+"png";                        
+    string pngFilePath = "graphe"+numéroImage+".png";                        
     /// Générer le fichier DOT et l'image PNG
     try
     {
@@ -60,7 +60,7 @@ namespace ProbSciANA
         dot.AppendLine("digraph G {");
         dot.AppendLine("    layout=neato;"); /// Utilise le moteur neato
         dot.AppendLine("    overlap=false;");
-        dot.AppendLine("    graph [dpi=400];");
+        dot.AppendLine("    graph [dpi=300];");
 
         /// Creation de chaque sommet avec sa position   
         foreach (Noeud<T> vertex in noeuds)
@@ -142,7 +142,7 @@ namespace ProbSciANA
         dot.AppendLine("digraph G {");
         dot.AppendLine("    layout=neato;"); /// Utilise le moteur neato
         dot.AppendLine("    overlap=false;");
-        dot.AppendLine("    graph [dpi=400];");
+        dot.AppendLine("    graph [dpi=300];");
         ///Creation du premier sommet (impossible dans la boucle foreach)
         foreach (Noeud<T> vertex in noeuds)
         {
@@ -219,6 +219,7 @@ namespace ProbSciANA
     {
         throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
     }
+    
 }
     }
 

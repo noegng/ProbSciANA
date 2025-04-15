@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using MySql.Data.MySqlClient;
+using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace ProbSciANA.Interface
 {
@@ -17,9 +19,21 @@ namespace ProbSciANA.Interface
         public StartView()
         {
             InitializeComponent();
-            
+            Utilisateur.RefreshAll();
+         _ = LoadStationsAsync(); /// Appel asynchrone pour charger les stations
         }
 
+        public async Task LoadStationsAsync()
+        {
+            try
+            {
+                await Requetes.MàjStations();
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show("Erreur de connexion : " + ex.Message);
+            }
+        }
         private void BtnModeUtilisateur_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new LoginView());
@@ -27,8 +41,13 @@ namespace ProbSciANA.Interface
 
         private void BtnModeAdmin_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+         NavigationService?.Navigate(new AdminDashboardView());
         }
+        private void BtnModeTest_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new Test());
+        }
+
     }
 #endregion
 
@@ -40,13 +59,12 @@ namespace ProbSciANA.Interface
             InitializeComponent();
         }
 
-        private void BtnValider_Click(object sender, RoutedEventArgs e)
+        private async void BtnValider_Click(object sender, RoutedEventArgs e)
         {
             string nom = NomTextBox.Text;
             string prenom = PrenomTextBox.Text;
             string email = EmailTextBox.Text;
             string adresse = AdresseTextBox.Text;
-            string station = StationTextBox.Text;
             string mdp = MdpTextBox.Password;
             var selectedItem = RoleComboBox.SelectedItem as ComboBoxItem;
             string role = selectedItem?.Content.ToString();
@@ -58,9 +76,23 @@ namespace ProbSciANA.Interface
                 MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
                 return;
             }
+            else if (!email.Contains("@"))
+            {
+                MessageBox.Show("Veuillez entrer une adresse e-mail valide.");
+                return;
+            }
 
             try
             {
+
+                if (adresse == null)
+                {
+                    MessageBox.Show("Adresse non trouvée. Veuillez vérifier l'adresse saisie.");
+                    return;
+                }
+                var Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
+                /// recherche de la station la plus proche avec haversine
+               
                 var nouvelUtilisateur = new Utilisateur(
                     estClient: role == "Client",
                     estCuisinier: role == "Cuisinier",
@@ -69,8 +101,9 @@ namespace ProbSciANA.Interface
                     adresse,
                     "", // téléphone
                     email,
-                    station,
-                    mdp);
+                    Station,
+                    mdp,
+                    estEntreprise: role == "Entreprise");
 
                 MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
 
@@ -79,9 +112,13 @@ namespace ProbSciANA.Interface
                 else if (role == "Cuisinier")
                     NavigationService?.Navigate(new CuisinierDashboardView());
             }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show("Erreur réseau : " + ex.Message);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur lors de l'enregistrement : " + ex.Message);
+                MessageBox.Show("Erreur inattendue : " + ex.Message);
             }
         }
 
@@ -106,16 +143,15 @@ public partial class ConnexionView : Page
         public ConnexionView()
         {
             InitializeComponent();
-            Requetes.GetUtilisateurs();
-            utilisateurs = new Dictionary<string, Utilisateur>();
+            Utilisateur.RefreshAll();
 
-            foreach (var utilisateur in Requetes.utilisateurs)
+            foreach (var utilisateur in Utilisateur.utilisateurs)
             {
-                string display = utilisateur.Prenom + " " + utilisateur.Nom;
-                utilisateurs[display] = utilisateur;
-                UserComboBox.Items.Add(display);
+                string fullName = utilisateur.Prenom + " " + utilisateur.Nom;
+                UserComboBox.Items.Add(fullName);
             }
         }
+
 
         private void BtnConnexion_Click(object sender, RoutedEventArgs e)
         {
@@ -125,19 +161,30 @@ public partial class ConnexionView : Page
                 return;
             }
 
-            string nomUtilisateur = UserComboBox.SelectedItem.ToString();
+            var nomUtilisateur = UserComboBox.SelectedItem.ToString();
             string motDePasseEntre = PasswordBox.Password;
 
-            if (utilisateurs.TryGetValue(nomUtilisateur, out var utilisateur)
-                && motDePasseEntre == utilisateur.Mdp)
-            {
-                MessageBox.Show($"Connexion réussie : {nomUtilisateur}");
 
-                if (utilisateur.EstCuisinier)
-                    NavigationService?.Navigate(new CuisinierDashboardView());
-                else if (utilisateur.EstClient)
-                    NavigationService?.Navigate(new UserDashboardView());
+            Utilisateur utilisateurTrouve = null;
+            foreach (var utilisateur in Utilisateur.utilisateurs)
+            {
+        if ($"{utilisateur.Prenom} {utilisateur.Nom}" == nomUtilisateur)
+        {
+            utilisateurTrouve = utilisateur;
+            break;
+        }
             }
+
+             if (utilisateurTrouve != null && motDePasseEntre == utilisateurTrouve.Mdp)
+            {
+        MessageBox.Show($"Connexion réussie : {nomUtilisateur} ");
+
+        // Rediriger en fonction du rôle de l'utilisateur
+        if (utilisateurTrouve.EstCuisinier)
+            NavigationService?.Navigate(new CuisinierDashboardView());
+        else if (utilisateurTrouve.EstClient)
+            NavigationService?.Navigate(new UserDashboardView());
+    }
             else
             {
                 MessageBox.Show("Mot de passe incorrect.");
@@ -180,22 +227,31 @@ public partial class ConnexionView : Page
 #region Page Vue Cuisinier
     public partial class CuisinierDashboardView : Page
     {
-        
-
-
         public CuisinierDashboardView()
         {
             InitializeComponent();
-            
         }
+        private void LoadLivraisons()
+    {
 
+             /// Exemple de données de livraison
+
+    }
+       
+       
       
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
-            // Logique pour ajouter un plat
+            /// Logique pour ajouter un plat
             MessageBox.Show("Ajouter un plat");
+
         }
 
+        private async void BtnLivrer(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Livrer un plat");
+            await Program.UtiliserGetCoordonnees();
+        }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
         {
@@ -211,6 +267,74 @@ public partial class ConnexionView : Page
 
 #endregion
 
+#region Plat
+
+    public partial class PlatView : Page
+    {
+        public PlatView()
+        {
+            InitializeComponent();
+        }
+
+        private void BtnAjouterPlat_Click(object sender, RoutedEventArgs e)
+        {
+            // string nomPlat = NomPlatTextBox.Text;
+            // string typePlat = (TypePlatComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
+            // string nationalite = NationaliteTextBox.Text;
+            // string regimeAlimentaire = RegimeTextBox.Text;
+            // string ingredients = IngredientsTextBox.Text;
+            // string prixParPersonne = PrixTextBox.Text;
+            // string nombrePersonnes = NombrePersonnesTextBox.Text;
+            // DateTime? dateFabrication = DateFabricationDatePicker.SelectedDate;
+            // DateTime? datePeremption = DatePeremptionDatePicker.SelectedDate;
+
+            // if (string.IsNullOrWhiteSpace(nomPlat) || string.IsNullOrWhiteSpace(typePlat) ||
+            // string.IsNullOrWhiteSpace(nationalite) || string.IsNullOrWhiteSpace(regimeAlimentaire) ||
+            // string.IsNullOrWhiteSpace(ingredients) || string.IsNullOrWhiteSpace(prixParPersonne) ||
+            // string.IsNullOrWhiteSpace(nombrePersonnes) || !dateFabrication.HasValue || !datePeremption.HasValue)
+            // {
+            // MessageBox.Show("Veuillez remplir tous les champs.");
+            // return;
+            // }
+
+            // try
+            // {
+            // var nouveauPlat = new Plat
+            // {
+            //     Nom = nomPlat,
+            //     Type = typePlat,
+            //     Nationalite = nationalite,
+            //     RegimeAlimentaire = regimeAlimentaire,
+            //     Ingredients = ingredients,
+            //     PrixParPersonne = double.Parse(prixParPersonne),
+            //     NombrePersonnes = int.Parse(nombrePersonnes),
+            //     DateFabrication = dateFabrication.Value,
+            //     DatePeremption = datePeremption.Value
+            // };
+
+            // Requetes.AjouterPlat(nouveauPlat);
+            // MessageBox.Show("Plat ajouté avec succès !");
+            // NavigationService?.GoBack();
+            // }
+            // catch (Exception ex)
+            // {
+            // MessageBox.Show("Erreur lors de l'ajout du plat : " + ex.Message);
+            // }
+        }
+
+        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.GoBack();
+        }
+        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+
+    }
+
+#endregion
+
 #region Page Vue Admin
         public partial class AdminDashboardView : Page
     {
@@ -218,6 +342,9 @@ public partial class ConnexionView : Page
         {
             InitializeComponent();
         }
+
+        
+        
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
@@ -236,7 +363,7 @@ public partial class ConnexionView : Page
 
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesView());   
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
@@ -258,41 +385,18 @@ public partial class ConnexionView : Page
         public ClientsView()
         {
             InitializeComponent();
-            Requetes.GetUtilisateurs();
+            Utilisateur.RefreshAll();
             LoadClients();
         }
 
         private void LoadClients(string orderBy = "u.nom")
         {
-           
-        /// Récupérer tous les clients
-    clients = Requetes.utilisateurs.FindAll(u => u.EstClient);
+            Utilisateur.RefreshAll(); /// Assurez-vous que la liste des utilisateurs est à jour
+            /// Récupérer tous les clients
+            clients = Utilisateur.utilisateurs.FindAll(u => u.EstClient);
+            Requetes.GetAchatsUtilisateurs(orderBy);
 
-    /// Appliquer le tri en fonction de `orderBy`
-    switch (orderBy)
-    {
-        case "u.nom":
-            clients.Sort((a, b) => a.Nom.CompareTo(b.Nom));
-            break;
-
-        case "u.adresse":
-            clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
-            break;
-
-        case "achats":
-            /// Récupérer les clients triés par leurs achats
-            Requetes.GetClientsByAchats(orderBy);
-            clients.Sort((a, b) =>
-            {
-                double achatsA = Requetes.clients.ContainsKey(a) ? Requetes.clients[a] : 0;
-                double achatsB = Requetes.clients.ContainsKey(b) ? Requetes.clients[b] : 0;
-                return achatsB.CompareTo(achatsA); /// Tri décroissant par montant des achats
-            });
-            break;
-
-        default:
-            break;
-    }
+   
 
     /// Mettre à jour la source de données de la ListView
     ClientsListView.ItemsSource = null;
@@ -313,7 +417,10 @@ public partial class ConnexionView : Page
             if (ClientsListView.SelectedItem is Utilisateur client)
             {
                 /// Exemple : mise à jour du nom pour test
-                client.Nom = client.Nom + " (modifié)";
+                if (!client.Nom.Contains("(modifié)"))
+                {
+                    client.Nom = client.Nom + " (modifié)";
+                }
                 LoadClients();
             }
         }
@@ -343,20 +450,20 @@ public partial class ConnexionView : Page
         public CuisiniersView()
         {
             InitializeComponent();
-            Requetes.GetUtilisateurs();
+            Utilisateur.RefreshAll();
             LoadCuisiniers();
         }
 
-        private void LoadCuisiniers(string orderBy = "u.nom")
+        private void LoadCuisiniers()
         {
-            cuisiniers = Requetes.utilisateurs.FindAll(u => u.EstCuisinier);
-            if (orderBy == "adresse")
-                cuisiniers.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
-            else
-                cuisiniers.Sort((a, b) => a.Nom.CompareTo(b.Nom));
+            // cuisiniers = Requetes.utilisateurs.FindAll(u => u.EstCuisinier);
+            // if (orderBy == "adresse")
+            //     cuisiniers.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
+            // else
+            //     cuisiniers.Sort((a, b) => a.Nom.CompareTo(b.Nom));
 
-            CuisiniersListView.ItemsSource = null;
-            CuisiniersListView.ItemsSource = cuisiniers;
+            // CuisiniersListView.ItemsSource = null;
+            // CuisiniersListView.ItemsSource = cuisiniers;
         }
 
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
@@ -370,7 +477,7 @@ public partial class ConnexionView : Page
 
         private void BtnModifier_Click(object sender, RoutedEventArgs e)
         {
-            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
+            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier && !cuisinier.Nom.Contains("(modifié)"))
             {
                 cuisinier.Nom = cuisinier.Nom + " (modifié)";
                 LoadCuisiniers();
@@ -382,8 +489,8 @@ public partial class ConnexionView : Page
             NavigationService?.Navigate(new LoginView());
         }
 
-        private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("nom");
-        private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("adresse");
+        // private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("nom");
+        // private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("adresse");
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
@@ -426,8 +533,36 @@ public partial class ConnexionView : Page
 
 #endregion
 
-
-
-   
-
+#region Test
+    public partial class Test : Page
+    {
+        public Test()
+        {
+            InitializeComponent();
+        }
+        private void Btn1(object sender, RoutedEventArgs e)
+        {
+            // Logique pour le bouton 1
+            MessageBox.Show("Bouton 1 cliqué !");
+        }
+        private void Btn2(object sender, RoutedEventArgs e)
+        {
+            // Logique pour le bouton 2
+            MessageBox.Show("Bouton 2 cliqué !");
+        }
+        private void Btn3(object sender, RoutedEventArgs e)
+        {
+            // Logique pour le bouton 3
+            MessageBox.Show("Bouton 3 cliqué !");
+        }
+        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.GoBack();
+        }
+        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+    }
+#endregion
 }
