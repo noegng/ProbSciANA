@@ -19,8 +19,21 @@ namespace ProbSciANA.Interface
         public StartView()
         {
             InitializeComponent();
+            Utilisateur.RefreshAll();
+         _ = LoadStationsAsync(); /// Appel asynchrone pour charger les stations
         }
 
+        public async Task LoadStationsAsync()
+        {
+            try
+            {
+                await Requetes.MàjStations();
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show("Erreur de connexion : " + ex.Message);
+            }
+        }
         private void BtnModeUtilisateur_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new LoginView());
@@ -83,14 +96,14 @@ namespace ProbSciANA.Interface
                 var nouvelUtilisateur = new Utilisateur(
                     estClient: role == "Client",
                     estCuisinier: role == "Cuisinier",
-                    estEntreprise: role == "Entreprise",
                     nom,
                     prenom,
                     adresse,
                     "", // téléphone
                     email,
                     Station,
-                    mdp);
+                    mdp,
+                    estEntreprise: role == "Entreprise");
 
                 MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
 
@@ -130,7 +143,7 @@ public partial class ConnexionView : Page
         public ConnexionView()
         {
             InitializeComponent();
-            Utilisateur.Refreshes();
+            Utilisateur.RefreshAll();
 
             foreach (var utilisateur in Utilisateur.utilisateurs)
             {
@@ -372,35 +385,18 @@ public partial class ConnexionView : Page
         public ClientsView()
         {
             InitializeComponent();
-            Utilisateur.Refreshes();
+            Utilisateur.RefreshAll();
             LoadClients();
         }
 
         private void LoadClients(string orderBy = "u.nom")
         {
-            Utilisateur.Refreshes(); /// Assurez-vous que la liste des utilisateurs est à jour
+            Utilisateur.RefreshAll(); /// Assurez-vous que la liste des utilisateurs est à jour
             /// Récupérer tous les clients
             clients = Utilisateur.utilisateurs.FindAll(u => u.EstClient);
+            Requetes.GetAchatsUtilisateurs(orderBy);
 
-    /// Appliquer le tri en fonction de `orderBy`
-    switch (orderBy)
-    {
-        case "u.nom":
-            clients.Sort((a, b) => a.Nom.CompareTo(b.Nom));
-            break;
-
-        case "u.adresse":
-            clients.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
-            break;
-
-        case "achats":
-            /// Récupérer les clients triés par leurs achats
-            Requetes.GetClientsByAchat();
-            break;
-
-        default:
-            break;
-    }
+   
 
     /// Mettre à jour la source de données de la ListView
     ClientsListView.ItemsSource = null;
@@ -454,7 +450,7 @@ public partial class ConnexionView : Page
         public CuisiniersView()
         {
             InitializeComponent();
-            Utilisateur.Refreshes();
+            Utilisateur.RefreshAll();
             LoadCuisiniers();
         }
 

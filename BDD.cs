@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using System.Threading.Tasks;
-#nullable enable
+
 
 
 namespace ProbSciANA
@@ -77,6 +77,8 @@ namespace ProbSciANA
             foreach(Utilisateur u in Utilisateur.utilisateurs)
             {
                 u.Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(u.Adresse);
+                Console.WriteLine(u.Nom + " " + u.Prenom + " " + u.Adresse);
+                Console.WriteLine(u.Station.Valeur.nom);
             }
         }
     
@@ -96,7 +98,7 @@ namespace ProbSciANA
         private Noeud<(int id,string nom)> station;
         private DateTime date_inscription;
         private string mdp;
-        private string? nom_referent = null;
+        private string nom_referent = "";
         public Utilisateur(int id_utilisateur)
         {
             this.id_utilisateur = id_utilisateur;

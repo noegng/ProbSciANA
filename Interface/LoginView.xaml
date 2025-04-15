@@ -10,7 +10,8 @@
             <TextBlock Text="Rôle :" Margin="5" />
             <ComboBox x:Name="RoleComboBox" Width="200" Margin="5">
                 <ComboBoxItem Content="Client" />
-                <ComboBoxItem Content="Cuisinier" />
+                <ComboBoxItem Content="Cuisinier"/>
+                <ComboBoxItem Content="Entreprise"/>
             </ComboBox>
 
             <!-- Champ pour le nom -->
