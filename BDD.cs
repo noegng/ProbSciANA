@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using System.Threading.Tasks;
-
+#nullable enable
 
 
 namespace ProbSciANA
 {
+    #region Requetes
     public static class Requetes
     {
         public static string connectionString = "SERVER=localhost;PORT=3306;user=root;password=root;database=pbsciana;";
@@ -81,8 +82,9 @@ namespace ProbSciANA
                 Console.WriteLine(u.Station.Valeur.nom);
             }
         }
-    
     }
+    #endregion
+    #region Utilisateur
     public class Utilisateur
     {
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
@@ -423,7 +425,7 @@ namespace ProbSciANA
                             email = reader.GetString("email");
                             for(int i = 0; i < Program.Stations.Count; i++)
                             {
-                                if (Program.Stations[i].Valeur.nom == reader.GetString("station"))
+                                if (!reader.IsDBNull(reader.GetOrdinal("station")) && Program.Stations[i].Valeur.nom == reader.GetString("station"))
                                 {
                                     station = Program.Stations[i];
                                 }
@@ -433,7 +435,7 @@ namespace ProbSciANA
                             estClient = reader.GetBoolean("estClient");
                             estCuisinier = reader.GetBoolean("estCuisinier");
                             estEntreprise = reader.GetBoolean("estEntreprise");
-                            if (!reader.IsDBNull(reader.GetOrdinal("nom_referent")))
+                            if(!reader.IsDBNull(reader.GetOrdinal("nom_referent")))
                             {
                                 nom_referent = reader.GetString("nom_referent");
                             }
@@ -466,7 +468,8 @@ namespace ProbSciANA
             }
         }
     }
-
+    #endregion
+    #region Commande
     public class Commande
     {
         public static List<Commande> commandes = new List<Commande>();
@@ -623,7 +626,8 @@ namespace ProbSciANA
             }
         }
     }
-
+    #endregion
+    #region Livraison
     public class Livraison
     {
         public static List<Livraison> livraisons = new List<Livraison>();
@@ -770,7 +774,8 @@ namespace ProbSciANA
             }
         }
     }
-
+    #endregion
+    #region Plat
     public class Plat
     {
         public static List<Plat> plats = new List<Plat>();
@@ -952,7 +957,8 @@ namespace ProbSciANA
             }
         }
     }
-
+    #endregion
+    #region Ingredient
     public class Ingredient
     {
         public static List<Ingredient> ingredients = new List<Ingredient>();
@@ -1079,7 +1085,8 @@ namespace ProbSciANA
             }
         }
     }
-
+    #endregion
+    #region Avis
     public class Avis
     {
         public static List<Avis> avis = new List<Avis>();
@@ -1229,7 +1236,8 @@ namespace ProbSciANA
             }
         }
     }
-
+    #endregion
+    #region Cuisine
     public class Cuisine
     {
         public static List<Cuisine> cuisines = new List<Cuisine>();
@@ -1376,7 +1384,8 @@ namespace ProbSciANA
             }
         }
     }
-
+    #endregion
+    #region Requiert
     public class Requiert
     {
         public static List <Requiert> requierts = new List<Requiert>();
@@ -1505,7 +1514,8 @@ namespace ProbSciANA
             }
         }
     }
-    
+    #endregion
+    #region Compose
     public class Compose
     {
         public static List<Compose> composes = new List<Compose>();
@@ -1634,4 +1644,5 @@ namespace ProbSciANA
             }
         }
     }
+    #endregion
 }

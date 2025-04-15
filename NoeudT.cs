@@ -74,24 +74,24 @@ namespace ProbSciANA
             return Valeur.ToString();
         }
 
-public async static Task<Noeud<(int, string)>> TrouverStationLaPlusProche(string adresse)
+        public async static Task<Noeud<(int, string)>> TrouverStationLaPlusProche(string adresse)
         {
             var Adresse = await Program.GetCoordonnees<string>(adresse);
             Noeud<(int, string)> stationLaPlusProche = null;
             double distanceMinimale = double.MaxValue;
 
-    foreach (var station in Program.Stations)
-    {
-        double distance = Arc<T>.CalculerDistanceHaversine(
-            Adresse.Latitude, Adresse.Longitude,
-            station.Latitude, station.Longitude
-        );
+            foreach (var station in Program.Stations)
+            {
+                double distance = Arc<T>.CalculerDistanceHaversine(
+                    Adresse.Latitude, Adresse.Longitude,
+                    station.Latitude, station.Longitude
+                );
 
-        if (distance < distanceMinimale)
-        {
-            distanceMinimale = distance;
-            stationLaPlusProche = station;
-        }
+                if (distance < distanceMinimale)
+                {
+                    distanceMinimale = distance;
+                    stationLaPlusProche = station;
+                }
             }
             return stationLaPlusProche;
         }

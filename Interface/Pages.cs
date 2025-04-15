@@ -20,7 +20,7 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Utilisateur.RefreshAll();
-         _ = LoadStationsAsync(); /// Appel asynchrone pour charger les stations
+            _ = LoadStationsAsync(); /// Appel asynchrone pour charger les stations
         }
 
         public async Task LoadStationsAsync()
