@@ -74,7 +74,7 @@ INSERT INTO Ingredient (nom, regime) VALUES
 --------------------------
 -- Table Avis
 --------------------------
-INSERT INTO Avis (note, commentaire, id_client_, id_cuisinier) VALUES
+INSERT INTO Avis (note, commentaire, id_client, id_cuisinier) VALUES
 (5, 'Excellent service', 1, 2),
 (4, 'Bon plat', 2, 3),
 (3, 'Moyen, à améliorer', 3, 5),

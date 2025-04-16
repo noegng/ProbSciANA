@@ -12,8 +12,8 @@ using System.Net.Http;
 
 namespace ProbSciANA.Interface
 {
-    
-#region Page Accueil
+
+    #region Page Accueil
     public partial class StartView : Page
     {
         public StartView()
@@ -40,18 +40,18 @@ namespace ProbSciANA.Interface
         }
         private void BtnModeAdmin_Click(object sender, RoutedEventArgs e)
         {
-         NavigationService?.Navigate(new AdminDashboardView());
+            NavigationService?.Navigate(new AdminDashboardView());
         }
         private void BtnModeTest_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Test());
         }
     }
-#endregion
+    #endregion
 
-#region Page Login
+    #region Page Login
     public partial class LoginView : Page
-   {
+    {
         public LoginView()
         {
             InitializeComponent();
@@ -82,15 +82,14 @@ namespace ProbSciANA.Interface
 
             try
             {
-
                 if (adresse == null)
                 {
                     MessageBox.Show("Adresse non trouvée. Veuillez vérifier l'adresse saisie.");
                     return;
                 }
                 var Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
-                /// recherche de la station la plus proche avec haversine
-               
+                                                                                                     /// recherche de la station la plus proche avec haversine
+
                 var nouvelUtilisateur = new Utilisateur(
                     estClient: role == "Client",
                     estCuisinier: role == "Cuisinier",
@@ -99,7 +98,6 @@ namespace ProbSciANA.Interface
                     adresse,
                     "", // téléphone
                     email,
-                    Station,
                     mdp,
                     estEntreprise: role == "Entreprise");
 
@@ -131,11 +129,11 @@ namespace ProbSciANA.Interface
         }
     }
 
-#endregion
+    #endregion
 
-#region Page Connexion
-public partial class ConnexionView : Page
-{
+    #region Page Connexion
+    public partial class ConnexionView : Page
+    {
         private Dictionary<string, Utilisateur> utilisateurs;
 
         public ConnexionView()
@@ -166,23 +164,23 @@ public partial class ConnexionView : Page
             Utilisateur utilisateurTrouve = null;
             foreach (var utilisateur in Utilisateur.utilisateurs)
             {
-        if ($"{utilisateur.Prenom} {utilisateur.Nom}" == nomUtilisateur)
-        {
-            utilisateurTrouve = utilisateur;
-            break;
-        }
+                if ($"{utilisateur.Prenom} {utilisateur.Nom}" == nomUtilisateur)
+                {
+                    utilisateurTrouve = utilisateur;
+                    break;
+                }
             }
 
-             if (utilisateurTrouve != null && motDePasseEntre == utilisateurTrouve.Mdp)
+            if (utilisateurTrouve != null && motDePasseEntre == utilisateurTrouve.Mdp)
             {
-        MessageBox.Show($"Connexion réussie : {nomUtilisateur} ");
+                MessageBox.Show($"Connexion réussie : {nomUtilisateur} ");
 
-        // Rediriger en fonction du rôle de l'utilisateur
-        if (utilisateurTrouve.EstCuisinier)
-            NavigationService?.Navigate(new CuisinierDashboardView());
-        else if (utilisateurTrouve.EstClient)
-            NavigationService?.Navigate(new UserDashboardView());
-    }
+                // Rediriger en fonction du rôle de l'utilisateur
+                if (utilisateurTrouve.EstCuisinier)
+                    NavigationService?.Navigate(new CuisinierDashboardView());
+                else if (utilisateurTrouve.EstClient)
+                    NavigationService?.Navigate(new UserDashboardView());
+            }
             else
             {
                 MessageBox.Show("Mot de passe incorrect.");
@@ -195,9 +193,9 @@ public partial class ConnexionView : Page
         }
     }
 
-#endregion
+    #endregion
 
-#region Page Vue Client
+    #region Page Vue Client
     public partial class UserDashboardView : Page
     {
         public UserDashboardView()
@@ -220,9 +218,9 @@ public partial class ConnexionView : Page
         }
     }
 
-#endregion
+    #endregion
 
-#region Page Vue Cuisinier
+    #region Page Vue Cuisinier
     public partial class CuisinierDashboardView : Page
     {
         public CuisinierDashboardView()
@@ -230,14 +228,14 @@ public partial class ConnexionView : Page
             InitializeComponent();
         }
         private void LoadLivraisons()
-    {
+        {
 
-             /// Exemple de données de livraison
+            /// Exemple de données de livraison
 
-    }
-       
-       
-      
+        }
+
+
+
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
             /// Logique pour ajouter un plat
@@ -263,9 +261,9 @@ public partial class ConnexionView : Page
 
     }
 
-#endregion
+    #endregion
 
-#region Plat
+    #region Plat
 
     public partial class PlatView : Page
     {
@@ -331,18 +329,18 @@ public partial class ConnexionView : Page
 
     }
 
-#endregion
+    #endregion
 
-#region Page Vue Admin
-        public partial class AdminDashboardView : Page
+    #region Page Vue Admin
+    public partial class AdminDashboardView : Page
     {
         public AdminDashboardView()
         {
             InitializeComponent();
         }
 
-        
-        
+
+
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
@@ -361,7 +359,7 @@ public partial class ConnexionView : Page
 
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());   
+            NavigationService?.Navigate(new StatistiquesView());
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
@@ -373,104 +371,27 @@ public partial class ConnexionView : Page
             NavigationService?.Navigate(new StartView());
         }
     }
-#endregion
+    #endregion
 
-#region Page Gestion Clients (admin)
+    #region Page Gestion Clients (admin)
     public partial class ClientsView : Page
     {
-        private List<Utilisateur> clients;
-
         public ClientsView()
         {
             InitializeComponent();
-            LoadClients();
-        }
-
-        private bool _triAscendant = true;
-        private string _colonneTriee = "";
-
-        private void SetSorting(string colonne)
-        {
-            if (_colonneTriee == colonne)
+            Utilisateur.RefreshAll();
+            Commande.RefreshAll();
+            foreach (var u in Utilisateur.utilisateurs)
             {
-                _triAscendant = !_triAscendant;
+                u.RefreshCommandes_passees();
+                u.RefreshStatut();
             }
-            else
-            {
-                _colonneTriee = colonne;
-                _triAscendant = true;
-            }
-            LoadClients();
-        }
-
-        public void LoadClients()
-        {
-            var achats = Requetes.GetAchatsUtilisateursSQL();
-
-            var table = new DataTable();
-            table.Columns.Add("Id_utilisateur", typeof(int));
-            table.Columns.Add("Statut", typeof(string));
-            table.Columns.Add("Nom", typeof(string));
-            table.Columns.Add("Prenom", typeof(string));
-            table.Columns.Add("Adresse", typeof(string));
-            table.Columns.Add("Email", typeof(string));
-            table.Columns.Add("Telephone", typeof(string));
-            table.Columns.Add("Station", typeof(string));
-            table.Columns.Add("Achats", typeof(double));
-            table.Columns.Add("Date_inscription", typeof(DateTime));
-
-            foreach (KeyValuePair<Utilisateur, double> kv in achats)
-            {
-                string statut;
-                Utilisateur u = kv.Key;
-                if(u.EstEntreprise)
-                {
-                    statut = "Entreprise";
-                }
-                else
-                {
-                    statut = "Particulier";
-                }
-                string stationNom = "Inconnu";
-                if (u.Station != null && u.Station.Valeur.nom != null)
-                {
-                    stationNom = u.Station.Valeur.nom;
-                }
-                table.Rows.Add(
-                    u.Id_utilisateur,
-                    statut,
-                    u.Nom,
-                    u.Prenom,
-                    u.Adresse,
-                    u.Email,
-                    u.Telephone,
-                    stationNom,
-                    kv.Value,
-                    u.Date_inscription
-                );
-            }
-
-            DataView view = table.DefaultView;
-            string direction = "";
-            if (!string.IsNullOrEmpty(_colonneTriee) && table.Columns.Contains(_colonneTriee))
-            {
-                if(_triAscendant)
-                {
-                    direction = "ASC";
-                }
-                else
-                {
-                    direction = "DESC";
-                }
-                view.Sort = $"{_colonneTriee} {direction}";
-            }
-
-            ClientsListView.ItemsSource = view;
+            dataGridClients.ItemsSource = Utilisateur.utilisateurs;
         }
 
         private void BtnModifier_Click(object sender, RoutedEventArgs e)
         {
-            if (ClientsListView.SelectedItem is DataRowView row)
+            /*if (ClientsListView.SelectedItem is DataRowView row)
             {
                 int id = (int)row["Id_utilisateur"];
                 Utilisateur client = Utilisateur.utilisateurs.Find(u => u.Id_utilisateur == id);
@@ -480,7 +401,7 @@ public partial class ConnexionView : Page
                     client.Nom += " (modifié)";
                     LoadClients();
                 }
-            }
+            }*/
         }
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
@@ -488,28 +409,18 @@ public partial class ConnexionView : Page
         }
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
-        private void Header_ID_Click(object sender, RoutedEventArgs e) {SetSorting("Id_utilisateur");}
-        private void Header_Statut_Click(object sender, RoutedEventArgs e) {SetSorting("Statut");}
-        private void Header_Nom_Click(object sender, RoutedEventArgs e) {SetSorting("Nom");}
-        private void Header_Prenom_Click(object sender, RoutedEventArgs e) {SetSorting("Prenom");}
-        private void Header_Adresse_Click(object sender, RoutedEventArgs e) {SetSorting("Adresse");}
-        private void Header_Email_Click(object sender, RoutedEventArgs e) {SetSorting("Email");}
-        private void Header_Telephone_Click(object sender, RoutedEventArgs e) {SetSorting("Telephone");}
-        private void Header_Station_Click(object sender, RoutedEventArgs e) {SetSorting("Station");}
-        private void Header_Achats_Click(object sender, RoutedEventArgs e) {SetSorting("Achats");}
-        private void Header_Date_Click(object sender, RoutedEventArgs e) {SetSorting("Date_inscription");}
+
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
         }
     }
+    #endregion
 
-#endregion
-
-#region Page Gestion Cuisiniers (admin)
+    #region Page Gestion Cuisiniers (admin)
     public partial class CuisiniersView : Page
     {
         private List<Utilisateur> cuisiniers;
@@ -564,9 +475,9 @@ public partial class ConnexionView : Page
         }
     }
 
-#endregion
+    #endregion
 
-#region Page Gestion Commandes (admin)
+    #region Page Gestion Commandes (admin)
 
     public partial class CommandesView : Page
     {
@@ -581,9 +492,9 @@ public partial class ConnexionView : Page
         }
     }
 
-#endregion
+    #endregion
 
-#region Page Statistiques (admin)
+    #region Page Statistiques (admin)
 
     public partial class StatistiquesView : Page
     {
@@ -598,9 +509,9 @@ public partial class ConnexionView : Page
         }
     }
 
-#endregion
+    #endregion
 
-#region Test
+    #region Test
     public partial class Test : Page
     {
         public Test()
@@ -631,5 +542,5 @@ public partial class ConnexionView : Page
             NavigationService?.Navigate(new StartView());
         }
     }
-#endregion
+    #endregion
 }
