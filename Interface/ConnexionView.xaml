@@ -200,6 +200,13 @@
                          Width="250"
                          Height="30"
                          Margin="5"/>
+            <Button Grid.Column="3"
+                    Content="Se connecter"
+                    Width="250"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="BtnConnexion_Click"/>
         </StackPanel>
     </DockPanel>
 </Page>
