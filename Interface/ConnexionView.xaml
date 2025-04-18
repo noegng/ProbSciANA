@@ -4,25 +4,202 @@
       Title="ConnexionView">
 
     <DockPanel LastChildFill="True">
+
+        <!-- BANDEAU STYLE UBER -->
+        <Grid DockPanel.Dock="Top"
+              Background="Black"
+              Height="50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Bouton Mode -->
+            <Button Grid.Column="0"
+                    Content="🌙 Mode"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="BtnMode_Click"/>
+
+            <!-- Bouton Accueil -->
+            <Button Grid.Column="1"
+                    Content="🏠 Accueil"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="BtnAccueil_Click"/>
+
+            <!-- Espace vide -->
+            <StackPanel Grid.Column="2"/>
+
+            <!-- Inscription -->
+            <Button Grid.Column="4"
+                    Content="S'inscrire"
+                    Foreground="Black"
+                    Background="White"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Margin="10,5"
+                    Click="BtnInscription_Click"/>
+        </Grid>
+
+        <!-- FLÈCHES NAVIGATION CENTRÉES STYLE CHROME -->
+        <Grid DockPanel.Dock="Top"
+              Height="50">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        Margin="10,5,0,0">
+
+                <!-- BOUTON BACK -->
+                <Button x:Name="BtnBack"
+                        Width="32"
+                        Height="32"
+                        Margin="2"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        ToolTip="Précédent"
+                        Click="BtnBack_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    CornerRadius="16"
+                                    Background="Transparent"
+                                    Width="32"
+                                    Height="32"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                <Viewbox Width="16"
+                                         Height="16"
+                                         Stretch="Uniform">
+                                    <Grid Width="24"
+                                          Height="24">
+                                        <Path x:Name="backArrow"
+                                              StrokeThickness="2"
+                                              StrokeLineJoin="Round"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              Data="M12,4 L4,12 L12,20"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#EEE"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="True">
+                                    <Setter TargetName="backArrow"
+                                            Property="Stroke"
+                                            Value="Black"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="False">
+                                    <Setter TargetName="backArrow"
+                                            Property="Stroke"
+                                            Value="Gray"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- BOUTON FORWARD -->
+                <Button x:Name="BtnForward"
+                        Width="32"
+                        Height="32"
+                        Margin="2"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        ToolTip="Suivant"
+                        Click="BtnForward_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    CornerRadius="16"
+                                    Background="Transparent"
+                                    Width="32"
+                                    Height="32"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                <Viewbox Width="16"
+                                         Height="16"
+                                         Stretch="Uniform">
+                                    <Grid Width="24"
+                                          Height="24">
+                                        <Path x:Name="forwardArrow"
+                                              StrokeThickness="2"
+                                              StrokeLineJoin="Round"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              Data="M4,4 L12,12 L4,20"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#EEE"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="True">
+                                    <Setter TargetName="forwardArrow"
+                                            Property="Stroke"
+                                            Value="Black"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="False">
+                                    <Setter TargetName="forwardArrow"
+                                            Property="Stroke"
+                                            Value="Gray"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+            </StackPanel>
+        </Grid>
         <!-- Contenu principal -->
-        <StackPanel DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="Connexion à un compte" FontSize="20" Margin="0,0,0,20"/>
+        <StackPanel DockPanel.Dock="Top"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+            <TextBlock Text="Connexion à un compte"
+                       FontSize="20"
+                       Margin="0,0,0,20"/>
 
             <!-- Liste des utilisateurs -->
-            <TextBlock Text="Utilisateur :" Margin="5"/>
-            <ComboBox x:Name="UserComboBox" Width="250" Margin="5"/>
+            <TextBlock Text="Utilisateur :"
+                       Margin="5"/>
+            <ComboBox x:Name="UserComboBox"
+                      Width="250"
+                      Margin="5"/>
 
             <!-- Mot de passe -->
-            <TextBlock Text="Mot de passe :" Margin="5,10,0,5"/>
-            <PasswordBox x:Name="PasswordBox" Width="250" Height="30" Margin="5"/>
-
-            <!-- Bouton Connexion -->
-            <Button Style="{StaticResource MenuButtonStyle}" Content="Connexion" Width="250" Margin="10"
-                    Click="BtnConnexion_Click"/>
+            <TextBlock Text="Mot de passe :"
+                       Margin="5,10,0,5"/>
+            <PasswordBox x:Name="PasswordBox"
+                         Width="250"
+                         Height="30"
+                         Margin="5"/>
         </StackPanel>
-
-        <!-- Bouton Retour à l'accueil -->
-        <Button Style="{StaticResource MenuButtonStyle}" DockPanel.Dock="Bottom" Content="Retour à l'accueil"
-                HorizontalAlignment="Center" Margin="0,20" Click="BtnRetourAccueil_Click"/>
     </DockPanel>
 </Page>

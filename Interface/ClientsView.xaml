@@ -5,6 +5,205 @@
 
         <DockPanel LastChildFill="True">
 
+                <!-- BANDEAU STYLE UBER -->
+                <Grid DockPanel.Dock="Top"
+                      Height="50"
+                      Background="Black">
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                Content="🌙 Mode"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnMode_Click"/>
+
+                        <Button Grid.Column="1"
+                                Content="🏠 Accueil"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnAccueil_Click"/>
+
+                        <StackPanel Grid.Column="2"/>
+
+                        <Button Grid.Column="3"
+                                Content="Clients"
+                                Foreground="White"
+                                Background="#BEE6FD"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnClients_Click"/>
+
+                        <Button Grid.Column="4"
+                                Content="Cuisiniers"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnCuisiniers_Click"/>
+
+                        <Button Grid.Column="5"
+                                Content="Commandes"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnCommandes_Click"/>
+
+                        <Button Grid.Column="6"
+                                Content="Statistiques"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnStatistiques_Click"/>
+                </Grid>
+
+                <!-- FLÈCHES NAVIGATION (Chrome style) -->
+                <Grid DockPanel.Dock="Top"
+                      Height="50"
+                      Background="Transparent">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0">
+
+                                <!-- BACK -->
+                                <Button x:Name="BtnBack"
+                                        Width="32"
+                                        Height="32"
+                                        Margin="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        ToolTip="Précédent"
+                                        Click="BtnBack_Click">
+                                        <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border"
+                                                                Width="32"
+                                                                Height="32"
+                                                                CornerRadius="16"
+                                                                Background="Transparent"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                                <Viewbox Width="16"
+                                                                         Height="16">
+                                                                        <Grid Width="24"
+                                                                              Height="24">
+                                                                                <Path x:Name="backArrow"
+                                                                                      StrokeThickness="2"
+                                                                                      StrokeLineJoin="Round"
+                                                                                      StrokeStartLineCap="Round"
+                                                                                      StrokeEndLineCap="Round"
+                                                                                      Data="M14,4 L6,12 L14,20"
+                                                                                      HorizontalAlignment="Center"
+                                                                                      VerticalAlignment="Center"/>
+                                                                        </Grid>
+                                                                </Viewbox>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver"
+                                                                         Value="True">
+                                                                        <Setter TargetName="border"
+                                                                                Property="Background"
+                                                                                Value="#EEE"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="True">
+                                                                        <Setter TargetName="backArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Black"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="False">
+                                                                        <Setter TargetName="backArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Gray"/>
+                                                                </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                        </Button.Template>
+                                </Button>
+
+                                <!-- FORWARD -->
+                                <Button x:Name="BtnForward"
+                                        Width="32"
+                                        Height="32"
+                                        Margin="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        ToolTip="Suivant"
+                                        Click="BtnForward_Click">
+                                        <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border"
+                                                                Width="32"
+                                                                Height="32"
+                                                                CornerRadius="16"
+                                                                Background="Transparent"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                                <Viewbox Width="16"
+                                                                         Height="16">
+                                                                        <Grid Width="24"
+                                                                              Height="24">
+                                                                                <Path x:Name="forwardArrow"
+                                                                                      StrokeThickness="2"
+                                                                                      StrokeLineJoin="Round"
+                                                                                      StrokeStartLineCap="Round"
+                                                                                      StrokeEndLineCap="Round"
+                                                                                      Data="M4,4 L12,12 L4,20"
+                                                                                      HorizontalAlignment="Center"
+                                                                                      VerticalAlignment="Center"/>
+                                                                        </Grid>
+                                                                </Viewbox>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver"
+                                                                         Value="True">
+                                                                        <Setter TargetName="border"
+                                                                                Property="Background"
+                                                                                Value="#EEE"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="True">
+                                                                        <Setter TargetName="forwardArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Black"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="False">
+                                                                        <Setter TargetName="forwardArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Gray"/>
+                                                                </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                        </Button.Template>
+                                </Button>
+
+                        </StackPanel>
+                </Grid>
+
                 <!-- Titre -->
                 <TextBlock DockPanel.Dock="Top"
                            Text="Gestion des Clients"
@@ -102,15 +301,30 @@
                                            FontWeight="Bold"/>
                                 <TextBlock Text="{Binding NomStation}"
                                            Margin="0 0 0 10"/>
+                                <TextBlock Text="Commandes :"
+                                           FontWeight="Bold"
+                                           Margin="0 10 0 5"/>
+
+                                <ListBox ItemsSource="{Binding Commandes_passees}"
+                                         Height="150"
+                                         BorderThickness="1"
+                                         BorderBrush="Gray">
+                                        <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Commande #"
+                                                                           FontWeight="Bold"/>
+                                                                <TextBlock Text="{Binding Id_commande}"
+                                                                           Margin="5,0"/>
+                                                                <TextBlock Text=" - "/>
+                                                                <TextBlock Text="{Binding Prix}"
+                                                                           Margin="5,0"/>
+                                                                <TextBlock Text="€"/>
+                                                        </StackPanel>
+                                                </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                </ListBox>
                         </StackPanel>
                 </Grid>
-
-                <!-- Bouton retour -->
-                <Button Style="{StaticResource MenuButtonStyle}"
-                        DockPanel.Dock="Bottom"
-                        Content="Retour à l'accueil"
-                        HorizontalAlignment="Center"
-                        Margin="10"
-                        Click="BtnRetourAccueil_Click"/>
         </DockPanel>
 </Page>
