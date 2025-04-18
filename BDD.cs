@@ -4,7 +4,6 @@ using MySql.Data.MySqlClient;
 using System.Threading.Tasks;
 #nullable enable
 
-
 namespace ProbSciANA
 {
     #region Requetes
@@ -26,14 +25,16 @@ namespace ProbSciANA
     public class Utilisateur
     {
         public static List<Utilisateur> utilisateurs = new List<Utilisateur>();
+        public static List<Utilisateur> clients = new List<Utilisateur>();
+        public static List<Utilisateur> cuisiniers = new List<Utilisateur>();
         private List<Commande>? commandes_passees = new List<Commande>();
         private List<Commande>? commandes_effectuees = new List<Commande>();
         private List<Livraison>? livraisons = new List<Livraison>();
         private List<Avis>? avis_laisses = new List<Avis>();
         private List<Avis>? avis_recus = new List<Avis>();
         private List<Cuisine>? cuisines = new List<Cuisine>();
-        private List<Utilisateur>? clients = new List<Utilisateur>();
-        private List<Utilisateur>? cuisiniers = new List<Utilisateur>();
+        private List<Utilisateur>? sesclients = new List<Utilisateur>();
+        private List<Utilisateur>? sescuisiniers = new List<Utilisateur>();
 
         private int id_utilisateur;
         private bool estClient = false;
@@ -51,7 +52,6 @@ namespace ProbSciANA
         private double achats = 0;
         private double gains = 0;
         private Plat? plat_du_jour;
-        private string statut = "Particulier";
 
         public Utilisateur(int id_utilisateur)
         {
@@ -60,14 +60,13 @@ namespace ProbSciANA
         }
         public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string mdp, string nom_referent = "", bool estEntreprise = false)
         {
+            //mdp = GetMDP(nom, prenom);
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
                 connection.Open();
 
                 string queryInsert = @"INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, mdp)
                                 VALUES (@nom, @prenom, @adresse, @telephone, @email, @station, @mdp);";
-
-                //mdp = GetMDP(nom, prenom);
 
                 using (MySqlCommand command = new MySqlCommand(queryInsert, connection))
                 {
@@ -92,7 +91,6 @@ namespace ProbSciANA
             this.estEntreprise = estEntreprise;
             this.nom_referent = nom_referent;
             InsertMaj();
-            Refresh();
         }
 
         #region GetSet
@@ -120,13 +118,13 @@ namespace ProbSciANA
         {
             get { return cuisines; }
         }
-        public List<Utilisateur> Clients
+        public List<Utilisateur> SesClients
         {
-            get { return clients; }
+            get { return sesclients; }
         }
-        public List<Utilisateur> Cuisiniers
+        public List<Utilisateur> SesCuisiniers
         {
-            get { return cuisiniers; }
+            get { return sescuisiniers; }
         }
         public int Id_utilisateur
         {
@@ -234,6 +232,20 @@ namespace ProbSciANA
         {
             get { return plat_du_jour; }
         }
+        public string Statut
+        {
+            get
+            {
+                if (estEntreprise)
+                {
+                    return "Entreprise";
+                }
+                else
+                {
+                    return "Particulier";
+                }
+            }
+        }
         public string NomStation
         {
             get
@@ -245,21 +257,6 @@ namespace ProbSciANA
                 else
                 {
                     return "Inconnu";
-                }
-            }
-        }
-        public string Statut
-        {
-            get { return statut; }
-            set
-            {
-                if (value == "Entreprise" && !estEntreprise)
-                {
-                    statut = value; EstEntreprise = true;
-                }
-                if (value == "Particulier" && estEntreprise)
-                {
-                    statut = value; EstEntreprise = false;
                 }
             }
         }
@@ -360,6 +357,15 @@ namespace ProbSciANA
                     cmd.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
                     cmd.ExecuteNonQuery();
                 }
+            }
+            utilisateurs.Remove(this);
+            if (estClient)
+            {
+                clients.Remove(this);
+            }
+            if (estCuisinier)
+            {
+                cuisiniers.Remove(this);
             }
         }
         public void DeleteMaj()
@@ -468,123 +474,15 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public void RefreshCommandes_passees()
-        {
-            achats = 0;
-            foreach (Commande commande in Commande.commandes)
-            {
-                if (commande.Client != null && commande.Client.Id_utilisateur == id_utilisateur)
-                {
-                    commandes_passees.Add(commande);
-                    achats += commande.Prix;
-                }
-            }
-        }
-        public void RefreshCommandes_effectuees()
-        {
-            gains = 0;
-            foreach (Commande commande in Commande.commandes)
-            {
-                if (commande.Cuisinier != null && commande.Cuisinier.Id_utilisateur == id_utilisateur)
-                {
-                    commandes_effectuees.Add(commande);
-                    gains += commande.Prix;
-                }
-            }
-        }
-        public void RefreshLivraisons()
-        {
-            Livraison.RefreshAll();
-            foreach (Livraison livraison in Livraison.livraisons)
-            {
-                if (livraison.Cuisinier != null && livraison.Cuisinier.Id_utilisateur == id_utilisateur)
-                {
-                    livraisons.Add(livraison);
-                }
-            }
-        }
-        public void RefreshAvis_laisses()
-        {
-            Avis.RefreshAll();
-            foreach (Avis avis in Avis.avis)
-            {
-                if (avis.Client.Id_utilisateur == id_utilisateur)
-                {
-                    avis_laisses.Add(avis);
-                }
-            }
-        }
-        public void RefreshAvis_recus()
-        {
-            Avis.RefreshAll();
-            foreach (Avis avis in Avis.avis)
-            {
-                if (avis.Cuisinier.Id_utilisateur == id_utilisateur)
-                {
-                    avis_recus.Add(avis);
-                }
-            }
-        }
-        public void RefreshCuisines()
-        {
-            Cuisine.RefreshAll();
-            foreach (Cuisine cuisine in Cuisine.cuisines)
-            {
-                if (cuisine.Cuisinier.Id_utilisateur == id_utilisateur)
-                {
-                    cuisines.Add(cuisine);
-                }
-            }
-        }
-        public void RefreshClients()
-        {
-            Commande.RefreshAll();
-            RefreshCommandes_effectuees();
-            foreach (Commande commande in commandes_effectuees)
-            {
-                if (commande.Client != null)
-                {
-                    clients.Add(commande.Client);
-                }
-            }
-        }
-        public void RefreshCuisiniers()
-        {
-            Commande.RefreshAll();
-            RefreshCommandes_passees();
-            foreach (Commande commande in commandes_passees)
-            {
-                if (commande.Cuisinier != null)
-                {
-                    cuisiniers.Add(commande.Cuisinier);
-                }
-            }
-        }
-        public void RefreshPlat_du_jour()
-        {
-            Cuisine.RefreshAll();
-            foreach (Cuisine cuisine in cuisines)
-            {
-                if (cuisine.Plat_du_jour)
-                {
-                    plat_du_jour = cuisine.Plat;
-                }
-            }
-        }
-        public void RefreshStatut()
-        {
-            if (estEntreprise)
-            {
-                statut = "Entreprise";
-            }
-            else
-            {
-                statut = "Particulier";
-            }
-        }
         public static void RefreshAll() // Refreshes the list of utilisateurs
         {
             utilisateurs.Clear();
+            clients.Clear();
+            cuisiniers.Clear();
+            Commande.RefreshAll();
+            Livraison.RefreshAll();
+            Avis.RefreshAll();
+            Cuisine.RefreshAll();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
                 connection.Open();
@@ -602,6 +500,81 @@ namespace ProbSciANA
                     }
                 }
                 connection.Close();
+            }
+
+            foreach (Utilisateur u in utilisateurs)
+            {
+                if (u.EstClient)
+                {
+                    clients.Add(u);
+                }
+
+                if (u.EstCuisinier)
+                {
+                    cuisiniers.Add(u);
+                }
+
+                u.commandes_passees.Clear();
+                u.commandes_effectuees.Clear();
+                u.achats = 0;
+                u.gains = 0;
+                foreach (Commande c in Commande.commandes)
+                {
+                    if (c.Client != null && c.Client.Id_utilisateur == u.id_utilisateur)
+                    {
+                        u.commandes_passees.Add(c);
+                        u.achats += c.Prix;
+                        if (c.Cuisinier != null)
+                        {
+                            u.sescuisiniers.Add(c.Cuisinier);
+                        }
+                    }
+                    if (c.Cuisinier != null && c.Cuisinier.Id_utilisateur == u.id_utilisateur)
+                    {
+                        u.commandes_effectuees.Add(c);
+                        u.gains += c.Prix;
+                        if (c.Client != null)
+                        {
+                            u.sesclients.Add(c.Client);
+                        }
+                    }
+                }
+
+                u.livraisons.Clear();
+                foreach (Livraison l in Livraison.livraisons)
+                {
+                    if (l.Cuisinier != null && l.Cuisinier.Id_utilisateur == u.id_utilisateur)
+                    {
+                        u.livraisons.Add(l);
+                    }
+                }
+
+                u.avis_laisses.Clear();
+                u.avis_recus.Clear();
+                foreach (Avis a in Avis.avis)
+                {
+                    if (a.Client != null && a.Client.Id_utilisateur == u.id_utilisateur)
+                    {
+                        u.avis_laisses.Add(a);
+                    }
+                    if (a.Cuisinier.Id_utilisateur == u.id_utilisateur)
+                    {
+                        u.avis_recus.Add(a);
+                    }
+                }
+
+                u.cuisines.Clear();
+                foreach (Cuisine c in Cuisine.cuisines)
+                {
+                    if (c.Cuisinier.Id_utilisateur == u.id_utilisateur)
+                    {
+                        u.cuisines.Add(c);
+                        if (c.Plat_du_jour)
+                        {
+                            u.plat_du_jour = c.Plat;
+                        }
+                    }
+                }
             }
         }
     }
@@ -1448,7 +1421,10 @@ namespace ProbSciANA
                             note = reader.GetInt32("note");
                             commentaire = reader.GetString("commentaire");
                             date_avis = reader.GetDateTime("date_avis");
-                            client = new Utilisateur(reader.GetInt32("id_client"));
+                            if (!reader.IsDBNull(reader.GetOrdinal("id_client")))
+                            {
+                                client = new Utilisateur(reader.GetInt32("id_client"));
+                            }
                             cuisinier = new Utilisateur(reader.GetInt32("id_cuisinier"));
                         }
                     }

@@ -380,28 +380,8 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Utilisateur.RefreshAll();
-            Commande.RefreshAll();
-            foreach (var u in Utilisateur.utilisateurs)
-            {
-                u.RefreshCommandes_passees();
-                u.RefreshStatut();
-            }
-            dataGridClients.ItemsSource = Utilisateur.utilisateurs;
-        }
-
-        private void BtnModifier_Click(object sender, RoutedEventArgs e)
-        {
-            /*if (ClientsListView.SelectedItem is DataRowView row)
-            {
-                int id = (int)row["Id_utilisateur"];
-                Utilisateur client = Utilisateur.utilisateurs.Find(u => u.Id_utilisateur == id);
-
-                if (client != null && !client.Nom.Contains("(modifié)"))
-                {
-                    client.Nom += " (modifié)";
-                    LoadClients();
-                }
-            }*/
+            dataGridClients.ItemsSource = null;
+            dataGridClients.ItemsSource = Utilisateur.clients;
         }
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
@@ -409,10 +389,18 @@ namespace ProbSciANA.Interface
         }
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
-
+            Utilisateur selectedUtilisateur = dataGridClients.SelectedItem as Utilisateur;
+            selectedUtilisateur.Delete();
+            dataGridClients.ItemsSource = null;
+            dataGridClients.ItemsSource = Utilisateur.clients;
         }
-
-
+        private void dataGridClients_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridClients.SelectedItem is Utilisateur selected)
+            {
+                DataContext = selected;
+            }
+        }
         private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
