@@ -76,11 +76,16 @@
                                 Click="BtnStatistiques_Click"/>
                 </Grid>
 
-                <!-- FLÈCHES NAVIGATION (Chrome style) -->
                 <Grid DockPanel.Dock="Top"
                       Height="50"
                       Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal"
+                                    Grid.Column="0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Margin="10,0,0,0">
@@ -202,42 +207,48 @@
                                 </Button>
 
                         </StackPanel>
+
+                        <!-- Titre -->
+                        <TextBlock Text="Gestion des Clients"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Grid.Column="1"/>
+
+                        <!-- Bouton ➕ -->
+                        <Button Content="➕"
+                                ToolTip="Ajouter un client"
+                                FontSize="16"
+                                Width="32"
+                                Height="32"
+                                Margin="0,0,10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="BtnAjouter_Click"
+                                Grid.Column="2"/>
+
                 </Grid>
-
-                <!-- Titre -->
-                <TextBlock DockPanel.Dock="Top"
-                           Text="Gestion des Clients"
-                           FontSize="24"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           Margin="10"/>
-
-                <!-- Boutons d'action -->
-                <StackPanel DockPanel.Dock="Top"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Margin="10">
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Ajouter un client"
-                                Click="BtnAjouter_Click"/>
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Supprimer"
-                                Click="BtnSupprimer_Click"/>
-                </StackPanel>
 
                 <!-- Liste des clients -->
                 <Grid>
                         <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="1.5*"/>
                         </Grid.ColumnDefinitions>
                         <DataGrid x:Name="dataGridClients"
                                   Grid.Column="0"
                                   AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  HeadersVisibility="Column"
                                   HorizontalAlignment="Stretch"
                                   VerticalAlignment="Stretch"
                                   Margin="10"
-                                  SelectionChanged="dataGridClients_SelectionChanged">
+                                  SelectionChanged="dataGridClients_SelectionChanged"
+                                  ColumnWidth="*"
+                                  CellEditEnding="dataGridClients_CellEditEnding">
                                 <DataGrid.Columns>
                                         <DataGridTextColumn Header="ID"
                                                             Binding="{Binding Id_utilisateur}"
@@ -269,41 +280,116 @@
                                     Margin="10"
                                     Background="#FFF3F3F3"
                                     VerticalAlignment="Top">
-                                <TextBlock Text="Fiche Client"
-                                           FontSize="18"
-                                           FontWeight="Bold"
-                                           Margin="0 0 0 10"/>
-                                <TextBlock Text="Nom :"
-                                           FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Nom}"
-                                           Margin="0 0 0 10"/>
-                                <TextBlock Text="Prénom :"
-                                           FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Prenom}"
-                                           Margin="0 0 0 10"/>
-                                <TextBlock Text="Email :"
-                                           FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Email}"
-                                           Margin="0 0 0 10"/>
-                                <TextBlock Text="Adresse :"
-                                           FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Adresse}"
-                                           Margin="0 0 0 10"/>
-                                <TextBlock Text="Téléphone :"
-                                           FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Telephone}"
-                                           Margin="0 0 0 10"/>
-                                <TextBlock Text="Statut :"
-                                           FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Statut}"
-                                           Margin="0 0 0 10"/>
-                                <TextBlock Text="Station :"
-                                           FontWeight="Bold"/>
-                                <TextBlock Text="{Binding NomStation}"
-                                           Margin="0 0 0 10"/>
-                                <TextBlock Text="Commandes :"
-                                           FontWeight="Bold"
-                                           Margin="0 10 0 5"/>
+                                <DockPanel LastChildFill="True"
+                                           Margin="0 0 0 10">
+                                        <TextBlock Text="Fiche Client"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"
+                                                   DockPanel.Dock="Left"/>
+
+                                        <Button Content="🗑️"
+                                                FontSize="14"
+                                                Width="30"
+                                                Height="30"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Click="BtnSupprimer_Click"
+                                                DockPanel.Dock="Right"/>
+                                </DockPanel>
+                                <Grid Margin="0 0 0 10">
+                                        <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Nom -->
+                                        <TextBlock Text="Nom :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="0"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Nom}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="0"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Prénom -->
+                                        <TextBlock Text="Prénom :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="1"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Prenom}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="1"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Email -->
+                                        <TextBlock Text="Email :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="2"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Email}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="2"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Adresse -->
+                                        <TextBlock Text="Adresse :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="3"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Adresse}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="3"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Téléphone -->
+                                        <TextBlock Text="Téléphone :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="4"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Telephone}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="4"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Statut -->
+                                        <TextBlock Text="Statut :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="5"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Statut}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="5"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Station -->
+                                        <TextBlock Text="Station :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 0"
+                                                   Grid.Row="6"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding NomStation}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="6"
+                                                   Grid.Column="1"/>
+                                </Grid>
 
                                 <ListBox ItemsSource="{Binding Commandes_passees}"
                                          Height="150"

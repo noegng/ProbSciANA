@@ -12,7 +12,6 @@ using System.Net.Http;
 
 namespace ProbSciANA.Interface
 {
-
     #region Page Accueil
     public partial class StartView : Page
     {
@@ -106,11 +105,6 @@ namespace ProbSciANA.Interface
 
             try
             {
-                if (adresse == null)
-                {
-                    MessageBox.Show("Adresse non trouvée. Veuillez vérifier l'adresse saisie.");
-                    return;
-                }
                 var Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
                                                                                                      /// recherche de la station la plus proche avec haversine
 
@@ -300,39 +294,68 @@ namespace ProbSciANA.Interface
         public CuisinierDashboardView()
         {
             InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
         }
-        private void LoadLivraisons()
+        private void AfficherGraphe_Click(object sender, RoutedEventArgs e)
         {
-
             /// Exemple de données de livraison
-
         }
-
-
-
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
             /// Logique pour ajouter un plat
             MessageBox.Show("Ajouter un plat");
-
         }
-
         private async void BtnLivrer(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Livrer un plat");
             await Program.UtiliserGetCoordonnees();
         }
-
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+            /// Exemple de données de livraison
         }
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        private void AfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
         }
-
-
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
     }
 
     #endregion
@@ -469,20 +492,42 @@ namespace ProbSciANA.Interface
         }
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new LoginView());
+
         }
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
-            Utilisateur selectedUtilisateur = dataGridClients.SelectedItem as Utilisateur;
-            selectedUtilisateur.Delete();
-            dataGridClients.ItemsSource = null;
-            dataGridClients.ItemsSource = Utilisateur.clients;
+            if (dataGridClients.SelectedItem is Utilisateur selectedUtilisateur)
+            {
+                selectedUtilisateur.Delete();
+                dataGridClients.ItemsSource = null;
+                dataGridClients.ItemsSource = Utilisateur.clients;
+            }
         }
-        private void dataGridClients_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void dataGridClients_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dataGridClients.SelectedItem is Utilisateur selected)
             {
                 DataContext = selected;
+            }
+        }
+        private async void dataGridClients_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Column.Header?.ToString() == "Adresse" &&
+                e.Row.Item is Utilisateur utilisateur &&
+                e.EditingElement is TextBox tb)
+            {
+                var nouvelleAdresse = tb.Text;
+                utilisateur.Adresse = nouvelleAdresse;
+
+                try
+                {
+                    utilisateur.Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(nouvelleAdresse);
+                    dataGridClients.Items.Refresh(); // Mise à jour de l'affichage
+                }
+                catch
+                {
+                    MessageBox.Show("Adresse invalide ou station introuvable.");
+                }
             }
         }
 
@@ -502,7 +547,6 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new StatistiquesView());
         }
-
         private void UpdateNavButtons()
         {
             BtnBack.IsEnabled = NavigationService?.CanGoBack == true;

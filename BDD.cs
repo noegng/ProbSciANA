@@ -48,7 +48,7 @@ namespace ProbSciANA
         private Noeud<(int id, string nom)> station;
         private DateTime date_inscription;
         private string mdp;
-        private string nom_referent = "";
+        private string? nom_referent = null;
         private double achats = 0;
         private double gains = 0;
         private Plat? plat_du_jour;
@@ -66,7 +66,7 @@ namespace ProbSciANA
                 connection.Open();
 
                 string queryInsert = @"INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, mdp)
-                                VALUES (@nom, @prenom, @adresse, @telephone, @email, @station, @mdp);";
+                                     VALUES (@nom, @prenom, @adresse, @telephone, @email, @station, @mdp);";
 
                 using (MySqlCommand command = new MySqlCommand(queryInsert, connection))
                 {
@@ -90,7 +90,22 @@ namespace ProbSciANA
             this.estCuisinier = estCuisinier;
             this.estEntreprise = estEntreprise;
             this.nom_referent = nom_referent;
-            InsertMaj();
+            if (estClient)
+            {
+                InsertClient();
+            }
+            if (estCuisinier)
+            {
+                InsertCuisinier();
+            }
+            if (!estEntreprise)
+            {
+                InsertParticulier();
+            }
+            if (estEntreprise)
+            {
+                InsertEntreprise();
+            }
         }
 
         #region GetSet
@@ -137,7 +152,7 @@ namespace ProbSciANA
             {
                 if (value && !estClient)
                 {
-                    estClient = value; InsertMaj();
+                    estClient = value; InsertClient();
                 }
                 if (!value && estClient)
                 {
@@ -152,7 +167,7 @@ namespace ProbSciANA
             {
                 if (value && !estCuisinier)
                 {
-                    estCuisinier = value; InsertMaj();
+                    estCuisinier = value; InsertCuisinier();
                 }
                 if (!value && estCuisinier)
                 {
@@ -167,11 +182,11 @@ namespace ProbSciANA
             {
                 if (value && !estEntreprise)
                 {
-                    estEntreprise = value; InsertMaj();
+                    estEntreprise = true; InsertEntreprise(); DeleteMaj();
                 }
                 if (!value && estEntreprise)
                 {
-                    estEntreprise = value; DeleteMaj(); nom_referent = "";
+                    estEntreprise = value; InsertParticulier(); DeleteMaj(); nom_referent = null;
                 }
             }
         }
@@ -245,6 +260,17 @@ namespace ProbSciANA
                     return "Particulier";
                 }
             }
+            set
+            {
+                if (value.ToLower() == "particulier" || value.ToLower() == "p")
+                {
+                    EstEntreprise = false;
+                }
+                if (value == "entreprise" || value == "e")
+                {
+                    EstEntreprise = true;
+                }
+            }
         }
         public string NomStation
         {
@@ -261,75 +287,69 @@ namespace ProbSciANA
             }
         }
         #endregion
-        private void InsertMaj()
+        private void InsertClient()
         {
-            if (estClient)
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
-                using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
-                {
-                    connection.Open();
-                    string query = @"INSERT INTO Client_ (id_utilisateur)
+                connection.Open();
+                string query = @"INSERT INTO Client_ (id_utilisateur)
                                     VALUES (@id_utilisateur);";
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
-                        command.ExecuteNonQuery();
-                    }
-                    connection.Close();
-                }
-            }
-
-            if (estCuisinier)
-            {
-                using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    connection.Open();
-                    string query = @"INSERT INTO Cuisinier (id_utilisateur)
+                    command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+        private void InsertCuisinier()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+                string query = @"INSERT INTO Cuisinier (id_utilisateur)
                                     VALUES (@id_utilisateur);";
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
-                        command.ExecuteNonQuery();
-                    }
-                    connection.Close();
-                }
-            }
-
-            if (!estEntreprise)
-            {
-                using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    connection.Open();
-                    string query = @"INSERT INTO Particulier (id_utilisateur)
+                    command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+        private void InsertParticulier()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+                string query = @"INSERT INTO Particulier (id_utilisateur)
                                     VALUES (@id_utilisateur);";
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
-                        command.ExecuteNonQuery();
-                    }
-                    connection.Close();
-                }
-            }
-
-            if (estEntreprise)
-            {
-                using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    connection.Open();
-                    string query = @"INSERT INTO Entreprise (id_utilisateur, nom_referent)
+                    command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+        private void InsertEntreprise()
+        {
+            using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
+            {
+                connection.Open();
+                string query = @"INSERT INTO Entreprise (id_utilisateur, nom_referent)
                                     VALUES (@id_utilisateur, @nom_referent);";
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
-                        command.Parameters.AddWithValue("@nom_referent", nom_referent);
-                        command.ExecuteNonQuery();
-                    }
-                    connection.Close();
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id_utilisateur", id_utilisateur);
+                    command.Parameters.AddWithValue("@nom_referent", nom_referent);
+                    command.ExecuteNonQuery();
                 }
+                connection.Close();
             }
         }
         public void Update(string champ, string value)
