@@ -175,7 +175,7 @@ LEFT JOIN Entreprise e ON e.id_utilisateur = u.id_utilisateur;
     
 DELETE FROM Utilisateur WHERE id_utilisateur=2;
 
-Select * from avis;
+Select * from Commande;
 
 #****************** MODULE CLIENT *****************#
                     

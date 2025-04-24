@@ -19,21 +19,8 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshAll();
-            _ = LoadStationsAsync(); /// Appel asynchrone pour charger les stations
         }
 
-        public async Task LoadStationsAsync()
-        {
-            try
-            {
-                await Requetes.MàjStations();
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show("Erreur de connexion : " + ex.Message);
-            }
-        }
         private void BtnModeTest_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Test());
@@ -679,6 +666,30 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
+            Commande.RefreshAll();
+            dataGridCommandes.ItemsSource = null;
+            dataGridCommandes.ItemsSource = Commande.commandes;
+        }
+
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Commande selectedCommande)
+            {
+                selectedCommande.Delete();
+                dataGridCommandes.ItemsSource = null;
+                dataGridCommandes.ItemsSource = Commande.commandes;
+            }
+        }
+        private void dataGridCommandes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Commande selected)
+            {
+                DataContext = selected;
+            }
         }
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
@@ -805,6 +816,8 @@ namespace ProbSciANA.Interface
         {
             // Logique pour le bouton 3
             MessageBox.Show("Bouton 3 cliqué !");
+            Utilisateur.RefreshAll();
+            Console.WriteLine(Utilisateur.clients[1].Avis_laisses[0].Commentaire);
         }
 
         private void Commander_Click(object sender, RoutedEventArgs e)

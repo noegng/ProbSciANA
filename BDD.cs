@@ -10,15 +10,6 @@ namespace ProbSciANA
     public static class Requetes
     {
         public static string connectionString = "SERVER=localhost;PORT=3306;user=root;password=root;database=pbsciana;";
-        public static async Task MàjStations()
-        {
-            foreach (Utilisateur u in Utilisateur.utilisateurs)
-            {
-                u.Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(u.Adresse);
-                Console.WriteLine(u.Nom + " " + u.Prenom + " " + u.Adresse);
-                Console.WriteLine(u.Station.Valeur.nom);
-            }
-        }
     }
     #endregion
     #region Utilisateur
@@ -33,8 +24,8 @@ namespace ProbSciANA
         private List<Avis>? avis_laisses = new List<Avis>();
         private List<Avis>? avis_recus = new List<Avis>();
         private List<Cuisine>? cuisines = new List<Cuisine>();
-        private List<Utilisateur>? sesclients = new List<Utilisateur>();
-        private List<Utilisateur>? sescuisiniers = new List<Utilisateur>();
+        private List<Utilisateur>? sesClients = new List<Utilisateur>();
+        private List<Utilisateur>? sesCuisiniers = new List<Utilisateur>();
 
         private int id_utilisateur;
         private bool estClient = false;
@@ -135,11 +126,11 @@ namespace ProbSciANA
         }
         public List<Utilisateur> SesClients
         {
-            get { return sesclients; }
+            get { return sesClients; }
         }
         public List<Utilisateur> SesCuisiniers
         {
-            get { return sescuisiniers; }
+            get { return sesCuisiniers; }
         }
         public int Id_utilisateur
         {
@@ -283,6 +274,16 @@ namespace ProbSciANA
                 else
                 {
                     return "Inconnu";
+                }
+            }
+            set
+            {
+                foreach (Noeud<(int id, string nom)> n in Program.Stations)
+                {
+                    if (n.Valeur.nom.ToLower() == value.ToLower())
+                    {
+                        Station = n;
+                    }
                 }
             }
         }
@@ -546,7 +547,7 @@ namespace ProbSciANA
                         u.achats += c.Prix;
                         if (c.Cuisinier != null)
                         {
-                            u.sescuisiniers.Add(c.Cuisinier);
+                            u.sesCuisiniers.Add(c.Cuisinier);
                         }
                     }
                     if (c.Cuisinier != null && c.Cuisinier.Id_utilisateur == u.id_utilisateur)
@@ -555,7 +556,7 @@ namespace ProbSciANA
                         u.gains += c.Prix;
                         if (c.Client != null)
                         {
-                            u.sesclients.Add(c.Client);
+                            u.sesClients.Add(c.Client);
                         }
                     }
                 }
@@ -666,7 +667,21 @@ namespace ProbSciANA
         public string Statut
         {
             get { return statut; }
-            set { statut = value; Update("statut", value); }
+            set
+            {
+                if (value.ToLower() == "en cours" || value.ToLower() == "ec")
+                {
+                    statut = "en cours"; Update("statut", "en cours");
+                }
+                if (value.ToLower() == "faite" || value.ToLower() == "fait" || value.ToLower() == "f")
+                {
+                    statut = "faite"; Update("statut", "faite");
+                }
+                if (value.ToLower() == "livrée" || value.ToLower() == "livree" || value.ToLower() == "livré" || value.ToLower() == "livre" || value.ToLower() == "l")
+                {
+                    statut = "livrée"; Update("statut", "livrée");
+                }
+            }
         }
         public DateTime Date_commande
         {
@@ -682,6 +697,38 @@ namespace ProbSciANA
         {
             get { return cuisinier; }
             set { cuisinier = value; Update("id_cuisinier", value.Id_utilisateur.ToString()); }
+        }
+        public string NomClient
+        {
+            get { return client.Prenom + " " + client.Nom; }
+            set
+            {
+                Utilisateur.RefreshAll();
+                foreach (Utilisateur u in Utilisateur.clients)
+                {
+                    if ((u.Prenom + u.Nom).ToLower() == value.ToLower())
+                    {
+                        client = u;
+                        Update("id_client", u.Id_utilisateur.ToString());
+                    }
+                }
+            }
+        }
+        public string NomCuisinier
+        {
+            get { return cuisinier.Prenom + " " + cuisinier.Nom; }
+            set
+            {
+                Utilisateur.RefreshAll();
+                foreach (Utilisateur u in Utilisateur.cuisiniers)
+                {
+                    if ((u.Prenom + u.Nom).ToLower() == value.ToLower())
+                    {
+                        cuisinier = u;
+                        Update("id_cuisinier", u.Id_utilisateur.ToString());
+                    }
+                }
+            }
         }
         #endregion
         public void Update(string champ, string value)
@@ -710,6 +757,7 @@ namespace ProbSciANA
                     cmd.ExecuteNonQuery();
                 }
             }
+            commandes.Remove(this);
         }
         public void Refresh() // Refreshes the information of the commande
         {
@@ -882,6 +930,7 @@ namespace ProbSciANA
                     cmd.ExecuteNonQuery();
                 }
             }
+            livraisons.Remove(this);
         }
         public void Refresh() // Refreshes the information of the livraison
         {
@@ -1091,6 +1140,7 @@ namespace ProbSciANA
                     cmd.ExecuteNonQuery();
                 }
             }
+            plats.Remove(this);
         }
         public void Refresh() // Refreshes the information of the plat
         {
@@ -1263,6 +1313,7 @@ namespace ProbSciANA
                     cmd.ExecuteNonQuery();
                 }
             }
+            ingredients.Remove(this);
         }
         public void Refresh() // Refreshes the information of the ingredient
         {
@@ -1395,6 +1446,38 @@ namespace ProbSciANA
             get { return cuisinier; }
             set { cuisinier = value; Update("id_cuisinier", value.Id_utilisateur.ToString()); }
         }
+        public string NomClient
+        {
+            get { return client.Prenom + " " + client.Nom; }
+            set
+            {
+                Utilisateur.RefreshAll();
+                foreach (Utilisateur u in Utilisateur.clients)
+                {
+                    if ((u.Prenom + u.Nom).ToLower() == value.ToLower())
+                    {
+                        client = u;
+                        Update("id_client", u.Id_utilisateur.ToString());
+                    }
+                }
+            }
+        }
+        public string NomCuisinier
+        {
+            get { return cuisinier.Prenom + " " + cuisinier.Nom; }
+            set
+            {
+                Utilisateur.RefreshAll();
+                foreach (Utilisateur u in Utilisateur.cuisiniers)
+                {
+                    if ((u.Prenom + u.Nom).ToLower() == value.ToLower())
+                    {
+                        cuisinier = u;
+                        Update("id_cuisinier", u.Id_utilisateur.ToString());
+                    }
+                }
+            }
+        }
         #endregion
         public void Update(string champ, string value)
         {
@@ -1422,6 +1505,7 @@ namespace ProbSciANA
                     cmd.ExecuteNonQuery();
                 }
             }
+            avis.Remove(this);
         }
         public void Refresh() // Refreshes the information of the avis
         {
@@ -1574,6 +1658,7 @@ namespace ProbSciANA
                     cmd.ExecuteNonQuery();
                 }
             }
+            cuisines.Remove(this);
         }
         public void Refresh() // Refreshes the information of the cuisine
         {
@@ -1706,6 +1791,7 @@ namespace ProbSciANA
                     cmd.ExecuteNonQuery();
                 }
             }
+            requierts.Remove(this);
         }
         public void Refresh() // Refreshes the information of the requiert
         {
@@ -1836,6 +1922,7 @@ namespace ProbSciANA
                     cmd.ExecuteNonQuery();
                 }
             }
+            composes.Remove(this);
         }
         public void Refresh() // Refreshes the information of the compose
         {

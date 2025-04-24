@@ -205,7 +205,6 @@
                                                 </ControlTemplate>
                                         </Button.Template>
                                 </Button>
-
                         </StackPanel>
 
                         <!-- Titre -->
@@ -266,8 +265,7 @@
                                         <DataGridTextColumn Header="Téléphone"
                                                             Binding="{Binding Telephone}"/>
                                         <DataGridTextColumn Header="Station"
-                                                            Binding="{Binding NomStation}"
-                                                            IsReadOnly="True"/>
+                                                            Binding="{Binding NomStation}"/>
                                         <DataGridTextColumn Header="Achats"
                                                             Binding="{Binding Achats}"
                                                             IsReadOnly="True"/>
@@ -391,25 +389,103 @@
                                                    Grid.Column="1"/>
                                 </Grid>
 
-                                <ListBox ItemsSource="{Binding Commandes_passees}"
-                                         Height="150"
-                                         BorderThickness="1"
-                                         BorderBrush="Gray">
-                                        <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Commande #"
-                                                                           FontWeight="Bold"/>
-                                                                <TextBlock Text="{Binding Id_commande}"
-                                                                           Margin="5,0"/>
-                                                                <TextBlock Text=" - "/>
-                                                                <TextBlock Text="{Binding Prix}"
-                                                                           Margin="5,0"/>
-                                                                <TextBlock Text="€"/>
-                                                        </StackPanel>
-                                                </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                </ListBox>
+                                <Expander Header="Afficher les commandes passées"
+                                          FontWeight="Bold"
+                                          Background="WhiteSmoke"
+                                          Foreground="Black"
+                                          Margin="0,10,0,0"
+                                          ExpandDirection="Down">
+                                        <Border BorderThickness="1"
+                                                BorderBrush="Gray"
+                                                Padding="5"
+                                                Background="White">
+                                                <ScrollViewer MaxHeight="150"
+                                                              VerticalScrollBarVisibility="Auto">
+                                                        <ListBox ItemsSource="{Binding Commandes_passees}">
+                                                                <ListBox.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                        <TextBlock Text="Commande #"
+                                                                                                   FontWeight="Bold"/>
+                                                                                        <TextBlock Text="{Binding Id_commande}"
+                                                                                                   Margin="5,0"/>
+                                                                                        <TextBlock Text=" - "/>
+                                                                                        <TextBlock Text="{Binding Prix}"
+                                                                                                   Margin="5,0"/>
+                                                                                        <TextBlock Text="€"/>
+                                                                                </StackPanel>
+                                                                        </DataTemplate>
+                                                                </ListBox.ItemTemplate>
+                                                        </ListBox>
+                                                </ScrollViewer>
+                                        </Border>
+                                </Expander>
+
+                                <Expander Header="Afficher les avis laissés"
+                                          FontWeight="Bold"
+                                          Background="WhiteSmoke"
+                                          Foreground="Black"
+                                          Margin="0,10,0,0"
+                                          ExpandDirection="Down">
+                                        <Border BorderThickness="1"
+                                                BorderBrush="Gray"
+                                                Padding="5"
+                                                Background="White">
+                                                <ScrollViewer MaxHeight="150"
+                                                              VerticalScrollBarVisibility="Auto">
+                                                        <ListBox ItemsSource="{Binding Avis_laisses}">
+                                                                <ListBox.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                        <TextBlock Text="Avis #"
+                                                                                                   FontWeight="Bold"/>
+                                                                                        <TextBlock Text="{Binding Id_avis}"
+                                                                                                   Margin="5,0"/>
+                                                                                        <TextBlock Text=" - "/>
+                                                                                        <TextBlock Text="{Binding NomCuisinier}"
+                                                                                                   Margin="5,0"/>
+                                                                                        <TextBlock Text="{Binding Note}"/>
+                                                                                        <TextBlock Text=" /5"/>
+                                                                                </StackPanel>
+                                                                        </DataTemplate>
+                                                                </ListBox.ItemTemplate>
+                                                        </ListBox>
+                                                </ScrollViewer>
+                                        </Border>
+                                </Expander>
+
+                                <Expander Header="Afficher la liste des cuisiniers"
+                                          FontWeight="Bold"
+                                          Background="WhiteSmoke"
+                                          Foreground="Black"
+                                          Margin="0,10,0,0"
+                                          ExpandDirection="Down">
+                                        <Border BorderThickness="1"
+                                                BorderBrush="Gray"
+                                                Padding="5"
+                                                Background="White">
+                                                <ScrollViewer MaxHeight="150"
+                                                              VerticalScrollBarVisibility="Auto">
+                                                        <ListBox ItemsSource="{Binding SesCuisiniers}">
+                                                                <ListBox.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                        <TextBlock Text="Utilisateur #"
+                                                                                                   FontWeight="Bold"/>
+                                                                                        <TextBlock Text="{Binding Id_utilisateur}"
+                                                                                                   Margin="5,0"/>
+                                                                                        <TextBlock Text=" - "/>
+                                                                                        <TextBlock Text="{Binding Prenom}"/>
+                                                                                        <TextBlock Text=" "/>
+                                                                                        <TextBlock Text="{Binding Nom}"/>
+                                                                                </StackPanel>
+                                                                        </DataTemplate>
+                                                                </ListBox.ItemTemplate>
+                                                        </ListBox>
+                                                </ScrollViewer>
+                                        </Border>
+                                </Expander>
+
                         </StackPanel>
                 </Grid>
         </DockPanel>
