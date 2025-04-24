@@ -469,6 +469,8 @@ namespace ProbSciANA.Interface
     #region Page Gestion Clients (admin)
     public partial class ClientsView : Page
     {
+        public object SelectedElement { get; set; }
+
         public ClientsView()
         {
             InitializeComponent();
@@ -495,6 +497,43 @@ namespace ProbSciANA.Interface
             if (dataGridClients.SelectedItem is Utilisateur selected)
             {
                 DataContext = selected;
+            }
+        }
+        private void ListAvis_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // On désélectionne toute commande pour que PriorityBinding regarde ensuite ListAvis
+            ListCommandes.SelectedItem = null;
+            Console.WriteLine("ve");
+        }
+        private void ListCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Même logique : on désélectionne la commande active
+            ListCommandes.SelectedItem = null;
+        }
+        private void OnListCommandes_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListCommandes.SelectedItem != null)
+            {
+                ListAvis.SelectedItem = null;
+                ListCuisiniers.SelectedItem = null;
+            }
+        }
+
+        private void OnListAvis_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListAvis.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListCuisiniers.SelectedItem = null;
+            }
+        }
+
+        private void OnListCuisiniers_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListCuisiniers.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListAvis.SelectedItem = null;
             }
         }
         private async void dataGridClients_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)

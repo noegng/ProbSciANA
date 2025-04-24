@@ -1,7 +1,73 @@
 <Page x:Class="ProbSciANA.Interface.ClientsView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:models="clr-namespace:ProbSciANA"
+      xmlns:iface="clr-namespace:ProbSciANA.Interface"
       Title="ClientsView">
+
+
+        <Page.Resources>
+                <!-- 1) Converter pour retourner la première valeur non-null -->
+                <iface:FirstNonNullConverter x:Key="FirstNonNullConverter"/>
+
+                <!-- 2) DataTemplates pour chaque type d’objet -->
+                <DataTemplate DataType="{x:Type models:Commande}">
+                        <Border Padding="10"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Margin="0,5">
+                                <StackPanel>
+                                        <TextBlock Text="Détail Commande"
+                                                   FontWeight="Bold"
+                                                   FontSize="14"/>
+                                        <TextBlock Text="{Binding Nom}"
+                                                   Margin="0,5,0,0"/>
+                                        <TextBlock Text="{Binding Prix, StringFormat=Prix : {0} €}"/>
+                                        <TextBlock Text="{Binding Statut, StringFormat=Statut : {0}}"/>
+                                        <TextBlock Text="{Binding Date_commande, StringFormat=Date : {0:dd/MM/yyyy}}"/>
+                                        <TextBlock Text="{Binding NomClient, StringFormat=Client : {0}}"/>
+                                        <TextBlock Text="{Binding NomCuisinier, StringFormat=Cuisinier : {0}}"/>
+                                </StackPanel>
+                        </Border>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type models:Avis}">
+                        <Border Padding="10"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Margin="0,5">
+                                <StackPanel>
+                                        <TextBlock Text="Détail Avis"
+                                                   FontWeight="Bold"
+                                                   FontSize="14"/>
+                                        <TextBlock Text="{Binding Note, StringFormat=Note : {0}/5}"
+                                                   Margin="0,5,0,0"/>
+                                        <TextBlock Text="{Binding Commentaire}"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding Date_avis, StringFormat=Posté le {0:dd/MM/yyyy}}"/>
+                                        <TextBlock Text="{Binding NomClient, StringFormat=Client : {0}}"/>
+                                </StackPanel>
+                        </Border>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type models:Utilisateur}">
+                        <Border Padding="10"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Margin="0,5">
+                                <StackPanel>
+                                        <TextBlock Text="Détail Cuisinier"
+                                                   FontWeight="Bold"
+                                                   FontSize="14"/>
+                                        <TextBlock Text="{Binding Prenom}"
+                                                   Margin="0,5,0,0"/>
+                                        <TextBlock Text="{Binding Nom}"/>
+                                        <TextBlock Text="{Binding Adresse, StringFormat=Adresse : {0}}"/>
+                                        <TextBlock Text="{Binding Email, StringFormat=Email : {0}}"/>
+                                </StackPanel>
+                        </Border>
+                </DataTemplate>
+        </Page.Resources>
 
         <DockPanel LastChildFill="True">
 
@@ -389,103 +455,50 @@
                                                    Grid.Column="1"/>
                                 </Grid>
 
-                                <Expander Header="Afficher les commandes passées"
-                                          FontWeight="Bold"
-                                          Background="WhiteSmoke"
-                                          Foreground="Black"
-                                          Margin="0,10,0,0"
-                                          ExpandDirection="Down">
-                                        <Border BorderThickness="1"
-                                                BorderBrush="Gray"
-                                                Padding="5"
-                                                Background="White">
-                                                <ScrollViewer MaxHeight="150"
-                                                              VerticalScrollBarVisibility="Auto">
-                                                        <ListBox ItemsSource="{Binding Commandes_passees}">
-                                                                <ListBox.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                                <StackPanel Orientation="Horizontal">
-                                                                                        <TextBlock Text="Commande #"
-                                                                                                   FontWeight="Bold"/>
-                                                                                        <TextBlock Text="{Binding Id_commande}"
-                                                                                                   Margin="5,0"/>
-                                                                                        <TextBlock Text=" - "/>
-                                                                                        <TextBlock Text="{Binding Prix}"
-                                                                                                   Margin="5,0"/>
-                                                                                        <TextBlock Text="€"/>
-                                                                                </StackPanel>
-                                                                        </DataTemplate>
-                                                                </ListBox.ItemTemplate>
-                                                        </ListBox>
-                                                </ScrollViewer>
-                                        </Border>
-                                </Expander>
+                                <!-- Les trois expanders pour naviguer dans les listes -->
+                                <StackPanel>
+                                        <Expander Header="Commandes passées"
+                                                  IsExpanded="True"
+                                                  Margin="0,10,0,0">
+                                                <ListBox x:Name="ListCommandes"
+                                                         ItemsSource="{Binding Commandes_passees}"
+                                                         DisplayMemberPath="Nom"
+                                                         SelectionChanged="OnListCommandes_Selected"/>
+                                        </Expander>
 
-                                <Expander Header="Afficher les avis laissés"
-                                          FontWeight="Bold"
-                                          Background="WhiteSmoke"
-                                          Foreground="Black"
-                                          Margin="0,10,0,0"
-                                          ExpandDirection="Down">
-                                        <Border BorderThickness="1"
-                                                BorderBrush="Gray"
-                                                Padding="5"
-                                                Background="White">
-                                                <ScrollViewer MaxHeight="150"
-                                                              VerticalScrollBarVisibility="Auto">
-                                                        <ListBox ItemsSource="{Binding Avis_laisses}">
-                                                                <ListBox.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                                <StackPanel Orientation="Horizontal">
-                                                                                        <TextBlock Text="Avis #"
-                                                                                                   FontWeight="Bold"/>
-                                                                                        <TextBlock Text="{Binding Id_avis}"
-                                                                                                   Margin="5,0"/>
-                                                                                        <TextBlock Text=" - "/>
-                                                                                        <TextBlock Text="{Binding NomCuisinier}"
-                                                                                                   Margin="5,0"/>
-                                                                                        <TextBlock Text="{Binding Note}"/>
-                                                                                        <TextBlock Text=" /5"/>
-                                                                                </StackPanel>
-                                                                        </DataTemplate>
-                                                                </ListBox.ItemTemplate>
-                                                        </ListBox>
-                                                </ScrollViewer>
-                                        </Border>
-                                </Expander>
+                                        <Expander Header="Avis laissés"
+                                                  Margin="0,10,0,0">
+                                                <ListBox x:Name="ListAvis"
+                                                         ItemsSource="{Binding Avis_laisses}"
+                                                         DisplayMemberPath="Commentaire"
+                                                         SelectionChanged="OnListAvis_Selected"/>
+                                        </Expander>
 
-                                <Expander Header="Afficher la liste des cuisiniers"
-                                          FontWeight="Bold"
-                                          Background="WhiteSmoke"
-                                          Foreground="Black"
-                                          Margin="0,10,0,0"
-                                          ExpandDirection="Down">
-                                        <Border BorderThickness="1"
-                                                BorderBrush="Gray"
-                                                Padding="5"
-                                                Background="White">
-                                                <ScrollViewer MaxHeight="150"
-                                                              VerticalScrollBarVisibility="Auto">
-                                                        <ListBox ItemsSource="{Binding SesCuisiniers}">
-                                                                <ListBox.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                                <StackPanel Orientation="Horizontal">
-                                                                                        <TextBlock Text="Utilisateur #"
-                                                                                                   FontWeight="Bold"/>
-                                                                                        <TextBlock Text="{Binding Id_utilisateur}"
-                                                                                                   Margin="5,0"/>
-                                                                                        <TextBlock Text=" - "/>
-                                                                                        <TextBlock Text="{Binding Prenom}"/>
-                                                                                        <TextBlock Text=" "/>
-                                                                                        <TextBlock Text="{Binding Nom}"/>
-                                                                                </StackPanel>
-                                                                        </DataTemplate>
-                                                                </ListBox.ItemTemplate>
-                                                        </ListBox>
-                                                </ScrollViewer>
-                                        </Border>
-                                </Expander>
+                                        <Expander Header="Cuisiniers associés"
+                                                  Margin="0,10,0,0">
+                                                <ListBox x:Name="ListCuisiniers"
+                                                         ItemsSource="{Binding SesCuisiniers}"
+                                                         DisplayMemberPath="Prenom"
+                                                         SelectionChanged="OnListCuisiniers_Selected"/>
+                                        </Expander>
 
+                                        <!-- Le détail unique qui se met à jour selon la sélection -->
+                                        <ContentControl Margin="0,20,0,0">
+                                                <ContentControl.Content>
+                                                        <MultiBinding Converter="{StaticResource FirstNonNullConverter}">
+                                                                <!-- On teste d’abord Avis -->
+                                                                <Binding ElementName="ListAvis"
+                                                                         Path="SelectedItem"/>
+                                                                <!-- puis Cuisiniers -->
+                                                                <Binding ElementName="ListCuisiniers"
+                                                                         Path="SelectedItem"/>
+                                                                <!-- et enfin Commandes -->
+                                                                <Binding ElementName="ListCommandes"
+                                                                         Path="SelectedItem"/>
+                                                        </MultiBinding>
+                                                </ContentControl.Content>
+                                        </ContentControl>
+                                </StackPanel>
                         </StackPanel>
                 </Grid>
         </DockPanel>
