@@ -612,6 +612,7 @@ namespace ProbSciANA
         private DateTime date_commande;
         private Utilisateur? client;
         private Utilisateur? cuisinier;
+        
         public Commande(int id_commande)
         {
             this.id_commande = id_commande;
