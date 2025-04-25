@@ -18,12 +18,26 @@ namespace ProbSciANA.Interface
         public StartView()
         {
             InitializeComponent();
-            Loaded += (s, e) => UpdateNavButtons();
+            Loaded += (s, e) =>
+            {
+                UpdateNavButtons();
+                UpdateAuthButtons();
+            };
         }
 
         private void BtnModeTest_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Test());
+        }
+        private void UpdateAuthButtons()
+        {
+            bool loggedIn = SessionManager.IsLoggedIn;
+
+            BtnProfil.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
+            BtnLogout.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
+
+            BtnConnexion.Visibility = loggedIn ? Visibility.Collapsed : Visibility.Visible;
+            BtnInscription.Visibility = loggedIn ? Visibility.Collapsed : Visibility.Visible;
         }
         private void UpdateNavButtons()
         {
@@ -33,6 +47,28 @@ namespace ProbSciANA.Interface
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnProfil_Click(object sender, RoutedEventArgs e)
+        {
+            // Exemple : aller vers le tableau de bord utilisateur ou une page Profil
+            if (SessionManager.CurrentUser.EstClient)
+                NavigationService?.Navigate(new UserDashboardView());
+            else if (SessionManager.CurrentUser.EstCuisinier)
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            // sinon : gérer les autres rôles ou ouvrir une page Profil générique
+        }
+        private void BtnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            // 1. Supprimer la session utilisateur
+            SessionManager.Logout();
+
+            // 2. Réinitialiser les boutons
+            UpdateAuthButtons();
+
+            // 3. Revenir à l'accueil
+            NavigationService?.Navigate(new StartView());
+
+            MessageBox.Show("Vous avez été déconnecté.");
         }
         private void BtnConnexion_Click(object sender, RoutedEventArgs e)
         {
@@ -105,6 +141,7 @@ namespace ProbSciANA.Interface
                     email,
                     mdp,
                     estEntreprise: role == "Entreprise");
+                SessionManager.CurrentUser = nouvelUtilisateur;
 
                 MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
 
@@ -201,6 +238,8 @@ namespace ProbSciANA.Interface
 
             if (utilisateurTrouve != null && motDePasseEntre == utilisateurTrouve.Mdp)
             {
+                SessionManager.CurrentUser = utilisateurTrouve;
+
                 MessageBox.Show($"Connexion réussie : {nomUtilisateur} ");
 
                 // Rediriger en fonction du rôle de l'utilisateur
@@ -831,6 +870,25 @@ namespace ProbSciANA.Interface
         }
     }
 
+    #endregion
+
+    #region SessionManager
+    public static class SessionManager
+    {
+        public static Utilisateur CurrentUser { get; set; }
+
+        static SessionManager()
+        {
+            CurrentUser = null; // Important pour éviter des valeurs fantômes
+        }
+
+        public static bool IsLoggedIn => CurrentUser != null;
+
+        public static void Logout()
+        {
+            CurrentUser = null;
+        }
+    }
     #endregion
 
     #region Test

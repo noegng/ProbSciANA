@@ -14,10 +14,13 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <!-- Bouton Mode -->
-            <Button Grid.Column="0"
+            <Button x:Name="BtnMode"
+                    Grid.Column="0"
                     Content="🌙 Mode"
                     Foreground="White"
                     Background="Transparent"
@@ -27,7 +30,8 @@
                     Click="BtnMode_Click"/>
 
             <!-- Bouton Accueil -->
-            <Button Grid.Column="1"
+            <Button x:Name="BtnAccueil"
+                    Grid.Column="1"
                     Content="🏠 Accueil"
                     Foreground="White"
                     Background="Transparent"
@@ -39,8 +43,31 @@
             <!-- Espace vide -->
             <StackPanel Grid.Column="2"/>
 
+            <Button x:Name="BtnLogout"
+                    Grid.Column="3"
+                    Content="Déconnexion"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Visibility="Collapsed"
+                    Click="BtnLogout_Click"
+                    Margin="0,0,10,0"/>
+
+            <Button x:Name="BtnProfil"
+                    Grid.Column="4"
+                    Foreground="White"
+                    Background="Transparent"
+                    Content="Profil"
+                    Visibility="Collapsed"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="BtnProfil_Click"/>
+
             <!-- Connexion -->
-            <Button Grid.Column="3"
+            <Button x:Name="BtnConnexion"
+                    Grid.Column="5"
                     Content="Connexion"
                     Foreground="White"
                     Background="Transparent"
@@ -50,7 +77,8 @@
                     Click="BtnConnexion_Click"/>
 
             <!-- Inscription -->
-            <Button Grid.Column="4"
+            <Button x:Name="BtnInscription"
+                    Grid.Column="6"
                     Content="S'inscrire"
                     Foreground="Black"
                     Background="White"
