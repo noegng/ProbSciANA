@@ -17,9 +17,9 @@ digraph G {
     "(13, Palais Royal - Musée du Louvre)" [pos="2.33645436775425,48.862222264626!", color="red",label="(13, Palais Royal - Musée du Louvre)",style="bold", fontsize=12];
     "(14, Louvre - Rivoli)" [pos="2.34096962328527,48.8608712117595!", color="red",label="(14, Louvre - Rivoli)",style="bold", fontsize=12];
     "(15, Châtelet)" [pos="2.34816099123458,48.8569534598372!", color="red",label="(15, Châtelet)",style="bold", fontsize=12];
-    "(16, Hôtel de Ville)" [pos="2.3520676701391,48.8573524042377!", color="red",label="(16, Hôtel de Ville)",style="bold", fontsize=12];
-    "(17, Saint-Paul)" [pos="2.36088525627519,48.8551874206563!", color="red",label="(17, Saint-Paul)",style="bold", fontsize=12];
-    "(18, Bastille)" [pos="2.36871896103409,48.8520542925495!", color="red",label="(18, Bastille)",style="bold", fontsize=12];
+    "(16, Hôtel de Ville)" [pos="2.3520676701391,48.8573524042377!", color="",label="(16, Hôtel de Ville)",style="", fontsize=12];
+    "(17, Saint-Paul)" [pos="2.36088525627519,48.8551874206563!", color="",label="(17, Saint-Paul)",style="", fontsize=12];
+    "(18, Bastille)" [pos="2.36871896103409,48.8520542925495!", color="",label="(18, Bastille)",style="", fontsize=12];
     "(19, Gare de Lyon)" [pos="2.3731565937892,48.8456832057876!", color="",label="(19, Gare de Lyon)",style="", fontsize=12];
     "(20, Reuilly - Diderot)" [pos="2.38720107040939,48.8472129257497!", color="",label="(20, Reuilly - Diderot)",style="", fontsize=12];
     "(21, Nation)" [pos="2.39584398872374,48.8480842890258!", color="",label="(21, Nation)",style="", fontsize=12];
@@ -96,7 +96,7 @@ digraph G {
     "(96, Oberkampf)" [pos="2.36815584539455,48.8647770975732!", color="",label="(96, Oberkampf)",style="", fontsize=12];
     "(97, Richard-Lenoir)" [pos="2.37181363047695,48.8598769369206!", color="",label="(97, Richard-Lenoir)",style="", fontsize=12];
     "(98, Bréguet-Sabin)" [pos="2.37019466858975,48.8562440537382!", color="",label="(98, Bréguet-Sabin)",style="", fontsize=12];
-    "(99, Quai de la Rapée)" [pos="2.3658846507504,48.8464273245315!", color="red",label="(99, Quai de la Rapée)",style="bold", fontsize=12];
+    "(99, Quai de la Rapée)" [pos="2.3658846507504,48.8464273245315!", color="",label="(99, Quai de la Rapée)",style="", fontsize=12];
     "(100, Gare d'Austerlitz)" [pos="2.36417731069183,48.8434054085772!", color="red",label="(100, Gare d'Austerlitz)",style="bold", fontsize=12];
     "(101, Saint-Marcel)" [pos="2.36072185971764,48.8385124457356!", color="red",label="(101, Saint-Marcel)",style="filled", fontsize=12];
     "(102, Campo-Formio)" [pos="2.35874195669934,48.835542932801!", color="",label="(102, Campo-Formio)",style="", fontsize=12];
@@ -138,9 +138,9 @@ digraph G {
     "(135, Chaussée d'Antin - La Fayette)" [pos="2.3337385944087,48.8731342048266!", color="",label="(135, Chaussée d'Antin - La Fayette)",style="", fontsize=12];
     "(136, Pyramides)" [pos="2.33462360600492,48.8657555264287!", color="",label="(136, Pyramides)",style="", fontsize=12];
     "(137, Pont Neuf)" [pos="2.34177674914854,48.8585463383202!", color="",label="(137, Pont Neuf)",style="", fontsize=12];
-    "(138, Pont Marie)" [pos="2.3573766690444,48.8534598594796!", color="",label="(138, Pont Marie)",style="", fontsize=12];
-    "(139, Sully - Morland)" [pos="2.36185316969725,48.8512714074456!", color="",label="(139, Sully - Morland)",style="", fontsize=12];
-    "(140, Jussieu)" [pos="2.35493167182323,48.8461978906888!", color="",label="(140, Jussieu)",style="", fontsize=12];
+    "(138, Pont Marie)" [pos="2.3573766690444,48.8534598594796!", color="red",label="(138, Pont Marie)",style="bold", fontsize=12];
+    "(139, Sully - Morland)" [pos="2.36185316969725,48.8512714074456!", color="red",label="(139, Sully - Morland)",style="bold", fontsize=12];
+    "(140, Jussieu)" [pos="2.35493167182323,48.8461978906888!", color="red",label="(140, Jussieu)",style="bold", fontsize=12];
     "(141, Place Monge)" [pos="2.35215486857877,48.8426663846946!", color="",label="(141, Place Monge)",style="", fontsize=12];
     "(142, Censier - Daubenton)" [pos="2.3516265726055,48.8402262475657!", color="",label="(142, Censier - Daubenton)",style="", fontsize=12];
     "(143, Les Gobelins)" [pos="2.35241680189827,48.8358416213962!", color="",label="(143, Les Gobelins)",style="", fontsize=12];
@@ -266,10 +266,9 @@ digraph G {
     "(12, Tuileries)" -> "(13, Palais Royal - Musée du Louvre)" [ color="#F2C931", penwidth=3, style=bold];
     "(13, Palais Royal - Musée du Louvre)" -> "(14, Louvre - Rivoli)" [ color="#F2C931", penwidth=3, style=bold];
     "(14, Louvre - Rivoli)" -> "(15, Châtelet)" [ color="#F2C931", penwidth=3, style=bold];
-    "(15, Châtelet)" -> "(16, Hôtel de Ville)" [ color="#F2C931", penwidth=3, style=bold];
-    "(16, Hôtel de Ville)" -> "(17, Saint-Paul)" [ color="#F2C931", penwidth=3, style=bold];
-    "(17, Saint-Paul)" -> "(18, Bastille)" [ color="#F2C931", penwidth=3, style=bold];
-    "(18, Bastille)" -> "(99, Quai de la Rapée)" [ color="#DE5D29", penwidth=3, style=bold];
-    "(99, Quai de la Rapée)" -> "(100, Gare d'Austerlitz)" [ color="#DE5D29", penwidth=3, style=bold];
+    "(15, Châtelet)" -> "(138, Pont Marie)" [ color="#DF9AB1", penwidth=3, style=bold];
+    "(138, Pont Marie)" -> "(139, Sully - Morland)" [ color="#DF9AB1", penwidth=3, style=bold];
+    "(139, Sully - Morland)" -> "(140, Jussieu)" [ color="#DF9AB1", penwidth=3, style=bold];
+    "(140, Jussieu)" -> "(100, Gare d'Austerlitz)" [ color="#DFB039", penwidth=3, style=bold];
     "(100, Gare d'Austerlitz)" -> "(101, Saint-Marcel)" [ color="#DE5D29", penwidth=3, style=bold];
 }

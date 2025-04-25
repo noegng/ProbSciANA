@@ -49,8 +49,9 @@ namespace ProbSciANA
             this.id_utilisateur = id_utilisateur;
             Refresh();
         }
-        public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string mdp, string nom_referent = "", bool estEntreprise = false)
+        public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string mdp, Noeud<(int id, string nom)> station = null, bool estEntreprise = false, string nom_referent = "")
         {
+
             //mdp = GetMDP(nom, prenom);
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -89,11 +90,11 @@ namespace ProbSciANA
             {
                 InsertCuisinier();
             }
-            if (!estEntreprise)
+            if (!estEntreprise && estClient)
             {
                 InsertParticulier();
             }
-            if (estEntreprise)
+            if (estEntreprise && estClient)
             {
                 InsertEntreprise();
             }

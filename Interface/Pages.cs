@@ -14,7 +14,6 @@ namespace ProbSciANA.Interface
 {
 
     #region Page Accueil
-    #region Page Accueil
     public partial class StartView : Page
     {
 
@@ -122,7 +121,7 @@ namespace ProbSciANA.Interface
 
             if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(prenom) ||
                 string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(adresse) ||
-                string.IsNullOrWhiteSpace(role))
+                string.IsNullOrWhiteSpace(role) || string.IsNullOrWhiteSpace(mdp))
             {
                 MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
                 return;
@@ -147,7 +146,9 @@ namespace ProbSciANA.Interface
                     "", // téléphone
                     email,
                     mdp,
-                    estEntreprise: role == "Entreprise");
+                    Station,
+                    estEntreprise: role == "Entreprise"
+                    );
                 SessionManager.CurrentUser = nouvelUtilisateur;
 
                 MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
@@ -899,6 +900,7 @@ namespace ProbSciANA.Interface
     #endregion
 
     #region Test
+
     public partial class Test : Page
     {
         public Test()
