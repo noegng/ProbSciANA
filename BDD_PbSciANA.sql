@@ -66,9 +66,9 @@ CREATE TABLE IF NOT EXISTS Avis(
    note TINYINT NOT NULL CHECK (note >=0 AND note <=5),
    commentaire TEXT,
    date_avis DATETIME DEFAULT NOW(),
-   id_Client_ INT NOT NULL,
+   id_client INT,
    id_cuisinier INT NOT NULL,
-   FOREIGN KEY(id_Client_) REFERENCES Client_(id_utilisateur) ON DELETE CASCADE,
+   FOREIGN KEY(id_client) REFERENCES Client_(id_utilisateur) ON DELETE SET NULL,
    FOREIGN KEY(id_cuisinier) REFERENCES Cuisinier(id_utilisateur) ON DELETE CASCADE
 );
 
@@ -112,18 +112,18 @@ DROP TABLE IF EXISTS Compose;
 CREATE TABLE IF NOT EXISTS Compose(
    id_plat INT,
    id_ingredient INT,
-   quantite TINYINT CHECK(quantite > 0) NOT NULL,
+   quantite TINYINT CHECK(quantite > 0),
    PRIMARY KEY(id_plat, id_ingredient),
-   FOREIGN KEY(id_plat) REFERENCES Plat(id_plat),
-   FOREIGN KEY(id_ingredient) REFERENCES Ingredient(id_ingredient)
+   FOREIGN KEY(id_plat) REFERENCES Plat(id_plat) ON DELETE CASCADE,
+   FOREIGN KEY(id_ingredient) REFERENCES Ingredient(id_ingredient) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS Requiert;
 CREATE TABLE IF NOT EXISTS Requiert(
    id_plat INT,
    id_livraison INT,
-   quantite TINYINT CHECK(quantite > 0) NOT NULL,
+   quantite TINYINT CHECK(quantite > 0),
    PRIMARY KEY(id_plat, id_livraison),
-   FOREIGN KEY(id_plat) REFERENCES Plat(id_plat),
+   FOREIGN KEY(id_plat) REFERENCES Plat(id_plat) ON DELETE CASCADE,
    FOREIGN KEY(id_livraison) REFERENCES Livraison(id_livraison) ON DELETE CASCADE
 );

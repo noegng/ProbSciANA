@@ -1,123 +1,505 @@
 <Page x:Class="ProbSciANA.Interface.ClientsView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:models="clr-namespace:ProbSciANA"
+      xmlns:iface="clr-namespace:ProbSciANA.Interface"
       Title="ClientsView">
 
-    <DockPanel LastChildFill="True">
 
-        <!-- Titre -->
-        <TextBlock DockPanel.Dock="Top"
-                   Text="Gestion des Clients"
-                   FontSize="24"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   Margin="10"/>
+        <Page.Resources>
+                <!-- 1) Converter pour retourner la première valeur non-null -->
+                <iface:FirstNonNullConverter x:Key="FirstNonNullConverter"/>
 
-        <!-- Boutons d'action -->
-        <StackPanel DockPanel.Dock="Top"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Margin="10">
-            <Button Style="{StaticResource MenuButtonStyle}" Content="Ajouter un client" Click="BtnAjouter_Click"/>
-            <Button Style="{StaticResource MenuButtonStyle}" Content="Supprimer" Click="BtnSupprimer_Click"/>
-            <Button Style="{StaticResource MenuButtonStyle}" Content="Modifier" Click="BtnModifier_Click"/>
-        </StackPanel>
+                <!-- 2) DataTemplates pour chaque type d’objet -->
+                <DataTemplate DataType="{x:Type models:Commande}">
+                        <Border Padding="10"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Margin="0,5">
+                                <StackPanel>
+                                        <TextBlock Text="Détail Commande"
+                                                   FontWeight="Bold"
+                                                   FontSize="14"/>
+                                        <TextBlock Text="{Binding Nom}"
+                                                   Margin="0,5,0,0"/>
+                                        <TextBlock Text="{Binding Prix, StringFormat=Prix : {0} €}"/>
+                                        <TextBlock Text="{Binding Statut, StringFormat=Statut : {0}}"/>
+                                        <TextBlock Text="{Binding Date_commande, StringFormat=Date : {0:dd/MM/yyyy}}"/>
+                                        <TextBlock Text="{Binding NomClient, StringFormat=Client : {0}}"/>
+                                        <TextBlock Text="{Binding NomCuisinier, StringFormat=Cuisinier : {0}}"/>
+                                </StackPanel>
+                        </Border>
+                </DataTemplate>
 
-        <!-- Liste des clients -->
-        <ListView x:Name="ClientsListView" Margin="20" SelectionMode="Single">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Width="50">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="Header_ID_Click">ID</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.DisplayMemberBinding>
-                            <Binding Path="Id_utilisateur"/>
-                        </GridViewColumn.DisplayMemberBinding>
-                    </GridViewColumn>
+                <DataTemplate DataType="{x:Type models:Avis}">
+                        <Border Padding="10"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Margin="0,5">
+                                <StackPanel>
+                                        <TextBlock Text="Détail Avis"
+                                                   FontWeight="Bold"
+                                                   FontSize="14"/>
+                                        <TextBlock Text="{Binding Note, StringFormat=Note : {0}/5}"
+                                                   Margin="0,5,0,0"/>
+                                        <TextBlock Text="{Binding Commentaire}"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding Date_avis, StringFormat=Posté le {0:dd/MM/yyyy}}"/>
+                                        <TextBlock Text="{Binding NomClient, StringFormat=Client : {0}}"/>
+                                </StackPanel>
+                        </Border>
+                </DataTemplate>
 
-                    <GridViewColumn Width="120">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="Header_Nom_Click">Nom</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.DisplayMemberBinding>
-                            <Binding Path="Nom"/>
-                        </GridViewColumn.DisplayMemberBinding>
-                    </GridViewColumn>
+                <DataTemplate DataType="{x:Type models:Utilisateur}">
+                        <Border Padding="10"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Margin="0,5">
+                                <StackPanel>
+                                        <TextBlock Text="Détail Cuisinier"
+                                                   FontWeight="Bold"
+                                                   FontSize="14"/>
+                                        <TextBlock Text="{Binding Prenom}"
+                                                   Margin="0,5,0,0"/>
+                                        <TextBlock Text="{Binding Nom}"/>
+                                        <TextBlock Text="{Binding Adresse, StringFormat=Adresse : {0}}"/>
+                                        <TextBlock Text="{Binding Email, StringFormat=Email : {0}}"/>
+                                </StackPanel>
+                        </Border>
+                </DataTemplate>
+        </Page.Resources>
 
-                    <GridViewColumn Width="120">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="Header_Prenom_Click">Prénom</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.DisplayMemberBinding>
-                            <Binding Path="Prenom"/>
-                        </GridViewColumn.DisplayMemberBinding>
-                    </GridViewColumn>
+        <DockPanel LastChildFill="True">
 
-                    <GridViewColumn Width="180">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="Header_Adresse_Click">Adresse</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.DisplayMemberBinding>
-                            <Binding Path="Adresse"/>
-                        </GridViewColumn.DisplayMemberBinding>
-                    </GridViewColumn>
+                <!-- BANDEAU STYLE UBER -->
+                <Grid DockPanel.Dock="Top"
+                      Height="50"
+                      Background="Black">
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <GridViewColumn Width="180">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="Header_Email_Click">Email</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.DisplayMemberBinding>
-                            <Binding Path="Email"/>
-                        </GridViewColumn.DisplayMemberBinding>
-                    </GridViewColumn>
+                        <Button Grid.Column="0"
+                                Content="🌙 Mode"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnMode_Click"/>
 
-                    <GridViewColumn Width="100">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="Header_Telephone_Click">Telephone</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.DisplayMemberBinding>
-                            <Binding Path="Telephone"/>
-                        </GridViewColumn.DisplayMemberBinding>
-                    </GridViewColumn>
+                        <Button Grid.Column="1"
+                                Content="🏠 Accueil"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnAccueil_Click"/>
 
-                    <GridViewColumn Width="100">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="Header_Station_Click">Station</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.DisplayMemberBinding>
-                            <Binding Path="Station"/>
-                        </GridViewColumn.DisplayMemberBinding>
-                    </GridViewColumn>
+                        <StackPanel Grid.Column="2"/>
 
-                    <GridViewColumn Width="100">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="Header_Achats_Click">Achats</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.DisplayMemberBinding>
-                            <Binding Path="Achats"/>
-                        </GridViewColumn.DisplayMemberBinding>
-                    </GridViewColumn>
+                        <Button Grid.Column="3"
+                                Content="Clients"
+                                Foreground="White"
+                                Background="#BEE6FD"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnClients_Click"/>
 
-                    <GridViewColumn Width="100">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="Header_Date_Click">Date d'inscription</GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.DisplayMemberBinding>
-                            <Binding Path="Date_inscription"/>
-                        </GridViewColumn.DisplayMemberBinding>
-                    </GridViewColumn>
+                        <Button Grid.Column="4"
+                                Content="Cuisiniers"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnCuisiniers_Click"/>
 
-                </GridView>
-            </ListView.View>
-        </ListView>
+                        <Button Grid.Column="5"
+                                Content="Commandes"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnCommandes_Click"/>
 
-        <!-- Bouton retour -->
-        <Button Style="{StaticResource MenuButtonStyle}"
-                DockPanel.Dock="Bottom"
-                Content="Retour à l'accueil"
-                HorizontalAlignment="Center"
-                Margin="10"
-                Click="BtnRetourAccueil_Click"/>
-    </DockPanel>
+                        <Button Grid.Column="6"
+                                Content="Statistiques"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnStatistiques_Click"/>
+                </Grid>
+
+                <Grid DockPanel.Dock="Top"
+                      Height="50"
+                      Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0">
+
+                                <!-- BACK -->
+                                <Button x:Name="BtnBack"
+                                        Width="32"
+                                        Height="32"
+                                        Margin="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        ToolTip="Précédent"
+                                        Click="BtnBack_Click">
+                                        <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border"
+                                                                Width="32"
+                                                                Height="32"
+                                                                CornerRadius="16"
+                                                                Background="Transparent"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                                <Viewbox Width="16"
+                                                                         Height="16">
+                                                                        <Grid Width="24"
+                                                                              Height="24">
+                                                                                <Path x:Name="backArrow"
+                                                                                      StrokeThickness="2"
+                                                                                      StrokeLineJoin="Round"
+                                                                                      StrokeStartLineCap="Round"
+                                                                                      StrokeEndLineCap="Round"
+                                                                                      Data="M14,4 L6,12 L14,20"
+                                                                                      HorizontalAlignment="Center"
+                                                                                      VerticalAlignment="Center"/>
+                                                                        </Grid>
+                                                                </Viewbox>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver"
+                                                                         Value="True">
+                                                                        <Setter TargetName="border"
+                                                                                Property="Background"
+                                                                                Value="#EEE"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="True">
+                                                                        <Setter TargetName="backArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Black"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="False">
+                                                                        <Setter TargetName="backArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Gray"/>
+                                                                </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                        </Button.Template>
+                                </Button>
+
+                                <!-- FORWARD -->
+                                <Button x:Name="BtnForward"
+                                        Width="32"
+                                        Height="32"
+                                        Margin="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        ToolTip="Suivant"
+                                        Click="BtnForward_Click">
+                                        <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border"
+                                                                Width="32"
+                                                                Height="32"
+                                                                CornerRadius="16"
+                                                                Background="Transparent"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                                <Viewbox Width="16"
+                                                                         Height="16">
+                                                                        <Grid Width="24"
+                                                                              Height="24">
+                                                                                <Path x:Name="forwardArrow"
+                                                                                      StrokeThickness="2"
+                                                                                      StrokeLineJoin="Round"
+                                                                                      StrokeStartLineCap="Round"
+                                                                                      StrokeEndLineCap="Round"
+                                                                                      Data="M4,4 L12,12 L4,20"
+                                                                                      HorizontalAlignment="Center"
+                                                                                      VerticalAlignment="Center"/>
+                                                                        </Grid>
+                                                                </Viewbox>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver"
+                                                                         Value="True">
+                                                                        <Setter TargetName="border"
+                                                                                Property="Background"
+                                                                                Value="#EEE"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="True">
+                                                                        <Setter TargetName="forwardArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Black"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="False">
+                                                                        <Setter TargetName="forwardArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Gray"/>
+                                                                </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                        </Button.Template>
+                                </Button>
+                        </StackPanel>
+
+                        <!-- Titre -->
+                        <TextBlock Text="Gestion des Clients"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Grid.Column="1"/>
+
+                        <!-- Bouton ➕ -->
+                        <Button Content="➕"
+                                ToolTip="Ajouter un client"
+                                FontSize="16"
+                                Width="32"
+                                Height="32"
+                                Margin="0,0,10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="BtnAjouter_Click"
+                                Grid.Column="2"/>
+
+                </Grid>
+
+                <!-- Liste des clients -->
+                <Grid>
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid x:Name="dataGridClients"
+                                  Grid.Column="0"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  HeadersVisibility="Column"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  Margin="10"
+                                  SelectionChanged="dataGridClients_SelectionChanged"
+                                  ColumnWidth="*"
+                                  CellEditEnding="dataGridClients_CellEditEnding">
+                                <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID"
+                                                            Binding="{Binding Id_utilisateur}"
+                                                            IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="Statut"
+                                                            Binding="{Binding Statut}"/>
+                                        <DataGridTextColumn Header="Nom"
+                                                            Binding="{Binding Nom}"/>
+                                        <DataGridTextColumn Header="Prénom"
+                                                            Binding="{Binding Prenom}"/>
+                                        <DataGridTextColumn Header="Adresse"
+                                                            Binding="{Binding Adresse}"/>
+                                        <DataGridTextColumn Header="Email"
+                                                            Binding="{Binding Email}"/>
+                                        <DataGridTextColumn Header="Téléphone"
+                                                            Binding="{Binding Telephone}"/>
+                                        <DataGridTextColumn Header="Station"
+                                                            Binding="{Binding NomStation}"/>
+                                        <DataGridTextColumn Header="Achats"
+                                                            Binding="{Binding Achats}"
+                                                            IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="Date d'inscription"
+                                                            Binding="{Binding Date_inscription}"
+                                                            IsReadOnly="True"/>
+                                </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Grid.Column="1"
+                                    Margin="10"
+                                    Background="#FFF3F3F3"
+                                    VerticalAlignment="Top">
+                                <DockPanel LastChildFill="True"
+                                           Margin="0 0 0 10">
+                                        <TextBlock Text="Fiche Client"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"
+                                                   DockPanel.Dock="Left"/>
+
+                                        <Button Content="🗑️"
+                                                FontSize="14"
+                                                Width="30"
+                                                Height="30"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Click="BtnSupprimer_Click"
+                                                DockPanel.Dock="Right"/>
+                                </DockPanel>
+                                <Grid Margin="0 0 0 10">
+                                        <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Nom -->
+                                        <TextBlock Text="Nom :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="0"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Nom}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="0"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Prénom -->
+                                        <TextBlock Text="Prénom :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="1"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Prenom}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="1"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Email -->
+                                        <TextBlock Text="Email :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="2"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Email}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="2"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Adresse -->
+                                        <TextBlock Text="Adresse :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="3"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Adresse}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="3"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Téléphone -->
+                                        <TextBlock Text="Téléphone :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="4"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Telephone}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="4"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Statut -->
+                                        <TextBlock Text="Statut :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 5"
+                                                   Grid.Row="5"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding Statut}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="5"
+                                                   Grid.Column="1"/>
+
+                                        <!-- Station -->
+                                        <TextBlock Text="Station :"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 10 0"
+                                                   Grid.Row="6"
+                                                   Grid.Column="0"/>
+                                        <TextBlock Text="{Binding NomStation}"
+                                                   HorizontalAlignment="Right"
+                                                   Grid.Row="6"
+                                                   Grid.Column="1"/>
+                                </Grid>
+
+                                <!-- Les trois expanders pour naviguer dans les listes -->
+                                <StackPanel>
+                                        <Expander Header="Commandes passées"
+                                                  IsExpanded="True"
+                                                  Margin="0,10,0,0">
+                                                <ListBox x:Name="ListCommandes"
+                                                         ItemsSource="{Binding Commandes_passees}"
+                                                         DisplayMemberPath="Nom"
+                                                         SelectionChanged="OnListCommandes_Selected"/>
+                                        </Expander>
+
+                                        <Expander Header="Avis laissés"
+                                                  Margin="0,10,0,0">
+                                                <ListBox x:Name="ListAvis"
+                                                         ItemsSource="{Binding Avis_laisses}"
+                                                         DisplayMemberPath="Commentaire"
+                                                         SelectionChanged="OnListAvis_Selected"/>
+                                        </Expander>
+
+                                        <Expander Header="Cuisiniers associés"
+                                                  Margin="0,10,0,0">
+                                                <ListBox x:Name="ListCuisiniers"
+                                                         ItemsSource="{Binding SesCuisiniers}"
+                                                         DisplayMemberPath="Prenom"
+                                                         SelectionChanged="OnListCuisiniers_Selected"/>
+                                        </Expander>
+
+                                        <!-- Le détail unique qui se met à jour selon la sélection -->
+                                        <ContentControl Margin="0,20,0,0">
+                                                <ContentControl.Content>
+                                                        <MultiBinding Converter="{StaticResource FirstNonNullConverter}">
+                                                                <!-- On teste d’abord Avis -->
+                                                                <Binding ElementName="ListAvis"
+                                                                         Path="SelectedItem"/>
+                                                                <!-- puis Cuisiniers -->
+                                                                <Binding ElementName="ListCuisiniers"
+                                                                         Path="SelectedItem"/>
+                                                                <!-- et enfin Commandes -->
+                                                                <Binding ElementName="ListCommandes"
+                                                                         Path="SelectedItem"/>
+                                                        </MultiBinding>
+                                                </ContentControl.Content>
+                                        </ContentControl>
+                                </StackPanel>
+                        </StackPanel>
+                </Grid>
+        </DockPanel>
 </Page>

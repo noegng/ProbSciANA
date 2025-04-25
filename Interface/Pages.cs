@@ -14,38 +14,89 @@ namespace ProbSciANA.Interface
 {
 
     #region Page Accueil
+    #region Page Accueil
     public partial class StartView : Page
     {
 
         public StartView()
         {
             InitializeComponent();
-            Utilisateur.RefreshAll();
-            _ = LoadStationsAsync(); /// Appel asynchrone pour charger les stations
+            Loaded += (s, e) =>
+            {
+                UpdateNavButtons();
+                UpdateAuthButtons();
+            };
         }
 
-        public async Task LoadStationsAsync()
-        {
-            try
-            {
-                await Requetes.MàjStations();
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show("Erreur de connexion : " + ex.Message);
-            }
-        }
-        private void BtnModeUtilisateur_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new LoginView());
-        }
-        private void BtnModeAdmin_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AdminDashboardView());
-        }
         private void BtnModeTest_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Test());
+        }
+        private void BtnModeTest2_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new Test2());
+        }
+        private void UpdateAuthButtons()
+        {
+            bool loggedIn = SessionManager.IsLoggedIn;
+
+            BtnProfil.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
+            BtnLogout.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
+
+            BtnConnexion.Visibility = loggedIn ? Visibility.Collapsed : Visibility.Visible;
+            BtnInscription.Visibility = loggedIn ? Visibility.Collapsed : Visibility.Visible;
+        }
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnProfil_Click(object sender, RoutedEventArgs e)
+        {
+            // Exemple : aller vers le tableau de bord utilisateur ou une page Profil
+            if (SessionManager.CurrentUser.EstClient)
+                NavigationService?.Navigate(new UserDashboardView());
+            else if (SessionManager.CurrentUser.EstCuisinier)
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            // sinon : gérer les autres rôles ou ouvrir une page Profil générique
+        }
+        private void BtnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            // 1. Supprimer la session utilisateur
+            SessionManager.Logout();
+
+            // 2. Réinitialiser les boutons
+            UpdateAuthButtons();
+
+            // 3. Revenir à l'accueil
+            NavigationService?.Navigate(new StartView());
+
+            MessageBox.Show("Vous avez été déconnecté.");
+        }
+        private void BtnConnexion_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new ConnexionView());
+        }
+        private void BtnInscription_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new LoginView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e) { }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
         }
     }
     #endregion
@@ -56,6 +107,7 @@ namespace ProbSciANA.Interface
         public LoginView()
         {
             InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
         }
 
         private async void BtnValider_Click(object sender, RoutedEventArgs e)
@@ -83,12 +135,6 @@ namespace ProbSciANA.Interface
 
             try
             {
-
-                if (adresse == null)
-                {
-                    MessageBox.Show("Adresse non trouvée. Veuillez vérifier l'adresse saisie.");
-                    return;
-                }
                 var Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
                                                                                                      /// recherche de la station la plus proche avec haversine
 
@@ -100,9 +146,9 @@ namespace ProbSciANA.Interface
                     adresse,
                     "", // téléphone
                     email,
-                    Station,
                     mdp,
                     estEntreprise: role == "Entreprise");
+                SessionManager.CurrentUser = nouvelUtilisateur;
 
                 MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
 
@@ -121,14 +167,37 @@ namespace ProbSciANA.Interface
             }
         }
 
-        private void BtnSeConnecter_Click(object sender, RoutedEventArgs e)
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+
+        private void BtnConnexion_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ConnexionView());
         }
 
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
         }
     }
 
@@ -176,6 +245,8 @@ namespace ProbSciANA.Interface
 
             if (utilisateurTrouve != null && motDePasseEntre == utilisateurTrouve.Mdp)
             {
+                SessionManager.CurrentUser = utilisateurTrouve;
+
                 MessageBox.Show($"Connexion réussie : {nomUtilisateur} ");
 
                 // Rediriger en fonction du rôle de l'utilisateur
@@ -190,9 +261,36 @@ namespace ProbSciANA.Interface
             }
         }
 
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+
+        private void BtnInscription_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new LoginView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
         }
     }
 
@@ -229,39 +327,68 @@ namespace ProbSciANA.Interface
         public CuisinierDashboardView()
         {
             InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
         }
-        private void LoadLivraisons()
+        private void AfficherGraphe_Click(object sender, RoutedEventArgs e)
         {
-
             /// Exemple de données de livraison
-
         }
-
-
-
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
             /// Logique pour ajouter un plat
             MessageBox.Show("Ajouter un plat");
-
         }
-
         private async void BtnLivrer(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Livrer un plat");
             await Program.UtiliserGetCoordonnees();
         }
-
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+            /// Exemple de données de livraison
         }
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        private void AfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
         }
-
-
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
     }
 
     #endregion
@@ -340,38 +467,47 @@ namespace ProbSciANA.Interface
         public AdminDashboardView()
         {
             InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
         }
-
-
-
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ClientsView());
         }
-
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new CuisiniersView());
         }
-
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new CommandesView());
         }
-
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StatistiquesView());
         }
 
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        private void UpdateNavButtons()
         {
-            NavigationService?.GoBack();
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
         }
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e) { }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
         }
     }
     #endregion
@@ -379,135 +515,136 @@ namespace ProbSciANA.Interface
     #region Page Gestion Clients (admin)
     public partial class ClientsView : Page
     {
-        private List<Utilisateur> clients;
+        public object SelectedElement { get; set; }
 
         public ClientsView()
         {
             InitializeComponent();
-            LoadClients();
-        }
-
-        private bool _triAscendant = true;
-        private string _colonneTriee = "";
-
-        private void SetSorting(string colonne)
-        {
-            if (_colonneTriee == colonne)
-            {
-                _triAscendant = !_triAscendant;
-            }
-            else
-            {
-                _colonneTriee = colonne;
-                _triAscendant = true;
-            }
-            LoadClients();
-        }
-
-        public void LoadClients()
-        {
-            var achats = Requetes.GetAchatsUtilisateursSQL();
-
-            var table = new DataTable();
-            table.Columns.Add("Id_utilisateur", typeof(int));
-            table.Columns.Add("Statut", typeof(string));
-            table.Columns.Add("Nom", typeof(string));
-            table.Columns.Add("Prenom", typeof(string));
-            table.Columns.Add("Adresse", typeof(string));
-            table.Columns.Add("Email", typeof(string));
-            table.Columns.Add("Telephone", typeof(string));
-            table.Columns.Add("Station", typeof(string));
-            table.Columns.Add("Achats", typeof(double));
-            table.Columns.Add("Date_inscription", typeof(DateTime));
-
-            foreach (KeyValuePair<Utilisateur, double> kv in achats)
-            {
-                string statut;
-                Utilisateur u = kv.Key;
-                if(u.EstEntreprise)
-                {
-                    statut = "Entreprise";
-                }
-                else
-                {
-                    statut = "Particulier";
-                }
-                string stationNom = "Inconnu";
-                if (u.Station != null && u.Station.Valeur.nom != null)
-                {
-                    stationNom = u.Station.Valeur.nom;
-                }
-                table.Rows.Add(
-                    u.Id_utilisateur,
-                    statut,
-                    u.Nom,
-                    u.Prenom,
-                    u.Adresse,
-                    u.Email,
-                    u.Telephone,
-                    stationNom,
-                    kv.Value,
-                    u.Date_inscription
-                );
-            }
-
-            DataView view = table.DefaultView;
-            string direction = "";
-            if (!string.IsNullOrEmpty(_colonneTriee) && table.Columns.Contains(_colonneTriee))
-            {
-                if(_triAscendant)
-                {
-                    direction = "ASC";
-                }
-                else
-                {
-                    direction = "DESC";
-                }
-                view.Sort = $"{_colonneTriee} {direction}";
-            }
-
-            ClientsListView.ItemsSource = view;
-        }
-
-        private void BtnModifier_Click(object sender, RoutedEventArgs e)
-        {
-            if (ClientsListView.SelectedItem is DataRowView row)
-            {
-                int id = (int)row["Id_utilisateur"];
-                Utilisateur client = Utilisateur.utilisateurs.Find(u => u.Id_utilisateur == id);
-
-                if (client != null && !client.Nom.Contains("(modifié)"))
-                {
-                    client.Nom += " (modifié)";
-                    LoadClients();
-                }
-            }
+            Loaded += (s, e) => UpdateNavButtons();
+            Utilisateur.RefreshAll();
+            dataGridClients.ItemsSource = null;
+            dataGridClients.ItemsSource = Utilisateur.clients;
         }
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new LoginView());
+
         }
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (dataGridClients.SelectedItem is Utilisateur selectedUtilisateur)
+            {
+                selectedUtilisateur.Delete();
+                dataGridClients.ItemsSource = null;
+                dataGridClients.ItemsSource = Utilisateur.clients;
+            }
+        }
+        private async void dataGridClients_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridClients.SelectedItem is Utilisateur selected)
+            {
+                DataContext = selected;
+            }
+        }
+        private void ListAvis_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // On désélectionne toute commande pour que PriorityBinding regarde ensuite ListAvis
+            ListCommandes.SelectedItem = null;
+            Console.WriteLine("ve");
+        }
+        private void ListCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Même logique : on désélectionne la commande active
+            ListCommandes.SelectedItem = null;
+        }
+        private void OnListCommandes_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListCommandes.SelectedItem != null)
+            {
+                ListAvis.SelectedItem = null;
+                ListCuisiniers.SelectedItem = null;
+            }
         }
 
-        private void Header_ID_Click(object sender, RoutedEventArgs e) {SetSorting("Id_utilisateur");}
-        private void Header_Statut_Click(object sender, RoutedEventArgs e) {SetSorting("Statut");}
-        private void Header_Nom_Click(object sender, RoutedEventArgs e) {SetSorting("Nom");}
-        private void Header_Prenom_Click(object sender, RoutedEventArgs e) {SetSorting("Prenom");}
-        private void Header_Adresse_Click(object sender, RoutedEventArgs e) {SetSorting("Adresse");}
-        private void Header_Email_Click(object sender, RoutedEventArgs e) {SetSorting("Email");}
-        private void Header_Telephone_Click(object sender, RoutedEventArgs e) {SetSorting("Telephone");}
-        private void Header_Station_Click(object sender, RoutedEventArgs e) {SetSorting("Station");}
-        private void Header_Achats_Click(object sender, RoutedEventArgs e) {SetSorting("Achats");}
-        private void Header_Date_Click(object sender, RoutedEventArgs e) {SetSorting("Date_inscription");}
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        private void OnListAvis_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListAvis.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListCuisiniers.SelectedItem = null;
+            }
+        }
+
+        private void OnListCuisiniers_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListCuisiniers.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListAvis.SelectedItem = null;
+            }
+        }
+        private async void dataGridClients_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Column.Header?.ToString() == "Adresse" &&
+                e.Row.Item is Utilisateur utilisateur &&
+                e.EditingElement is TextBox tb)
+            {
+                var nouvelleAdresse = tb.Text;
+                utilisateur.Adresse = nouvelleAdresse;
+
+                try
+                {
+                    utilisateur.Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(nouvelleAdresse);
+                    dataGridClients.Items.Refresh(); // Mise à jour de l'affichage
+                }
+                catch
+                {
+                    MessageBox.Show("Adresse invalide ou station introuvable.");
+                }
+            }
+        }
+
+        private void BtnClients_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new ClientsView());
+        }
+        private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CuisiniersView());
+        }
+        private void BtnCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommandesView());
+        }
+        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StatistiquesView());
+        }
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
         }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
     }
-
     #endregion
 
     #region Page Gestion Cuisiniers (admin)
@@ -518,6 +655,7 @@ namespace ProbSciANA.Interface
         public CuisiniersView()
         {
             InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
             Utilisateur.RefreshAll();
             LoadCuisiniers();
         }
@@ -559,9 +697,47 @@ namespace ProbSciANA.Interface
 
         // private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("nom");
         // private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("adresse");
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        private void BtnClients_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new ClientsView());
+        }
+        private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CuisiniersView());
+        }
+        private void BtnCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommandesView());
+        }
+        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StatistiquesView());
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
         }
     }
 
@@ -574,11 +750,74 @@ namespace ProbSciANA.Interface
         public CommandesView()
         {
             InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+            Commande.RefreshAll();
+            dataGridCommandes.ItemsSource = null;
+            dataGridCommandes.ItemsSource = Commande.commandes;
         }
 
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+
+        }
+        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Commande selectedCommande)
+            {
+                selectedCommande.Delete();
+                dataGridCommandes.ItemsSource = null;
+                dataGridCommandes.ItemsSource = Commande.commandes;
+            }
+        }
+        private void dataGridCommandes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Commande selected)
+            {
+                DataContext = selected;
+            }
+        }
+
+        private void BtnClients_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new ClientsView());
+        }
+        private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CuisiniersView());
+        }
+        private void BtnCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommandesView());
+        }
+        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StatistiquesView());
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
         }
     }
 
@@ -591,14 +830,72 @@ namespace ProbSciANA.Interface
         public StatistiquesView()
         {
             InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
         }
 
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+            NavigationService?.Navigate(new ClientsView());
+        }
+        private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CuisiniersView());
+        }
+        private void BtnCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommandesView());
+        }
+        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StatistiquesView());
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
         }
     }
 
+    #endregion
+
+    #region SessionManager
+    public static class SessionManager
+    {
+        public static Utilisateur CurrentUser { get; set; }
+
+        static SessionManager()
+        {
+            CurrentUser = null; // Important pour éviter des valeurs fantômes
+        }
+
+        public static bool IsLoggedIn => CurrentUser != null;
+
+        public static void Logout()
+        {
+            CurrentUser = null;
+        }
+    }
     #endregion
 
     #region Test
@@ -607,6 +904,7 @@ namespace ProbSciANA.Interface
         public Test()
         {
             InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
         }
         private void Btn1(object sender, RoutedEventArgs e)
         {
@@ -622,14 +920,116 @@ namespace ProbSciANA.Interface
         {
             // Logique pour le bouton 3
             MessageBox.Show("Bouton 3 cliqué !");
+            Utilisateur.RefreshAll();
+            Console.WriteLine(Utilisateur.clients[1].Avis_laisses[0].Commentaire);
         }
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+
+        private void Commander_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+            // Naviguer vers la page de commande
+            MessageBox.Show("Page Commander à implémenter.");
         }
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+
+        private void SuiviCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            // Naviguer vers la page de suivi
+            MessageBox.Show("Page Suivi des commandes à implémenter.");
+        }
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Changer de mode (sombre / clair) à implémenter !");
+        }
+        private void BtnConnexion_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new ConnexionView());
+        }
+        private void BtnInscription_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new LoginView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+    }
+    public partial class Test2 : Page
+    {
+        public Test2()
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+        }
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Changer de mode (sombre / clair) à implémenter !");
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+        private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
+        {
+            int tempsTrajet = Program.GrapheMétro.AffichageDijkstra(Program.Stations[1], Program.Stations[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+        }
+
+        private void BtnAffichage_BF(object sender, RoutedEventArgs e)
+        {
+            int tempsTrajet = Program.GrapheMétro.AffichageBellmanFord(Program.Stations[1], Program.Stations[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+        }
+        private void BtnAffichage_Floyd(object sender, RoutedEventArgs e)
+        {
+            int tempsTrajet = Program.GrapheMétro.AffichageFloydWarshall(Program.Stations[1], Program.Stations[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+        }
+        private void BtnCheminOptimal(object sender, RoutedEventArgs e)
+        {
+            List<Noeud<(int id, string nom)>> Liste = new List<Noeud<(int id, string nom)>>();
+            Liste.Add(Program.Stations[1]);
+            Liste.Add(Program.Stations[20]);
+            Liste.Add(Program.Stations[40]);
+            Liste.Add(Program.Stations[60]);
+            Liste.Add(Program.Stations[80]);
+            Liste.Add(Program.Stations[100]);
+            Liste.Add(Program.Stations[120]);
+            var programInstance = new Program();
+            int tempsTrajet = programInstance.CheminOptimal(Program.GrapheMétro, Liste);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[80].Valeur.nom} en passant par {Program.Stations[20].Valeur.nom}; {Program.Stations[40].Valeur.nom} ;{Program.Stations[60].Valeur.nom} est de : {tempsTrajet} minutes.");
         }
     }
     #endregion
