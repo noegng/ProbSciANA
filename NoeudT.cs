@@ -19,7 +19,7 @@ namespace ProbSciANA
         public double Latitude { get; set; } /// Latitude de la station
 
         /// Constructeur de la classe Station
-        public Noeud(T valeur, int temps = 0 ) // valeur par défaut
+        public Noeud(T valeur, int temps = 0) // valeur par défaut
         {
             this.valeur = valeur;
             tempsChangement = temps;
@@ -37,7 +37,7 @@ namespace ProbSciANA
         public Noeud(T valeur)
         {
             this.valeur = valeur;
-            
+
         }
         #region Propriétés
         public T Valeur
@@ -50,7 +50,7 @@ namespace ProbSciANA
             get { return tempsChangement; }
             set { tempsChangement = value; }
         }
-        public  int IdBrute
+        public int IdBrute
         {
             get { return idBrute; }
             set { idBrute = value; }
@@ -60,7 +60,7 @@ namespace ProbSciANA
         {
             return obj is Noeud<T> autre && EqualityComparer<T>.Default.Equals(Valeur, autre.Valeur);
         }
-        
+
         public override int GetHashCode()
         {
             return EqualityComparer<T>.Default.GetHashCode(Valeur);
@@ -80,7 +80,7 @@ namespace ProbSciANA
             Noeud<(int, string)> stationLaPlusProche = null;
             double distanceMinimale = double.MaxValue;
 
-            foreach (var station in Program.Stations)
+            foreach (var station in Program.Noeuds)
             {
                 double distance = Arc<T>.CalculerDistanceHaversine(
                     Adresse.Latitude, Adresse.Longitude,
