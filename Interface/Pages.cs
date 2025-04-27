@@ -140,6 +140,7 @@ namespace ProbSciANA.Interface
                     "", // téléphone
                     email,
                     mdp,
+                    Station,
                     estEntreprise: role == "Entreprise");
                 SessionManager.CurrentUser = nouvelUtilisateur;
 
@@ -169,7 +170,6 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new AdminDashboardView());
         }
-
         private void BtnConnexion_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ConnexionView());
@@ -643,7 +643,7 @@ namespace ProbSciANA.Interface
     #region Page Gestion Cuisiniers (admin)
     public partial class CuisiniersView : Page
     {
-        private List<Utilisateur> cuisiniers;
+        public object SelectedElement { get; set; }
 
         public CuisiniersView()
         {

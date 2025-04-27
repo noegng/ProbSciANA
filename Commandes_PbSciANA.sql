@@ -172,10 +172,16 @@ FROM Utilisateur u
 LEFT JOIN Client_ cl ON cl.id_utilisateur = u.id_utilisateur
 LEFT JOIN Cuisinier cu ON cu.id_utilisateur = u.id_utilisateur
 LEFT JOIN Entreprise e ON e.id_utilisateur = u.id_utilisateur;
-    
-DELETE FROM Utilisateur WHERE id_utilisateur=2;
 
 Select * from Commande;
+Select * from Client_;
+Select * from Particulier;
+Select * from Cuisinier;
+Select * from avis;
+Select * from plat;
+Select * from Livraison;
+Select * from Requiert;
+Select * from Cuisine;
 
 #****************** MODULE CLIENT *****************#
                     

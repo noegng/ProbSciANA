@@ -90,9 +90,8 @@ CREATE TABLE IF NOT EXISTS Livraison(
    id_livraison INT PRIMARY KEY AUTO_INCREMENT,
    date_livraison DATETIME,
    statut ENUM('à faire', 'en cours', 'finie'),
-   id_utilisateur INT NULL,
+   adresse VARCHAR(100),
    id_commande INT NOT NULL,
-   FOREIGN KEY(id_utilisateur) REFERENCES Cuisinier(id_utilisateur) ON DELETE SET NULL,
    FOREIGN KEY(id_commande) REFERENCES Commande(id_commande) ON DELETE CASCADE
 );
 
@@ -100,6 +99,7 @@ DROP TABLE IF EXISTS Cuisine;
 CREATE TABLE IF NOT EXISTS Cuisine(
    id_cuisinier INT,
    id_plat INT,
+   quantite INT,
    plat_du_jour BOOL,
    date_cuisine DATETIME,
    statut ENUM('à faire','en cours','fait','livré'),
