@@ -520,7 +520,65 @@ namespace ProbSciANA.Interface
         }
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
+            // Masquer la fiche client, afficher le bandeau
+            FicheClient.Visibility = Visibility.Collapsed;
+            AddPane.Visibility = Visibility.Visible;
 
+            // Réinitialiser les champs
+            TxtPrenom.Text = TxtNom.Text = TxtAdresse.Text = TxtTel.Text = TxtEmail.Text = "";
+        }
+
+        // Annuler
+        private void BtnAnnulerAjout_Click(object sender, RoutedEventArgs e)
+        {
+            AddPane.Visibility = Visibility.Collapsed;
+            FicheClient.Visibility = Visibility.Visible;
+        }
+
+        private async void BtnValiderAjout_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtPrenom.Text) ||
+                string.IsNullOrWhiteSpace(TxtNom.Text) ||
+                string.IsNullOrWhiteSpace(TxtAdresse.Text) ||
+                string.IsNullOrWhiteSpace(TxtEmail.Text))
+            {
+                MessageBox.Show("Tous les champs obligatoires doivent être remplis.");
+                return;
+            }
+
+            try
+            {
+                bool estEntreprise = (CmbStatut.SelectedItem as ComboBoxItem)?
+                     .Content?.ToString() == "Entreprise";
+
+                var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(TxtAdresse.Text);
+
+                var nouveauClient = new Utilisateur(
+                    estClient: true,
+                    estCuisinier: false,
+                    nom: TxtNom.Text,
+                    prenom: TxtPrenom.Text,
+                    adresse: TxtAdresse.Text,
+                    telephone: TxtTel.Text,
+                    email: TxtEmail.Text,
+                    mdp: "azerty",                      // ou ton workflow habituel
+                    station: station,
+                    nom_referent: estEntreprise ? TxtReferent.Text : "",
+                    estEntreprise: estEntreprise);
+
+                // Rafraîchir la liste
+                Utilisateur.RefreshAll();
+                dataGridClients.ItemsSource = null;
+                dataGridClients.ItemsSource = Utilisateur.clients;
+
+                // Fermer le bandeau
+                AddPane.Visibility = Visibility.Collapsed;
+                FicheClient.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
+            }
         }
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
@@ -549,6 +607,16 @@ namespace ProbSciANA.Interface
             // Même logique : on désélectionne la commande active
             ListCommandes.SelectedItem = null;
         }
+        private void CmbStatut_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LblReferent == null)      // appelé trop tôt pendant InitializeComponent
+                return;
+
+            bool isEntreprise = (CmbStatut.SelectedItem as ComboBoxItem)?.Content?.ToString() == "Entreprise";
+
+            LblReferent.Visibility = isEntreprise ? Visibility.Visible : Visibility.Collapsed;
+            TxtReferent.Visibility = isEntreprise ? Visibility.Visible : Visibility.Collapsed;
+        }
         private void OnListCommandes_Selected(object s, SelectionChangedEventArgs e)
         {
             if (ListCommandes.SelectedItem != null)
@@ -557,7 +625,6 @@ namespace ProbSciANA.Interface
                 ListCuisiniers.SelectedItem = null;
             }
         }
-
         private void OnListAvis_Selected(object s, SelectionChangedEventArgs e)
         {
             if (ListAvis.SelectedItem != null)
@@ -566,7 +633,6 @@ namespace ProbSciANA.Interface
                 ListCuisiniers.SelectedItem = null;
             }
         }
-
         private void OnListCuisiniers_Selected(object s, SelectionChangedEventArgs e)
         {
             if (ListCuisiniers.SelectedItem != null)
