@@ -505,10 +505,10 @@ namespace ProbSciANA.Interface
     }
     #endregion
 
-    #region Page Gestion Clients (admin)
-    public partial class ClientsView : Page
+    #region Page Clients Admin
+    public partial class ClientsViewAdmin : Page
     {
-        public ClientsView()
+        public ClientsViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
@@ -702,12 +702,12 @@ namespace ProbSciANA.Interface
     }
     #endregion
 
-    #region Page Gestion Cuisiniers (admin)
-    public partial class CuisiniersView : Page
+    #region Page Cuisiniers Admin
+    public partial class CuisiniersViewAdmin : Page
     {
         public object SelectedElement { get; set; }
 
-        public CuisiniersView()
+        public CuisiniersViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
@@ -798,11 +798,11 @@ namespace ProbSciANA.Interface
 
     #endregion
 
-    #region Page Gestion Commandes (admin)
+    #region Page Commandes Admin
 
-    public partial class CommandesView : Page
+    public partial class CommandesViewAdmin : Page
     {
-        public CommandesView()
+        public CommandesViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
@@ -878,11 +878,11 @@ namespace ProbSciANA.Interface
 
     #endregion
 
-    #region Page Statistiques (admin)
+    #region Page Statistiques Admin
 
-    public partial class StatistiquesView : Page
+    public partial class StatistiquesViewAdmin : Page
     {
-        public StatistiquesView()
+        public StatistiquesViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();

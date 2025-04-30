@@ -1,7 +1,7 @@
-<Page x:Class="ProbSciANA.Interface.CuisiniersView"
+<Page x:Class="ProbSciANA.Interface.CuisiniersViewAdmin"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Title="CuisiniersView">
+      Title="CuisiniersViewAdmin">
 
         <DockPanel LastChildFill="True">
 
