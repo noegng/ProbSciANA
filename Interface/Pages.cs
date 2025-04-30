@@ -460,7 +460,7 @@ namespace ProbSciANA.Interface
                 DataContext = selected;
             }
         }
-        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        private void Ajouter_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new AddPlat());
         }
@@ -527,7 +527,7 @@ namespace ProbSciANA.Interface
                 DataContext = selected;
             }
         }
-        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        private void Ajouter_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new AddPlat());
         }
@@ -594,7 +594,7 @@ namespace ProbSciANA.Interface
                 DataContext = selected;
             }
         }
-        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        private void Ajouter_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new AddPlat());
         }
