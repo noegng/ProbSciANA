@@ -71,6 +71,10 @@ namespace ProbSciANA.Interface
 
             MessageBox.Show("Vous avez été déconnecté.");
         }
+        private void BtnModeTest2_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new Test2());
+        }
         private void BtnConnexion_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ConnexionView());
