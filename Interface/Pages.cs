@@ -120,7 +120,7 @@ namespace ProbSciANA.Interface
 
             if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(prenom) ||
                 string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(adresse) ||
-                string.IsNullOrWhiteSpace(role))
+                string.IsNullOrWhiteSpace(role) || string.IsNullOrWhiteSpace(mdp))
             {
                 MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
                 return;
