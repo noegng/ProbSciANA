@@ -572,7 +572,7 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshAll();
+            Plat.RefreshAll();
             dataGridPlats.ItemsSource = null;
             dataGridPlats.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
         }
@@ -591,7 +591,14 @@ namespace ProbSciANA.Interface
         {
             if (dataGridPlats.SelectedItem is Plat selectedPlat)
             {
-                selectedPlat.Delete();
+                foreach (Cuisine c in SessionManager.CurrentUser.Cuisines)
+                {
+                    if (c.Plat == selectedPlat)
+                    {
+                        c.Delete();
+                        break;
+                    }
+                }
                 dataGridPlats.ItemsSource = null;
                 dataGridPlats.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
             }
