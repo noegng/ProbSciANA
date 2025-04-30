@@ -85,7 +85,7 @@ namespace ProbSciANA.Interface
         }
         private void BtnInscription_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new LoginView());
+            NavigationService?.Navigate(new Register());
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e) { }
         private void BtnBack_Click(object sender, RoutedEventArgs e)
@@ -103,10 +103,10 @@ namespace ProbSciANA.Interface
     }
     #endregion
 
-    #region Page Login
-    public partial class LoginView : Page
+    #region Page Register
+    public partial class Register : Page
     {
-        public LoginView()
+        public Register()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
@@ -275,7 +275,7 @@ namespace ProbSciANA.Interface
 
         private void BtnInscription_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new LoginView());
+            NavigationService?.Navigate(new Register());
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -336,7 +336,7 @@ namespace ProbSciANA.Interface
         }
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new PlatView());
+            NavigationService?.Navigate(new AddPlat());
         }
         private async void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -397,9 +397,9 @@ namespace ProbSciANA.Interface
 
     #region Plat
 
-    public partial class PlatView : Page
+    public partial class AddPlat : Page
     {
-        public PlatView()
+        public AddPlat()
         {
             InitializeComponent();
             //Loaded += (s, e) => UpdateNavButtons();
@@ -757,7 +757,7 @@ namespace ProbSciANA.Interface
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new LoginView());
+            NavigationService?.Navigate(new Register());
         }
 
         // private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("nom");
@@ -1016,7 +1016,7 @@ namespace ProbSciANA.Interface
         }
         private void BtnInscription_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new LoginView());
+            NavigationService?.Navigate(new Register());
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
