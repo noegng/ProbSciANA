@@ -1,22 +1,21 @@
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using MySql.Data.MySqlClient;
 using System.Data;
+using System.Threading.Tasks;
+using System.Net.Http;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace ProbSciANA.Interface
 {
-
     #region Page Accueil
     public partial class StartView : Page
     {
-
         public StartView()
         {
             InitializeComponent();
@@ -30,10 +29,6 @@ namespace ProbSciANA.Interface
         private void BtnModeTest_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Test());
-        }
-        private void BtnModeTest2_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new Test2());
         }
         private void UpdateAuthButtons()
         {
@@ -121,7 +116,7 @@ namespace ProbSciANA.Interface
 
             if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(prenom) ||
                 string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(adresse) ||
-                string.IsNullOrWhiteSpace(role) || string.IsNullOrWhiteSpace(mdp))
+                string.IsNullOrWhiteSpace(role))
             {
                 MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
                 return;
@@ -147,8 +142,7 @@ namespace ProbSciANA.Interface
                     email,
                     mdp,
                     Station,
-                    estEntreprise: role == "Entreprise"
-                    );
+                    estEntreprise: role == "Entreprise");
                 SessionManager.CurrentUser = nouvelUtilisateur;
 
                 MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
@@ -177,7 +171,6 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new AdminDashboardView());
         }
-
         private void BtnConnexion_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ConnexionView());
@@ -336,8 +329,7 @@ namespace ProbSciANA.Interface
         }
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
-            /// Logique pour ajouter un plat
-            MessageBox.Show("Ajouter un plat");
+            NavigationService?.Navigate(new PlatView());
         }
         private async void BtnLivrer(object sender, RoutedEventArgs e)
         {
@@ -401,52 +393,54 @@ namespace ProbSciANA.Interface
         public PlatView()
         {
             InitializeComponent();
+            //  Loaded += (s, e) => UpdateNavButtons();
+            Plat.RefreshAll();
+            dataGridPlats.ItemsSource = null;
+            dataGridPlats.ItemsSource = Plat.plats;
         }
 
         private void BtnAjouterPlat_Click(object sender, RoutedEventArgs e)
         {
-            // string nomPlat = NomPlatTextBox.Text;
-            // string typePlat = (TypePlatComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
-            // string nationalite = NationaliteTextBox.Text;
-            // string regimeAlimentaire = RegimeTextBox.Text;
-            // string ingredients = IngredientsTextBox.Text;
-            // string prixParPersonne = PrixTextBox.Text;
-            // string nombrePersonnes = NombrePersonnesTextBox.Text;
-            // DateTime? dateFabrication = DateFabricationDatePicker.SelectedDate;
-            // DateTime? datePeremption = DatePeremptionDatePicker.SelectedDate;
+            string nomPlat = NomPlatTextBox.Text;
+            string prixPlat = PrixTextBox.Text;
+            string typePlat = (TypePlatComboBox.SelectedItem as ComboBoxItem)?.Content.ToString().ToLower();
+            string nationalitePlat = NationaliteTextBox.Text;
+            string regimeAlimentaire = RegimeTextBox.Text;
+            string nbPortions = NombrePersonnesTextBox.Text;
 
-            // if (string.IsNullOrWhiteSpace(nomPlat) || string.IsNullOrWhiteSpace(typePlat) ||
-            // string.IsNullOrWhiteSpace(nationalite) || string.IsNullOrWhiteSpace(regimeAlimentaire) ||
-            // string.IsNullOrWhiteSpace(ingredients) || string.IsNullOrWhiteSpace(prixParPersonne) ||
-            // string.IsNullOrWhiteSpace(nombrePersonnes) || !dateFabrication.HasValue || !datePeremption.HasValue)
-            // {
-            // MessageBox.Show("Veuillez remplir tous les champs.");
-            // return;
-            // }
+            DateTime? dateperemption = DatePeremptionDatePicker.SelectedDate;
 
-            // try
-            // {
-            // var nouveauPlat = new Plat
-            // {
-            //     Nom = nomPlat,
-            //     Type = typePlat,
-            //     Nationalite = nationalite,
-            //     RegimeAlimentaire = regimeAlimentaire,
-            //     Ingredients = ingredients,
-            //     PrixParPersonne = double.Parse(prixParPersonne),
-            //     NombrePersonnes = int.Parse(nombrePersonnes),
-            //     DateFabrication = dateFabrication.Value,
-            //     DatePeremption = datePeremption.Value
-            // };
+            if (string.IsNullOrWhiteSpace(nomPlat) || string.IsNullOrWhiteSpace(typePlat) ||
+            string.IsNullOrWhiteSpace(nationalitePlat) || string.IsNullOrWhiteSpace(regimeAlimentaire)
+            || prixPlat == null || nbPortions == null || !dateperemption.HasValue)
+            {
+                MessageBox.Show("Veuillez remplir tous les champs.");
+                return;
+            }
 
-            // Requetes.AjouterPlat(nouveauPlat);
-            // MessageBox.Show("Plat ajouté avec succès !");
-            // NavigationService?.GoBack();
-            // }
-            // catch (Exception ex)
-            // {
-            // MessageBox.Show("Erreur lors de l'ajout du plat : " + ex.Message);
-            // }
+            try
+            {
+                double prix = double.Parse(prixPlat);
+                int nbPortionsInt = int.Parse(nbPortions);
+                DateTime datePeremption = dateperemption.Value;
+                var nouveauPlat = new Plat
+                (
+                    nomPlat,
+                    prix,
+                    nbPortionsInt,
+                    typePlat,
+                    regimeAlimentaire,
+                    nationalitePlat,
+                    datePeremption
+                );
+
+                MessageBox.Show("Plat ajouté avec succès !");
+                NavigationService?.GoBack();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'ajout du plat : " + ex.Message);
+            }
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
@@ -528,7 +522,65 @@ namespace ProbSciANA.Interface
         }
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
+            // Masquer la fiche client, afficher le bandeau
+            FicheClient.Visibility = Visibility.Collapsed;
+            AddPane.Visibility = Visibility.Visible;
 
+            // Réinitialiser les champs
+            TxtPrenom.Text = TxtNom.Text = TxtAdresse.Text = TxtTel.Text = TxtEmail.Text = "";
+        }
+
+        // Annuler
+        private void BtnAnnulerAjout_Click(object sender, RoutedEventArgs e)
+        {
+            AddPane.Visibility = Visibility.Collapsed;
+            FicheClient.Visibility = Visibility.Visible;
+        }
+
+        private async void BtnValiderAjout_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtPrenom.Text) ||
+                string.IsNullOrWhiteSpace(TxtNom.Text) ||
+                string.IsNullOrWhiteSpace(TxtAdresse.Text) ||
+                string.IsNullOrWhiteSpace(TxtEmail.Text))
+            {
+                MessageBox.Show("Tous les champs obligatoires doivent être remplis.");
+                return;
+            }
+
+            try
+            {
+                bool estEntreprise = (CmbStatut.SelectedItem as ComboBoxItem)?
+                     .Content?.ToString() == "Entreprise";
+
+                var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(TxtAdresse.Text);
+
+                var nouveauClient = new Utilisateur(
+                    estClient: true,
+                    estCuisinier: false,
+                    nom: TxtNom.Text,
+                    prenom: TxtPrenom.Text,
+                    adresse: TxtAdresse.Text,
+                    telephone: TxtTel.Text,
+                    email: TxtEmail.Text,
+                    mdp: "azerty",                      // ou ton workflow habituel
+                    station: station,
+                    nom_referent: estEntreprise ? TxtReferent.Text : "",
+                    estEntreprise: estEntreprise);
+
+                // Rafraîchir la liste
+                Utilisateur.RefreshAll();
+                dataGridClients.ItemsSource = null;
+                dataGridClients.ItemsSource = Utilisateur.clients;
+
+                // Fermer le bandeau
+                AddPane.Visibility = Visibility.Collapsed;
+                FicheClient.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
+            }
         }
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
@@ -557,6 +609,16 @@ namespace ProbSciANA.Interface
             // Même logique : on désélectionne la commande active
             ListCommandes.SelectedItem = null;
         }
+        private void CmbStatut_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LblReferent == null)      // appelé trop tôt pendant InitializeComponent
+                return;
+
+            bool isEntreprise = (CmbStatut.SelectedItem as ComboBoxItem)?.Content?.ToString() == "Entreprise";
+
+            LblReferent.Visibility = isEntreprise ? Visibility.Visible : Visibility.Collapsed;
+            TxtReferent.Visibility = isEntreprise ? Visibility.Visible : Visibility.Collapsed;
+        }
         private void OnListCommandes_Selected(object s, SelectionChangedEventArgs e)
         {
             if (ListCommandes.SelectedItem != null)
@@ -565,7 +627,6 @@ namespace ProbSciANA.Interface
                 ListCuisiniers.SelectedItem = null;
             }
         }
-
         private void OnListAvis_Selected(object s, SelectionChangedEventArgs e)
         {
             if (ListAvis.SelectedItem != null)
@@ -574,7 +635,6 @@ namespace ProbSciANA.Interface
                 ListCuisiniers.SelectedItem = null;
             }
         }
-
         private void OnListCuisiniers_Selected(object s, SelectionChangedEventArgs e)
         {
             if (ListCuisiniers.SelectedItem != null)
@@ -651,7 +711,7 @@ namespace ProbSciANA.Interface
     #region Page Gestion Cuisiniers (admin)
     public partial class CuisiniersView : Page
     {
-        private List<Utilisateur> cuisiniers;
+        public object SelectedElement { get; set; }
 
         public CuisiniersView()
         {
@@ -900,7 +960,6 @@ namespace ProbSciANA.Interface
     #endregion
 
     #region Test
-
     public partial class Test : Page
     {
         public Test()
@@ -969,69 +1028,6 @@ namespace ProbSciANA.Interface
             if (NavigationService.CanGoForward)
                 NavigationService.GoForward();
             UpdateNavButtons();
-        }
-    }
-    public partial class Test2 : Page
-    {
-        public Test2()
-        {
-            InitializeComponent();
-            Loaded += (s, e) => UpdateNavButtons();
-        }
-        private void UpdateNavButtons()
-        {
-            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
-            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
-        }
-        private void BtnMode_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Changer de mode (sombre / clair) à implémenter !");
-        }
-        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StartView());
-        }
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoBack)
-                NavigationService.GoBack();
-            UpdateNavButtons();
-        }
-        private void BtnForward_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoForward)
-                NavigationService.GoForward();
-            UpdateNavButtons();
-        }
-        private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
-        {
-            int tempsTrajet = Program.GrapheMétro.AffichageDijkstra(Program.Stations[1], Program.Stations[100]);
-            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
-        }
-
-        private void BtnAffichage_BF(object sender, RoutedEventArgs e)
-        {
-            int tempsTrajet = Program.GrapheMétro.AffichageBellmanFord(Program.Stations[1], Program.Stations[100]);
-            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
-        }
-        private void BtnAffichage_Floyd(object sender, RoutedEventArgs e)
-        {
-            int tempsTrajet = Program.GrapheMétro.AffichageFloydWarshall(Program.Stations[1], Program.Stations[100]);
-            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
-        }
-        private void BtnCheminOptimal(object sender, RoutedEventArgs e)
-        {
-            List<Noeud<(int id, string nom)>> Liste = new List<Noeud<(int id, string nom)>>();
-            Liste.Add(Program.Stations[1]);
-            Liste.Add(Program.Stations[20]);
-            Liste.Add(Program.Stations[40]);
-            Liste.Add(Program.Stations[60]);
-            Liste.Add(Program.Stations[80]);
-            Liste.Add(Program.Stations[100]);
-            Liste.Add(Program.Stations[120]);
-            var programInstance = new Program();
-            int tempsTrajet = programInstance.CheminOptimal(Program.GrapheMétro, Liste);
-            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[80].Valeur.nom} en passant par {Program.Stations[20].Valeur.nom}; {Program.Stations[40].Valeur.nom} ;{Program.Stations[60].Valeur.nom} est de : {tempsTrajet} minutes.");
         }
     }
     #endregion

@@ -1,11 +1,85 @@
 <Application x:Class="ProbSciANA.Interface.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <Application.Resources>
+        <!-- =========================================================
+             1) Dictionnaires fusionnés (tes styles existants)
+           ========================================================= -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <!-- Ton dictionnaire déjà présent                      -->
                 <ResourceDictionary Source="GraphStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- =====================================================
+                 2) Style « PillButton » réutilisable partout
+               ===================================================== -->
+            <Style x:Key="PillButton"
+                   TargetType="Button">
+                <Setter Property="Foreground"
+                        Value="White"/>
+                <Setter Property="Background"
+                        Value="#4CAF50"/>
+                <Setter Property="FontSize"
+                        Value="14"/>
+                <Setter Property="FontWeight"
+                        Value="SemiBold"/>
+                <Setter Property="Padding"
+                        Value="14,6"/>
+                <Setter Property="BorderThickness"
+                        Value="0"/>
+                <Setter Property="Cursor"
+                        Value="Hand"/>
+                <Setter Property="Margin"
+                        Value="0,0,10,0"/>
+
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect ShadowDepth="0"
+                                          BlurRadius="8"
+                                          Opacity="0.25"/>
+                    </Setter.Value>
+                </Setter>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="PART_Border"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="18">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="PART_Border"
+                                            Property="Background"
+                                            Value="#43A047"/>
+                                    <!-- Hover -->
+                                </Trigger>
+                                <Trigger Property="IsPressed"
+                                         Value="True">
+                                    <Setter TargetName="PART_Border"
+                                            Property="Background"
+                                            Value="#388E3C"/>
+                                    <!-- Pressed -->
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="False">
+                                    <Setter TargetName="PART_Border"
+                                            Property="Background"
+                                            Value="#9E9E9E"/>
+                                    <!-- Disabled -->
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
