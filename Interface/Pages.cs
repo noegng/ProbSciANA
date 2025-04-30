@@ -304,7 +304,7 @@ namespace ProbSciANA.Interface
 
         private void BtnCommander_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
@@ -326,20 +326,6 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshAll();
-            dataGridPlats.ItemsSource = null;
-            dataGridPlats.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
-        }
-        private void AjouterPlat_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AddPlat());
-        }
-        private async void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dataGridPlats.SelectedItem is Plat selected)
-            {
-                DataContext = selected;
-            }
         }
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
@@ -355,7 +341,7 @@ namespace ProbSciANA.Interface
         }
         private void AfficherPlats_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new PlatView());
         }
         private void AfficherAvis_Click(object sender, RoutedEventArgs e)
         {
@@ -388,10 +374,9 @@ namespace ProbSciANA.Interface
             UpdateNavButtons();
         }
     }
-
     #endregion
 
-    #region Plat
+    #region Add Plat
 
     public partial class AddPlat : Page
     {
@@ -455,7 +440,207 @@ namespace ProbSciANA.Interface
         }
 
     }
+    #endregion
 
+    #region Page Vue Commande
+    public partial class CommandeView : Page
+    {
+        public CommandeView()
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+            Utilisateur.RefreshAll();
+            dataGridCommandes.ItemsSource = null;
+            dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
+        }
+        private async void dataGridCommandes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Plat selected)
+            {
+                DataContext = selected;
+            }
+        }
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AddPlat());
+        }
+        private void AfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+    }
+    #endregion
+
+    #region Page Vue Avis
+    public partial class AvisView : Page
+    {
+        public AvisView()
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+            Utilisateur.RefreshAll();
+            dataGridAvis.ItemsSource = null;
+            dataGridAvis.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
+        }
+        private async void dataGridAvis_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridAvis.SelectedItem is Plat selected)
+            {
+                DataContext = selected;
+            }
+        }
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AddPlat());
+        }
+        private void AfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+    }
+    #endregion
+
+    #region Page Vue Plat
+    public partial class PlatView : Page
+    {
+        public PlatView()
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+            Utilisateur.RefreshAll();
+            dataGridPlats.ItemsSource = null;
+            dataGridPlats.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
+        }
+        private async void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridPlats.SelectedItem is Plat selected)
+            {
+                DataContext = selected;
+            }
+        }
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AddPlat());
+        }
+        private void AfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
+        {
+            /// Exemple de données de livraison
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+    }
     #endregion
 
     #region Page Vue Admin

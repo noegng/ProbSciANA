@@ -229,7 +229,7 @@
                     VerticalAlignment="Center"
                     Background="Transparent"
                     BorderThickness="0"
-                    Click="AjouterPlat_Click"
+                    Click="Ajouter_Click"
                     Grid.Column="2"/>
 
         </Grid>
