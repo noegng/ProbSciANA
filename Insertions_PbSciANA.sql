@@ -1,6 +1,7 @@
 --------------------------
 -- Table Utilisateur
 --------------------------
+
 INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, date_inscription, mdp) VALUES
 ('Dupont', 'Jean', '10 Rue de Paris, 75001 Paris', '0102030405', 'jean.dupont@example.com', 'Château de Vincennes', '2025-02-25 10:00:00', 'mdp1234'),
 ('Martin', 'Alice', '15 Avenue de la République, 75011 Paris', '0102030406', 'alice.martin@example.com', 'Oberkampf', '2025-02-26 11:00:00', 'mdp1234'),

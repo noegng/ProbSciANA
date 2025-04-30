@@ -1049,7 +1049,7 @@ namespace ProbSciANA
             this.id_plat = id_plat;
             Refresh();
         }
-        public Plat(string nom, double prix, int nb_portions, string type, string regime, string nationalite, DateTime date_peremption, string photo)
+        public Plat(string nom, double prix, int nb_portions, string type, string regime, string nationalite, DateTime date_peremption, string photo = "")
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -1067,7 +1067,14 @@ namespace ProbSciANA
                     command.Parameters.AddWithValue("@regime", regime);
                     command.Parameters.AddWithValue("@nationalite", nationalite);
                     command.Parameters.AddWithValue("@date_peremption", date_peremption.ToString("yyyy-MM-dd HH:mm:ss"));
-                    command.Parameters.AddWithValue("@photo", photo);
+                    if (photo != null && photo != "")
+                    {
+                        command.Parameters.AddWithValue("@photo", photo);
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue("@photo", "");
+                    }
                     command.ExecuteNonQuery();
                 }
                 string queryGetId = "SELECT LAST_INSERT_ID();";
@@ -1084,7 +1091,14 @@ namespace ProbSciANA
             this.regime = regime;
             this.nationalite = nationalite;
             this.date_peremption = date_peremption;
-            this.photo = photo;
+            if (photo != null && photo != "")
+            {
+                this.photo = photo;
+            }
+            else
+            {
+                this.photo = "";
+            }
         }
 
         #region GetSet

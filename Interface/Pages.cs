@@ -9,6 +9,7 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using System.Threading.Tasks;
 using System.Net.Http;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace ProbSciANA.Interface
 {
@@ -328,8 +329,7 @@ namespace ProbSciANA.Interface
         }
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
-            /// Logique pour ajouter un plat
-            MessageBox.Show("Ajouter un plat");
+            NavigationService?.Navigate(new PlatView());
         }
         private async void BtnLivrer(object sender, RoutedEventArgs e)
         {
@@ -393,52 +393,54 @@ namespace ProbSciANA.Interface
         public PlatView()
         {
             InitializeComponent();
+            //  Loaded += (s, e) => UpdateNavButtons();
+            Plat.RefreshAll();
+            dataGridPlats.ItemsSource = null;
+            dataGridPlats.ItemsSource = Plat.plats;
         }
 
         private void BtnAjouterPlat_Click(object sender, RoutedEventArgs e)
         {
-            // string nomPlat = NomPlatTextBox.Text;
-            // string typePlat = (TypePlatComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
-            // string nationalite = NationaliteTextBox.Text;
-            // string regimeAlimentaire = RegimeTextBox.Text;
-            // string ingredients = IngredientsTextBox.Text;
-            // string prixParPersonne = PrixTextBox.Text;
-            // string nombrePersonnes = NombrePersonnesTextBox.Text;
-            // DateTime? dateFabrication = DateFabricationDatePicker.SelectedDate;
-            // DateTime? datePeremption = DatePeremptionDatePicker.SelectedDate;
+            string nomPlat = NomPlatTextBox.Text;
+            string prixPlat = PrixTextBox.Text;
+            string typePlat = (TypePlatComboBox.SelectedItem as ComboBoxItem)?.Content.ToString().ToLower();
+            string nationalitePlat = NationaliteTextBox.Text;
+            string regimeAlimentaire = RegimeTextBox.Text;
+            string nbPortions = NombrePersonnesTextBox.Text;
 
-            // if (string.IsNullOrWhiteSpace(nomPlat) || string.IsNullOrWhiteSpace(typePlat) ||
-            // string.IsNullOrWhiteSpace(nationalite) || string.IsNullOrWhiteSpace(regimeAlimentaire) ||
-            // string.IsNullOrWhiteSpace(ingredients) || string.IsNullOrWhiteSpace(prixParPersonne) ||
-            // string.IsNullOrWhiteSpace(nombrePersonnes) || !dateFabrication.HasValue || !datePeremption.HasValue)
-            // {
-            // MessageBox.Show("Veuillez remplir tous les champs.");
-            // return;
-            // }
+            DateTime? dateperemption = DatePeremptionDatePicker.SelectedDate;
 
-            // try
-            // {
-            // var nouveauPlat = new Plat
-            // {
-            //     Nom = nomPlat,
-            //     Type = typePlat,
-            //     Nationalite = nationalite,
-            //     RegimeAlimentaire = regimeAlimentaire,
-            //     Ingredients = ingredients,
-            //     PrixParPersonne = double.Parse(prixParPersonne),
-            //     NombrePersonnes = int.Parse(nombrePersonnes),
-            //     DateFabrication = dateFabrication.Value,
-            //     DatePeremption = datePeremption.Value
-            // };
+            if (string.IsNullOrWhiteSpace(nomPlat) || string.IsNullOrWhiteSpace(typePlat) ||
+            string.IsNullOrWhiteSpace(nationalitePlat) || string.IsNullOrWhiteSpace(regimeAlimentaire)
+            || prixPlat == null || nbPortions == null || !dateperemption.HasValue)
+            {
+                MessageBox.Show("Veuillez remplir tous les champs.");
+                return;
+            }
 
-            // Requetes.AjouterPlat(nouveauPlat);
-            // MessageBox.Show("Plat ajouté avec succès !");
-            // NavigationService?.GoBack();
-            // }
-            // catch (Exception ex)
-            // {
-            // MessageBox.Show("Erreur lors de l'ajout du plat : " + ex.Message);
-            // }
+            try
+            {
+                double prix = double.Parse(prixPlat);
+                int nbPortionsInt = int.Parse(nbPortions);
+                DateTime datePeremption = dateperemption.Value;
+                var nouveauPlat = new Plat
+                (
+                    nomPlat,
+                    prix,
+                    nbPortionsInt,
+                    typePlat,
+                    regimeAlimentaire,
+                    nationalitePlat,
+                    datePeremption
+                );
+
+                MessageBox.Show("Plat ajouté avec succès !");
+                NavigationService?.GoBack();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'ajout du plat : " + ex.Message);
+            }
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
