@@ -465,19 +465,19 @@ namespace ProbSciANA.Interface
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new ClientsView());
+            NavigationService?.Navigate(new ClientsViewAdmin());
         }
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CuisiniersView());
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
         }
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+            NavigationService?.Navigate(new CommandesViewAdmin());
         }
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
 
         private void UpdateNavButtons()
@@ -660,19 +660,19 @@ namespace ProbSciANA.Interface
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new ClientsView());
+            NavigationService?.Navigate(new ClientsViewAdmin());
         }
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CuisiniersView());
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
         }
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+            NavigationService?.Navigate(new CommandesViewAdmin());
         }
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
         private void UpdateNavButtons()
         {
@@ -754,19 +754,19 @@ namespace ProbSciANA.Interface
         // private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("adresse");
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new ClientsView());
+            NavigationService?.Navigate(new ClientsViewAdmin());
         }
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CuisiniersView());
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
         }
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+            NavigationService?.Navigate(new CommandesViewAdmin());
         }
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
 
         private void UpdateNavButtons()
@@ -834,19 +834,19 @@ namespace ProbSciANA.Interface
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new ClientsView());
+            NavigationService?.Navigate(new ClientsViewAdmin());
         }
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CuisiniersView());
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
         }
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+            NavigationService?.Navigate(new CommandesViewAdmin());
         }
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
 
         private void UpdateNavButtons()
@@ -890,19 +890,19 @@ namespace ProbSciANA.Interface
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new ClientsView());
+            NavigationService?.Navigate(new ClientsViewAdmin());
         }
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CuisiniersView());
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
         }
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+            NavigationService?.Navigate(new CommandesViewAdmin());
         }
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
 
         private void UpdateNavButtons()
