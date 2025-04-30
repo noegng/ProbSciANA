@@ -37,6 +37,7 @@ namespace ProbSciANA
         private List<Cuisine>? cuisines = new List<Cuisine>();
         private List<Utilisateur>? sesClients = new List<Utilisateur>();
         private List<Utilisateur>? sesCuisiniers = new List<Utilisateur>();
+        private List<Plat>? plats_cuisines = new List<Plat>();
 
         private int id_utilisateur;
         private bool estClient = false;
@@ -139,6 +140,10 @@ namespace ProbSciANA
         public List<Utilisateur> SesCuisiniers
         {
             get { return sesCuisiniers; }
+        }
+        public List<Plat> Plats_cuisines
+        {
+            get { return plats_cuisines; }
         }
         public int Id_utilisateur
         {
@@ -586,6 +591,7 @@ namespace ProbSciANA
                 }
 
                 u.cuisines.Clear();
+                u.plats_cuisines.Clear();
                 foreach (Cuisine c in Cuisine.cuisines)
                 {
                     if (c.Cuisinier.Id_utilisateur == u.id_utilisateur)
@@ -595,6 +601,7 @@ namespace ProbSciANA
                         {
                             u.plat_du_jour = c.Plat;
                         }
+                        u.plats_cuisines.Add(c.Plat);
                     }
                 }
             }

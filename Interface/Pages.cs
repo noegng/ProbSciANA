@@ -330,19 +330,20 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-        }
-        private void AfficherGraphe_Click(object sender, RoutedEventArgs e)
-        {
-            /// Exemple de données de livraison
+            Utilisateur.RefreshAll();
+            dataGridPlats.ItemsSource = null;
+            dataGridPlats.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
         }
         private void AjouterPlat_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new PlatView());
         }
-        private async void BtnLivrer(object sender, RoutedEventArgs e)
+        private async void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            MessageBox.Show("Livrer un plat");
-            await Program.UtiliserGetCoordonnees();
+            if (dataGridPlats.SelectedItem is Plat selected)
+            {
+                DataContext = selected;
+            }
         }
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
@@ -401,10 +402,7 @@ namespace ProbSciANA.Interface
         public PlatView()
         {
             InitializeComponent();
-            //  Loaded += (s, e) => UpdateNavButtons();
-            Plat.RefreshAll();
-            dataGridPlats.ItemsSource = null;
-            dataGridPlats.ItemsSource = Plat.plats;
+            //Loaded += (s, e) => UpdateNavButtons();
         }
 
         private void BtnAjouterPlat_Click(object sender, RoutedEventArgs e)
@@ -537,8 +535,6 @@ namespace ProbSciANA.Interface
             // Réinitialiser les champs
             TxtPrenom.Text = TxtNom.Text = TxtAdresse.Text = TxtTel.Text = TxtEmail.Text = "";
         }
-
-        // Annuler
         private void BtnAnnulerAjout_Click(object sender, RoutedEventArgs e)
         {
             AddPane.Visibility = Visibility.Collapsed;
