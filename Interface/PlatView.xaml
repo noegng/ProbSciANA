@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d"
       Title="PlatView">
 
     <DockPanel LastChildFill="True">
@@ -66,8 +65,7 @@
                     Background="#BEE6FD"
                     BorderThickness="0"
                     FontWeight="Bold"
-                    Padding="10,0"
-                    Click="AfficherPlats_Click"/>
+                    Padding="10,0"/>
 
             <Button Grid.Column="6"
                     Content="Clients"
@@ -261,8 +259,6 @@
                                         Binding="{Binding Nb_portions}"/>
                     <DataGridTextColumn Header="Type"
                                         Binding="{Binding Type}"/>
-                    <DataGridTextColumn Header="Nb_portions"
-                                        Binding="{Binding Nb_portions}"/>
                     <DataGridTextColumn Header="Regime"
                                         Binding="{Binding Regime}"/>
                     <DataGridTextColumn Header="Nationalite"
@@ -271,6 +267,119 @@
                                         Binding="{Binding Date_peremption}"/>
                 </DataGrid.Columns>
             </DataGrid>
+
+            <StackPanel x:Name="FichePlat"
+                        Grid.Column="1"
+                        Margin="10"
+                        Background="#FFF3F3F3"
+                        VerticalAlignment="Top">
+                <DockPanel LastChildFill="True"
+                           Margin="0 0 0 10">
+                    <TextBlock Text="Fiche plat"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               DockPanel.Dock="Left"/>
+
+                    <Button Content="🗑️"
+                            FontSize="14"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="BtnSupprimer_Click"
+                            DockPanel.Dock="Right"/>
+                </DockPanel>
+                <Grid Margin="0 0 0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Nom -->
+                    <TextBlock Text="Nom :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="0"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Nom}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="0"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Prix :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="1"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Prix}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="1"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Nombre de portions :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="2"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding nb_portions}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="2"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Type :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="3"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Type}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="3"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Régime :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="4"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Regime}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="4"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Nationalité :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="5"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Nationalite}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="5"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Date de péremption :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="6"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Date_peremption}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="6"
+                               Grid.Column="1"/>
+
+                </Grid>
+            </StackPanel>
+
         </Grid>
 
     </DockPanel>

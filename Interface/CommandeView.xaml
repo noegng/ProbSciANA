@@ -47,8 +47,7 @@
                     Background="#BEE6FD"
                     BorderThickness="0"
                     FontWeight="Bold"
-                    Padding="10,0"
-                    Click="AfficherCommandes_Click"/>
+                    Padding="10,0"/>
 
             <Button Grid.Column="4"
                     Content="Avis"

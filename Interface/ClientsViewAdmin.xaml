@@ -341,8 +341,6 @@
                                 </DataGrid.Columns>
                         </DataGrid>
 
-
-
                         <StackPanel x:Name="FicheClient"
                                     Grid.Column="1"
                                     Margin="10"

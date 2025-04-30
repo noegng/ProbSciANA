@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d"
       Title="Cuisinier Dashboard">
 
     <DockPanel LastChildFill="True">
@@ -81,7 +80,9 @@
 
         <Grid DockPanel.Dock="Top"
               Height="50"
-              Background="Transparent">
+              Background="Transparent"
+              VerticalAlignment="Top"
+              Margin="0,2,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -208,16 +209,28 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-
             </StackPanel>
 
             <!-- Titre -->
-            <TextBlock Text="Votre Tableau de Bord"
+            <TextBlock Text="Gestion des Clients"
                        FontSize="24"
                        FontWeight="Bold"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
                        Grid.Column="1"/>
+
+            <!-- Bouton ➕ -->
+            <Button Content="➕"
+                    ToolTip="Ajouter un client"
+                    FontSize="16"
+                    Width="32"
+                    Height="32"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Grid.Column="2"/>
 
         </Grid>
 

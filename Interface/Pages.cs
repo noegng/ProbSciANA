@@ -327,17 +327,13 @@ namespace ProbSciANA.Interface
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
         }
-        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
-        {
-            /// Exemple de données de livraison
-        }
         private void AfficherClients_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+
         }
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new CommandeView());
         }
         private void AfficherPlats_Click(object sender, RoutedEventArgs e)
         {
@@ -345,7 +341,7 @@ namespace ProbSciANA.Interface
         }
         private void AfficherAvis_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new AvisView());
         }
 
         private void UpdateNavButtons()
@@ -464,21 +460,18 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new AddPlat());
         }
+
         private void AfficherClients_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
-        }
-        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
-        {
-            /// Exemple de données de livraison
+
         }
         private void AfficherPlats_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new PlatView());
         }
         private void AfficherAvis_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new AvisView());
         }
 
         private void UpdateNavButtons()
@@ -533,19 +526,15 @@ namespace ProbSciANA.Interface
         }
         private void AfficherClients_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+
         }
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new CommandeView());
         }
         private void AfficherPlats_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
-        }
-        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
-        {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new PlatView());
         }
 
         private void UpdateNavButtons()
@@ -598,21 +587,27 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new AddPlat());
         }
+        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridPlats.SelectedItem is Plat selectedPlat)
+            {
+                selectedPlat.Delete();
+                dataGridPlats.ItemsSource = null;
+                dataGridPlats.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
+            }
+        }
+
         private void AfficherClients_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+
         }
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
-        }
-        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
-        {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new CommandeView());
         }
         private void AfficherAvis_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new AvisView());
         }
 
         private void UpdateNavButtons()
@@ -697,6 +692,7 @@ namespace ProbSciANA.Interface
     #region Page Clients Admin
     public partial class ClientsViewAdmin : Page
     {
+        //public var SelectedItem;
         public ClientsViewAdmin()
         {
             InitializeComponent();
