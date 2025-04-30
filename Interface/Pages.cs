@@ -516,8 +516,6 @@ namespace ProbSciANA.Interface
     #region Page Gestion Clients (admin)
     public partial class ClientsView : Page
     {
-        public object SelectedElement { get; set; }
-
         public ClientsView()
         {
             InitializeComponent();
