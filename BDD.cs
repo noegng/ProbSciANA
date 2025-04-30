@@ -1,6 +1,6 @@
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using MySql.Data.MySqlClient;
 using System.Threading.Tasks;
 #nullable enable
 
@@ -63,7 +63,6 @@ namespace ProbSciANA
         }
         public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string mdp, Noeud<(int id, string nom)> station = null, bool estEntreprise = false, string nom_referent = "")
         {
-
             //mdp = GetMDP(nom, prenom);
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
