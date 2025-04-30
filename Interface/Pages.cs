@@ -1,11 +1,13 @@
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
-using MySql.Data.MySqlClient;
 using System.Data;
 using System.Threading.Tasks;
 using System.Net.Http;
@@ -13,9 +15,11 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace ProbSciANA.Interface
 {
+
     #region Page Accueil
     public partial class StartView : Page
     {
+
         public StartView()
         {
             InitializeComponent();
@@ -29,6 +33,10 @@ namespace ProbSciANA.Interface
         private void BtnModeTest_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Test());
+        }
+        private void BtnModeTest2_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new Test2());
         }
         private void UpdateAuthButtons()
         {
@@ -116,7 +124,7 @@ namespace ProbSciANA.Interface
 
             if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(prenom) ||
                 string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(adresse) ||
-                string.IsNullOrWhiteSpace(role))
+                string.IsNullOrWhiteSpace(role) || string.IsNullOrWhiteSpace(mdp))
             {
                 MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
                 return;
@@ -960,6 +968,7 @@ namespace ProbSciANA.Interface
     #endregion
 
     #region Test
+
     public partial class Test : Page
     {
         public Test()
@@ -1028,6 +1037,69 @@ namespace ProbSciANA.Interface
             if (NavigationService.CanGoForward)
                 NavigationService.GoForward();
             UpdateNavButtons();
+        }
+    }
+    public partial class Test2 : Page
+    {
+        public Test2()
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+        }
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Changer de mode (sombre / clair) à implémenter !");
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+        private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
+        {
+            int tempsTrajet = Program.GrapheMétro.AffichageDijkstra(Program.Stations[1], Program.Stations[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+        }
+
+        private void BtnAffichage_BF(object sender, RoutedEventArgs e)
+        {
+            int tempsTrajet = Program.GrapheMétro.AffichageBellmanFord(Program.Stations[1], Program.Stations[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+        }
+        private void BtnAffichage_Floyd(object sender, RoutedEventArgs e)
+        {
+            int tempsTrajet = Program.GrapheMétro.AffichageFloydWarshall(Program.Stations[1], Program.Stations[100]);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+        }
+        private void BtnCheminOptimal(object sender, RoutedEventArgs e)
+        {
+            List<Noeud<(int id, string nom)>> Liste = new List<Noeud<(int id, string nom)>>();
+            Liste.Add(Program.Stations[1]);
+            Liste.Add(Program.Stations[20]);
+            Liste.Add(Program.Stations[40]);
+            Liste.Add(Program.Stations[60]);
+            Liste.Add(Program.Stations[80]);
+            Liste.Add(Program.Stations[100]);
+            Liste.Add(Program.Stations[120]);
+            var programInstance = new Program();
+            int tempsTrajet = programInstance.CheminOptimal(Program.GrapheMétro, Liste);
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[80].Valeur.nom} en passant par {Program.Stations[20].Valeur.nom}; {Program.Stations[40].Valeur.nom} ;{Program.Stations[60].Valeur.nom} est de : {tempsTrajet} minutes.");
         }
     }
     #endregion
