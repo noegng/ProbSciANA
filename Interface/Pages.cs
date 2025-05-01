@@ -447,7 +447,7 @@ namespace ProbSciANA.Interface
             Loaded += (s, e) => UpdateNavButtons();
             Utilisateur.RefreshAll();
             dataGridCommandes.ItemsSource = null;
-            dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
+            dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Cuisines;
         }
         private async void dataGridCommandes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -511,11 +511,11 @@ namespace ProbSciANA.Interface
             Loaded += (s, e) => UpdateNavButtons();
             Utilisateur.RefreshAll();
             dataGridAvis.ItemsSource = null;
-            dataGridAvis.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
+            dataGridAvis.ItemsSource = SessionManager.CurrentUser.Cuisines;
         }
         private async void dataGridAvis_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dataGridAvis.SelectedItem is Plat selected)
+            if (dataGridAvis.SelectedItem is Cuisine selected)
             {
                 DataContext = selected;
             }
@@ -576,7 +576,6 @@ namespace ProbSciANA.Interface
             Utilisateur.RefreshAll();
             dataGridPlats.ItemsSource = null;
             dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
-            MessageBox.Show($"Nb de cuisines : {SessionManager.CurrentUser.Cuisines.Count}");
         }
         private async void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -594,6 +593,7 @@ namespace ProbSciANA.Interface
             if (dataGridPlats.SelectedItem is Cuisine selected)
             {
                 selected.Delete();
+                Utilisateur.RefreshAll();
                 dataGridPlats.ItemsSource = null;
                 dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
             }
@@ -1131,7 +1131,14 @@ namespace ProbSciANA.Interface
             CurrentUser = null; // Important pour éviter des valeurs fantômes
         }
 
-        public static bool IsLoggedIn => CurrentUser != null;
+        public static bool IsLoggedIn()
+        {
+            if (CurrentUser == null)
+            {
+                return false;
+            }
+            return true;
+        }
 
         public static void Logout()
         {
