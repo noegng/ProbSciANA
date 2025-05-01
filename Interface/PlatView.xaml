@@ -248,23 +248,22 @@
                       SelectionChanged="dataGridPlats_SelectionChanged"
                       ColumnWidth="*">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID"
-                                        Binding="{Binding Id_plat}"
-                                        IsReadOnly="True"/>
                     <DataGridTextColumn Header="Nom"
-                                        Binding="{Binding Nom}"/>
+                                        Binding="{Binding Plat.Nom}"/>
                     <DataGridTextColumn Header="Prix"
-                                        Binding="{Binding Prix}"/>
-                    <DataGridTextColumn Header="Nb_portions"
-                                        Binding="{Binding Nb_portions}"/>
+                                        Binding="{Binding Plat.Prix}"/>
+                    <DataGridTextColumn Header="Portions"
+                                        Binding="{Binding Plat.Nb_portions}"/>
                     <DataGridTextColumn Header="Type"
-                                        Binding="{Binding Type}"/>
-                    <DataGridTextColumn Header="Regime"
-                                        Binding="{Binding Regime}"/>
-                    <DataGridTextColumn Header="Nationalite"
-                                        Binding="{Binding Nationalite}"/>
-                    <DataGridTextColumn Header="Date_peremption"
-                                        Binding="{Binding Date_peremption}"/>
+                                        Binding="{Binding Plat.Type}"/>
+                    <DataGridTextColumn Header="Régime"
+                                        Binding="{Binding Plat.Regime}"/>
+                    <DataGridTextColumn Header="Nationalité"
+                                        Binding="{Binding Plat.Nationalite}"/>
+                    <DataGridTextColumn Header="Date de péremption"
+                                        Binding="{Binding Plat.Date_peremption}"/>
+                    <DataGridTextColumn Header="Quantité"
+                                        Binding="{Binding Quantite}"/>
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -312,7 +311,7 @@
                                Margin="0 0 10 5"
                                Grid.Row="0"
                                Grid.Column="0"/>
-                    <TextBlock Text="{Binding Nom}"
+                    <TextBlock Text="{Binding Plat.Nom}"
                                HorizontalAlignment="Right"
                                Grid.Row="0"
                                Grid.Column="1"/>
@@ -322,7 +321,7 @@
                                Margin="0 0 10 5"
                                Grid.Row="1"
                                Grid.Column="0"/>
-                    <TextBlock Text="{Binding Prix}"
+                    <TextBlock Text="{Binding Plat.Prix}"
                                HorizontalAlignment="Right"
                                Grid.Row="1"
                                Grid.Column="1"/>
@@ -332,7 +331,7 @@
                                Margin="0 0 10 5"
                                Grid.Row="2"
                                Grid.Column="0"/>
-                    <TextBlock Text="{Binding nb_portions}"
+                    <TextBlock Text="{Binding Plat.Nb_portions}"
                                HorizontalAlignment="Right"
                                Grid.Row="2"
                                Grid.Column="1"/>
@@ -342,7 +341,7 @@
                                Margin="0 0 10 5"
                                Grid.Row="3"
                                Grid.Column="0"/>
-                    <TextBlock Text="{Binding Type}"
+                    <TextBlock Text="{Binding Plat.Type}"
                                HorizontalAlignment="Right"
                                Grid.Row="3"
                                Grid.Column="1"/>
@@ -352,7 +351,7 @@
                                Margin="0 0 10 5"
                                Grid.Row="4"
                                Grid.Column="0"/>
-                    <TextBlock Text="{Binding Regime}"
+                    <TextBlock Text="{Binding Plat.Regime}"
                                HorizontalAlignment="Right"
                                Grid.Row="4"
                                Grid.Column="1"/>
@@ -362,7 +361,7 @@
                                Margin="0 0 10 5"
                                Grid.Row="5"
                                Grid.Column="0"/>
-                    <TextBlock Text="{Binding Nationalite}"
+                    <TextBlock Text="{Binding Plat.Nationalite}"
                                HorizontalAlignment="Right"
                                Grid.Row="5"
                                Grid.Column="1"/>
@@ -372,7 +371,7 @@
                                Margin="0 0 10 5"
                                Grid.Row="6"
                                Grid.Column="0"/>
-                    <TextBlock Text="{Binding Date_peremption}"
+                    <TextBlock Text="{Binding Plat.Date_peremption}"
                                HorizontalAlignment="Right"
                                Grid.Row="6"
                                Grid.Column="1"/>

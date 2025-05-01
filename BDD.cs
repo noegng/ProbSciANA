@@ -1727,6 +1727,7 @@ namespace ProbSciANA
                 }
             }
             cuisines.Remove(this);
+            cuisinier.Cuisines.Remove(this);
         }
         public void Refresh() // Refreshes the information of the cuisine
         {

@@ -572,13 +572,15 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Plat.RefreshAll();
+            Plat.RefreshList();
+            Utilisateur.RefreshAll();
             dataGridPlats.ItemsSource = null;
-            dataGridPlats.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
+            dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
+            MessageBox.Show($"Nb de cuisines : {SessionManager.CurrentUser.Cuisines.Count}");
         }
         private async void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dataGridPlats.SelectedItem is Plat selected)
+            if (dataGridPlats.SelectedItem is Cuisine selected)
             {
                 DataContext = selected;
             }
@@ -589,18 +591,11 @@ namespace ProbSciANA.Interface
         }
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
         {
-            if (dataGridPlats.SelectedItem is Plat selectedPlat)
+            if (dataGridPlats.SelectedItem is Cuisine selected)
             {
-                foreach (Cuisine c in SessionManager.CurrentUser.Cuisines)
-                {
-                    if (c.Plat == selectedPlat)
-                    {
-                        c.Delete();
-                        break;
-                    }
-                }
+                selected.Delete();
                 dataGridPlats.ItemsSource = null;
-                dataGridPlats.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
+                dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
             }
         }
 
@@ -722,7 +717,6 @@ namespace ProbSciANA.Interface
             AddPane.Visibility = Visibility.Collapsed;
             FicheClient.Visibility = Visibility.Visible;
         }
-
         private async void BtnValiderAjout_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtPrenom.Text) ||
@@ -777,6 +771,49 @@ namespace ProbSciANA.Interface
                 dataGridClients.ItemsSource = Utilisateur.clients;
             }
         }
+
+        private void BtnClients_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new ClientsViewAdmin());
+        }
+        private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
+        }
+        private void BtnCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommandesViewAdmin());
+        }
+        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
+        }
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+
         private async void dataGridClients_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dataGridClients.SelectedItem is Utilisateur selected)
@@ -848,48 +885,6 @@ namespace ProbSciANA.Interface
                     MessageBox.Show("Adresse invalide ou station introuvable.");
                 }
             }
-        }
-
-        private void BtnClients_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new ClientsViewAdmin());
-        }
-        private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new CuisiniersViewAdmin());
-        }
-        private void BtnCommandes_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new CommandesViewAdmin());
-        }
-        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StatistiquesViewAdmin());
-        }
-        private void UpdateNavButtons()
-        {
-            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
-            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
-        }
-        private void BtnMode_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StartView());
-        }
-        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AdminDashboardView());
-        }
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoBack)
-                NavigationService.GoBack();
-            UpdateNavButtons();
-        }
-        private void BtnForward_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoForward)
-                NavigationService.GoForward();
-            UpdateNavButtons();
         }
     }
     #endregion
