@@ -277,28 +277,6 @@
                            HorizontalAlignment="Center"
                            Margin="10"/>
 
-                <!-- Boutons d'action -->
-                <StackPanel DockPanel.Dock="Top"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center">
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Ajouter un cuisinier"
-                                Margin="10"
-                                Click="BtnAjouter_Click"/>
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Supprimer"
-                                Margin="10"
-                                Click="BtnSupprimer_Click"/>
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Modifier"
-                                Margin="10"/>
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Trier par nom"
-                                Margin="10"/>
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Trier par adresse"
-                                Margin="10"/>
-                </StackPanel>
 
                 <!-- Liste des cuisiniers -->
                 <Grid>
