@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d"
       Title="Cuisinier Dashboard">
 
     <DockPanel LastChildFill="True">
@@ -81,7 +80,9 @@
 
         <Grid DockPanel.Dock="Top"
               Height="50"
-              Background="Transparent">
+              Background="Transparent"
+              VerticalAlignment="Top"
+              Margin="0,2,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -208,11 +209,10 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-
             </StackPanel>
 
             <!-- Titre -->
-            <TextBlock Text="Votre Tableau de Bord"
+            <TextBlock Text="Gestion des Clients"
                        FontSize="24"
                        FontWeight="Bold"
                        VerticalAlignment="Center"
@@ -221,6 +221,7 @@
 
             <!-- Bouton ➕ -->
             <Button Content="➕"
+                    ToolTip="Ajouter un client"
                     FontSize="16"
                     Width="32"
                     Height="32"
@@ -229,48 +230,8 @@
                     VerticalAlignment="Center"
                     Background="Transparent"
                     BorderThickness="0"
-                    Click="AjouterPlat_Click"
                     Grid.Column="2"/>
 
-        </Grid>
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition Width="1.5*"/>
-            </Grid.ColumnDefinitions>
-            <DataGrid x:Name="dataGridPlats"
-                      Grid.Column="0"
-                      AutoGenerateColumns="False"
-                      CanUserAddRows="False"
-                      HeadersVisibility="Column"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      Margin="10"
-                      SelectionChanged="dataGridPlats_SelectionChanged"
-                      ColumnWidth="*">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID"
-                                        Binding="{Binding Id_plat}"
-                                        IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Nom"
-                                        Binding="{Binding Nom}"/>
-                    <DataGridTextColumn Header="Prix"
-                                        Binding="{Binding Prix}"/>
-                    <DataGridTextColumn Header="Nb_portions"
-                                        Binding="{Binding Nb_portions}"/>
-                    <DataGridTextColumn Header="Type"
-                                        Binding="{Binding Type}"/>
-                    <DataGridTextColumn Header="Nb_portions"
-                                        Binding="{Binding Nb_portions}"/>
-                    <DataGridTextColumn Header="Regime"
-                                        Binding="{Binding Regime}"/>
-                    <DataGridTextColumn Header="Nationalite"
-                                        Binding="{Binding Nationalite}"/>
-                    <DataGridTextColumn Header="Date_peremption"
-                                        Binding="{Binding Date_peremption}"/>
-                </DataGrid.Columns>
-            </DataGrid>
         </Grid>
 
     </DockPanel>

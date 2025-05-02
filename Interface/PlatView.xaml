@@ -1,0 +1,385 @@
+<Page x:Class="ProbSciANA.Interface.PlatView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      Title="PlatView">
+
+    <DockPanel LastChildFill="True">
+
+        <!-- BANDEAU STYLE UBER -->
+        <Grid DockPanel.Dock="Top"
+              Height="50"
+              Background="Black">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Content="🌙 Mode"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="BtnMode_Click"/>
+
+            <Button Grid.Column="1"
+                    Content="🏠 Accueil"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="BtnAccueil_Click"/>
+
+            <StackPanel Grid.Column="2"/>
+
+            <Button Grid.Column="3"
+                    Content="Commandes"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="AfficherCommandes_Click"/>
+
+            <Button Grid.Column="4"
+                    Content="Avis"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="AfficherAvis_Click"/>
+
+            <Button Grid.Column="5"
+                    Content="Plats"
+                    Foreground="White"
+                    Background="#BEE6FD"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"/>
+
+            <Button Grid.Column="6"
+                    Content="Clients"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="AfficherClients_Click"/>
+        </Grid>
+
+        <Grid DockPanel.Dock="Top"
+              Height="50"
+              Background="Transparent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0">
+
+                <!-- BACK -->
+                <Button x:Name="BtnBack"
+                        Width="32"
+                        Height="32"
+                        Margin="2"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        ToolTip="Précédent"
+                        Click="BtnBack_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    Width="32"
+                                    Height="32"
+                                    CornerRadius="16"
+                                    Background="Transparent"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                <Viewbox Width="16"
+                                         Height="16">
+                                    <Grid Width="24"
+                                          Height="24">
+                                        <Path x:Name="backArrow"
+                                              StrokeThickness="2"
+                                              StrokeLineJoin="Round"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              Data="M14,4 L6,12 L14,20"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#EEE"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="True">
+                                    <Setter TargetName="backArrow"
+                                            Property="Stroke"
+                                            Value="Black"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="False">
+                                    <Setter TargetName="backArrow"
+                                            Property="Stroke"
+                                            Value="Gray"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- FORWARD -->
+                <Button x:Name="BtnForward"
+                        Width="32"
+                        Height="32"
+                        Margin="2"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        ToolTip="Suivant"
+                        Click="BtnForward_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    Width="32"
+                                    Height="32"
+                                    CornerRadius="16"
+                                    Background="Transparent"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                                <Viewbox Width="16"
+                                         Height="16">
+                                    <Grid Width="24"
+                                          Height="24">
+                                        <Path x:Name="forwardArrow"
+                                              StrokeThickness="2"
+                                              StrokeLineJoin="Round"
+                                              StrokeStartLineCap="Round"
+                                              StrokeEndLineCap="Round"
+                                              Data="M4,4 L12,12 L4,20"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#EEE"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="True">
+                                    <Setter TargetName="forwardArrow"
+                                            Property="Stroke"
+                                            Value="Black"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="False">
+                                    <Setter TargetName="forwardArrow"
+                                            Property="Stroke"
+                                            Value="Gray"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+            </StackPanel>
+
+            <!-- Titre -->
+            <TextBlock Text="Votre Tableau de Bord"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Grid.Column="1"/>
+
+            <!-- Bouton ➕ -->
+            <Button Content="➕"
+                    FontSize="16"
+                    Width="32"
+                    Height="32"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="Ajouter_Click"
+                    Grid.Column="2"/>
+
+        </Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="1.5*"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid x:Name="dataGridPlats"
+                      Grid.Column="0"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      HeadersVisibility="Column"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Margin="10"
+                      SelectionChanged="dataGridPlats_SelectionChanged"
+                      ColumnWidth="*">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Nom"
+                                        Binding="{Binding Plat.Nom}"/>
+                    <DataGridTextColumn Header="Prix"
+                                        Binding="{Binding Plat.Prix}"/>
+                    <DataGridTextColumn Header="Portions"
+                                        Binding="{Binding Plat.Nb_portions}"/>
+                    <DataGridTextColumn Header="Type"
+                                        Binding="{Binding Plat.Type}"/>
+                    <DataGridTextColumn Header="Régime"
+                                        Binding="{Binding Plat.Regime}"/>
+                    <DataGridTextColumn Header="Nationalité"
+                                        Binding="{Binding Plat.Nationalite}"/>
+                    <DataGridTextColumn Header="Date de péremption"
+                                        Binding="{Binding Plat.Date_peremption}"/>
+                    <DataGridTextColumn Header="Quantité"
+                                        Binding="{Binding Quantite}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <StackPanel x:Name="FichePlat"
+                        Grid.Column="1"
+                        Margin="10"
+                        Background="#FFF3F3F3"
+                        VerticalAlignment="Top">
+                <DockPanel LastChildFill="True"
+                           Margin="0 0 0 10">
+                    <TextBlock Text="Fiche plat"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               DockPanel.Dock="Left"/>
+
+                    <Button Content="🗑️"
+                            FontSize="14"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="BtnSupprimer_Click"
+                            DockPanel.Dock="Right"/>
+                </DockPanel>
+                <Grid Margin="0 0 0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Nom -->
+                    <TextBlock Text="Nom :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="0"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Plat.Nom}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="0"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Prix :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="1"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Plat.Prix}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="1"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Nombre de portions :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="2"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Plat.Nb_portions}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="2"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Type :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="3"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Plat.Type}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="3"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Régime :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="4"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Plat.Regime}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="4"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Nationalité :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="5"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Plat.Nationalite}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="5"
+                               Grid.Column="1"/>
+
+                    <TextBlock Text="Date de péremption :"
+                               FontWeight="Bold"
+                               Margin="0 0 10 5"
+                               Grid.Row="6"
+                               Grid.Column="0"/>
+                    <TextBlock Text="{Binding Plat.Date_peremption}"
+                               HorizontalAlignment="Right"
+                               Grid.Row="6"
+                               Grid.Column="1"/>
+
+                </Grid>
+            </StackPanel>
+
+        </Grid>
+
+    </DockPanel>
+</Page>

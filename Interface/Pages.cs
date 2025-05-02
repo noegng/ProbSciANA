@@ -307,7 +307,7 @@ namespace ProbSciANA.Interface
 
         private void BtnCommander_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+
         }
 
         private void BtnRetour_Click(object sender, RoutedEventArgs e)
@@ -329,40 +329,22 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshAll();
-            dataGridPlats.ItemsSource = null;
-            dataGridPlats.ItemsSource = SessionManager.CurrentUser.Plats_cuisines;
-        }
-        private void AjouterPlat_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AddPlat());
-        }
-        private async void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dataGridPlats.SelectedItem is Plat selected)
-            {
-                DataContext = selected;
-            }
-        }
-        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
-        {
-            /// Exemple de données de livraison
         }
         private void AfficherClients_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+
         }
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new CommandeView());
         }
         private void AfficherPlats_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new PlatView());
         }
         private void AfficherAvis_Click(object sender, RoutedEventArgs e)
         {
-            /// Exemple de données de livraison
+            NavigationService?.Navigate(new AvisView());
         }
 
         private void UpdateNavButtons()
@@ -391,10 +373,9 @@ namespace ProbSciANA.Interface
             UpdateNavButtons();
         }
     }
-
     #endregion
 
-    #region Plat
+    #region Add Plat
 
     public partial class AddPlat : Page
     {
@@ -458,7 +439,208 @@ namespace ProbSciANA.Interface
         }
 
     }
+    #endregion
 
+    #region Page Vue Commande
+    public partial class CommandeView : Page
+    {
+        public CommandeView()
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+            Utilisateur.RefreshAll();
+            dataGridCommandes.ItemsSource = null;
+            dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Cuisines;
+        }
+        private async void dataGridCommandes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Plat selected)
+            {
+                DataContext = selected;
+            }
+        }
+        private void Ajouter_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AddPlat());
+        }
+
+        private void AfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new PlatView());
+        }
+        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AvisView());
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+    }
+    #endregion
+
+    #region Page Vue Avis
+    public partial class AvisView : Page
+    {
+        public AvisView()
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+            Utilisateur.RefreshAll();
+            dataGridAvis.ItemsSource = null;
+            dataGridAvis.ItemsSource = SessionManager.CurrentUser.Cuisines;
+        }
+        private async void dataGridAvis_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridAvis.SelectedItem is Cuisine selected)
+            {
+                DataContext = selected;
+            }
+        }
+        private void Ajouter_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AddPlat());
+        }
+        private void AfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommandeView());
+        }
+        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new PlatView());
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+    }
+    #endregion
+
+    #region Page Vue Plat
+    public partial class PlatView : Page
+    {
+        public PlatView()
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+            Plat.RefreshList();
+            Utilisateur.RefreshAll();
+            dataGridPlats.ItemsSource = null;
+            dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
+        }
+        private async void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridPlats.SelectedItem is Cuisine selected)
+            {
+                DataContext = selected;
+            }
+        }
+        private void Ajouter_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AddPlat());
+        }
+        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridPlats.SelectedItem is Cuisine selected)
+            {
+                selected.Delete();
+                Utilisateur.RefreshAll();
+                dataGridPlats.ItemsSource = null;
+                dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
+            }
+        }
+
+        private void AfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommandeView());
+        }
+        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AvisView());
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+    }
     #endregion
 
     #region Page Vue Admin
@@ -472,19 +654,19 @@ namespace ProbSciANA.Interface
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new ClientsView());
+            NavigationService?.Navigate(new ClientsViewAdmin());
         }
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CuisiniersView());
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
         }
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+            NavigationService?.Navigate(new CommandesViewAdmin());
         }
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
 
         private void UpdateNavButtons()
@@ -512,10 +694,11 @@ namespace ProbSciANA.Interface
     }
     #endregion
 
-    #region Page Gestion Clients (admin)
-    public partial class ClientsView : Page
+    #region Page Clients Admin
+    public partial class ClientsViewAdmin : Page
     {
-        public ClientsView()
+        //public var SelectedItem;
+        public ClientsViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
@@ -537,7 +720,6 @@ namespace ProbSciANA.Interface
             AddPane.Visibility = Visibility.Collapsed;
             FicheClient.Visibility = Visibility.Visible;
         }
-
         private async void BtnValiderAjout_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtPrenom.Text) ||
@@ -592,6 +774,49 @@ namespace ProbSciANA.Interface
                 dataGridClients.ItemsSource = Utilisateur.clients;
             }
         }
+
+        private void BtnClients_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new ClientsViewAdmin());
+        }
+        private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
+        }
+        private void BtnCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommandesViewAdmin());
+        }
+        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
+        }
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+
         private async void dataGridClients_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dataGridClients.SelectedItem is Utilisateur selected)
@@ -709,10 +934,13 @@ namespace ProbSciANA.Interface
     }
     #endregion
 
-    #region Page Gestion Cuisiniers (admin)
-    public partial class CuisiniersView : Page
+    #region Page Cuisiniers Admin
+    public partial class CuisiniersViewAdmin : Page
     {
         public CuisiniersView()
+        public object SelectedElement { get; set; }
+
+        public CuisiniersViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
@@ -794,19 +1022,19 @@ namespace ProbSciANA.Interface
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new ClientsView());
+            NavigationService?.Navigate(new ClientsViewAdmin());
         }
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CuisiniersView());
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
         }
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+            NavigationService?.Navigate(new CommandesViewAdmin());
         }
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
 
         private void UpdateNavButtons()
@@ -838,11 +1066,11 @@ namespace ProbSciANA.Interface
 
     #endregion
 
-    #region Page Gestion Commandes (admin)
+    #region Page Commandes Admin
 
-    public partial class CommandesView : Page
+    public partial class CommandesViewAdmin : Page
     {
-        public CommandesView()
+        public CommandesViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
@@ -874,19 +1102,19 @@ namespace ProbSciANA.Interface
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new ClientsView());
+            NavigationService?.Navigate(new ClientsViewAdmin());
         }
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CuisiniersView());
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
         }
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+            NavigationService?.Navigate(new CommandesViewAdmin());
         }
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
 
         private void UpdateNavButtons()
@@ -918,11 +1146,11 @@ namespace ProbSciANA.Interface
 
     #endregion
 
-    #region Page Statistiques (admin)
+    #region Page Statistiques Admin
 
-    public partial class StatistiquesView : Page
+    public partial class StatistiquesViewAdmin : Page
     {
-        public StatistiquesView()
+        public StatistiquesViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
@@ -930,19 +1158,19 @@ namespace ProbSciANA.Interface
 
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new ClientsView());
+            NavigationService?.Navigate(new ClientsViewAdmin());
         }
         private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CuisiniersView());
+            NavigationService?.Navigate(new CuisiniersViewAdmin());
         }
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new CommandesView());
+            NavigationService?.Navigate(new CommandesViewAdmin());
         }
         private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StatistiquesView());
+            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
 
         private void UpdateNavButtons()
@@ -984,7 +1212,14 @@ namespace ProbSciANA.Interface
             CurrentUser = null; // Important pour éviter des valeurs fantômes
         }
 
-        public static bool IsLoggedIn => CurrentUser != null;
+        public static bool IsLoggedIn()
+        {
+            if (CurrentUser == null)
+            {
+                return false;
+            }
+            return true;
+        }
 
         public static void Logout()
         {
