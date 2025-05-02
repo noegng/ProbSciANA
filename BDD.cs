@@ -302,10 +302,17 @@ namespace ProbSciANA
             {
                 try
                 {
-                    var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(utilisateur.Adresse);
-                    if (station != null)
+                    if (Program.Stations.Contains(utilisateur.Station))
                     {
-                        utilisateur.Station = station;
+                        continue;
+                    }
+                    else
+                    {
+                        var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(utilisateur.Adresse);
+                        if (station != null)
+                        {
+                            utilisateur.Station = station;
+                        }
                     }
                 }
                 catch (Exception ex)
