@@ -709,14 +709,13 @@ namespace ProbSciANA.Interface
     #region Page Gestion Cuisiniers (admin)
     public partial class CuisiniersView : Page
     {
-        public object SelectedElement { get; set; }
-
         public CuisiniersView()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
             Utilisateur.RefreshAll();
-            LoadCuisiniers();
+            dataGridCuisiniers.ItemsSource = null;
+            dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
         }
 
         private void LoadCuisiniers()
@@ -731,31 +730,76 @@ namespace ProbSciANA.Interface
             // CuisiniersListView.ItemsSource = cuisiniers;
         }
 
-        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        private async void dataGridCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
+            if (dataGridCuisiniers.SelectedItem is Utilisateur selected)
             {
-                cuisinier.EstCuisinier = false; // Déclenche suppression automatique
-                LoadCuisiniers();
+                DataContext = selected;
             }
         }
 
-        private void BtnModifier_Click(object sender, RoutedEventArgs e)
+        private async void dataGridCuisiniers_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier && !cuisinier.Nom.Contains("(modifié)"))
+            if (e.Column.Header?.ToString() == "Adresse" &&
+                e.Row.Item is Utilisateur utilisateur &&
+                e.EditingElement is TextBox tb)
             {
-                cuisinier.Nom = cuisinier.Nom + " (modifié)";
-                LoadCuisiniers();
+                var nouvelleAdresse = tb.Text;
+                utilisateur.Adresse = nouvelleAdresse;
+
+                try
+                {
+                    utilisateur.Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(nouvelleAdresse);
+                    dataGridCuisiniers.Items.Refresh(); // Mise à jour de l'affichage
+                }
+                catch
+                {
+                    MessageBox.Show("Adresse invalide ou station introuvable.");
+                }
             }
         }
+
+        private void OnListCommandes_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListCommandes.SelectedItem != null)
+            {
+                ListAvis.SelectedItem = null;
+                ListCuisiniers.SelectedItem = null;
+            }
+        }
+        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridCuisiniers.SelectedItem is Utilisateur selectedUtilisateur)
+            {
+                selectedUtilisateur.Delete();
+                dataGridCuisiniers.ItemsSource = null;
+                dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
+            }
+        }
+
+        private void OnListAvis_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListAvis.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListCuisiniers.SelectedItem = null;
+            }
+        }
+        private void OnListCuisiniers_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListCuisiniers.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListAvis.SelectedItem = null;
+            }
+        }
+
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Register());
         }
 
-        // private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("nom");
-        // private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("adresse");
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ClientsView());
