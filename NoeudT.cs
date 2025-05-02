@@ -45,6 +45,7 @@ namespace ProbSciANA
             get { return valeur; }
             set { valeur = value; }
         }
+
         public int TempsChangement
         {
             get { return tempsChangement; }

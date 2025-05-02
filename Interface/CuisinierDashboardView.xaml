@@ -229,61 +229,48 @@
                     VerticalAlignment="Center"
                     Background="Transparent"
                     BorderThickness="0"
-                    Click="BtnAjouter_Click"
+                    Click="AjouterPlat_Click"
                     Grid.Column="2"/>
 
         </Grid>
 
         <Grid>
-            <!-- Définition des lignes de la grille -->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <!-- Barre de menu -->
-                <RowDefinition Height="*"/>
-                <!-- Liste des livraisons -->
-            </Grid.RowDefinitions>
-
-
-
-            <!-- Liste des livraisons -->
-            <ListView x:Name="LivraisonsListView"
-                      Grid.Row="1"
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="1.5*"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid x:Name="dataGridPlats"
+                      Grid.Column="0"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      HeadersVisibility="Column"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
                       Margin="10"
-                      ItemsSource="{Binding Livraisons}">
-                <ListView.View>
-                    <GridView>
-                        <!-- Colonne : Nom du Plat -->
-                        <GridViewColumn Header="Nom du Plat"
-                                        DisplayMemberBinding="{Binding NomPlat}"
-                                        Width="200"/>
-
-                        <!-- Colonne : Nom du Client -->
-                        <GridViewColumn Header="Nom du Client"
-                                        DisplayMemberBinding="{Binding NomClient}"
-                                        Width="200"/>
-
-                        <!-- Colonne : Adresse de Livraison -->
-                        <GridViewColumn Header="Adresse de Livraison"
-                                        DisplayMemberBinding="{Binding AdresseLivraison}"
-                                        Width="300"/>
-
-                        <!-- Colonne : Action (Bouton Livrer) -->
-                        <GridViewColumn Header="Action"
-                                        Width="150">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Style="{StaticResource MenuButtonStyle}"
-                                            Content="Livrer"
-                                            Width="100"
-                                            Margin="5"
-                                            Command="{Binding DataContext.LivrerCommandeCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                            CommandParameter="{Binding}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
+                      SelectionChanged="dataGridPlats_SelectionChanged"
+                      ColumnWidth="*">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID"
+                                        Binding="{Binding Id_plat}"
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Nom"
+                                        Binding="{Binding Nom}"/>
+                    <DataGridTextColumn Header="Prix"
+                                        Binding="{Binding Prix}"/>
+                    <DataGridTextColumn Header="Nb_portions"
+                                        Binding="{Binding Nb_portions}"/>
+                    <DataGridTextColumn Header="Type"
+                                        Binding="{Binding Type}"/>
+                    <DataGridTextColumn Header="Nb_portions"
+                                        Binding="{Binding Nb_portions}"/>
+                    <DataGridTextColumn Header="Regime"
+                                        Binding="{Binding Regime}"/>
+                    <DataGridTextColumn Header="Nationalite"
+                                        Binding="{Binding Nationalite}"/>
+                    <DataGridTextColumn Header="Date_peremption"
+                                        Binding="{Binding Date_peremption}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
 
     </DockPanel>

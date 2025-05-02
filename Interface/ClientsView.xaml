@@ -340,7 +340,11 @@
                                                             IsReadOnly="True"/>
                                 </DataGrid.Columns>
                         </DataGrid>
-                        <StackPanel Grid.Column="1"
+
+
+
+                        <StackPanel x:Name="FicheClient"
+                                    Grid.Column="1"
                                     Margin="10"
                                     Background="#FFF3F3F3"
                                     VerticalAlignment="Top">
@@ -458,7 +462,6 @@
                                 <!-- Les trois expanders pour naviguer dans les listes -->
                                 <StackPanel>
                                         <Expander Header="Commandes passées"
-                                                  IsExpanded="True"
                                                   Margin="0,10,0,0">
                                                 <ListBox x:Name="ListCommandes"
                                                          ItemsSource="{Binding Commandes_passees}"
@@ -500,6 +503,68 @@
                                         </ContentControl>
                                 </StackPanel>
                         </StackPanel>
+
+                        <Border x:Name="AddPane"
+                                Grid.Column="1"
+                                Background="#FFF"
+                                BorderBrush="#DDD"
+                                BorderThickness="1"
+                                Padding="20"
+                                Visibility="Collapsed"
+                                Panel.ZIndex="10">
+
+                                <StackPanel>
+                                        <TextBlock Text="Ajouter un client"
+                                                   FontSize="22"
+                                                   FontWeight="Bold"
+                                                   Margin="0 0 0 20"/>
+
+                                        <TextBlock Text="Statut"/>
+                                        <ComboBox x:Name="CmbStatut"
+                                                  Margin="0 0 0 10"
+                                                  SelectedIndex="0"
+                                                  SelectionChanged="CmbStatut_SelectionChanged">
+
+                                                <ComboBoxItem Content="Particulier"/>
+                                                <ComboBoxItem Content="Entreprise"/>
+                                        </ComboBox>
+
+                                        <TextBlock x:Name="LblReferent"
+                                                   Text="Nom du référent"
+                                                   Visibility="Collapsed"/>
+                                        <TextBox  x:Name="TxtReferent"
+                                                  Margin="0 0 0 10"
+                                                  Visibility="Collapsed"/>
+                                        <TextBlock Text="Prénom"/>
+                                        <TextBox x:Name="TxtPrenom"
+                                                 Margin="0 0 0 10"/>
+                                        <TextBlock Text="Nom"/>
+                                        <TextBox x:Name="TxtNom"
+                                                 Margin="0 0 0 10"/>
+                                        <TextBlock Text="Adresse"/>
+                                        <TextBox x:Name="TxtAdresse"
+                                                 Margin="0 0 0 10"/>
+                                        <TextBlock Text="Téléphone"/>
+                                        <TextBox x:Name="TxtTel"
+                                                 Margin="0 0 0 10"/>
+                                        <TextBlock Text="Email"/>
+                                        <TextBox x:Name="TxtEmail"
+                                                 Margin="0 0 0 20"/>
+
+                                        <StackPanel Orientation="Horizontal"
+                                                    HorizontalAlignment="Right">
+                                                <Button Style="{StaticResource PillButton}"
+                                                        Content="✔️ Valider"
+                                                        Click="BtnValiderAjout_Click"/>
+
+                                                <Button Style="{StaticResource PillButton}"
+                                                        Background="#E53935"
+                                                        Content="❌ Annuler"
+                                                        Click="BtnAnnulerAjout_Click"/>
+                                        </StackPanel>
+                                </StackPanel>
+                        </Border>
+
                 </Grid>
         </DockPanel>
 </Page>
