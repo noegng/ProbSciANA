@@ -35,7 +35,7 @@ namespace ProbSciANA.Interface
         }
         private void UpdateAuthButtons()
         {
-            bool loggedIn = SessionManager.IsLoggedIn;
+            bool loggedIn = SessionManager.IsLoggedIn();
 
             BtnProfil.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
             BtnLogout.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
@@ -746,7 +746,7 @@ namespace ProbSciANA.Interface
                     adresse: TxtAdresse.Text,
                     telephone: TxtTel.Text,
                     email: TxtEmail.Text,
-                    mdp: "azerty",                      // ou ton workflow habituel
+                    mdp: "mdp1234",
                     station: station,
                     nom_referent: estEntreprise ? TxtReferent.Text : "",
                     estEntreprise: estEntreprise);
@@ -890,54 +890,13 @@ namespace ProbSciANA.Interface
             }
         }
 
-        private void BtnClients_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new ClientsView());
-        }
-        private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new CuisiniersView());
-        }
-        private void BtnCommandes_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new CommandesView());
-        }
-        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StatistiquesView());
-        }
-        private void UpdateNavButtons()
-        {
-            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
-            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
-        }
-        private void BtnMode_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StartView());
-        }
-        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AdminDashboardView());
-        }
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoBack)
-                NavigationService.GoBack();
-            UpdateNavButtons();
-        }
-        private void BtnForward_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoForward)
-                NavigationService.GoForward();
-            UpdateNavButtons();
-        }
     }
     #endregion
 
     #region Page Cuisiniers Admin
     public partial class CuisiniersViewAdmin : Page
     {
-        public CuisiniersView()
+
         public object SelectedElement { get; set; }
 
         public CuisiniersViewAdmin()
