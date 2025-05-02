@@ -24,7 +24,10 @@ namespace ProbSciANA.Interface
                 UpdateNavButtons();
                 UpdateAuthButtons();
             };
+
+
         }
+
 
         private void BtnModeTest_Click(object sender, RoutedEventArgs e)
         {
@@ -718,17 +721,6 @@ namespace ProbSciANA.Interface
             dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
         }
 
-        private void LoadCuisiniers()
-        {
-            // cuisiniers = Requetes.utilisateurs.FindAll(u => u.EstCuisinier);
-            // if (orderBy == "adresse")
-            //     cuisiniers.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
-            // else
-            //     cuisiniers.Sort((a, b) => a.Nom.CompareTo(b.Nom));
-
-            // CuisiniersListView.ItemsSource = null;
-            // CuisiniersListView.ItemsSource = cuisiniers;
-        }
 
         private async void dataGridCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -764,7 +756,25 @@ namespace ProbSciANA.Interface
             if (ListCommandes.SelectedItem != null)
             {
                 ListAvis.SelectedItem = null;
-                ListCuisiniers.SelectedItem = null;
+                ListClients.SelectedItem = null;
+            }
+        }
+
+
+        private void OnListAvis_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListAvis.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListClients.SelectedItem = null;
+            }
+        }
+        private void OnListClients_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListClients.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListAvis.SelectedItem = null;
             }
         }
         private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
@@ -776,24 +786,6 @@ namespace ProbSciANA.Interface
                 dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
             }
         }
-
-        private void OnListAvis_Selected(object s, SelectionChangedEventArgs e)
-        {
-            if (ListAvis.SelectedItem != null)
-            {
-                ListCommandes.SelectedItem = null;
-                ListCuisiniers.SelectedItem = null;
-            }
-        }
-        private void OnListCuisiniers_Selected(object s, SelectionChangedEventArgs e)
-        {
-            if (ListCuisiniers.SelectedItem != null)
-            {
-                ListCommandes.SelectedItem = null;
-                ListAvis.SelectedItem = null;
-            }
-        }
-
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {

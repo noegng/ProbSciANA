@@ -408,10 +408,10 @@
                                                    Grid.Column="1"/>
                                 </Grid>
                                 <StackPanel>
-                                        <Expander Header="Commandes passées"
+                                        <Expander Header="Commandes effectuées"
                                                   Margin="0,10,0,0">
                                                 <ListBox x:Name="ListCommandes"
-                                                         ItemsSource="{Binding Commandes_passees}"
+                                                         ItemsSource="{Binding Commandes_effectuees}"
                                                          DisplayMemberPath="Nom"
                                                          SelectionChanged="OnListCommandes_Selected"/>
                                         </Expander>
@@ -419,17 +419,17 @@
                                         <Expander Header="Avis reçus"
                                                   Margin="0,10,0,0">
                                                 <ListBox x:Name="ListAvis"
-                                                         ItemsSource="{Binding Avis_laisses}"
+                                                         ItemsSource="{Binding Avis_recus}"
                                                          DisplayMemberPath="Commentaire"
                                                          SelectionChanged="OnListAvis_Selected"/>
                                         </Expander>
 
                                         <Expander Header="Clients associés"
                                                   Margin="0,10,0,0">
-                                                <ListBox x:Name="ListCuisiniers"
-                                                         ItemsSource="{Binding SesCuisiniers}"
+                                                <ListBox x:Name="ListClients"
+                                                         ItemsSource="{Binding SesClients}"
                                                          DisplayMemberPath="Prenom"
-                                                         SelectionChanged="OnListCuisiniers_Selected"/>
+                                                         SelectionChanged="OnListClients_Selected"/>
                                         </Expander>
 
                                         <!-- Le détail unique qui se met à jour selon la sélection -->
