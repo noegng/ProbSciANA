@@ -1,10 +1,9 @@
-<Page x:Class="ProbSciANA.Interface.ClientsView"
+<Page x:Class="ProbSciANA.Interface.CuisiniersViewAdmin"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:models="clr-namespace:ProbSciANA"
       xmlns:iface="clr-namespace:ProbSciANA.Interface"
-      Title="ClientsView">
-
+      Title="CuisiniersViewAdmin">
 
         <Page.Resources>
                 <!-- 1) Converter pour retourner la première valeur non-null -->
@@ -108,7 +107,7 @@
                         <Button Grid.Column="3"
                                 Content="Clients"
                                 Foreground="White"
-                                Background="#BEE6FD"
+                                Background="Transparent"
                                 BorderThickness="0"
                                 FontWeight="Bold"
                                 Padding="10,0"
@@ -117,7 +116,7 @@
                         <Button Grid.Column="4"
                                 Content="Cuisiniers"
                                 Foreground="White"
-                                Background="Transparent"
+                                Background="#BEE6FD"
                                 BorderThickness="0"
                                 FontWeight="Bold"
                                 Padding="10,0"
@@ -142,16 +141,11 @@
                                 Click="BtnStatistiques_Click"/>
                 </Grid>
 
+                <!-- FLÈCHES NAVIGATION (Chrome style) -->
                 <Grid DockPanel.Dock="Top"
                       Height="50"
                       Background="Transparent">
-                        <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal"
-                                    Grid.Column="0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Margin="10,0,0,0">
@@ -271,39 +265,26 @@
                                                 </ControlTemplate>
                                         </Button.Template>
                                 </Button>
+
                         </StackPanel>
-
-                        <!-- Titre -->
-                        <TextBlock Text="Gestion des Clients"
-                                   FontSize="24"
-                                   FontWeight="Bold"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   Grid.Column="1"/>
-
-                        <!-- Bouton ➕ -->
-                        <Button Content="➕"
-                                ToolTip="Ajouter un client"
-                                FontSize="16"
-                                Width="32"
-                                Height="32"
-                                Margin="0,0,10,0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Click="BtnAjouter_Click"
-                                Grid.Column="2"/>
-
                 </Grid>
 
-                <!-- Liste des clients -->
+                <!-- Titre de la page -->
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Gestion des Cuisiniers"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Margin="10"/>
+
+
+                <!-- Liste des cuisiniers -->
                 <Grid>
                         <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.5*"/>
                                 <ColumnDefinition Width="1.5*"/>
                         </Grid.ColumnDefinitions>
-                        <DataGrid x:Name="dataGridClients"
+                        <DataGrid x:Name="dataGridCuisiniers"
                                   Grid.Column="0"
                                   AutoGenerateColumns="False"
                                   CanUserAddRows="False"
@@ -311,15 +292,13 @@
                                   HorizontalAlignment="Stretch"
                                   VerticalAlignment="Stretch"
                                   Margin="10"
-                                  SelectionChanged="dataGridClients_SelectionChanged"
+                                  SelectionChanged="dataGridCuisiniers_SelectionChanged"
                                   ColumnWidth="*"
-                                  CellEditEnding="dataGridClients_CellEditEnding">
+                                  CellEditEnding="dataGridCuisiniers_CellEditEnding">
                                 <DataGrid.Columns>
                                         <DataGridTextColumn Header="ID"
                                                             Binding="{Binding Id_utilisateur}"
                                                             IsReadOnly="True"/>
-                                        <DataGridTextColumn Header="Statut"
-                                                            Binding="{Binding Statut}"/>
                                         <DataGridTextColumn Header="Nom"
                                                             Binding="{Binding Nom}"/>
                                         <DataGridTextColumn Header="Prénom"
@@ -328,29 +307,21 @@
                                                             Binding="{Binding Adresse}"/>
                                         <DataGridTextColumn Header="Email"
                                                             Binding="{Binding Email}"/>
-                                        <DataGridTextColumn Header="Téléphone"
-                                                            Binding="{Binding Telephone}"/>
                                         <DataGridTextColumn Header="Station"
                                                             Binding="{Binding NomStation}"/>
-                                        <DataGridTextColumn Header="Achats"
-                                                            Binding="{Binding Achats}"
-                                                            IsReadOnly="True"/>
-                                        <DataGridTextColumn Header="Date d'inscription"
-                                                            Binding="{Binding Date_inscription}"
-                                                            IsReadOnly="True"/>
                                 </DataGrid.Columns>
                         </DataGrid>
 
 
 
-                        <StackPanel x:Name="FicheClient"
+                        <StackPanel x:Name="FicheCuisiniers"
                                     Grid.Column="1"
                                     Margin="10"
                                     Background="#FFF3F3F3"
                                     VerticalAlignment="Top">
                                 <DockPanel LastChildFill="True"
                                            Margin="0 0 0 10">
-                                        <TextBlock Text="Fiche Client"
+                                        <TextBlock Text="Fiche Cuisiniers"
                                                    FontSize="18"
                                                    FontWeight="Bold"
                                                    DockPanel.Dock="Left"/>
@@ -425,28 +396,6 @@
                                                    Grid.Row="3"
                                                    Grid.Column="1"/>
 
-                                        <!-- Téléphone -->
-                                        <TextBlock Text="Téléphone :"
-                                                   FontWeight="Bold"
-                                                   Margin="0 0 10 5"
-                                                   Grid.Row="4"
-                                                   Grid.Column="0"/>
-                                        <TextBlock Text="{Binding Telephone}"
-                                                   HorizontalAlignment="Right"
-                                                   Grid.Row="4"
-                                                   Grid.Column="1"/>
-
-                                        <!-- Statut -->
-                                        <TextBlock Text="Statut :"
-                                                   FontWeight="Bold"
-                                                   Margin="0 0 10 5"
-                                                   Grid.Row="5"
-                                                   Grid.Column="0"/>
-                                        <TextBlock Text="{Binding Statut}"
-                                                   HorizontalAlignment="Right"
-                                                   Grid.Row="5"
-                                                   Grid.Column="1"/>
-
                                         <!-- Station -->
                                         <TextBlock Text="Station :"
                                                    FontWeight="Bold"
@@ -458,31 +407,29 @@
                                                    Grid.Row="6"
                                                    Grid.Column="1"/>
                                 </Grid>
-
-                                <!-- Les trois expanders pour naviguer dans les listes -->
                                 <StackPanel>
-                                        <Expander Header="Commandes passées"
+                                        <Expander Header="Commandes effectuées"
                                                   Margin="0,10,0,0">
                                                 <ListBox x:Name="ListCommandes"
-                                                         ItemsSource="{Binding Commandes_passees}"
+                                                         ItemsSource="{Binding Commandes_effectuees}"
                                                          DisplayMemberPath="Nom"
                                                          SelectionChanged="OnListCommandes_Selected"/>
                                         </Expander>
 
-                                        <Expander Header="Avis laissés"
+                                        <Expander Header="Avis reçus"
                                                   Margin="0,10,0,0">
                                                 <ListBox x:Name="ListAvis"
-                                                         ItemsSource="{Binding Avis_laisses}"
+                                                         ItemsSource="{Binding Avis_recus}"
                                                          DisplayMemberPath="Commentaire"
                                                          SelectionChanged="OnListAvis_Selected"/>
                                         </Expander>
 
-                                        <Expander Header="Cuisiniers associés"
+                                        <Expander Header="Clients associés"
                                                   Margin="0,10,0,0">
-                                                <ListBox x:Name="ListCuisiniers"
-                                                         ItemsSource="{Binding SesCuisiniers}"
+                                                <ListBox x:Name="ListClients"
+                                                         ItemsSource="{Binding SesClients}"
                                                          DisplayMemberPath="Prenom"
-                                                         SelectionChanged="OnListCuisiniers_Selected"/>
+                                                         SelectionChanged="OnListClients_Selected"/>
                                         </Expander>
 
                                         <!-- Le détail unique qui se met à jour selon la sélection -->
@@ -503,68 +450,6 @@
                                         </ContentControl>
                                 </StackPanel>
                         </StackPanel>
-
-                        <Border x:Name="AddPane"
-                                Grid.Column="1"
-                                Background="#FFF"
-                                BorderBrush="#DDD"
-                                BorderThickness="1"
-                                Padding="20"
-                                Visibility="Collapsed"
-                                Panel.ZIndex="10">
-
-                                <StackPanel>
-                                        <TextBlock Text="Ajouter un client"
-                                                   FontSize="22"
-                                                   FontWeight="Bold"
-                                                   Margin="0 0 0 20"/>
-
-                                        <TextBlock Text="Statut"/>
-                                        <ComboBox x:Name="CmbStatut"
-                                                  Margin="0 0 0 10"
-                                                  SelectedIndex="0"
-                                                  SelectionChanged="CmbStatut_SelectionChanged">
-
-                                                <ComboBoxItem Content="Particulier"/>
-                                                <ComboBoxItem Content="Entreprise"/>
-                                        </ComboBox>
-
-                                        <TextBlock x:Name="LblReferent"
-                                                   Text="Nom du référent"
-                                                   Visibility="Collapsed"/>
-                                        <TextBox  x:Name="TxtReferent"
-                                                  Margin="0 0 0 10"
-                                                  Visibility="Collapsed"/>
-                                        <TextBlock Text="Prénom"/>
-                                        <TextBox x:Name="TxtPrenom"
-                                                 Margin="0 0 0 10"/>
-                                        <TextBlock Text="Nom"/>
-                                        <TextBox x:Name="TxtNom"
-                                                 Margin="0 0 0 10"/>
-                                        <TextBlock Text="Adresse"/>
-                                        <TextBox x:Name="TxtAdresse"
-                                                 Margin="0 0 0 10"/>
-                                        <TextBlock Text="Téléphone"/>
-                                        <TextBox x:Name="TxtTel"
-                                                 Margin="0 0 0 10"/>
-                                        <TextBlock Text="Email"/>
-                                        <TextBox x:Name="TxtEmail"
-                                                 Margin="0 0 0 20"/>
-
-                                        <StackPanel Orientation="Horizontal"
-                                                    HorizontalAlignment="Right">
-                                                <Button Style="{StaticResource PillButton}"
-                                                        Content="✔️ Valider"
-                                                        Click="BtnValiderAjout_Click"/>
-
-                                                <Button Style="{StaticResource PillButton}"
-                                                        Background="#E53935"
-                                                        Content="❌ Annuler"
-                                                        Click="BtnAnnulerAjout_Click"/>
-                                        </StackPanel>
-                                </StackPanel>
-                        </Border>
-
                 </Grid>
         </DockPanel>
 </Page>
