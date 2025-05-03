@@ -192,6 +192,11 @@
                     Width="200"
                     Margin="5"
                     Click="BtnCheminOptimal"/>
+            <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Test Tri"
+                    Width="200"
+                    Margin="5"
+                    Click="BtnTri"/>
             <TextBlock Text="Le temps de trajet est de : {Binding TempsTrajet}"
                        FontSize="18"
                        Margin="10"/>

@@ -13,15 +13,17 @@ namespace ProbSciANA
     {
         private T valeur;  /// Valeur unique du noeud
         private int tempsChangement; /// Temps de changement (si exitant)
+        private int id;
         private int idBrute = 0;
         public static int Compteur = 0;
         public double Longitude { get; set; } /// Longitude de la station
         public double Latitude { get; set; } /// Latitude de la station
 
         /// Constructeur de la classe Station
-        public Noeud(T valeur, int temps = 0) // valeur par défaut
+        public Noeud(T valeur, int id, int temps = 0) // valeur par défaut
         {
             this.valeur = valeur;
+            this.id = id;
             tempsChangement = temps;
             idBrute++;
         }
@@ -50,6 +52,10 @@ namespace ProbSciANA
         {
             get { return tempsChangement; }
             set { tempsChangement = value; }
+        }
+        public int Id
+        {
+            get { return id; }
         }
         public int IdBrute
         {

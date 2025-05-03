@@ -10,6 +10,7 @@ using System.Data;
 using System.Threading.Tasks;
 using System.Net.Http;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace ProbSciANA.Interface
 {
@@ -1137,6 +1138,40 @@ namespace ProbSciANA.Interface
             var programInstance = new Program();
             int tempsTrajet = programInstance.CheminOptimal(Program.GrapheMétro, Liste);
             MessageBox.Show($"Temps de trajet entre {Program.Noeuds[1].Valeur.nom} et {Program.Noeuds[80].Valeur.nom} en passant par {Program.Noeuds[20].Valeur.nom}; {Program.Noeuds[40].Valeur.nom} ;{Program.Noeuds[60].Valeur.nom} est de : {tempsTrajet} minutes.");
+        }
+        private void BtnTri(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("AAAAAAA");
+            var A = new Noeud<string>("A");
+            var B = new Noeud<string>("B");
+            var C = new Noeud<string>("C");
+            var D = new Noeud<string>("D");
+            var E = new Noeud<string>("E");
+            var F = new Noeud<string>("F");
+
+            var arcsTest = new List<Arc<string>>
+            {
+                new Arc<string>(A, B),
+                new Arc<string>(A, C),
+                new Arc<string>(A, D),
+                new Arc<string>(A, E),
+                new Arc<string>(A, F), // A a 5 voisins (B, C, D, E, F)
+
+                new Arc<string>(B, C),
+                new Arc<string>(B, D),
+                new Arc<string>(B, E), // B a 4 voisins (A, C, D, E)
+
+                new Arc<string>(C, E), // C a 3 voisins (A, B, E)
+
+                new Arc<string>(D, E)  // D a 2 voisins (A, B), E a 1 voisin (A)
+            };
+
+            Graphe<string> Test = new Graphe<string>(arcsTest);
+            List<(Noeud<string> noeud, List<Noeud<string>> successeur)> trié = Test.TriListeAdjacence();
+            foreach ((Noeud<string> noeud, List<Noeud<string>> successeur) a in trié)
+            {
+                Console.WriteLine(a.noeud + " : " + a.successeur.Count);
+            }
         }
     }
     #endregion
