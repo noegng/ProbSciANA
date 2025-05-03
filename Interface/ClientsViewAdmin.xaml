@@ -3,10 +3,18 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:models="clr-namespace:ProbSciANA"
       xmlns:iface="clr-namespace:ProbSciANA.Interface"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
       Title="ClientsViewAdmin">
 
 
         <Page.Resources>
+
+                <x:Array x:Key="StatutValues"
+                         Type="{x:Type sys:String}">
+                        <sys:String>Particulier</sys:String>
+                        <sys:String>Entreprise</sys:String>
+                </x:Array>
+
                 <!-- 1) Converter pour retourner la première valeur non-null -->
                 <iface:FirstNonNullConverter x:Key="FirstNonNullConverter"/>
 
@@ -45,7 +53,7 @@
                                         <TextBlock Text="{Binding Commentaire}"
                                                    TextWrapping="Wrap"/>
                                         <TextBlock Text="{Binding Date_avis, StringFormat=Posté le {0:dd/MM/yyyy}}"/>
-                                        <TextBlock Text="{Binding NomClient, StringFormat=Client : {0}}"/>
+                                        <TextBlock Text="{Binding NomCuisinier, StringFormat=Cuisinier concerné : {0}}"/>
                                 </StackPanel>
                         </Border>
                 </DataTemplate>
@@ -67,6 +75,7 @@
                                 </StackPanel>
                         </Border>
                 </DataTemplate>
+
         </Page.Resources>
 
         <DockPanel LastChildFill="True">
@@ -318,8 +327,10 @@
                                         <DataGridTextColumn Header="ID"
                                                             Binding="{Binding Id_utilisateur}"
                                                             IsReadOnly="True"/>
-                                        <DataGridTextColumn Header="Statut"
-                                                            Binding="{Binding Statut}"/>
+                                        <DataGridComboBoxColumn Header="Statut"
+                                                                ItemsSource="{StaticResource StatutValues}"
+                                                                SelectedItemBinding="{Binding Statut, Mode=TwoWay}"
+                                                                Width="*"/>
                                         <DataGridTextColumn Header="Nom"
                                                             Binding="{Binding Nom}"/>
                                         <DataGridTextColumn Header="Prénom"

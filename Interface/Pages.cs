@@ -36,6 +36,7 @@ namespace ProbSciANA.Interface
         private void UpdateAuthButtons()
         {
             bool loggedIn = SessionManager.IsLoggedIn();
+            bool loggedIn = SessionManager.IsLoggedIn();
 
             BtnProfil.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
             BtnLogout.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
@@ -575,7 +576,9 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Plat.RefreshList();
+            Ingredient.RefreshList();
+            Compose.RefreshAll();
+            Plat.RefreshAll();
             Utilisateur.RefreshAll();
             dataGridPlats.ItemsSource = null;
             dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
@@ -585,6 +588,7 @@ namespace ProbSciANA.Interface
             if (dataGridPlats.SelectedItem is Cuisine selected)
             {
                 DataContext = selected;
+                Console.WriteLine(selected.Plat.Composes.Count);
             }
         }
         private void Ajouter_Click(object sender, RoutedEventArgs e)
@@ -823,17 +827,6 @@ namespace ProbSciANA.Interface
             {
                 DataContext = selected;
             }
-        }
-        private void ListAvis_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // On désélectionne toute commande pour que PriorityBinding regarde ensuite ListAvis
-            ListCommandes.SelectedItem = null;
-            Console.WriteLine("ve");
-        }
-        private void ListCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Même logique : on désélectionne la commande active
-            ListCommandes.SelectedItem = null;
         }
         private void CmbStatut_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

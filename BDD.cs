@@ -260,11 +260,11 @@ namespace ProbSciANA
             }
             set
             {
-                if (value.ToLower() == "particulier" || value.ToLower() == "p")
+                if (value.ToLower() == "particulier")
                 {
                     EstEntreprise = false;
                 }
-                if (value == "entreprise" || value == "e")
+                if (value.ToLower() == "entreprise")
                 {
                     EstEntreprise = true;
                 }
@@ -1525,7 +1525,14 @@ namespace ProbSciANA
         }
         public string NomClient
         {
-            get { return client.Prenom + " " + client.Nom; }
+            get
+            {
+                if (client != null)
+                {
+                    return client.Prenom + " " + client.Nom;
+                }
+                return "null";
+            }
             set
             {
                 Utilisateur.RefreshAll();
@@ -1541,7 +1548,14 @@ namespace ProbSciANA
         }
         public string NomCuisinier
         {
-            get { return cuisinier.Prenom + " " + cuisinier.Nom; }
+            get
+            {
+                if (cuisinier != null)
+                {
+                    return cuisinier.Prenom + " " + cuisinier.Nom;
+                }
+                return "null";
+            }
             set
             {
                 Utilisateur.RefreshAll();
