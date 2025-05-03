@@ -874,7 +874,7 @@ namespace ProbSciANA
 
             return TriListeAdjacenceDecroissant(listeAdjacenceATriée, 0, listeAdjacenceATriée.Count - 1);
         }
-        public List<(Noeud<T> noeud, List<Noeud<T>> successeur)> TriListeAdjacendeDecroissant(List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée, int début, int fin)
+        public List<(Noeud<T> noeud, List<Noeud<T>> successeur)> TriListeAdjacenceDecroissant(List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée, int début, int fin)
         {
             if (début >= fin)
                 return listeAdjacenceTriée;
@@ -894,42 +894,6 @@ namespace ProbSciANA
                 {
                     j--;
                 }
-
-                if (i < j)
-                {
-                    var temp = listeAdjacenceTriée[i];
-                    listeAdjacenceTriée[i] = listeAdjacenceTriée[j];
-                    listeAdjacenceTriée[j] = temp;
-                    i++;
-                    j--;
-                }
-            }
-
-            var tempPivot = listeAdjacenceTriée[début];
-            listeAdjacenceTriée[début] = listeAdjacenceTriée[j];
-            listeAdjacenceTriée[j] = tempPivot;
-
-            TriListeAdjacendeDecroissant(listeAdjacenceTriée, début, j - 1);
-            TriListeAdjacendeDecroissant(listeAdjacenceTriée, j + 1, fin);
-            return listeAdjacenceTriée;
-        }
-        public List<(Noeud<T> noeud, List<Noeud<T>> successeur)> TriListeAdjacenceDecroissant(
-            List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée, int début, int fin)
-        {
-            if (début >= fin)
-                return listeAdjacenceTriée;
-
-            int pivot = listeAdjacenceTriée[début].successeur.Count;
-            int i = début + 1;
-            int j = fin;
-
-            while (i <= j)
-            {
-                while (i <= fin && listeAdjacenceTriée[i].successeur.Count > pivot)
-                    i++;
-
-                while (j >= début && listeAdjacenceTriée[j].successeur.Count < pivot)
-                    j--;
 
                 if (i <= j)
                 {
@@ -947,10 +911,8 @@ namespace ProbSciANA
 
             TriListeAdjacenceDecroissant(listeAdjacenceTriée, début, j - 1);
             TriListeAdjacenceDecroissant(listeAdjacenceTriée, j + 1, fin);
-
             return listeAdjacenceTriée;
         }
-
 
     }
 
