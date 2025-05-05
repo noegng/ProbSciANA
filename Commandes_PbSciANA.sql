@@ -182,6 +182,7 @@ Select * from plat;
 Select * from Livraison;
 Select * from Requiert;
 Select * from Cuisine;
+Select * from compose;
 
 #****************** MODULE CLIENT *****************#
                     
