@@ -36,7 +36,6 @@ namespace ProbSciANA.Interface
         private void UpdateAuthButtons()
         {
             bool loggedIn = SessionManager.IsLoggedIn();
-            bool loggedIn = SessionManager.IsLoggedIn();
 
             BtnProfil.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
             BtnLogout.Visibility = loggedIn ? Visibility.Visible : Visibility.Collapsed;
