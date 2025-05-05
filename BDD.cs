@@ -405,26 +405,26 @@ namespace ProbSciANA
 
         public static async Task RecalculerStationsAsync()
         {
-            foreach (var utilisateur in Utilisateur.utilisateurs)
+            foreach (Utilisateur u in utilisateurs)
             {
                 try
                 {
-                    if (Program.Stations.Contains(utilisateur.Station))
+                    if (Program.Stations.Contains(u.Station))
                     {
                         continue;
                     }
                     else
                     {
-                        var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(utilisateur.Adresse);
+                        var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(u.Adresse);
                         if (station != null)
                         {
-                            utilisateur.Station = station;
+                            u.Station = station;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Erreur lors du recalcul de la station pour {utilisateur.Nom} : {ex.Message}");
+                    Console.WriteLine($"Erreur lors du recalcul de la station pour {u.Nom} : {ex.Message}");
                 }
             }
         }

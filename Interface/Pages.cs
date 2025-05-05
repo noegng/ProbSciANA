@@ -54,12 +54,7 @@ namespace ProbSciANA.Interface
         }
         private void BtnProfil_Click(object sender, RoutedEventArgs e)
         {
-            // Exemple : aller vers le tableau de bord utilisateur ou une page Profil
-            if (SessionManager.CurrentUser.EstClient)
-                NavigationService?.Navigate(new UserDashboardView());
-            else if (SessionManager.CurrentUser.EstCuisinier)
-                NavigationService?.Navigate(new CuisinierDashboardView());
-            // sinon : gérer les autres rôles ou ouvrir une page Profil générique
+
         }
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
@@ -305,16 +300,35 @@ namespace ProbSciANA.Interface
             InitializeComponent();
         }
 
-        private void BtnCommander_Click(object sender, RoutedEventArgs e)
+        private void Commander_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommanderView());
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        private void UpdateNavButtons()
         {
-            NavigationService?.GoBack();
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
         }
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
         }
@@ -438,6 +452,65 @@ namespace ProbSciANA.Interface
             NavigationService?.Navigate(new StartView());
         }
 
+    }
+    #endregion
+
+    #region Page Vue Commander
+    public partial class CommanderView : Page
+    {
+        public List<Utilisateur> Cuisiniers { get; set; }
+        public CommanderView()
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+            Utilisateur.RefreshList();
+            Cuisiniers = Utilisateur.cuisiniers;
+            DataContext = this;
+            MessageBox.Show(Cuisiniers.Count.ToString());
+        }
+
+        private void CuisinierCard_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border border && border.DataContext is Utilisateur cuisinier)
+            {
+                // À remplacer par ta navigation réelle
+                MessageBox.Show($"Clic sur le cuisinier : {cuisinier.Nom}");
+
+                // TODO : Naviguer vers la page du cuisinier
+                // NavigationService.Navigate(new CuisinierPage(cuisinier));
+            }
+        }
+
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
     }
     #endregion
 
@@ -886,7 +959,6 @@ namespace ProbSciANA.Interface
     #region Page Cuisiniers Admin
     public partial class CuisiniersViewAdmin : Page
     {
-
         public object SelectedElement { get; set; }
 
         public CuisiniersViewAdmin()
@@ -897,8 +969,6 @@ namespace ProbSciANA.Interface
             dataGridCuisiniers.ItemsSource = null;
             dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
         }
-
-
         private async void dataGridCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dataGridCuisiniers.SelectedItem is Utilisateur selected)
@@ -906,7 +976,6 @@ namespace ProbSciANA.Interface
                 DataContext = selected;
             }
         }
-
         private async void dataGridCuisiniers_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             if (e.Column.Header?.ToString() == "Adresse" &&
@@ -927,7 +996,6 @@ namespace ProbSciANA.Interface
                 }
             }
         }
-
         private void OnListCommandes_Selected(object s, SelectionChangedEventArgs e)
         {
             if (ListCommandes.SelectedItem != null)
@@ -936,8 +1004,6 @@ namespace ProbSciANA.Interface
                 ListClients.SelectedItem = null;
             }
         }
-
-
         private void OnListAvis_Selected(object s, SelectionChangedEventArgs e)
         {
             if (ListAvis.SelectedItem != null)
