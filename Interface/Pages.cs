@@ -209,7 +209,7 @@ namespace ProbSciANA.Interface
         public ConnexionView()
         {
             InitializeComponent();
-            Utilisateur.RefreshAllLists();
+            Utilisateur.RefreshList();
 
             foreach (var utilisateur in Utilisateur.utilisateurs)
             {
@@ -445,7 +445,7 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshAllLists();
+            Utilisateur.RefreshList();
             dataGridCommandes.ItemsSource = null;
             dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Cuisines;
         }
@@ -594,7 +594,7 @@ namespace ProbSciANA.Interface
             if (dataGridPlats.SelectedItem is Cuisine selected)
             {
                 selected.Delete();
-                Utilisateur.RefreshAllLists();
+                Utilisateur.RefreshList();
                 dataGridPlats.ItemsSource = null;
                 dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
             }
@@ -700,7 +700,7 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshAllLists();
+            Requetes.RefreshAllLists();
             dataGridClients.ItemsSource = null;
             dataGridClients.ItemsSource = Utilisateur.clients;
         }
@@ -750,7 +750,7 @@ namespace ProbSciANA.Interface
                     estEntreprise: estEntreprise);
 
                 // Rafraîchir la liste
-                Utilisateur.RefreshAllLists();
+                Utilisateur.RefreshList();
                 dataGridClients.ItemsSource = null;
                 dataGridClients.ItemsSource = Utilisateur.clients;
 
@@ -888,7 +888,7 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshAllLists();
+            Utilisateur.RefreshList();
             LoadCuisiniers();
         }
 
@@ -983,7 +983,7 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Commande.RefreshAllLists();
+            Commande.RefreshList();
             dataGridCommandes.ItemsSource = null;
             dataGridCommandes.ItemsSource = Commande.commandes;
         }
@@ -1159,7 +1159,7 @@ namespace ProbSciANA.Interface
         {
             // Logique pour le bouton 3
             MessageBox.Show("Bouton 3 cliqué !");
-            Utilisateur.RefreshAllLists();
+            Utilisateur.RefreshList();
             Console.WriteLine(Utilisateur.clients[1].Avis_laisses[0].Commentaire);
         }
 
