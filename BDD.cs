@@ -113,7 +113,7 @@ namespace ProbSciANA
                 List<Commande> result = new List<Commande>();
                 foreach (Commande c in Commande.commandes)
                 {
-                    if (c.Client.Id_utilisateur == id_utilisateur)
+                    if (c.Client != null && c.Client.Id_utilisateur == id_utilisateur)
                     {
                         result.Add(c);
                     }
@@ -128,7 +128,7 @@ namespace ProbSciANA
                 List<Commande> result = new List<Commande>();
                 foreach (Commande c in Commande.commandes)
                 {
-                    if (c.Cuisinier.Id_utilisateur == id_utilisateur)
+                    if (c.Cuisinier != null && c.Cuisinier.Id_utilisateur == id_utilisateur)
                     {
                         result.Add(c);
                     }
@@ -143,7 +143,7 @@ namespace ProbSciANA
                 List<Avis> result = new List<Avis>();
                 foreach (Avis a in Avis.avis)
                 {
-                    if (a.Client.Id_utilisateur == id_utilisateur)
+                    if (a.Client != null && a.Client.Id_utilisateur == id_utilisateur)
                     {
                         result.Add(a);
                     }
@@ -158,7 +158,7 @@ namespace ProbSciANA
                 List<Avis> result = new List<Avis>();
                 foreach (Avis a in Avis.avis)
                 {
-                    if (a.Cuisinier.Id_utilisateur == id_utilisateur)
+                    if (a.Cuisinier != null && a.Cuisinier.Id_utilisateur == id_utilisateur)
                     {
                         result.Add(a);
                     }
@@ -173,7 +173,7 @@ namespace ProbSciANA
                 List<Cuisine> result = new List<Cuisine>();
                 foreach (Cuisine c in Cuisine.cuisines)
                 {
-                    if (c.Cuisinier.Id_utilisateur == id_utilisateur)
+                    if (c.Cuisinier != null && c.Cuisinier.Id_utilisateur == id_utilisateur)
                     {
                         result.Add(c);
                     }
@@ -305,7 +305,31 @@ namespace ProbSciANA
             get { return nom_referent; }
             set { nom_referent = value; Update("nom_referent", value); }
         }
-
+        public string Statut
+        {
+            get
+            {
+                if (estEntreprise)
+                {
+                    return "Entreprise";
+                }
+                else
+                {
+                    return "Particulier";
+                }
+            }
+            set
+            {
+                if (value.ToLower() == "particulier" || value.ToLower() == "p")
+                {
+                    EstEntreprise = false;
+                }
+                if (value == "entreprise" || value == "e")
+                {
+                    EstEntreprise = true;
+                }
+            }
+        }
         public double Achats
         {
             get
@@ -674,7 +698,7 @@ namespace ProbSciANA
                 List<Livraison> result = new List<Livraison>();
                 foreach (Livraison l in Livraison.livraisons)
                 {
-                    if (l.Commande.Id_commande == id_commande)
+                    if (l.Commande != null && l.Commande.Id_commande == id_commande)
                     {
                         result.Add(l);
                     }
@@ -929,7 +953,7 @@ namespace ProbSciANA
                 List<Requiert> result = new List<Requiert>();
                 foreach (Requiert r in Requiert.requierts)
                 {
-                    if (r.Livraison.Id_livraison == id_livraison)
+                    if (r.Livraison != null && r.Livraison.Id_livraison == id_livraison)
                     {
                         result.Add(r);
                     }
@@ -1113,7 +1137,7 @@ namespace ProbSciANA
                 List<Requiert> result = new List<Requiert>();
                 foreach (Requiert r in Requiert.requierts)
                 {
-                    if (r.Plat.Id_plat == id_plat)
+                    if (r.Plat != null && r.Plat.Id_plat == id_plat)
                     {
                         result.Add(r);
                     }
@@ -1128,7 +1152,7 @@ namespace ProbSciANA
                 List<Cuisine> result = new List<Cuisine>();
                 foreach (Cuisine c in Cuisine.cuisines)
                 {
-                    if (c.Plat.Id_plat == id_plat)
+                    if (c.Plat != null && c.Plat.Id_plat == id_plat)
                     {
                         result.Add(c);
                     }
@@ -1143,7 +1167,7 @@ namespace ProbSciANA
                 List<Compose> result = new List<Compose>();
                 foreach (Compose c in Compose.composes)
                 {
-                    if (c.Plat.Id_plat == id_plat)
+                    if (c.Plat != null && c.Plat.Id_plat == id_plat)
                     {
                         result.Add(c);
                     }
@@ -1323,7 +1347,7 @@ namespace ProbSciANA
                 List<Compose> result = new List<Compose>();
                 foreach (Compose c in Compose.composes)
                 {
-                    if (c.Ingredient.Id_ingredient == id_ingredient)
+                    if (c.Ingredient != null && c.Ingredient.Id_ingredient == id_ingredient)
                     {
                         result.Add(c);
                     }
