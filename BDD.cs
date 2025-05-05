@@ -402,6 +402,32 @@ namespace ProbSciANA
             }
         }
         #endregion
+
+        public static async Task RecalculerStationsAsync()
+        {
+            foreach (var utilisateur in Utilisateur.utilisateurs)
+            {
+                try
+                {
+                    if (Program.Stations.Contains(utilisateur.Station))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(utilisateur.Adresse);
+                        if (station != null)
+                        {
+                            utilisateur.Station = station;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors du recalcul de la station pour {utilisateur.Nom} : {ex.Message}");
+                }
+            }
+        }
         private void InsertClient()
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))

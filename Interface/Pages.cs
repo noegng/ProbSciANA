@@ -24,7 +24,10 @@ namespace ProbSciANA.Interface
                 UpdateNavButtons();
                 UpdateAuthButtons();
             };
+
+
         }
+
 
         private void BtnModeTest_Click(object sender, RoutedEventArgs e)
         {
@@ -120,7 +123,7 @@ namespace ProbSciANA.Interface
 
             if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(prenom) ||
                 string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(adresse) ||
-                string.IsNullOrWhiteSpace(role))
+                string.IsNullOrWhiteSpace(role) || string.IsNullOrWhiteSpace(mdp))
             {
                 MessageBox.Show("Veuillez remplir tous les champs et sélectionner un rôle.");
                 return;
@@ -744,7 +747,7 @@ namespace ProbSciANA.Interface
                     adresse: TxtAdresse.Text,
                     telephone: TxtTel.Text,
                     email: TxtEmail.Text,
-                    mdp: "mdp1234",                      // ou ton workflow habituel
+                    mdp: "mdp1234",
                     station: station,
                     nom_referent: estEntreprise ? TxtReferent.Text : "",
                     estEntreprise: estEntreprise);
@@ -876,49 +879,88 @@ namespace ProbSciANA.Interface
                 }
             }
         }
+
     }
     #endregion
 
     #region Page Cuisiniers Admin
     public partial class CuisiniersViewAdmin : Page
     {
+
         public object SelectedElement { get; set; }
 
         public CuisiniersViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshList();
-            LoadCuisiniers();
+            Utilisateur.RefreshAll();
+            dataGridCuisiniers.ItemsSource = null;
+            dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
         }
 
-        private void LoadCuisiniers()
-        {
-            // cuisiniers = Requetes.utilisateurs.FindAll(u => u.EstCuisinier);
-            // if (orderBy == "adresse")
-            //     cuisiniers.Sort((a, b) => a.Adresse.CompareTo(b.Adresse));
-            // else
-            //     cuisiniers.Sort((a, b) => a.Nom.CompareTo(b.Nom));
 
-            // CuisiniersListView.ItemsSource = null;
-            // CuisiniersListView.ItemsSource = cuisiniers;
-        }
-
-        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        private async void dataGridCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier)
+            if (dataGridCuisiniers.SelectedItem is Utilisateur selected)
             {
-                cuisinier.EstCuisinier = false; // Déclenche suppression automatique
-                LoadCuisiniers();
+                DataContext = selected;
             }
         }
 
-        private void BtnModifier_Click(object sender, RoutedEventArgs e)
+        private async void dataGridCuisiniers_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            if (CuisiniersListView.SelectedItem is Utilisateur cuisinier && !cuisinier.Nom.Contains("(modifié)"))
+            if (e.Column.Header?.ToString() == "Adresse" &&
+                e.Row.Item is Utilisateur utilisateur &&
+                e.EditingElement is TextBox tb)
             {
-                cuisinier.Nom = cuisinier.Nom + " (modifié)";
-                LoadCuisiniers();
+                var nouvelleAdresse = tb.Text;
+                utilisateur.Adresse = nouvelleAdresse;
+
+                try
+                {
+                    utilisateur.Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(nouvelleAdresse);
+                    dataGridCuisiniers.Items.Refresh(); // Mise à jour de l'affichage
+                }
+                catch
+                {
+                    MessageBox.Show("Adresse invalide ou station introuvable.");
+                }
+            }
+        }
+
+        private void OnListCommandes_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListCommandes.SelectedItem != null)
+            {
+                ListAvis.SelectedItem = null;
+                ListClients.SelectedItem = null;
+            }
+        }
+
+
+        private void OnListAvis_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListAvis.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListClients.SelectedItem = null;
+            }
+        }
+        private void OnListClients_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListClients.SelectedItem != null)
+            {
+                ListCommandes.SelectedItem = null;
+                ListAvis.SelectedItem = null;
+            }
+        }
+        private void BtnSupprimer_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridCuisiniers.SelectedItem is Utilisateur selectedUtilisateur)
+            {
+                selectedUtilisateur.Delete();
+                dataGridCuisiniers.ItemsSource = null;
+                dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
             }
         }
 
@@ -927,8 +969,6 @@ namespace ProbSciANA.Interface
             NavigationService?.Navigate(new Register());
         }
 
-        // private void BtnTrierNom_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("nom");
-        // private void BtnTrierAdresse_Click(object sender, RoutedEventArgs e) => LoadCuisiniers("adresse");
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ClientsViewAdmin());
