@@ -893,7 +893,7 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshAll();
+            Requetes.RefreshAllLists();
             dataGridCuisiniers.ItemsSource = null;
             dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
         }
