@@ -1173,14 +1173,12 @@ namespace ProbSciANA.Interface
                 Console.WriteLine(a.noeud + " : " + a.successeur.Count);
             }
         }
-        private void BtnCommande(object sender, RoutedEventArgs e)
+        private void BtnAffichageColoriationDeGraph(object sender, RoutedEventArgs e)
         {
             var graphU = Program.CreationGrapheU();
             //graphU.AfficherListeAdjacence();
-            //Program.GrapheMétro.AfficherListeAdjacence();
-            //graphU.WelshPowell1();
-            //graphU.AffichageGrapheNonOrienté();
             graphU.WelshPowell();
+            graphU.AffichageGrapheNonOrienté();
         }
 
     }
