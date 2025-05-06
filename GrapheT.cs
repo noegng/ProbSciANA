@@ -945,73 +945,33 @@ namespace ProbSciANA
                 couleurs[listeAdjacenceTriée[0].noeud] = couleur;
                 var successeur = listeAdjacenceTriée[0].successeur;
                 listeAdjacenceTriée.RemoveAt(0);
-                foreach (var s in successeur)
+                foreach (var s in listeAdjacenceTriée)
                 {
-                    if (!successeur.Contains(s))
+                    if (!successeur.Contains(s.noeud))
                     {
-                        couleurs[s] = couleur;
-                        successeur.AddRange(listeAdjacence[s]);
+                        couleurs[s.noeud] = couleur;
+                        successeur.AddRange(listeAdjacence[s.noeud]);
                     }
                 }
+                var listeASupprimer = new List<(Noeud<T> noeud, List<Noeud<T>> successeur)>();
                 foreach (var s in listeAdjacenceTriée)  ///On retire tt les sommets coloriés
                 {
                     if (couleurs[s.noeud] != 0)
                     {
-                        listeAdjacenceTriée.Remove(s);
+                        listeASupprimer.Add(s);
                     }
                 }
+                foreach (var s in listeASupprimer)
+                {
+                    listeAdjacenceTriée.Remove(s);
+                }
             }
-            Console.WriteLine("Coloration du graphe avec " + couleur + " :");
+            Console.WriteLine("Moi");
+            Console.WriteLine("Coloration du graphe avec " + couleur + " couleurs :");
             foreach (var noeud in couleurs.Keys)
             {
                 Console.WriteLine($"Noeud {noeud} : Couleur {couleurs[noeud]}");
             }
         }
-        public void WelshPowell1()
-        {
-            List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée = TriListeAdjacence();
-            var noeudsRestants = new HashSet<Noeud<T>>(listeAdjacenceTriée.Select(t => t.noeud));
-            int couleur = 0;
-
-            while (noeudsRestants.Count > 0)
-            {
-                couleur++;
-                var noeudsÀColorier = new List<Noeud<T>>();
-
-                foreach (var (noeud, successeurs) in listeAdjacenceTriée)
-                {
-                    if (!noeudsRestants.Contains(noeud)) continue;
-
-                    // Vérifie qu'aucun voisin n'est déjà colorié avec cette couleur
-                    bool peutColorier = true;
-                    foreach (var voisin in successeurs)
-                    {
-                        if (couleurs.TryGetValue(voisin, out int c) && c == couleur)
-                        {
-                            peutColorier = false;
-                            break;
-                        }
-                    }
-
-                    if (peutColorier)
-                    {
-                        couleurs[noeud] = couleur;
-                        noeudsÀColorier.Add(noeud);
-                    }
-                }
-
-                // Retirer les nœuds qu’on vient de colorier
-                foreach (var n in noeudsÀColorier)
-                    noeudsRestants.Remove(n);
-            }
-
-            Console.WriteLine("Coloration du graphe avec " + couleur + " couleurs :");
-            foreach (var (noeud, c) in couleurs)
-            {
-                Console.WriteLine($"Noeud {noeud} : Couleur {c}");
-            }
-        }
-
     }
-
 }

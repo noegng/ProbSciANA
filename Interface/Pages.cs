@@ -1176,11 +1176,11 @@ namespace ProbSciANA.Interface
         private void BtnCommande(object sender, RoutedEventArgs e)
         {
             var graphU = Program.CreationGrapheU();
-            graphU.AfficherListeAdjacence();
+            //graphU.AfficherListeAdjacence();
             //Program.GrapheMétro.AfficherListeAdjacence();
-            graphU.WelshPowell1();
-            graphU.AffichageGrapheNonOrienté();
-            //graphU.WelshPowell();
+            //graphU.WelshPowell1();
+            //graphU.AffichageGrapheNonOrienté();
+            graphU.WelshPowell();
         }
 
     }
