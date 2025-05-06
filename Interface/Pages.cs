@@ -565,7 +565,8 @@ namespace ProbSciANA.Interface
         }
         private void ValiderPanier_Click(object sender, RoutedEventArgs e)
         {
-            new Commande("Commande " + Commande.commandes.Count + 1, Prix, "en attente", SessionManager.CurrentUser.Id_utilisateur, Cuisinier.Id_utilisateur);
+            Commande.RefreshList();
+            new Commande("Commande " + Convert.ToString(Commande.commandes.Count + 1), Prix, "en attente", SessionManager.CurrentUser.Id_utilisateur, Cuisinier.Id_utilisateur);
             MessageBox.Show($"Commande de {Panier.Count} plat(s) validée !");
         }
         private void AnnulerPanier_Click(object sender, RoutedEventArgs e)
