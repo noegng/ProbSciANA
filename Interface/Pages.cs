@@ -54,7 +54,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnProfil_Click(object sender, RoutedEventArgs e)
         {
-
+            if (SessionManager.CurrentUser.EstCuisinier)
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            else if (SessionManager.CurrentUser.EstClient)
+                NavigationService?.Navigate(new UserDashboardView());
         }
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
@@ -515,14 +518,18 @@ namespace ProbSciANA.Interface
         public List<Plat> Plats { get; set; } = new();
         public List<Plat> Panier { get; set; } = new();
         public Plat? SelectedPlat { get; set; }
-        public double Prix
+        public Dictionary<string, (List<Plat> plats, DateTime date)> Paniers;
+        public double PrixTotal
         {
             get
             {
                 double result = 0;
-                foreach (Plat p in Panier)
+                foreach (string s in Paniers.Keys)
                 {
-                    result += p.Prix;
+                    foreach (Plat p in Paniers[s].plats)
+                    {
+                        result += p.Prix;
+                    }
                 }
                 return result;
             }
@@ -554,7 +561,11 @@ namespace ProbSciANA.Interface
                 DataContext = this;
             }
         }
-        private void AjouterAuPanier_Click(object sender, RoutedEventArgs e)
+        private void BtnAjouterPanier_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void BtnAjouterAuPanier_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is Plat plat)
             {
@@ -563,12 +574,32 @@ namespace ProbSciANA.Interface
                 DataContext = this;
             }
         }
-        private void ValiderPanier_Click(object sender, RoutedEventArgs e)
+        private void BtnValiderPanier_Click(object sender, RoutedEventArgs e)
         {
-            new Commande("Commande " + Commande.commandes.Count + 1, Prix, "en attente", SessionManager.CurrentUser.Id_utilisateur, Cuisinier.Id_utilisateur);
+            Commande c = new Commande("Commande " + (Commande.commandes.Count + 1), PrixTotal, SessionManager.CurrentUser.Id_utilisateur, Cuisinier.Id_utilisateur);
+            foreach (string adresse in Paniers.Keys)
+            {
+                Livraison l = new Livraison(c, adresse, Paniers[adresse].date);
+                Dictionary<Plat, int> Requierts = new Dictionary<Plat, int>();
+                foreach (Plat p in Paniers[adresse].plats)
+                {
+                    if (!Requierts.Keys.Contains(p))
+                    {
+                        Requierts.Add(p, 1);
+                    }
+                    else
+                    {
+                        Requierts[p]++;
+                    }
+                }
+                foreach (Plat p in Requierts.Keys)
+                {
+                    new Requiert(p, l, Requierts[p]);
+                }
+            }
             MessageBox.Show($"Commande de {Panier.Count} plat(s) validée !");
         }
-        private void AnnulerPanier_Click(object sender, RoutedEventArgs e)
+        private void BtnAnnulerPanier_Click(object sender, RoutedEventArgs e)
         {
             Panier.Clear();
             DataContext = null;
@@ -606,24 +637,36 @@ namespace ProbSciANA.Interface
     #region Page Vue Commande
     public partial class CommandeView : Page
     {
+        public List<string> Adresses_a_desservir = new();
+        public List<string> Plats_a_cuisiner = new();
+
         public CommandeView()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshList();
+            Commande.RefreshList();
             dataGridCommandes.ItemsSource = null;
-            dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Cuisines;
+            dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Commandes_effectuees;
         }
-        private async void dataGridCommandes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void dataGridCommandes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dataGridCommandes.SelectedItem is Plat selected)
+            if (dataGridCommandes.SelectedItem is Commande selected)
             {
                 DataContext = selected;
             }
         }
-        private void Ajouter_Click(object sender, RoutedEventArgs e)
+        private void BtnValider_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AddPlat());
+
+        }
+        private void BtnAnnuler_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Commande selectedCommande)
+            {
+                selectedCommande.Delete();
+                dataGridCommandes.ItemsSource = null;
+                dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Commandes_effectuees;
+            }
         }
 
         private void AfficherClients_Click(object sender, RoutedEventArgs e)
@@ -637,6 +680,21 @@ namespace ProbSciANA.Interface
         private void AfficherAvis_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new AvisView());
+        }
+
+        private void OnListAdresses_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListAdresses.SelectedItem != null)
+            {
+                ListPlats.SelectedItem = null;
+            }
+        }
+        private void OnListPlats_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListPlats.SelectedItem != null)
+            {
+                ListAdresses.SelectedItem = null;
+            }
         }
 
         private void UpdateNavButtons()

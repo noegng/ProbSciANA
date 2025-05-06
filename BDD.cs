@@ -678,7 +678,7 @@ namespace ProbSciANA
         private int id_commande;
         private string nom;
         private double prix;
-        private string statut = "en attente";
+        private string statut;
         private DateTime date_commande;
         private Utilisateur? client;
         private Utilisateur? cuisinier;
@@ -688,7 +688,7 @@ namespace ProbSciANA
             this.id_commande = id_commande;
             Refresh();
         }
-        public Commande(string nom, double prix, string statut, int id_client, int id_cuisinier)
+        public Commande(string nom, double prix, int id_client, int id_cuisinier, string statut = "en attente")
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -937,6 +937,7 @@ namespace ProbSciANA
         private int id_livraison;
         private DateTime date_livraison;
         private string statut;
+        private string adresse;
         private Commande commande;
 
         public Livraison(int id_livraison)
@@ -945,20 +946,20 @@ namespace ProbSciANA
             Refresh();
         }
 
-        public Livraison(DateTime date_livraison, string statut, Utilisateur cuisinier, Commande commande)
+        public Livraison(Commande commande, string adresse, DateTime date_livraison, string statut = "en attente")
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
                 connection.Open();
 
-                string query = @"INSERT INTO Livraison (date_livraison, statut, id_utilisateur, id_commande)
-                                VALUES (@date_livraison, @statut, @id_utilisateur, @id_commande);";
+                string query = @"INSERT INTO Livraison (date_livraison, statut, adresse, id_commande)
+                                VALUES (@date_livraison, @statut, @adresse, @id_commande);";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@date_livraison", date_livraison.ToString("yyyy-MM-dd HH:mm:ss"));
                     command.Parameters.AddWithValue("@statut", statut);
-                    command.Parameters.AddWithValue("@id_utilisateur", cuisinier.Id_utilisateur);
+                    command.Parameters.AddWithValue("@adresse", adresse);
                     command.Parameters.AddWithValue("@id_commande", commande.Id_commande);
                     command.ExecuteNonQuery();
                 }
@@ -1003,6 +1004,11 @@ namespace ProbSciANA
         {
             get { return statut; }
             set { statut = value; Update("statut", value); }
+        }
+        public string Adresse
+        {
+            get { return adresse; }
+            set { adresse = value; Update("statut", value); }
         }
         public Commande Commande
         {
@@ -1055,6 +1061,7 @@ namespace ProbSciANA
                         {
                             date_livraison = reader.GetDateTime("date_livraison");
                             statut = reader.GetString("statut");
+                            adresse = reader.GetString("adresse");
                             commande = new Commande(reader.GetInt32("id_commande"));
                         }
                     }
