@@ -1177,10 +1177,16 @@ namespace ProbSciANA.Interface
         {
             var graphU = Program.CreationGrapheU();
             //graphU.AfficherListeAdjacence();
-            graphU.WelshPowell();
+            int couleurMin = graphU.WelshPowell();
+            MessageBox.Show($"Coloration du graphe avec {couleurMin} couleurs.");
             graphU.AffichageGrapheNonOrienté();
         }
-
+        private void BtnPropriétéGraphe(object sender, RoutedEventArgs e)
+        {
+            var graphU = Program.CreationGrapheU();
+            string propriétés = graphU.PropriétésGraphe();
+            MessageBox.Show(propriétés);
+        }
     }
     #endregion
 }

@@ -202,7 +202,12 @@
                     Width="200"
                     Margin="5"
                     Click="BtnAffichageColoriationDeGraph"/>
-            <TextBlock Text="Le temps de trajet est de : {Binding TempsTrajet}"
+            <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Test Propriété Graphe"
+                    Width="200"
+                    Margin="5"
+                    Click="BtnPropriétéGraphe"/>
+            <TextBlock x:Name="TxtProprietesGraphe"
                        FontSize="18"
                        Margin="10"/>
         </StackPanel>

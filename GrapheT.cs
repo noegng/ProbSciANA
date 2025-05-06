@@ -188,26 +188,33 @@ namespace ProbSciANA
             couleurs[sommet] = 2; //// rouge
         }
 
-        public void EstConnexe()
+        public bool EstConnexe()
         {
             var visite = BFS(listeAdjacence.Keys.First());
+            bool estConnexe = false;
             if (visite.Count == listeAdjacence.Count)
             {
                 Console.WriteLine("Le graphe est connexe.");
+                estConnexe = true;
             }
             else
             {
                 Console.WriteLine("Le graphe n'est pas connexe.");
             }
+            return estConnexe;
         }
 
-        public void ContientCycle()
+        public bool ContientCycle()
         {
+            bool contientCycle = false;
             DFSRécursif(true);
             Console.WriteLine(nbCycles + " cycles trouvés dans le graphe.");
+            if (nbCycles > 0)
+            {
+                contientCycle = true;
+            }
+            return contientCycle;
         }
-        //// alculer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
-        //// 
         public void DFStoString(Noeud<T> sommetDepart)
         {
             Console.Write("Parcours en Profondeur (DFS): ");
@@ -935,7 +942,7 @@ namespace ProbSciANA
             TriListeAdjacenceDecroissant(listeAdjacenceTriée, j + 1, fin);
             return listeAdjacenceTriée;
         }
-        public void WelshPowell()
+        public int WelshPowell()
         {
             List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée = TriListeAdjacence();
             int couleur = 0;
@@ -972,6 +979,58 @@ namespace ProbSciANA
             {
                 Console.WriteLine($"Noeud {noeud} : Couleur {couleurs[noeud]}");
             }
+            return couleur;
+        }
+        public bool EstBiparti()
+        {
+            int couleurMinimale = WelshPowell();
+            bool estBiparti = false;
+            if (couleurMinimale == 2)
+            {
+                estBiparti = true;
+            }
+            return estBiparti;
+        }
+        public bool EstPlanaire()
+        {
+            var listeTrié = TriListeAdjacence();
+            bool estPlanaire = false;
+            if (EstConnexe())
+            {
+                if ((listeTrié[0].successeur.Count >= 4 && !ContientCycle()) || listeTrié[0].successeur.Count - 1 >= 4)
+                {
+                    estPlanaire = true;
+                }
+            }
+            return estPlanaire;
+        }
+        public string PropriétésGraphe()
+        {
+            string result = "";
+            result += "Propriétés du graphe :\n";
+            result += "Nombre de sommets : " + listeAdjacence.Count + "\n";
+            result += "Nombre d'arcs : " + arcs.Count + "\n";
+            result += "Nombre de sommets isolés : " + noeudsIsolés.Count + "\n";
+            int couleurMinimale = WelshPowell();
+            result += "Nombre de couleurs : " + couleurMinimale + "\n";
+
+            if (EstBiparti())
+            {
+                result += "Le graphe est biparti.\n";
+            }
+            else
+            {
+                result += "Le graphe n'est pas biparti.\n";
+            }
+            if (EstPlanaire())
+            {
+                result += "Le graphe est probablement planaire.\n";
+            }
+            else
+            {
+                result += "Le graphe n'est probablement pas planaire.\n";
+            }
+            return result;
         }
     }
 }
