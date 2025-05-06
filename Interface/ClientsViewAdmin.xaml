@@ -514,7 +514,7 @@
                         </StackPanel>
 
                         <Border x:Name="AddPane"
-                                Grid.Column="1"
+                                Grid.Column="2"
                                 Background="#FFF"
                                 BorderBrush="#DDD"
                                 BorderThickness="1"

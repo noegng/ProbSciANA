@@ -678,7 +678,7 @@ namespace ProbSciANA
         private int id_commande;
         private string nom;
         private double prix;
-        private string statut = "en cours";
+        private string statut = "en attente";
         private DateTime date_commande;
         private Utilisateur? client;
         private Utilisateur? cuisinier;
@@ -732,7 +732,6 @@ namespace ProbSciANA
                 return result;
             }
         }
-
         public int Id_commande
         {
             get { return id_commande; }
@@ -752,6 +751,10 @@ namespace ProbSciANA
             get { return statut; }
             set
             {
+                if (value.ToLower() == "en attente" || value.ToLower() == "ea")
+                {
+                    statut = "en attente"; Update("statut", "en attente");
+                }
                 if (value.ToLower() == "en cours" || value.ToLower() == "ec")
                 {
                     statut = "en cours"; Update("statut", "en cours");

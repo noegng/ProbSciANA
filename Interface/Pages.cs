@@ -466,24 +466,113 @@ namespace ProbSciANA.Interface
             Utilisateur.RefreshList();
             Cuisiniers = Utilisateur.cuisiniers;
             DataContext = this;
-            MessageBox.Show(Cuisiniers.Count.ToString());
         }
 
         private void CuisinierCard_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border border && border.DataContext is Utilisateur cuisinier)
             {
-                // À remplacer par ta navigation réelle
-                MessageBox.Show($"Clic sur le cuisinier : {cuisinier.Nom}");
-
-                // TODO : Naviguer vers la page du cuisinier
-                // NavigationService.Navigate(new CuisinierPage(cuisinier));
+                NavigationService.Navigate(new RestoView(cuisinier));
             }
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new StartView());
+        }
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
+    }
+    #endregion
+
+    #region Page Vue Resto
+    public partial class RestoView : Page
+    {
+        public Utilisateur Cuisinier { get; set; }
+        public List<Plat> Plats { get; set; } = new();
+        public List<Plat> Panier { get; set; } = new();
+        public Plat? SelectedPlat { get; set; }
+        public double Prix
+        {
+            get
+            {
+                double result = 0;
+                foreach (Plat p in Panier)
+                {
+                    result += p.Prix;
+                }
+                return result;
+            }
+        }
+
+        public RestoView(Utilisateur cuisinier_select)
+        {
+            InitializeComponent();
+            Loaded += (s, e) => UpdateNavButtons();
+            Cuisinier = cuisinier_select;
+            Cuisine.RefreshList();
+            foreach (Cuisine c in Cuisinier.Cuisines)
+            {
+                Plats.Add(c.Plat);
+            }
+            DataContext = this;
         }
 
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+        private void PlatCard_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border b && b.DataContext is Plat plat)
+            {
+                SelectedPlat = plat;
+                DataContext = null;
+                DataContext = this;
+            }
+        }
+        private void AjouterAuPanier_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is Plat plat)
+            {
+                Panier.Add(plat);
+                DataContext = null;
+                DataContext = this;
+            }
+        }
+        private void ValiderPanier_Click(object sender, RoutedEventArgs e)
+        {
+            new Commande("Commande " + Commande.commandes.Count + 1, Prix, "en attente", SessionManager.CurrentUser.Id_utilisateur, Cuisinier.Id_utilisateur);
+            MessageBox.Show($"Commande de {Panier.Count} plat(s) validée !");
+        }
+        private void AnnulerPanier_Click(object sender, RoutedEventArgs e)
+        {
+            Panier.Clear();
+            DataContext = null;
+            DataContext = this;
         }
 
         private void UpdateNavButtons()
