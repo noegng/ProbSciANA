@@ -4,11 +4,13 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Data;
 using System.Windows.Navigation;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Linq;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace ProbSciANA.Interface
@@ -516,9 +518,31 @@ namespace ProbSciANA.Interface
     {
         public Utilisateur Cuisinier { get; set; }
         public List<Plat> Plats { get; set; } = new();
-        public List<Plat> Panier { get; set; } = new();
+        public string? PanierSelectionne { get; set; }
         public Plat? SelectedPlat { get; set; }
-        public Dictionary<string, (List<Plat> plats, DateTime date)> Paniers;
+        public List<Plat> PlatsDuPanierSelectionne
+        {
+            get
+            {
+                if (PanierSelectionne != null && Paniers.ContainsKey(PanierSelectionne))
+                {
+                    return Paniers[PanierSelectionne].plats;
+                }
+                return new List<Plat>();
+            }
+        }
+        public double PrixTotalPanierSelectionne
+        {
+            get
+            {
+                double result = 0;
+                foreach (Plat p in PlatsDuPanierSelectionne)
+                {
+                    result += p.Prix;
+                }
+                return result;
+            }
+        }
         public double PrixTotal
         {
             get
@@ -534,6 +558,7 @@ namespace ProbSciANA.Interface
                 return result;
             }
         }
+        public Dictionary<string, (List<Plat> plats, DateTime date)> Paniers { get; set; } = new();
 
         public RestoView(Utilisateur cuisinier_select)
         {
@@ -563,13 +588,45 @@ namespace ProbSciANA.Interface
         }
         private void BtnAjouterPanier_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(AdresseInput.Text) || DateInput.SelectedDate == null)
+            {
+                MessageBox.Show("Renseigne l’adresse et la date.");
+                return;
+            }
 
+            var adresse = AdresseInput.Text.Trim();
+            var date = DateInput.SelectedDate.Value;
+
+            // Création du panier si l’adresse n’existe pas déjà
+            if (!Paniers.ContainsKey(adresse))
+            {
+                Paniers.Add(adresse, (new List<Plat>(), date));
+            }
+            else
+            {
+                MessageBox.Show("Il existe déjà un panier pour cette adresse.");
+                return;
+            }
+
+            // Réinitialise les champs et force l’UI à se rafraîchir
+            AdresseInput.Text = "";
+            DateInput.SelectedDate = null;
+            DataContext = null;
+            DataContext = this;
+            CollectionViewSource.GetDefaultView(Paniers).Refresh();
+            MessageBox.Show(Paniers.Count.ToString());
         }
         private void BtnAjouterAuPanier_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is Plat plat)
             {
-                Panier.Add(plat);
+                if (PanierSelectionne == null)
+                {
+                    MessageBox.Show("Aucun panier sélectionné !");
+                    return;
+                }
+
+                Paniers[PanierSelectionne].plats.Add(plat);
                 DataContext = null;
                 DataContext = this;
             }
@@ -597,13 +654,35 @@ namespace ProbSciANA.Interface
                     new Requiert(p, l, Requierts[p]);
                 }
             }
-            MessageBox.Show($"Commande de {Panier.Count} plat(s) validée !");
         }
         private void BtnAnnulerPanier_Click(object sender, RoutedEventArgs e)
         {
-            Panier.Clear();
-            DataContext = null;
-            DataContext = this;
+            if (PanierSelectionne != null && Paniers.ContainsKey(PanierSelectionne))
+            {
+                Paniers.Remove(PanierSelectionne);
+                CollectionViewSource.GetDefaultView(Paniers).Refresh();
+                PanierSelectionne = null;
+                DataContext = null;
+                DataContext = this;
+            }
+        }
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            if (sender is Expander exp && exp.DataContext is KeyValuePair<string, (List<Plat> plats, DateTime date)> kvp)
+            {
+                PanierSelectionne = kvp.Key;
+                DataContext = null;
+                DataContext = this;
+            }
+        }
+        private void ListePaniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ListBox listBox && listBox.SelectedItem is KeyValuePair<string, (List<Plat>, DateTime)> kvp)
+            {
+                PanierSelectionne = kvp.Key;
+                DataContext = null;
+                DataContext = this;
+            }
         }
 
         private void UpdateNavButtons()

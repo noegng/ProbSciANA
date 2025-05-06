@@ -4,9 +4,12 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:local="clr-namespace:ProbSciANA.Interface"
       Title="CommandeView">
 
     <Page.Resources>
+
+        <local:FirstNonNullConverter x:Key="FirstNonNullConverter"/>
 
         <x:Array x:Key="StatutValues"
                  Type="{x:Type sys:String}">
