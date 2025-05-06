@@ -1178,9 +1178,9 @@ namespace ProbSciANA.Interface
             var graphU = Program.CreationGrapheU();
             graphU.AfficherListeAdjacence();
             //Program.GrapheMétro.AfficherListeAdjacence();
-            //graphU.AffichageGraphe();
+            graphU.WelshPowell1();
+            graphU.AffichageGrapheNonOrienté();
             //graphU.WelshPowell();
-            //graphU.WelshPowell0();
         }
 
     }

@@ -20,7 +20,7 @@ namespace ProbSciANA
         /// <param name="dotFilePath">Chemin pour enregistrer le fichier DOT.</param>
         /// <param name="pngFilePath">Chemin pour générer l'image PNG.</param>
 
-        private static string GetColorForLine(string idLigne)
+        private static string GetColor(string idLigne)
         {
             // Définir les couleurs pour chaque ligne
             return idLigne switch
@@ -74,7 +74,7 @@ namespace ProbSciANA
                 {
                     var idPrevious = arcs[i].IdPrevious.Valeur.ToString();
                     var idNext = arcs[i].IdNext.Valeur.ToString();
-                    var color = GetColorForLine(arcs[i].IdLigne);
+                    var color = GetColor(arcs[i].IdLigne);
                     string nonSensUnique = "";
                     if (!arcs[i].SensUnique)
                     {
@@ -175,7 +175,7 @@ namespace ProbSciANA
                 {
                     var idPrevious = arcsChemin[i].IdPrevious.Valeur.ToString();
                     var idNext = arcsChemin[i].IdNext.Valeur.ToString();
-                    var color = GetColorForLine(arcsChemin[i].IdLigne);
+                    var color = GetColor(arcsChemin[i].IdLigne);
                     string nonSensUnique = "";
                     dot.AppendLine($"    \"{idPrevious}\" -> \"{idNext}\" [{nonSensUnique} color=\"{color}\", penwidth=3, style=bold];");
                 }
@@ -225,7 +225,80 @@ namespace ProbSciANA
             }
 
         }
+        public static void GenerateGraphNonOrienté(List<Noeud<T>> noeuds, List<Arc<T>> arcs, Dictionary<Noeud<T>, int> couleurs = null)
+        {
+            /// Si la liste des couleurs est nulle, on initialise une couleur par défaut
+            if (couleurs == null)
+            {
+                couleurs = new Dictionary<Noeud<T>, int>();
+                foreach (Noeud<T> vertex in noeuds)
+                {
+                    couleurs[vertex] = 0; // Couleur par défaut
+                }
+            }
+
+            /// Chemins pour le fichier DOT et l'image PNG
+            numéroImage++;
+            string dotFilePath = "grapheNonOriente" + numéroImage + ".dot";
+            string pngFilePath = "grapheNonOriente" + numéroImage + ".png";
+
+            try
+            {
+                StringBuilder dot = new StringBuilder();
+                dot.AppendLine("graph G {");
+                dot.AppendLine("    layout=neato;");
+                dot.AppendLine("    overlap=false;");
+                dot.AppendLine("    graph [dpi=300];");
+
+                foreach (Noeud<T> vertex in noeuds)
+                {
+                    var pos = vertex.Valeur.ToString();
+                    var color = GetColor(Convert.ToString(couleurs[vertex]));
+                    dot.AppendLine($"    \"{pos}\" [label=\"{pos}\", color=\"{color}\", style=\"filled\", fontsize=12];");
+                }
+
+                foreach (Arc<T> arc in arcs)
+                {
+                    var idPrevious = arc.IdPrevious.Valeur.ToString();
+                    var idNext = arc.IdNext.Valeur.ToString();
+                    var color = GetColor(arc.IdLigne);
+                    dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\" [color=\"{color}\", penwidth=3, style=bold];");
+                }
+
+                dot.AppendLine("}");
+                File.WriteAllText(dotFilePath, dot.ToString());
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Graphviz", "bin", "dot.exe"),
+                        Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                {
+                    string errorOutput = process.StandardError.ReadToEnd();
+                    Console.WriteLine("Erreur lors de l'exécution de dot.exe :");
+                    Console.WriteLine(errorOutput);
+                    throw new Exception($"Le processus dot.exe a renvoyé le code {process.ExitCode}. Erreur : {errorOutput}");
+                }
+
+                Console.WriteLine($"Image PNG générée : {pngFilePath}");
+                Process.Start(new ProcessStartInfo(pngFilePath) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe non orienté.", ex);
+            }
+        }
     }
-
 }
-

@@ -35,9 +35,9 @@ namespace ProbSciANA
             matriceAdjacence = new int[listeAdjacence.Count + nbNoeudsIsolés, listeAdjacence.Count + nbNoeudsIsolés];
             RemplissageMatriceAdjacence();
             couleurs = new Dictionary<Noeud<T>, int>();
-            foreach (Noeud<T> noeud in listeAdjacence.Keys)
+            noeuds.AddRange(listeAdjacence.Keys); /// Remplie la liste des noeuds
+            foreach (Noeud<T> noeud in noeuds)
             {
-                noeuds.Add(noeud);  ///Remplie la liste des noeuds
                 couleurs.Add(noeud, 0);     /// On remplie les couleurs 0 = couleur initiale.
             }
         }
@@ -260,7 +260,6 @@ namespace ProbSciANA
                     }
                 }
             }
-
             if (noeudsIsolés != null)
             {
                 foreach (Noeud<T> noeud in noeudsIsolés)
@@ -859,9 +858,13 @@ namespace ProbSciANA
 
         #endregion
         #region Affichage
-        public void AffichageGraphe()
+        public void AffichageGrapheOrienté()
         {
             Graphviz<T>.GenerateGraphImage(Noeuds, Arcs);
+        }
+        public void AffichageGrapheNonOrienté()
+        {
+            Graphviz<T>.GenerateGraphNonOrienté(Noeuds, Arcs, Couleurs);
         }
         public int AffichageDijkstra(Noeud<T> depart, Noeud<T> arrivee)
         {
@@ -932,7 +935,7 @@ namespace ProbSciANA
             TriListeAdjacenceDecroissant(listeAdjacenceTriée, j + 1, fin);
             return listeAdjacenceTriée;
         }
-        public void WelshPowell0()
+        public void WelshPowell()
         {
             List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée = TriListeAdjacence();
             int couleur = 0;
@@ -964,33 +967,51 @@ namespace ProbSciANA
                 Console.WriteLine($"Noeud {noeud} : Couleur {couleurs[noeud]}");
             }
         }
-        public void WelshPowell()
+        public void WelshPowell1()
         {
             List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée = TriListeAdjacence();
+            var noeudsRestants = new HashSet<Noeud<T>>(listeAdjacenceTriée.Select(t => t.noeud));
             int couleur = 0;
 
-            foreach (var noeud in listeAdjacenceTriée)
+            while (noeudsRestants.Count > 0)
             {
-                if (!couleurs.ContainsKey(noeud.noeud))
+                couleur++;
+                var noeudsÀColorier = new List<Noeud<T>>();
+
+                foreach (var (noeud, successeurs) in listeAdjacenceTriée)
                 {
-                    couleurs[noeud.noeud] = couleur;
-                    foreach (var voisin in noeud.successeur)
+                    if (!noeudsRestants.Contains(noeud)) continue;
+
+                    // Vérifie qu'aucun voisin n'est déjà colorié avec cette couleur
+                    bool peutColorier = true;
+                    foreach (var voisin in successeurs)
                     {
-                        if (!couleurs.ContainsKey(voisin))
+                        if (couleurs.TryGetValue(voisin, out int c) && c == couleur)
                         {
-                            couleurs[voisin] = -1; /// -1 signifie que le voisin n'a pas encore de couleur
+                            peutColorier = false;
+                            break;
                         }
                     }
-                    couleur++;
+
+                    if (peutColorier)
+                    {
+                        couleurs[noeud] = couleur;
+                        noeudsÀColorier.Add(noeud);
+                    }
                 }
+
+                // Retirer les nœuds qu’on vient de colorier
+                foreach (var n in noeudsÀColorier)
+                    noeudsRestants.Remove(n);
             }
 
-            Console.WriteLine("Coloration du graphe :");
-            foreach (var noeud in couleurs.Keys)
+            Console.WriteLine("Coloration du graphe avec " + couleur + " couleurs :");
+            foreach (var (noeud, c) in couleurs)
             {
-                Console.WriteLine($"Noeud {noeud} : Couleur {couleurs[noeud]}");
+                Console.WriteLine($"Noeud {noeud} : Couleur {c}");
             }
         }
+
     }
 
 }

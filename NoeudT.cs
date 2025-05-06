@@ -51,12 +51,16 @@ namespace ProbSciANA
         #endregion
         public override bool Equals(object obj)
         {
-            return obj is Noeud<T> autre && EqualityComparer<T>.Default.Equals(Valeur, autre.Valeur);
+            if (obj is Noeud<T> autre)
+            {
+                return Id == autre.Id; // Comparaison basée sur l'Id
+            }
+            return false;
         }
 
         public override int GetHashCode()
         {
-            return EqualityComparer<T>.Default.GetHashCode(Valeur);
+            return Id.GetHashCode(); // Utilisation de l'Id pour générer le hash
         }
         public string ToStringLong()
         {
