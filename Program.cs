@@ -24,7 +24,7 @@ namespace ProbSciANA
         public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
 
         // Liste des stations et des arêtes
-        public static List<Noeud<(int id, string nom)>> Noeuds { get; set; }
+        public static List<Noeud<(int id, string nom)>> Stations { get; set; }
         public static List<Arc<(int id, string nom)>> Arcs { get; set; }
         public static Graphe<(int id, string nom)> GrapheMétro { get; set; }
 
@@ -32,7 +32,7 @@ namespace ProbSciANA
         public static Graphe<(int id, string nom)> InitializeData(string excelFilePath)
         {
             // Charger les données depuis le fichier Excel
-            (Noeuds, Arcs) = LectureFichierExcel(excelFilePath);
+            (Stations, Arcs) = LectureFichierExcel(excelFilePath);
             GrapheMétro = new Graphe<(int id, string nom)>(Arcs); // Créer le graphe à partir des arêtes
             return GrapheMétro;
         }
@@ -67,7 +67,7 @@ namespace ProbSciANA
         #region Graphe Utilisateur
         public static Graphe<Utilisateur> CreationGrapheU()
         {
-            Commande.RefreshAll();
+            //Commande.RefreshAll();
             var hashSetUtilisateursParCommande = new HashSet<Utilisateur>(); /// On ne veut pas de doublon
             var HashSetArcCommandes = new HashSet<Arc<Utilisateur>>();  /// On ne veut pas de doublon
             var listUtilisateursIsolés = new List<Noeud<Utilisateur>>();

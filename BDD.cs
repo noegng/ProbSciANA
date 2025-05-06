@@ -392,7 +392,7 @@ namespace ProbSciANA
             }
             set
             {
-                foreach (Noeud<(int id, string nom)> n in Program.Noeuds)
+                foreach (Noeud<(int id, string nom)> n in Program.Stations)
                 {
                     if (n.Valeur.nom.ToLower() == value.ToLower())
                     {
@@ -617,11 +617,11 @@ namespace ProbSciANA
                             adresse = reader.GetString("adresse");
                             telephone = reader.GetString("telephone");
                             email = reader.GetString("email");
-                            for (int i = 0; i < Program.Noeuds.Count; i++)
+                            for (int i = 0; i < Program.Stations.Count; i++)
                             {
-                                if (!reader.IsDBNull(reader.GetOrdinal("station")) && Program.Noeuds[i].Valeur.nom == reader.GetString("station"))
+                                if (!reader.IsDBNull(reader.GetOrdinal("station")) && Program.Stations[i].Valeur.nom == reader.GetString("station"))
                                 {
-                                    station = Program.Noeuds[i];
+                                    station = Program.Stations[i];
                                 }
                             }
                             date_inscription = reader.GetDateTime("date_inscription");

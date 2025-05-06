@@ -77,7 +77,7 @@ namespace ProbSciANA
             Noeud<(int, string)> stationLaPlusProche = null;
             double distanceMinimale = double.MaxValue;
 
-            foreach (var station in Program.Noeuds)
+            foreach (var station in Program.Stations)
             {
                 double distance = Arc<T>.CalculerDistanceHaversine(
                     Adresse.Latitude, Adresse.Longitude,
