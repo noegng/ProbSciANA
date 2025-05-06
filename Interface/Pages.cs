@@ -1114,9 +1114,31 @@ namespace ProbSciANA.Interface
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
             Requetes.RefreshAllLists();
+            dataGridCuisiniers = FindName("dataGridCuisiniers") as DataGrid;
+            FicheCuisinier = FindName("FicheCuisinier") as FrameworkElement;
+            AddPane = FindName("AddPane") as FrameworkElement;
+            TxtPrenom = FindName("TxtPrenom") as TextBox;
+            TxtNom = FindName("TxtNom") as TextBox;
+            TxtAdresse = FindName("TxtAdresse") as TextBox;
+            TxtTel = FindName("TxtTel") as TextBox;
+            TxtEmail = FindName("TxtEmail") as TextBox;
+            CmbStatut = FindName("CmbStatut") as ComboBox;
+            TxtReferent = FindName("TxtReferent") as TextBox;
+
             dataGridCuisiniers.ItemsSource = null;
             dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
         }
+
+        //private DataGrid dataGridCuisiniers;
+        private FrameworkElement FicheCuisinier;
+        private FrameworkElement AddPane;
+        private TextBox TxtPrenom;
+        private TextBox TxtNom;
+        private TextBox TxtAdresse;
+        private TextBox TxtTel;
+        private TextBox TxtEmail;
+        private ComboBox CmbStatut;
+        private TextBox TxtReferent;
         private async void dataGridCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dataGridCuisiniers.SelectedItem is Utilisateur selected)
@@ -1180,9 +1202,63 @@ namespace ProbSciANA.Interface
 
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new Register());
-        }
+            // Masquer la fiche client, afficher le bandeau
+            FicheCuisinier.Visibility = Visibility.Collapsed;
+            AddPane.Visibility = Visibility.Visible;
 
+            // Réinitialiser les champs
+            TxtPrenom.Text = TxtNom.Text = TxtAdresse.Text = TxtTel.Text = TxtEmail.Text = "";
+        }
+        private void BtnAnnulerAjout_Click(object sender, RoutedEventArgs e)
+        {
+            AddPane.Visibility = Visibility.Collapsed;
+            FicheCuisinier.Visibility = Visibility.Visible;
+        }
+        private async void BtnValiderAjout_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtPrenom.Text) ||
+                string.IsNullOrWhiteSpace(TxtNom.Text) ||
+                string.IsNullOrWhiteSpace(TxtAdresse.Text) ||
+                string.IsNullOrWhiteSpace(TxtEmail.Text))
+            {
+                MessageBox.Show("Tous les champs obligatoires doivent être remplis.");
+                return;
+            }
+
+            try
+            {
+                bool estEntreprise = (CmbStatut.SelectedItem as ComboBoxItem)?
+                     .Content?.ToString() == "Entreprise";
+
+                var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(TxtAdresse.Text);
+
+                var nouveauClient = new Utilisateur(
+                    estClient: false,
+                    estCuisinier: true,
+                    nom: TxtNom.Text,
+                    prenom: TxtPrenom.Text,
+                    adresse: TxtAdresse.Text,
+                    telephone: TxtTel.Text,
+                    email: TxtEmail.Text,
+                    mdp: "mdp1234",
+                    station: station,
+                    nom_referent: estEntreprise ? TxtReferent.Text : "",
+                    estEntreprise: estEntreprise);
+
+                // Rafraîchir la liste
+                Utilisateur.RefreshList();
+                dataGridCuisiniers.ItemsSource = null;
+                dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
+
+                // Fermer le bandeau
+                AddPane.Visibility = Visibility.Collapsed;
+                FicheCuisinier.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
+            }
+        }
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ClientsViewAdmin());
@@ -1468,6 +1544,8 @@ namespace ProbSciANA.Interface
 
     public partial class Test2 : Page
     {
+        Graphe<Utilisateur> graphU = Program.CreationGrapheU();
+
         public Test2()
         {
             InitializeComponent();
@@ -1530,7 +1608,7 @@ namespace ProbSciANA.Interface
         }
         private void BtnTri(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("AAAAAAA");
+            /*
             var A = new Noeud<string>("A", 1);
             var B = new Noeud<string>("B", 2);
             var C = new Noeud<string>("C", 3);
@@ -1554,25 +1632,22 @@ namespace ProbSciANA.Interface
 
                 new Arc<string>(D, E)  // D a 2 voisins (A, B), E a 1 voisin (A)
             };
-
             Graphe<string> Test = new Graphe<string>(arcsTest);
-            List<(Noeud<string> noeud, List<Noeud<string>> successeur)> trié = Test.TriListeAdjacence();
-            foreach ((Noeud<string> noeud, List<Noeud<string>> successeur) a in trié)
+            */
+            var trié = graphU.TriListeAdjacence();
+            foreach (var a in trié)
             {
                 Console.WriteLine(a.noeud + " : " + a.successeur.Count);
             }
         }
         private void BtnAffichageColoriationDeGraph(object sender, RoutedEventArgs e)
         {
-            var graphU = Program.CreationGrapheU();
-            //graphU.AfficherListeAdjacence();
             int couleurMin = graphU.WelshPowell();
-            MessageBox.Show($"Coloration du graphe avec {couleurMin} couleurs.");
             graphU.AffichageGrapheNonOrienté();
+            MessageBox.Show($"Coloration du graphe avec {couleurMin} couleurs.");
         }
         private void BtnPropriétéGraphe(object sender, RoutedEventArgs e)
         {
-            var graphU = Program.CreationGrapheU();
             string propriétés = graphU.PropriétésGraphe();
             MessageBox.Show(propriétés);
         }
