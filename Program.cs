@@ -67,7 +67,7 @@ namespace ProbSciANA
         #region Graphe Utilisateur
         public static Graphe<Utilisateur> CreationGrapheU()
         {
-            //Commande.RefreshAll();
+            Commande.RefreshList();
             var hashSetUtilisateursParCommande = new HashSet<Utilisateur>(); /// On ne veut pas de doublon
             var HashSetArcCommandes = new HashSet<Arc<Utilisateur>>();  /// On ne veut pas de doublon
             var listUtilisateursIsolés = new List<Noeud<Utilisateur>>();

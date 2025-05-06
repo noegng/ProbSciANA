@@ -401,6 +401,19 @@ namespace ProbSciANA
                 }
             }
         }
+        public override bool Equals(object obj)
+        {
+            if (obj is Utilisateur other)
+            {
+                return this.id_utilisateur == other.id_utilisateur; // Comparaison basée sur l'Id
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return id_utilisateur.GetHashCode();
+        }
         #endregion
 
         public static async Task RecalculerStationsAsync()

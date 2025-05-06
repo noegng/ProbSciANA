@@ -57,10 +57,9 @@ namespace ProbSciANA
             }
             return false;
         }
-
         public override int GetHashCode()
         {
-            return Id.GetHashCode(); // Utilisation de l'Id pour générer le hash
+            return Id.GetHashCode();
         }
         public string ToStringLong()
         {
