@@ -1,7 +1,21 @@
-<Page x:Class="ProbSciANA.Interface.CommandesView"
+<Page x:Class="ProbSciANA.Interface.CommandeView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Title="CommandesView">
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      Title="CommandeView">
+
+    <Page.Resources>
+
+        <x:Array x:Key="StatutValues"
+                 Type="{x:Type sys:String}">
+            <sys:String>en attente</sys:String>
+            <sys:String>en cours</sys:String>
+            <sys:String>fait</sys:String>
+        </x:Array>
+
+    </Page.Resources>
 
     <DockPanel LastChildFill="True">
 
@@ -40,47 +54,51 @@
             <StackPanel Grid.Column="2"/>
 
             <Button Grid.Column="3"
+                    Content="Commandes"
+                    Foreground="White"
+                    Background="#BEE6FD"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"/>
+
+            <Button Grid.Column="4"
+                    Content="Avis"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="AfficherAvis_Click"/>
+
+            <Button Grid.Column="5"
+                    Content="Plats"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="AfficherPlats_Click"/>
+
+            <Button Grid.Column="6"
                     Content="Clients"
                     Foreground="White"
                     Background="Transparent"
                     BorderThickness="0"
                     FontWeight="Bold"
                     Padding="10,0"
-                    Click="BtnClients_Click"/>
-
-            <Button Grid.Column="4"
-                    Content="Cuisiniers"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="BtnCuisiniers_Click"/>
-
-            <Button Grid.Column="5"
-                    Content="Commandes"
-                    Foreground="White"
-                    Background="#BEE6FD"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="BtnCommandes_Click"/>
-
-            <Button Grid.Column="6"
-                    Content="Statistiques"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="BtnStatistiques_Click"/>
+                    Click="AfficherClients_Click"/>
         </Grid>
 
-        <!-- FLÈCHES NAVIGATION (Chrome style) -->
         <Grid DockPanel.Dock="Top"
               Height="50"
               Background="Transparent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal"
+                        Grid.Column="0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Margin="10,0,0,0">
@@ -200,32 +218,18 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
+
             </StackPanel>
 
             <!-- Titre -->
-            <TextBlock Text="Gestion des Commandes"
+            <TextBlock Text="Votre Tableau de Bord"
                        FontSize="24"
                        FontWeight="Bold"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
                        Grid.Column="1"/>
-
-            <!-- Bouton ➕ -->
-            <Button Content="➕"
-                    ToolTip="Ajouter une commande"
-                    FontSize="16"
-                    Width="32"
-                    Height="32"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Click="BtnAjouter_Click"
-                    Grid.Column="2"/>
         </Grid>
 
-        <!-- Liste des clients -->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.5*"/>
@@ -245,33 +249,38 @@
                     <DataGridTextColumn Header="ID"
                                         Binding="{Binding Id_commande}"
                                         IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Statut"
-                                        Binding="{Binding Statut}"/>
                     <DataGridTextColumn Header="Nom"
-                                        Binding="{Binding Nom}"/>
+                                        Binding="{Binding Nom}"
+                                        IsReadOnly="True"/>
                     <DataGridTextColumn Header="Prix"
-                                        Binding="{Binding Prix}"/>
-                    <DataGridTextColumn Header="Client"
-                                        Binding="{Binding NomClient}"/>
-                    <DataGridTextColumn Header="Cuisinier"
-                                        Binding="{Binding NomCuisinier}"/>
-                    <DataGridTextColumn Header="Date Commande"
+                                        Binding="{Binding Prix}"
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Date"
                                         Binding="{Binding Date_commande}"
                                         IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Client"
+                                        Binding="{Binding NomClient}"
+                                        IsReadOnly="True"/>
+                    <DataGridComboBoxColumn Header="Statut"
+                                            ItemsSource="{StaticResource StatutValues}"
+                                            SelectedItemBinding="{Binding Statut, Mode=TwoWay}"
+                                            Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <StackPanel Grid.Column="1"
+
+            <StackPanel x:Name="FicheClient"
+                        Grid.Column="1"
                         Margin="10"
                         Background="#FFF3F3F3"
                         VerticalAlignment="Top">
                 <DockPanel LastChildFill="True"
                            Margin="0 0 0 10">
-                    <TextBlock Text="Fiche Commande"
+                    <TextBlock Text="Fiche Client"
                                FontSize="18"
                                FontWeight="Bold"
                                DockPanel.Dock="Left"/>
 
-                    <Button Content="🗑️"
+                    <Button Content="❌"
                             FontSize="14"
                             Width="30"
                             Height="30"
@@ -279,90 +288,60 @@
                             VerticalAlignment="Top"
                             Background="Transparent"
                             BorderThickness="0"
-                            Click="BtnSupprimer_Click"
+                            Click="BtnAnnuler_Click"
+                            DockPanel.Dock="Right"/>
+
+                    <Button Content="✅"
+                            FontSize="14"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="BtnValider_Click"
                             DockPanel.Dock="Right"/>
                 </DockPanel>
-                <Grid Margin="0 0 0 10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
 
-                    <!-- Nom -->
-                    <TextBlock Text="Nom :"
-                               FontWeight="Bold"
-                               Margin="0 0 10 5"
-                               Grid.Row="0"
-                               Grid.Column="0"/>
-                    <TextBlock Text="{Binding Nom}"
-                               HorizontalAlignment="Right"
-                               Grid.Row="0"
-                               Grid.Column="1"/>
+                <!-- Carte d'aurelien -->
 
-                    <!-- Statut -->
-                    <TextBlock Text="Statut :"
-                               FontWeight="Bold"
-                               Margin="0 0 10 5"
-                               Grid.Row="1"
-                               Grid.Column="0"/>
-                    <TextBlock Text="{Binding Statut}"
-                               HorizontalAlignment="Right"
-                               Grid.Row="1"
-                               Grid.Column="1"/>
+                <!-- Les trois expanders pour naviguer dans les listes -->
+                <StackPanel>
+                    <Expander Header="Adresses à desservir"
+                              Margin="0,10,0,0">
+                        <ListBox x:Name="ListAdresses"
+                                 ItemsSource="{Binding Adresses_a_desservir}"
+                                 DisplayMemberPath="Adresse"
+                                 SelectionChanged="OnListAdresses_Selected"/>
+                    </Expander>
 
-                    <!-- Prix -->
-                    <TextBlock Text="Prix :"
-                               FontWeight="Bold"
-                               Margin="0 0 10 5"
-                               Grid.Row="2"
-                               Grid.Column="0"/>
-                    <TextBlock Text="{Binding Prix}"
-                               HorizontalAlignment="Right"
-                               Grid.Row="2"
-                               Grid.Column="1"/>
+                    <Expander Header="Plats à préparer"
+                              Margin="0,10,0,0">
+                        <ListBox x:Name="ListPlats"
+                                 ItemsSource="{Binding Plats_a_cuisiner}"
+                                 DisplayMemberPath="Nom"
+                                 SelectionChanged="OnListPlats_Selected"/>
+                    </Expander>
 
-                    <!-- Client -->
-                    <TextBlock Text="Client :"
-                               FontWeight="Bold"
-                               Margin="0 0 10 5"
-                               Grid.Row="3"
-                               Grid.Column="0"/>
-                    <TextBlock Text="{Binding NomClient}"
-                               HorizontalAlignment="Right"
-                               Grid.Row="3"
-                               Grid.Column="1"/>
-
-                    <!-- Cuisinier -->
-                    <TextBlock Text="Cuisinier :"
-                               FontWeight="Bold"
-                               Margin="0 0 10 5"
-                               Grid.Row="4"
-                               Grid.Column="0"/>
-                    <TextBlock Text="{Binding NomCuisinier}"
-                               HorizontalAlignment="Right"
-                               Grid.Row="4"
-                               Grid.Column="1"/>
-
-                    <!-- Date Commande -->
-                    <TextBlock Text="Date :"
-                               FontWeight="Bold"
-                               Margin="0 0 10 5"
-                               Grid.Row="5"
-                               Grid.Column="0"/>
-                    <TextBlock Text="{Binding Date_commande}"
-                               HorizontalAlignment="Right"
-                               Grid.Row="5"
-                               Grid.Column="1"/>
-                </Grid>
+                    <!-- Le détail unique qui se met à jour selon la sélection -->
+                    <ContentControl Margin="0,20,0,0">
+                        <ContentControl.Content>
+                            <MultiBinding Converter="{StaticResource FirstNonNullConverter}">
+                                <!-- On teste d’abord Avis -->
+                                <Binding ElementName="ListAvis"
+                                         Path="SelectedItem"/>
+                                <!-- puis Cuisiniers -->
+                                <Binding ElementName="ListCuisiniers"
+                                         Path="SelectedItem"/>
+                                <!-- et enfin Commandes -->
+                                <Binding ElementName="ListCommandes"
+                                         Path="SelectedItem"/>
+                            </MultiBinding>
+                        </ContentControl.Content>
+                    </ContentControl>
+                </StackPanel>
             </StackPanel>
+
         </Grid>
 
     </DockPanel>

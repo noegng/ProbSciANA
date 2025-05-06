@@ -1,9 +1,9 @@
-<Page x:Class="ProbSciANA.Interface.CuisinierDashboardView"
+<Page x:Class="ProbSciANA.Interface.CommanderView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      Title="Cuisinier Dashboard">
+      xmlns:models="clr-namespace:ProbSciANA"
+      xmlns:iface="clr-namespace:ProbSciANA.Interface"
+      Title="CommanderView">
 
     <DockPanel LastChildFill="True">
 
@@ -15,8 +15,6 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
@@ -42,7 +40,7 @@
             <StackPanel Grid.Column="2"/>
 
             <Button Grid.Column="3"
-                    Content="Commandes"
+                    Content="Historique commandes"
                     Foreground="White"
                     Background="Transparent"
                     BorderThickness="0"
@@ -51,38 +49,16 @@
                     Click="AfficherCommandes_Click"/>
 
             <Button Grid.Column="4"
-                    Content="Avis"
+                    Content="Commander"
                     Foreground="White"
-                    Background="Transparent"
+                    Background="#BEE6FD"
                     BorderThickness="0"
                     FontWeight="Bold"
-                    Padding="10,0"
-                    Click="AfficherAvis_Click"/>
-
-            <Button Grid.Column="5"
-                    Content="Plats"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="AfficherPlats_Click"/>
-
-            <Button Grid.Column="6"
-                    Content="Clients"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="AfficherClients_Click"/>
+                    Padding="10,0"/>
         </Grid>
-
         <Grid DockPanel.Dock="Top"
               Height="50"
-              Background="Transparent"
-              VerticalAlignment="Top"
-              Margin="0,2,0,0">
+              Background="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -212,27 +188,50 @@
             </StackPanel>
 
             <!-- Titre -->
-            <TextBlock Text="Gestion des Clients"
+            <TextBlock Text="Qu'est ce qui vous ferait plaisir ?"
                        FontSize="24"
                        FontWeight="Bold"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
                        Grid.Column="1"/>
-
-            <!-- Bouton ➕ -->
-            <Button Content="➕"
-                    ToolTip="Ajouter un client"
-                    FontSize="16"
-                    Width="32"
-                    Height="32"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Grid.Column="2"/>
-
         </Grid>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Cuisiniers}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="10"
+                                Padding="10"
+                                Width="150"
+                                Height="170"
+                                Background="White"
+                                CornerRadius="12"
+                                BorderBrush="#DDD"
+                                BorderThickness="1"
+                                Cursor="Hand"
+                                MouseLeftButtonUp="CuisinierCard_Click">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding Nom}"
+                                           FontWeight="Bold"
+                                           FontSize="14"
+                                           TextAlignment="Center"
+                                           Margin="5,10,5,0"/>
+                                <TextBlock Text="{Binding Prenom}"
+                                           FontSize="12"
+                                           TextAlignment="Center"
+                                           Foreground="Gray"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
 
     </DockPanel>
 </Page>

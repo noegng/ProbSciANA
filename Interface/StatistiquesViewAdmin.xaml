@@ -1,9 +1,7 @@
-<Page x:Class="ProbSciANA.Interface.CuisinierDashboardView"
+<Page x:Class="ProbSciANA.Interface.StatistiquesViewAdmin"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      Title="Cuisinier Dashboard">
+      Title="StatistiquesViewAdmin">
 
     <DockPanel LastChildFill="True">
 
@@ -42,54 +40,47 @@
             <StackPanel Grid.Column="2"/>
 
             <Button Grid.Column="3"
-                    Content="Commandes"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="AfficherCommandes_Click"/>
-
-            <Button Grid.Column="4"
-                    Content="Avis"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="AfficherAvis_Click"/>
-
-            <Button Grid.Column="5"
-                    Content="Plats"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="AfficherPlats_Click"/>
-
-            <Button Grid.Column="6"
                     Content="Clients"
                     Foreground="White"
                     Background="Transparent"
                     BorderThickness="0"
                     FontWeight="Bold"
                     Padding="10,0"
-                    Click="AfficherClients_Click"/>
+                    Click="BtnClients_Click"/>
+
+            <Button Grid.Column="4"
+                    Content="Cuisiniers"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="BtnCuisiniers_Click"/>
+
+            <Button Grid.Column="5"
+                    Content="Commandes"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="BtnCommandes_Click"/>
+
+            <Button Grid.Column="6"
+                    Content="Statistiques"
+                    Foreground="White"
+                    Background="#BEE6FD"
+                    BorderThickness="0"
+                    FontWeight="Bold"
+                    Padding="10,0"
+                    Click="BtnStatistiques_Click"/>
         </Grid>
 
+        <!-- FLÈCHES NAVIGATION (Chrome style) -->
         <Grid DockPanel.Dock="Top"
               Height="50"
-              Background="Transparent"
-              VerticalAlignment="Top"
-              Margin="0,2,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+              Background="Transparent">
             <StackPanel Orientation="Horizontal"
-                        Grid.Column="0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Margin="10,0,0,0">
@@ -209,30 +200,29 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
+
             </StackPanel>
-
-            <!-- Titre -->
-            <TextBlock Text="Gestion des Clients"
-                       FontSize="24"
-                       FontWeight="Bold"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Grid.Column="1"/>
-
-            <!-- Bouton ➕ -->
-            <Button Content="➕"
-                    ToolTip="Ajouter un client"
-                    FontSize="16"
-                    Width="32"
-                    Height="32"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Grid.Column="2"/>
-
         </Grid>
+
+        <StackPanel VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+            <TextBlock Text="Statistiques"
+                       FontSize="20"
+                       Margin="0,0,0,20"
+                       HorizontalAlignment="Center"/>
+            <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Top clients"
+                    Width="200"
+                    Margin="5"/>
+            <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Top cuisiniers"
+                    Width="200"
+                    Margin="5"/>
+            <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Prix moyen des commandes"
+                    Width="200"
+                    Margin="5"/>
+        </StackPanel>
 
     </DockPanel>
 </Page>
