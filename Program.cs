@@ -13,6 +13,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Mysqlx.Notice;
 
 
 namespace ProbSciANA
@@ -63,7 +64,37 @@ namespace ProbSciANA
               Console.ReadKey();
           }
         */
-
+        #region Graphe Utilisateur
+        public static Graphe<Utilisateur> CreationGrapheU()
+        {
+            Commande.RefreshAll();
+            var hashSetUtilisateursParCommande = new HashSet<Utilisateur>(); /// On ne veut pas de doublon
+            var HashSetArcCommandes = new HashSet<Arc<Utilisateur>>();  /// On ne veut pas de doublon
+            var listUtilisateursIsolés = new List<Noeud<Utilisateur>>();
+            foreach (Commande c in Commande.commandes)
+            {
+                var utilisateur1 = new Noeud<Utilisateur>(c.Client, c.Client.Id_utilisateur);   ///Pour les transformer en type noeud utilisable dans graphe
+                var utilisateur2 = new Noeud<Utilisateur>(c.Cuisinier, c.Cuisinier.Id_utilisateur);
+                hashSetUtilisateursParCommande.Add(c.Client);
+                hashSetUtilisateursParCommande.Add(c.Cuisinier);
+                var commande = new Arc<Utilisateur>(utilisateur1, utilisateur2); /// Pour avoir des arc d'utilisateur
+                HashSetArcCommandes.Add(commande);
+            }
+            foreach (Utilisateur u in Utilisateur.utilisateurs)     /// On recherche les utilisateurs isolés
+            {
+                if (!hashSetUtilisateursParCommande.Contains(u))
+                {
+                    var utilisateur = new Noeud<Utilisateur>(u, u.Id_utilisateur); /// On les transforme en type noeud utilisable dans graphe
+                    listUtilisateursIsolés.Add(utilisateur); /// On les ajoute à la liste des utilisateurs isolés
+                }
+            }
+            var listArcCommandes = new List<Arc<Utilisateur>>(HashSetArcCommandes); /// On transforme le HashSet en List pour l'affichage
+            var graphU = new Graphe<Utilisateur>(listArcCommandes, listUtilisateursIsolés); /// On crée le graphe avec les arcs et les utilisateurs isolés
+            return graphU; /// On retourne le graphe
+        }
+        #endregion
+        #region Graphe métro
+        #region recherche Coordonnées
         public static async Task UtiliserGetCoordonnees()
         {
             string adresse = "10 rue de Rivoli, Paris";
@@ -121,7 +152,7 @@ namespace ProbSciANA
                 double longitude = double.Parse(result.Lon, System.Globalization.CultureInfo.InvariantCulture);
 
                 // Créer un Noeud<T> avec les coordonnées récupérées
-                return new Noeud<string>(address, 0, longitude, latitude);
+                return new Noeud<string>(address, 1, 0, longitude, latitude);
             }
 
             return null;
@@ -133,8 +164,7 @@ namespace ProbSciANA
             public string Lon { get; set; } // Longitude
 
         }
-
-
+        #endregion
         public static (List<Noeud<(int id, string nom)>>, List<Arc<(int id, string nom)>>) LectureFichierExcel(string excelFilePath)
         {
             var noeuds = new List<Noeud<(int id, string nom)>>();
@@ -167,7 +197,7 @@ namespace ProbSciANA
                     {
                         tempsChamgement = int.Parse(worksheet.Cells[i, 5].Value.ToString());
                     }
-                    Noeud<(int, string)> noeud = new Noeud<(int, string)>((Id, Nom), tempsChamgement, Longitude, Latitude);
+                    Noeud<(int, string)> noeud = new Noeud<(int, string)>((Id, Nom), Id, tempsChamgement, Longitude, Latitude);
                     noeuds.Add(noeud);
                     i++;
                 }
@@ -213,10 +243,6 @@ namespace ProbSciANA
                 }
             }
             return (noeuds, arcs);
-        }
-        public void AffichageImageMétro()
-        {
-            Graphviz<(int id, string nom)>.GenerateGraphImage(Noeuds, Arcs);
         }
         public int CheminOptimal(Graphe<(int id, string nom)> graphe, List<Noeud<(int id, string nom)>> stations)
         {
@@ -268,8 +294,7 @@ namespace ProbSciANA
                 (liste[index], liste[i]) = (liste[i], liste[index]); // inverse le changement
             }
         }
-
-
+        #endregion
         #region Etape 1
         static void Etape1()
         {
@@ -631,6 +656,4 @@ namespace ProbSciANA
         }
         #endregion
     }
-
-
 }

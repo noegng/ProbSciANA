@@ -300,6 +300,10 @@ namespace ProbSciANA
             }
         }
         #endregion
+        public override string ToString()
+        {
+            return prenom + " " + nom;
+        }
         private void InsertClient()
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))

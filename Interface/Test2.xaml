@@ -197,6 +197,11 @@
                     Width="200"
                     Margin="5"
                     Click="BtnTri"/>
+            <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Test graphe Utilisateur"
+                    Width="200"
+                    Margin="5"
+                    Click="BtnCommande"/>
             <TextBlock Text="Le temps de trajet est de : {Binding TempsTrajet}"
                        FontSize="18"
                        Margin="10"/>

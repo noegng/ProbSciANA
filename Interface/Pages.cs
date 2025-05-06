@@ -1137,17 +1137,17 @@ namespace ProbSciANA.Interface
             Liste.Add(Program.Noeuds[120]);
             var programInstance = new Program();
             int tempsTrajet = programInstance.CheminOptimal(Program.GrapheMétro, Liste);
-            MessageBox.Show($"Temps de trajet entre {Program.Noeuds[1].Valeur.nom} et {Program.Noeuds[80].Valeur.nom} en passant par {Program.Noeuds[20].Valeur.nom}; {Program.Noeuds[40].Valeur.nom} ;{Program.Noeuds[60].Valeur.nom} est de : {tempsTrajet} minutes.");
+            MessageBox.Show($"Temps de trajet entre {Program.Noeuds[1].Valeur.nom} et {Program.Noeuds[120].Valeur.nom} en passant par {Program.Noeuds[20].Valeur.nom}; {Program.Noeuds[40].Valeur.nom} ;{Program.Noeuds[60].Valeur.nom}; {Program.Noeuds[80].Valeur.nom}; {Program.Noeuds[100].Valeur.nom} est de : {tempsTrajet} minutes.");
         }
         private void BtnTri(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("AAAAAAA");
-            var A = new Noeud<string>("A");
-            var B = new Noeud<string>("B");
-            var C = new Noeud<string>("C");
-            var D = new Noeud<string>("D");
-            var E = new Noeud<string>("E");
-            var F = new Noeud<string>("F");
+            var A = new Noeud<string>("A", 1);
+            var B = new Noeud<string>("B", 2);
+            var C = new Noeud<string>("C", 3);
+            var D = new Noeud<string>("D", 4);
+            var E = new Noeud<string>("E", 5);
+            var F = new Noeud<string>("F", 6);
 
             var arcsTest = new List<Arc<string>>
             {
@@ -1173,6 +1173,16 @@ namespace ProbSciANA.Interface
                 Console.WriteLine(a.noeud + " : " + a.successeur.Count);
             }
         }
+        private void BtnCommande(object sender, RoutedEventArgs e)
+        {
+            var graphU = Program.CreationGrapheU();
+            graphU.AfficherListeAdjacence();
+            //Program.GrapheMétro.AfficherListeAdjacence();
+            //graphU.AffichageGraphe();
+            //graphU.WelshPowell();
+            //graphU.WelshPowell0();
+        }
+
     }
     #endregion
 }

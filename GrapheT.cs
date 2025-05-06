@@ -15,21 +15,30 @@ namespace ProbSciANA
         private Dictionary<Noeud<T>, List<Noeud<T>>> listeAdjacence;
         private int[,] matriceAdjacence;
         private List<Noeud<T>> noeuds;
+        private List<Noeud<T>> noeudsIsolés;
         private Dictionary<Noeud<T>, int> couleurs;
         private List<Arc<T>> arcs;
         private int nbCycles = -1; //// étecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
 
-        public Graphe(List<Arc<T>> arcs)
+        public Graphe(List<Arc<T>> arcs, List<Noeud<T>> noeudsIsolés = null)
         {
             this.arcs = arcs;
+            this.noeudsIsolés = noeudsIsolés;
             listeAdjacence = new Dictionary<Noeud<T>, List<Noeud<T>>>();
             noeuds = new List<Noeud<T>>();
-            RemplissageListeAdjacence(arcs);
-            matriceAdjacence = new int[listeAdjacence.Count, listeAdjacence.Count]; //// 248 Noeud<T>s
-            //RemplissageMatriceAdjacence();
+            RemplissageListeAdjacence();
+            int nbNoeudsIsolés = 0;
+            if (noeudsIsolés != null)
+            {
+                nbNoeudsIsolés = noeudsIsolés.Count;
+            }
+            matriceAdjacence = new int[listeAdjacence.Count + nbNoeudsIsolés, listeAdjacence.Count + nbNoeudsIsolés];
+            RemplissageMatriceAdjacence();
+            couleurs = new Dictionary<Noeud<T>, int>();
             foreach (Noeud<T> noeud in listeAdjacence.Keys)
             {
-                noeuds.Add(noeud);
+                noeuds.Add(noeud);  ///Remplie la liste des noeuds
+                couleurs.Add(noeud, 0);     /// On remplie les couleurs 0 = couleur initiale.
             }
         }
         #region Propriétés
@@ -41,6 +50,11 @@ namespace ProbSciANA
         public Dictionary<Noeud<T>, int> Couleurs
         {
             get { return couleurs; }
+        }
+        public List<Noeud<T>> NoeudsIsolés
+        {
+            get { return noeudsIsolés; }
+            set { noeudsIsolés = value; }
         }
         public int[,] MatriceAdjacence
         {
@@ -221,32 +235,37 @@ namespace ProbSciANA
             }
             Console.WriteLine();
         }
-        public void RemplissageListeAdjacence(List<Arc<T>> arcs)
+        public void RemplissageListeAdjacence()
         {
             foreach (Arc<T> arc in arcs)
             {
-                if (listeAdjacence.Count == 0)
+                if (!listeAdjacence.ContainsKey(arc.IdPrevious))
                 {
-                    listeAdjacence.Add(arc.IdPrevious, new List<Noeud<T>> { arc.IdNext }); //// n fait arete.IdPrevious.Id pour avoir le nom de la Noeud<T> (après vérification toutes les Noeud<T>s se trouvent dans arete.IdPrevious.Id)
+                    listeAdjacence.Add(arc.IdPrevious, new List<Noeud<T>>());
                 }
-                else if (listeAdjacence.ContainsKey(arc.IdPrevious))
+                if (!listeAdjacence[arc.IdPrevious].Contains(arc.IdNext))
                 {
                     listeAdjacence[arc.IdPrevious].Add(arc.IdNext);
                 }
-                else
-                {
-                    listeAdjacence.Add(arc.IdPrevious, new List<Noeud<T>> { arc.IdNext });
-                }
+
                 if (!arc.SensUnique)
                 {
-                    if (listeAdjacence.ContainsKey(arc.IdNext))
+                    if (!listeAdjacence.ContainsKey(arc.IdNext))
+                    {
+                        listeAdjacence.Add(arc.IdNext, new List<Noeud<T>>());
+                    }
+                    if (!listeAdjacence[arc.IdNext].Contains(arc.IdPrevious))
                     {
                         listeAdjacence[arc.IdNext].Add(arc.IdPrevious);
                     }
-                    else
-                    {
-                        listeAdjacence.Add(arc.IdNext, new List<Noeud<T>> { arc.IdPrevious });
-                    }
+                }
+            }
+
+            if (noeudsIsolés != null)
+            {
+                foreach (Noeud<T> noeud in noeudsIsolés)
+                {
+                    listeAdjacence.Add(noeud, new List<Noeud<T>>());
                 }
             }
         }
@@ -269,15 +288,11 @@ namespace ProbSciANA
                 Console.WriteLine();
             }
         }
-        ////  TESTER vérifier si id s'incrémente a chaque création de noeud
         public void RemplissageMatriceAdjacence()
         {
             foreach (Arc<T> arc in arcs)
             {
-                if (arc.IdPrevious != null && arc.IdNext != null)
-                {
-                    matriceAdjacence[Convert.ToInt32(arc.IdPrevious.IdBrute) - 1, Convert.ToInt32(arc.IdNext.IdBrute) - 1] = 1; //// -1 car les Noeud<T> commencent à 1                   
-                }
+                matriceAdjacence[Convert.ToInt32(arc.IdPrevious.Id) - 1, Convert.ToInt32(arc.IdNext.Id) - 1] = 1; /// -1 car les Noeud<T> commencent à 1                   
             }
         }
         public void AfficherMatriceAdjacence()
@@ -285,7 +300,7 @@ namespace ProbSciANA
             Console.WriteLine("Matrice d'adjacence:");
             foreach (var sommet in listeAdjacence.Keys)
             {
-                Console.Write($"{sommet.IdBrute,3} ");
+                Console.Write($"{sommet.Id,3} ");
             }
             foreach (var sommet in listeAdjacence.Keys)
             {
@@ -844,6 +859,10 @@ namespace ProbSciANA
 
         #endregion
         #region Affichage
+        public void AffichageGraphe()
+        {
+            Graphviz<T>.GenerateGraphImage(Noeuds, Arcs);
+        }
         public int AffichageDijkstra(Noeud<T> depart, Noeud<T> arrivee)
         {
             (List<Arc<T>> chemin, int plusPetiteDistance) = DijkstraChemin(depart, arrivee); /// Calcul du chemin le plus court
@@ -874,7 +893,7 @@ namespace ProbSciANA
 
             return TriListeAdjacenceDecroissant(listeAdjacenceATriée, 0, listeAdjacenceATriée.Count - 1);
         }
-        public List<(Noeud<T> noeud, List<Noeud<T>> successeur)> TriListeAdjacenceDecroissant(List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée, int début, int fin)
+        private List<(Noeud<T> noeud, List<Noeud<T>> successeur)> TriListeAdjacenceDecroissant(List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée, int début, int fin)
         {
             if (début >= fin)
                 return listeAdjacenceTriée;
@@ -913,7 +932,65 @@ namespace ProbSciANA
             TriListeAdjacenceDecroissant(listeAdjacenceTriée, j + 1, fin);
             return listeAdjacenceTriée;
         }
+        public void WelshPowell0()
+        {
+            List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée = TriListeAdjacence();
+            int couleur = 0;
+            while (listeAdjacenceTriée.Count != 0)
+            {
+                couleur++;
+                couleurs[listeAdjacenceTriée[0].noeud] = couleur;
+                var successeur = listeAdjacenceTriée[0].successeur;
+                listeAdjacenceTriée.RemoveAt(0);
+                foreach (var s in successeur)
+                {
+                    if (!successeur.Contains(s))
+                    {
+                        couleurs[s] = couleur;
+                        successeur.AddRange(listeAdjacence[s]);
+                    }
+                }
+                foreach (var s in listeAdjacenceTriée)  ///On retire tt les sommets coloriés
+                {
+                    if (couleurs[s.noeud] != 0)
+                    {
+                        listeAdjacenceTriée.Remove(s);
+                    }
+                }
+            }
+            Console.WriteLine("Coloration du graphe avec " + couleur + " :");
+            foreach (var noeud in couleurs.Keys)
+            {
+                Console.WriteLine($"Noeud {noeud} : Couleur {couleurs[noeud]}");
+            }
+        }
+        public void WelshPowell()
+        {
+            List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée = TriListeAdjacence();
+            int couleur = 0;
 
+            foreach (var noeud in listeAdjacenceTriée)
+            {
+                if (!couleurs.ContainsKey(noeud.noeud))
+                {
+                    couleurs[noeud.noeud] = couleur;
+                    foreach (var voisin in noeud.successeur)
+                    {
+                        if (!couleurs.ContainsKey(voisin))
+                        {
+                            couleurs[voisin] = -1; /// -1 signifie que le voisin n'a pas encore de couleur
+                        }
+                    }
+                    couleur++;
+                }
+            }
+
+            Console.WriteLine("Coloration du graphe :");
+            foreach (var noeud in couleurs.Keys)
+            {
+                Console.WriteLine($"Noeud {noeud} : Couleur {couleurs[noeud]}");
+            }
+        }
     }
 
 }
