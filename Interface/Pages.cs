@@ -308,7 +308,6 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
         }
-
         private void Commander_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new CommanderView());
@@ -325,7 +324,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstCuisinier)
+            {
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -377,7 +379,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -511,7 +516,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -564,7 +572,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstCuisinier)
+            {
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -782,7 +793,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstCuisinier)
+            {
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -916,7 +930,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -975,7 +992,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -1049,7 +1069,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {

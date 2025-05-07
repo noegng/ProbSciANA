@@ -17,7 +17,7 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0"
-                    Content="🌙 Mode"
+                    Content="👨‍🍳 Mode"
                     Foreground="White"
                     Background="Transparent"
                     BorderThickness="0"
