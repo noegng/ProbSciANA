@@ -49,6 +49,7 @@ namespace ProbSciANA
             get { return id; }
         }
         #endregion
+
         public override bool Equals(object obj)
         {
             if (obj is Noeud<T> autre)
@@ -73,6 +74,11 @@ namespace ProbSciANA
         public async static Task<Noeud<(int, string)>> TrouverStationLaPlusProche(string adresse)
         {
             var Adresse = await Program.GetCoordonnees<string>(adresse);
+            if (Adresse == null)
+            {
+                Noeud<(int, string)> station = new Noeud<(int, string)>((0, "Aucune station trouvée"), 0);
+                return station;
+            }
             Noeud<(int, string)> stationLaPlusProche = null;
             double distanceMinimale = double.MaxValue;
 

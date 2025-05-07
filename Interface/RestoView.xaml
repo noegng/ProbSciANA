@@ -207,8 +207,6 @@
                 <Run Text="{Binding Cuisinier.Prenom}"/>
                 <Run Text="{Binding Cuisinier.Nom}"/>
             </TextBlock>
-            <TextBlock Text="Adresse :"
-                       Margin="5,0,0,5"/>
             <TextBox x:Name="AdresseInput"
                      Grid.Column="2"
                      Width="180"

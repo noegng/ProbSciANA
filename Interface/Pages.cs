@@ -587,28 +587,35 @@ namespace ProbSciANA.Interface
                 DataContext = this;
             }
         }
-        private void BtnAjouterPanier_Click(object sender, RoutedEventArgs e)
+        private async void BtnAjouterPanier_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(AdresseInput.Text) || DateInput.SelectedDate == null)
             {
                 MessageBox.Show("Renseigne l’adresse et la date.");
                 return;
             }
-
-            var adresse = AdresseInput.Text.Trim();
-            var date = DateInput.SelectedDate.Value;
-
-            // Création du panier si l’adresse n’existe pas déjà
-            if (!Paniers.ContainsKey(adresse))
-            {
-                Paniers.Add(adresse, (new List<Plat>(), date));
-            }
             else
             {
-                MessageBox.Show("Il existe déjà un panier pour cette adresse.");
-                return;
-            }
+                var adresse = AdresseInput.Text;
+                var date = DateInput.SelectedDate.Value;
+                var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse);
 
+                if (!Program.Stations.Contains(station))
+                {
+                    MessageBox.Show("Adresse non trouvée.");
+                    return;
+                }
+                if (!Paniers.ContainsKey(adresse))
+                {
+                    Paniers.Add(adresse, (new List<Plat>(), date));
+                }
+
+                else
+                {
+                    MessageBox.Show("Il existe déjà un panier pour cette adresse.");
+                    return;
+                }
+            }
             // Réinitialise les champs et force l’UI à se rafraîchir
             AdresseInput.Text = "";
             DateInput.SelectedDate = null;
