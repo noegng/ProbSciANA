@@ -4,12 +4,15 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Data;
 using System.Windows.Navigation;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Linq;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace ProbSciANA.Interface
 {
@@ -54,7 +57,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnProfil_Click(object sender, RoutedEventArgs e)
         {
-
+            if (SessionManager.CurrentUser.EstCuisinier)
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            else if (SessionManager.CurrentUser.EstClient)
+                NavigationService?.Navigate(new UserDashboardView());
         }
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
@@ -513,20 +519,47 @@ namespace ProbSciANA.Interface
     {
         public Utilisateur Cuisinier { get; set; }
         public List<Plat> Plats { get; set; } = new();
-        public List<Plat> Panier { get; set; } = new();
+        public string? PanierSelectionne { get; set; }
         public Plat? SelectedPlat { get; set; }
-        public double Prix
+        public List<Plat> PlatsDuPanierSelectionne
+        {
+            get
+            {
+                if (PanierSelectionne != null && Paniers.ContainsKey(PanierSelectionne))
+                {
+                    return Paniers[PanierSelectionne].plats;
+                }
+                return new List<Plat>();
+            }
+        }
+        public double PrixTotalPanierSelectionne
         {
             get
             {
                 double result = 0;
-                foreach (Plat p in Panier)
+                foreach (Plat p in PlatsDuPanierSelectionne)
                 {
                     result += p.Prix;
                 }
                 return result;
             }
         }
+        public double PrixTotal
+        {
+            get
+            {
+                double result = 0;
+                foreach (string s in Paniers.Keys)
+                {
+                    foreach (Plat p in Paniers[s].plats)
+                    {
+                        result += p.Prix;
+                    }
+                }
+                return result;
+            }
+        }
+        public Dictionary<string, (List<Plat> plats, DateTime date)> Paniers { get; set; } = new();
 
         public RestoView(Utilisateur cuisinier_select)
         {
@@ -554,26 +587,114 @@ namespace ProbSciANA.Interface
                 DataContext = this;
             }
         }
-        private void AjouterAuPanier_Click(object sender, RoutedEventArgs e)
+        private void BtnAjouterPanier_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(AdresseInput.Text) || DateInput.SelectedDate == null)
+            {
+                MessageBox.Show("Renseigne l’adresse et la date.");
+                return;
+            }
+
+            var adresse = AdresseInput.Text.Trim();
+            var date = DateInput.SelectedDate.Value;
+
+            // Création du panier si l’adresse n’existe pas déjà
+            if (!Paniers.ContainsKey(adresse))
+            {
+                Paniers.Add(adresse, (new List<Plat>(), date));
+            }
+            else
+            {
+                MessageBox.Show("Il existe déjà un panier pour cette adresse.");
+                return;
+            }
+
+            // Réinitialise les champs et force l’UI à se rafraîchir
+            AdresseInput.Text = "";
+            DateInput.SelectedDate = null;
+            DataContext = null;
+            DataContext = this;
+            CollectionViewSource.GetDefaultView(Paniers).Refresh();
+            MessageBox.Show(Paniers.Count.ToString());
+        }
+        private void BtnAjouterAuPanier_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is Plat plat)
             {
-                Panier.Add(plat);
+                if (PanierSelectionne == null)
+                {
+                    MessageBox.Show("Aucun panier sélectionné !");
+                    return;
+                }
+
+                Paniers[PanierSelectionne].plats.Add(plat);
                 DataContext = null;
                 DataContext = this;
             }
         }
-        private void ValiderPanier_Click(object sender, RoutedEventArgs e)
+        private void BtnValiderPanier_Click(object sender, RoutedEventArgs e)
         {
-            Commande.RefreshList();
-            new Commande("Commande " + (Commande.commandes.Count + 1), Prix, "en attente", SessionManager.CurrentUser.Id_utilisateur, Cuisinier.Id_utilisateur);
-            MessageBox.Show($"Commande de {Panier.Count} plat(s) validée !");
+            if (Paniers != null && Paniers.Count > 0)
+            {
+                Commande c = new Commande("Commande " + (Commande.commandes.Count + 1), PrixTotal, SessionManager.CurrentUser.Id_utilisateur, Cuisinier.Id_utilisateur);
+                foreach (string adresse in Paniers.Keys)
+                {
+                    if (Paniers[adresse].plats != null && Paniers[adresse].plats.Count > 0)
+                    {
+                        Livraison l = new Livraison(c, adresse, Paniers[adresse].date);
+                        Dictionary<Plat, int> Requierts = new Dictionary<Plat, int>();
+                        foreach (Plat p in Paniers[adresse].plats)
+                        {
+                            if (!Requierts.Keys.Contains(p))
+                            {
+                                Requierts.Add(p, 1);
+                            }
+                            else
+                            {
+                                Requierts[p]++;
+                            }
+                        }
+                        foreach (Plat p in Requierts.Keys)
+                        {
+                            new Requiert(p, l, Requierts[p]);
+                        }
+                        Paniers.Remove(adresse);
+                    }
+                }
+                CollectionViewSource.GetDefaultView(Paniers).Refresh();
+                PanierSelectionne = null;
+                DataContext = null;
+                DataContext = this;
+            }
         }
-        private void AnnulerPanier_Click(object sender, RoutedEventArgs e)
+        private void BtnAnnulerPanier_Click(object sender, RoutedEventArgs e)
         {
-            Panier.Clear();
-            DataContext = null;
-            DataContext = this;
+            if (PanierSelectionne != null && Paniers.ContainsKey(PanierSelectionne))
+            {
+                Paniers.Remove(PanierSelectionne);
+                CollectionViewSource.GetDefaultView(Paniers).Refresh();
+                PanierSelectionne = null;
+                DataContext = null;
+                DataContext = this;
+            }
+        }
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            if (sender is Expander exp && exp.DataContext is KeyValuePair<string, (List<Plat> plats, DateTime date)> kvp)
+            {
+                PanierSelectionne = kvp.Key;
+                DataContext = null;
+                DataContext = this;
+            }
+        }
+        private void ListePaniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ListBox listBox && listBox.SelectedItem is KeyValuePair<string, (List<Plat>, DateTime)> kvp)
+            {
+                PanierSelectionne = kvp.Key;
+                DataContext = null;
+                DataContext = this;
+            }
         }
 
         private void UpdateNavButtons()
@@ -607,24 +728,79 @@ namespace ProbSciANA.Interface
     #region Page Vue Commande
     public partial class CommandeView : Page
     {
+        public List<Livraison> Livraisons_a_effectuer
+        {
+            get
+            {
+                List<Livraison> result = new();
+                if (dataGridCommandes.SelectedItem is Commande selected)
+                {
+                    foreach (Livraison l in selected.Livraisons)
+                    {
+                        result.Add(l);
+                    }
+                }
+                return result;
+            }
+        }
+        public List<Plat> Plats_a_cuisiner
+        {
+            get
+            {
+                List<Plat> result = new();
+                if (dataGridCommandes.SelectedItem is Commande selected)
+                {
+                    foreach (Livraison l in selected.Livraisons)
+                    {
+                        foreach (Requiert r in l.Requierts)
+                        {
+                            result.Add(r.Plat);
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+
         public CommandeView()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-            Utilisateur.RefreshList();
+            Commande.RefreshList();
+            Livraison.RefreshList();
+            Requiert.RefreshList();
             dataGridCommandes.ItemsSource = null;
-            dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Cuisines;
+            dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Commandes_effectuees;
         }
-        private async void dataGridCommandes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void dataGridCommandes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dataGridCommandes.SelectedItem is Plat selected)
+            if (dataGridCommandes.SelectedItem is Commande selected)
             {
-                DataContext = selected;
+                DataContext = this;
+                ListLivraisons.ItemsSource = null;
+                ListLivraisons.ItemsSource = Livraisons_a_effectuer;
+
+                ListPlats.ItemsSource = null;
+                ListPlats.ItemsSource = Plats_a_cuisiner;
             }
         }
-        private void Ajouter_Click(object sender, RoutedEventArgs e)
+        private void BtnValider_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AddPlat());
+            if (dataGridCommandes.SelectedItem is Commande selectedCommande && selectedCommande.Statut == "en attente")
+            {
+                selectedCommande.Statut = "en attente";
+                dataGridCommandes.ItemsSource = null;
+                dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Commandes_effectuees;
+            }
+        }
+        private void BtnAnnuler_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Commande selectedCommande && selectedCommande.Statut == "en attente")
+            {
+                selectedCommande.Delete();
+                dataGridCommandes.ItemsSource = null;
+                dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Commandes_effectuees;
+            }
         }
 
         private void AfficherClients_Click(object sender, RoutedEventArgs e)
@@ -638,6 +814,21 @@ namespace ProbSciANA.Interface
         private void AfficherAvis_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new AvisView());
+        }
+
+        private void OnListLivraisons_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListLivraisons.SelectedItem != null)
+            {
+                ListPlats.SelectedItem = null;
+            }
+        }
+        private void OnListPlats_Selected(object s, SelectionChangedEventArgs e)
+        {
+            if (ListPlats.SelectedItem != null)
+            {
+                ListLivraisons.SelectedItem = null;
+            }
         }
 
         private void UpdateNavButtons()
@@ -1056,9 +1247,31 @@ namespace ProbSciANA.Interface
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
             Requetes.RefreshAllLists();
+            dataGridCuisiniers = FindName("dataGridCuisiniers") as DataGrid;
+            FicheCuisinier = FindName("FicheCuisinier") as FrameworkElement;
+            AddPane = FindName("AddPane") as FrameworkElement;
+            TxtPrenom = FindName("TxtPrenom") as TextBox;
+            TxtNom = FindName("TxtNom") as TextBox;
+            TxtAdresse = FindName("TxtAdresse") as TextBox;
+            TxtTel = FindName("TxtTel") as TextBox;
+            TxtEmail = FindName("TxtEmail") as TextBox;
+            CmbStatut = FindName("CmbStatut") as ComboBox;
+            TxtReferent = FindName("TxtReferent") as TextBox;
+
             dataGridCuisiniers.ItemsSource = null;
             dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
         }
+
+        //private DataGrid dataGridCuisiniers;
+        private FrameworkElement FicheCuisinier;
+        private FrameworkElement AddPane;
+        private TextBox TxtPrenom;
+        private TextBox TxtNom;
+        private TextBox TxtAdresse;
+        private TextBox TxtTel;
+        private TextBox TxtEmail;
+        private ComboBox CmbStatut;
+        private TextBox TxtReferent;
         private async void dataGridCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dataGridCuisiniers.SelectedItem is Utilisateur selected)
@@ -1119,12 +1332,71 @@ namespace ProbSciANA.Interface
                 dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
             }
         }
-
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Register());
         }
+        /*
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        {
+            // Masquer la fiche client, afficher le bandeau
+            FicheCuisinier.Visibility = Visibility.Collapsed;
+            AddPane.Visibility = Visibility.Visible;
 
+            // Réinitialiser les champs
+            TxtPrenom.Text = TxtNom.Text = TxtAdresse.Text = TxtTel.Text = TxtEmail.Text = "";
+        }
+        private void BtnAnnulerAjout_Click(object sender, RoutedEventArgs e)
+        {
+            AddPane.Visibility = Visibility.Collapsed;
+            FicheCuisinier.Visibility = Visibility.Visible;
+        }
+        private async void BtnValiderAjout_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtPrenom.Text) ||
+                string.IsNullOrWhiteSpace(TxtNom.Text) ||
+                string.IsNullOrWhiteSpace(TxtAdresse.Text) ||
+                string.IsNullOrWhiteSpace(TxtEmail.Text))
+            {
+                MessageBox.Show("Tous les champs obligatoires doivent être remplis.");
+                return;
+            }
+
+            try
+            {
+                bool estEntreprise = (CmbStatut.SelectedItem as ComboBoxItem)?
+                     .Content?.ToString() == "Entreprise";
+
+                var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(TxtAdresse.Text);
+
+                var nouveauClient = new Utilisateur(
+                    estClient: false,
+                    estCuisinier: true,
+                    nom: TxtNom.Text,
+                    prenom: TxtPrenom.Text,
+                    adresse: TxtAdresse.Text,
+                    telephone: TxtTel.Text,
+                    email: TxtEmail.Text,
+                    mdp: "mdp1234",
+                    station: station,
+                    nom_referent: estEntreprise ? TxtReferent.Text : "",
+                    estEntreprise: estEntreprise);
+
+                // Rafraîchir la liste
+                Utilisateur.RefreshList();
+                dataGridCuisiniers.ItemsSource = null;
+                dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
+
+                // Fermer le bandeau
+                AddPane.Visibility = Visibility.Collapsed;
+                FicheCuisinier.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
+            }
+        }
+        */
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ClientsViewAdmin());
@@ -1410,6 +1682,8 @@ namespace ProbSciANA.Interface
 
     public partial class Test2 : Page
     {
+        Graphe<Utilisateur> graphU = Program.CreationGrapheU();
+
         public Test2()
         {
             InitializeComponent();
@@ -1468,7 +1742,52 @@ namespace ProbSciANA.Interface
             Liste.Add(Program.Stations[120]);
             var programInstance = new Program();
             int tempsTrajet = programInstance.CheminOptimal(Program.GrapheMétro, Liste);
-            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[80].Valeur.nom} en passant par {Program.Stations[20].Valeur.nom}; {Program.Stations[40].Valeur.nom} ;{Program.Stations[60].Valeur.nom} est de : {tempsTrajet} minutes.");
+            MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[120].Valeur.nom} en passant par {Program.Stations[20].Valeur.nom}; {Program.Stations[40].Valeur.nom} ;{Program.Stations[60].Valeur.nom}; {Program.Stations[80].Valeur.nom}; {Program.Stations[100].Valeur.nom} est de : {tempsTrajet} minutes.");
+        }
+        private void BtnTri(object sender, RoutedEventArgs e)
+        {
+            /*
+            var A = new Noeud<string>("A", 1);
+            var B = new Noeud<string>("B", 2);
+            var C = new Noeud<string>("C", 3);
+            var D = new Noeud<string>("D", 4);
+            var E = new Noeud<string>("E", 5);
+            var F = new Noeud<string>("F", 6);
+
+            var arcsTest = new List<Arc<string>>
+            {
+                new Arc<string>(A, B),
+                new Arc<string>(A, C),
+                new Arc<string>(A, D),
+                new Arc<string>(A, E),
+                new Arc<string>(A, F), // A a 5 voisins (B, C, D, E, F)
+
+                new Arc<string>(B, C),
+                new Arc<string>(B, D),
+                new Arc<string>(B, E), // B a 4 voisins (A, C, D, E)
+
+                new Arc<string>(C, E), // C a 3 voisins (A, B, E)
+
+                new Arc<string>(D, E)  // D a 2 voisins (A, B), E a 1 voisin (A)
+            };
+            Graphe<string> Test = new Graphe<string>(arcsTest);
+            */
+            var trié = graphU.TriListeAdjacence();
+            foreach (var a in trié)
+            {
+                Console.WriteLine(a.noeud + " : " + a.successeur.Count);
+            }
+        }
+        private void BtnAffichageColoriationDeGraph(object sender, RoutedEventArgs e)
+        {
+            int couleurMin = graphU.WelshPowell();
+            graphU.AffichageGrapheNonOrienté();
+            MessageBox.Show($"Coloration du graphe avec {couleurMin} couleurs.");
+        }
+        private void BtnPropriétéGraphe(object sender, RoutedEventArgs e)
+        {
+            string propriétés = graphU.PropriétésGraphe();
+            MessageBox.Show(propriétés);
         }
     }
     #endregion

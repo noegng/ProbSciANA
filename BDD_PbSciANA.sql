@@ -89,7 +89,7 @@ DROP TABLE IF EXISTS Livraison;
 CREATE TABLE IF NOT EXISTS Livraison(
    id_livraison INT PRIMARY KEY AUTO_INCREMENT,
    date_livraison DATETIME,
-   statut ENUM('à faire', 'en cours', 'finie'),
+   statut ENUM('en attente', 'en cours', 'finie'),
    adresse VARCHAR(100),
    id_commande INT NOT NULL,
    FOREIGN KEY(id_commande) REFERENCES Commande(id_commande) ON DELETE CASCADE

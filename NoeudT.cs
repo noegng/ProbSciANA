@@ -13,31 +13,24 @@ namespace ProbSciANA
     {
         private T valeur;  /// Valeur unique du noeud
         private int tempsChangement; /// Temps de changement (si exitant)
-        private int idBrute = 0;
-        public static int Compteur = 0;
+        private int id;
         public double Longitude { get; set; } /// Longitude de la station
         public double Latitude { get; set; } /// Latitude de la station
 
         /// Constructeur de la classe Station
-        public Noeud(T valeur, int temps = 0) // valeur par défaut
+        public Noeud(T valeur, int id, int temps = 0) // valeur par défaut
         {
             this.valeur = valeur;
+            this.id = id;
             tempsChangement = temps;
-            idBrute++;
         }
-        public Noeud(T valeur, int temps, double longitude, double latitude) /// valeur par défaut
+        public Noeud(T valeur, int id, int temps, double longitude, double latitude) /// valeur par défaut
         {
             this.valeur = valeur;
+            this.id = id;
             tempsChangement = temps;
             Longitude = longitude;
             Latitude = latitude;
-            Compteur++;
-            idBrute = Compteur;
-        }
-        public Noeud(T valeur)
-        {
-            this.valeur = valeur;
-
         }
         #region Propriétés
         public T Valeur
@@ -51,20 +44,22 @@ namespace ProbSciANA
             get { return tempsChangement; }
             set { tempsChangement = value; }
         }
-        public int IdBrute
+        public int Id
         {
-            get { return idBrute; }
-            set { idBrute = value; }
+            get { return id; }
         }
         #endregion
         public override bool Equals(object obj)
         {
-            return obj is Noeud<T> autre && EqualityComparer<T>.Default.Equals(Valeur, autre.Valeur);
+            if (obj is Noeud<T> autre)
+            {
+                return Id == autre.Id; // Comparaison basée sur l'Id
+            }
+            return false;
         }
-
         public override int GetHashCode()
         {
-            return EqualityComparer<T>.Default.GetHashCode(Valeur);
+            return Id.GetHashCode();
         }
         public string ToStringLong()
         {

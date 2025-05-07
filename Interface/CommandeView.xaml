@@ -3,7 +3,59 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:local="clr-namespace:ProbSciANA.Interface"
+      xmlns:models="clr-namespace:ProbSciANA"
       Title="CommandeView">
+
+    <Page.Resources>
+
+        <local:FirstNonNullConverter x:Key="FirstNonNullConverter"/>
+
+        <x:Array x:Key="StatutValues"
+                 Type="{x:Type sys:String}">
+            <sys:String>en attente</sys:String>
+            <sys:String>en cours</sys:String>
+            <sys:String>fait</sys:String>
+        </x:Array>
+
+        <DataTemplate DataType="{x:Type models:Livraison}">
+            <Border Padding="10"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Margin="0,5">
+                <StackPanel>
+                    <TextBlock Text="Détail Livraison"
+                               FontWeight="Bold"
+                               FontSize="14"/>
+                    <TextBlock Text="{Binding Statut, StringFormat=Statut : {0}}"/>
+                    <TextBlock Text="{Binding Adresse, StringFormat=Adresse : {0}}"/>
+                    <TextBlock Text="{Binding Date_commande, StringFormat=Date : {0:dd/MM/yyyy}}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type models:Plat}">
+            <Border Padding="10"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Margin="0,5">
+                <StackPanel>
+                    <TextBlock Text="Détail Plat"
+                               FontWeight="Bold"
+                               FontSize="14"/>
+                    <TextBlock Text="{Binding Nom, StringFormat=Nom : {0}}"/>
+                    <TextBlock Text="{Binding Prix, StringFormat=Prix : {0}}"/>
+                    <TextBlock Text="{Binding Nb_portions, StringFormat=Nb_portions : {0}}"/>
+                    <TextBlock Text="{Binding Type, StringFormat=Type : {0}}"/>
+                    <TextBlock Text="{Binding Regime, StringFormat=Regime : {0}}"/>
+                    <TextBlock Text="{Binding Nationalite, StringFormat=Nationalite : {0}}"/>
+                    <TextBlock Text="{Binding Date_peremption, StringFormat=Date_peremption : {0:dd/MM/yyyy}}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+    </Page.Resources>
 
     <DockPanel LastChildFill="True">
 
@@ -216,20 +268,6 @@
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
                        Grid.Column="1"/>
-
-            <!-- Bouton ➕ -->
-            <Button Content="➕"
-                    FontSize="16"
-                    Width="32"
-                    Height="32"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Click="Ajouter_Click"
-                    Grid.Column="2"/>
-
         </Grid>
 
         <Grid>
@@ -249,26 +287,98 @@
                       ColumnWidth="*">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID"
-                                        Binding="{Binding Id_plat}"
+                                        Binding="{Binding Id_commande}"
                                         IsReadOnly="True"/>
                     <DataGridTextColumn Header="Nom"
-                                        Binding="{Binding Nom}"/>
+                                        Binding="{Binding Nom}"
+                                        IsReadOnly="True"/>
                     <DataGridTextColumn Header="Prix"
-                                        Binding="{Binding Prix}"/>
-                    <DataGridTextColumn Header="Nb_portions"
-                                        Binding="{Binding Nb_portions}"/>
-                    <DataGridTextColumn Header="Type"
-                                        Binding="{Binding Type}"/>
-                    <DataGridTextColumn Header="Nb_portions"
-                                        Binding="{Binding Nb_portions}"/>
-                    <DataGridTextColumn Header="Regime"
-                                        Binding="{Binding Regime}"/>
-                    <DataGridTextColumn Header="Nationalite"
-                                        Binding="{Binding Nationalite}"/>
-                    <DataGridTextColumn Header="Date_peremption"
-                                        Binding="{Binding Date_peremption}"/>
+                                        Binding="{Binding Prix}"
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Date"
+                                        Binding="{Binding Date_commande}"
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Client"
+                                        Binding="{Binding NomClient}"
+                                        IsReadOnly="True"/>
+                    <DataGridComboBoxColumn Header="Statut"
+                                            ItemsSource="{StaticResource StatutValues}"
+                                            SelectedItemBinding="{Binding Statut, Mode=TwoWay}"
+                                            Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
+
+            <StackPanel x:Name="FicheClient"
+                        Grid.Column="1"
+                        Margin="10"
+                        Background="#FFF3F3F3"
+                        VerticalAlignment="Top">
+                <DockPanel LastChildFill="True"
+                           Margin="0 0 0 10">
+                    <TextBlock Text="Fiche Client"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               DockPanel.Dock="Left"/>
+
+                    <Button Content="❌"
+                            FontSize="14"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="BtnAnnuler_Click"
+                            DockPanel.Dock="Right"/>
+
+                    <Button Content="✅"
+                            FontSize="14"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="BtnValider_Click"
+                            DockPanel.Dock="Right"/>
+                </DockPanel>
+
+                <!-- Carte d'aurelien -->
+
+                <!-- Les deux expanders pour naviguer dans les listes -->
+                <StackPanel>
+                    <Expander Header="Livraisons à effectuer"
+                              Margin="0,10,0,0">
+                        <ListBox x:Name="ListLivraisons"
+                                 ItemsSource="{Binding Livraisons_a_effectuer}"
+                                 DisplayMemberPath="Adresse"
+                                 SelectionChanged="OnListLivraisons_Selected"/>
+                    </Expander>
+
+                    <Expander Header="Plats à préparer"
+                              Margin="0,10,0,0">
+                        <ListBox x:Name="ListPlats"
+                                 ItemsSource="{Binding Plats_a_cuisiner}"
+                                 DisplayMemberPath="Nom"
+                                 SelectionChanged="OnListPlats_Selected"/>
+                    </Expander>
+
+                    <!-- Le détail unique qui se met à jour selon la sélection -->
+                    <ContentControl Margin="0,20,0,0">
+                        <ContentControl.Content>
+                            <MultiBinding Converter="{StaticResource FirstNonNullConverter}">
+                                <!-- On teste d’abord Livraisons -->
+                                <Binding ElementName="ListLivraisons"
+                                         Path="SelectedItem"/>
+                                <!-- puis Plats -->
+                                <Binding ElementName="ListPlats"
+                                         Path="SelectedItem"/>
+                            </MultiBinding>
+                        </ContentControl.Content>
+                    </ContentControl>
+                </StackPanel>
+            </StackPanel>
+
         </Grid>
 
     </DockPanel>

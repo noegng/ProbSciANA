@@ -192,7 +192,22 @@
                     Width="200"
                     Margin="5"
                     Click="BtnCheminOptimal"/>
-            <TextBlock Text="Le temps de trajet est de : {Binding TempsTrajet}"
+            <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Test Tri"
+                    Width="200"
+                    Margin="5"
+                    Click="BtnTri"/>
+            <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Coloriation De Graph"
+                    Width="200"
+                    Margin="5"
+                    Click="BtnAffichageColoriationDeGraph"/>
+            <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Test Propriété Graphe"
+                    Width="200"
+                    Margin="5"
+                    Click="BtnPropriétéGraphe"/>
+            <TextBlock x:Name="TxtProprietesGraphe"
                        FontSize="18"
                        Margin="10"/>
         </StackPanel>
