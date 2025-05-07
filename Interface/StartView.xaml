@@ -4,11 +4,10 @@
       Title="StartView">
 
     <Grid>
-        <Image Source="Images/fond.png"
+        <Image Source="Images/.png"
                Stretch="Fill"
                IsHitTestVisible="False"
                Opacity="0.3"/>
-
 
         <DockPanel>
 
@@ -17,6 +16,7 @@
                   Background="Black"
                   Height="50">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -48,11 +48,21 @@
                         Padding="10,0"
                         Click="BtnAccueil_Click"/>
 
+                <Button x:Name="BtnTest"
+                        Grid.Column="2"
+                        Content="Test"
+                        Foreground="White"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontWeight="Bold"
+                        Padding="10,0"
+                        Click="BtnTest_Click"/>
+
                 <!-- Espace vide -->
-                <StackPanel Grid.Column="2"/>
+                <StackPanel Grid.Column="3"/>
 
                 <Button x:Name="BtnLogout"
-                        Grid.Column="3"
+                        Grid.Column="4"
                         Content="Déconnexion"
                         Foreground="White"
                         Background="Transparent"
@@ -60,10 +70,10 @@
                         FontWeight="Bold"
                         Visibility="Collapsed"
                         Click="BtnLogout_Click"
-                        Margin="0,0,10,0"/>
+                        Padding="10,0"/>
 
                 <Button x:Name="BtnProfil"
-                        Grid.Column="4"
+                        Grid.Column="5"
                         Foreground="White"
                         Background="Transparent"
                         Content="Profil"
@@ -75,7 +85,7 @@
 
                 <!-- Connexion -->
                 <Button x:Name="BtnConnexion"
-                        Grid.Column="5"
+                        Grid.Column="6"
                         Content="Connexion"
                         Foreground="White"
                         Background="Transparent"
@@ -86,13 +96,12 @@
 
                 <!-- Inscription -->
                 <Button x:Name="BtnInscription"
-                        Grid.Column="6"
+                        Grid.Column="7"
                         Content="S'inscrire"
                         Foreground="Black"
                         Background="White"
                         FontWeight="Bold"
                         Padding="10,0"
-                        Margin="10,5"
                         Click="BtnInscription_Click"/>
             </Grid>
 
@@ -226,20 +235,16 @@
             <StackPanel VerticalAlignment="Center"
                         HorizontalAlignment="Center">
 
+                <Image Source="Images/accueil.png"
+                       Width="300"
+                       Height="300"
+                       Stretch="UniformToFill"
+                       IsHitTestVisible="False"
+                       Margin="5"/>
                 <TextBlock Text="Bienvenue sur Liv'In Paris"
-                           FontSize="24"
+                           FontSize="40"
                            Margin="0,0,0,20"
                            TextAlignment="Center"/>
-                <Button Style="{StaticResource MenuButtonStyle}"
-                        Content="Test"
-                        Width="200"
-                        Margin="0,10,0,0"
-                        Click="BtnModeTest_Click"/>
-                <Button Style="{StaticResource MenuButtonStyle}"
-                        Content="Test Parcours"
-                        Width="200"
-                        Margin="0,10,0,0"
-                        Click="BtnModeTest2_Click"/>
             </StackPanel>
 
         </DockPanel>
