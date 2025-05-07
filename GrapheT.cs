@@ -865,35 +865,40 @@ namespace ProbSciANA
 
         #endregion
         #region Affichage
-        public void AffichageGrapheOrienté()
+        public string AffichageGrapheOrienté()
         {
-            Graphviz<T>.GenerateGraphImage(Noeuds, Arcs);
+            string cheminAcces = Graphviz<T>.GenerateGraphImage(Noeuds, Arcs);
+            return cheminAcces;
         }
-        public void AffichageAncienGraphe()
+        public string AffichageAncienGraphe()
         {
-            Graphviz<T>.GenerateGraphImageOG(Noeuds, Arcs);
+            string cheminAcces = Graphviz<T>.GenerateGraphImageOG(Noeuds, Arcs);
+            return cheminAcces;
+
         }
-        public void AffichageGrapheNonOrienté()
+        public string AffichageGrapheNonOrienté()
         {
-            Graphviz<T>.GenerateGraphNonOrienté(Noeuds, Arcs, Couleurs);
+            string cheminAcces = Graphviz<T>.GenerateGraphNonOrienté(Noeuds, Arcs, Couleurs);
+            return cheminAcces;
+
         }
-        public int AffichageDijkstra(Noeud<T> depart, Noeud<T> arrivee)
+        public (int plusPetiteDistance, string cheminAcces) AffichageDijkstra(Noeud<T> depart, Noeud<T> arrivee)
         {
             (List<Arc<T>> chemin, int plusPetiteDistance) = DijkstraChemin(depart, arrivee); /// Calcul du chemin le plus court
-            Graphviz<T>.GenerateChemin(chemin, noeuds);
-            return plusPetiteDistance;
+            string cheminAcces = Graphviz<T>.GenerateChemin(chemin, noeuds);
+            return (plusPetiteDistance, cheminAcces);
         }
-        public int AffichageBellmanFord(Noeud<T> depart, Noeud<T> arrivee)
+        public (int plusPetiteDistance, string cheminAcces) AffichageBellmanFord(Noeud<T> depart, Noeud<T> arrivee)
         {
             (List<Arc<T>> chemin, int plusPetiteDistance) = BellmanFordChemin(depart, arrivee); /// Calcul du chemin le plus court
-            Graphviz<T>.GenerateChemin(chemin, noeuds);
-            return plusPetiteDistance;
+            string cheminAcces = Graphviz<T>.GenerateChemin(chemin, noeuds);
+            return (plusPetiteDistance, cheminAcces);
         }
-        public int AffichageFloydWarshall(Noeud<T> depart, Noeud<T> arrivee)
+        public (int plusPetiteDistance, string cheminAcces) AffichageFloydWarshall(Noeud<T> depart, Noeud<T> arrivee)
         {
             (List<Arc<T>> chemin, int plusPetiteDistance) = FloydWarshallChemin(depart, arrivee); /// Calcul du chemin le plus court
-            Graphviz<T>.GenerateChemin(chemin, noeuds);
-            return plusPetiteDistance;
+            string cheminAcces = Graphviz<T>.GenerateChemin(chemin, noeuds);
+            return (plusPetiteDistance, cheminAcces);
         }
 
         #endregion

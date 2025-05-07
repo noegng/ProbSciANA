@@ -49,7 +49,7 @@ namespace ProbSciANA
                 _ => "black", /// Couleur par défaut
             };
         }
-        public static void GenerateGraphImageOG(List<Noeud<T>> noeuds, List<Arc<T>> arcs)
+        public static string GenerateGraphImageOG(List<Noeud<T>> noeuds, List<Arc<T>> arcs)
         {
             numéroImage++;
             /// Chemins pour le fichier DOT et l'image PNG
@@ -146,9 +146,10 @@ namespace ProbSciANA
             {
                 throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
             }
+            return pngFilePath;
         }
 
-        public static void GenerateGraphImage(List<Noeud<T>> noeuds, List<Arc<T>> arcs)
+        public static string GenerateGraphImage(List<Noeud<T>> noeuds, List<Arc<T>> arcs)
         {
             numéroImage++;
             /// Chemins pour le fichier DOT et l'image PNG
@@ -232,8 +233,9 @@ namespace ProbSciANA
             {
                 throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
             }
+            return pngFilePath;
         }
-        public static void GenerateChemin(List<Arc<T>> arcsChemin, List<Noeud<T>> noeuds)
+        public static string GenerateChemin(List<Arc<T>> arcsChemin, List<Noeud<T>> noeuds)
         {
             numéroImageChemin++;
             string dotFilePath = Path.Combine(ImagesPath, $"grapheChemin{numéroImageChemin}.dot");
@@ -331,9 +333,10 @@ namespace ProbSciANA
             {
                 throw new Exception($"Une erreur est survenue lors de la génération de l'image du graphe. Chemin: {pngFilePath}", ex);
             }
+            return pngFilePath;
 
         }
-        public static void GenerateGraphNonOrienté(List<Noeud<T>> noeuds, List<Arc<T>> arcs, Dictionary<Noeud<T>, int> couleurs = null)
+        public static string GenerateGraphNonOrienté(List<Noeud<T>> noeuds, List<Arc<T>> arcs, Dictionary<Noeud<T>, int> couleurs = null)
         {
             /// Si la liste des couleurs est nulle, on initialise une couleur par défaut
             if (couleurs == null)
@@ -407,6 +410,7 @@ namespace ProbSciANA
             {
                 throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe non orienté.", ex);
             }
+            return pngFilePath;
         }
     }
 }
