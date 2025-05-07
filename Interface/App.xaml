@@ -3,18 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Application.Resources>
-        <!-- =========================================================
-             1) Dictionnaires fusionnés (tes styles existants)
-           ========================================================= -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Ton dictionnaire déjà présent                      -->
                 <ResourceDictionary Source="GraphStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <!-- =====================================================
-                 2) Style « PillButton » réutilisable partout
-               ===================================================== -->
             <Style x:Key="PillButton"
                    TargetType="Button">
                 <Setter Property="Foreground"
