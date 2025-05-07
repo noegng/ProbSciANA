@@ -761,6 +761,13 @@ namespace ProbSciANA
                 }
                 if (value.ToLower() == "faite" || value.ToLower() == "fait" || value.ToLower() == "f")
                 {
+                    if (statut == "en cours")
+                    {
+                        foreach (Livraison l in Livraisons)
+                        {
+                            l.Statut = "en cours";
+                        }
+                    }
                     statut = "faite"; Update("statut", "faite");
                 }
                 if (value.ToLower() == "livrée" || value.ToLower() == "livree" || value.ToLower() == "livré" || value.ToLower() == "livre" || value.ToLower() == "l")
