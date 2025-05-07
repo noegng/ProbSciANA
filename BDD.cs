@@ -646,6 +646,10 @@ namespace ProbSciANA
                             date_inscription = reader.GetDateTime("date_inscription");
                             mdp = reader.GetString("mdp");
                             estClient = reader.GetBoolean("estClient");
+                            if (!reader.IsDBNull(reader.GetOrdinal("photo")))
+                            {
+                                photo = reader.GetString("photo");
+                            }
                             estCuisinier = reader.GetBoolean("estCuisinier");
                             estEntreprise = reader.GetBoolean("estEntreprise");
                             if (!reader.IsDBNull(reader.GetOrdinal("nom_referent")))
@@ -1320,7 +1324,10 @@ namespace ProbSciANA
                             regime = reader.GetString("regime");
                             nationalite = reader.GetString("nationalite");
                             date_peremption = reader.GetDateTime("date_peremption");
-                            photo = reader.GetString("photo");
+                            if (!reader.IsDBNull(reader.GetOrdinal("photo")))
+                            {
+                                photo = reader.GetString("photo");
+                            }
                         }
                     }
                 }
@@ -1358,7 +1365,7 @@ namespace ProbSciANA
         private int id_ingredient;
         private string nom;
         private string regime;
-        private string? photo = "";
+        private string? photo = "Images/ingredient_defaut";
 
         public Ingredient(int id_ingredient)
         {
@@ -1471,6 +1478,10 @@ namespace ProbSciANA
                         {
                             nom = reader.GetString("nom");
                             regime = reader.GetString("regime");
+                            if (!reader.IsDBNull(reader.GetOrdinal("photo")))
+                            {
+                                photo = reader.GetString("photo");
+                            }
                         }
                     }
                 }
@@ -1712,6 +1723,7 @@ namespace ProbSciANA
         private bool plat_du_jour;
         private DateTime date_cuisine;
         private string statut;
+        private string? photo = "";
 
         public Cuisine(Utilisateur cuisinier, Plat plat)
         {
@@ -1777,6 +1789,11 @@ namespace ProbSciANA
             get { return statut; }
             set { statut = value; Update("statut", value); }
         }
+        public string Photo
+        {
+            get { return photo; }
+            set { photo = value; Update("photo", value); }
+        }
         #endregion
         public void Update(string champ, string value)
         {
@@ -1829,6 +1846,10 @@ namespace ProbSciANA
                             plat_du_jour = reader.GetBoolean("plat_du_jour");
                             date_cuisine = reader.GetDateTime("date_cuisine");
                             statut = reader.GetString("statut");
+                            if (!reader.IsDBNull(reader.GetOrdinal("photo")))
+                            {
+                                photo = reader.GetString("photo");
+                            }
                         }
                     }
                 }
