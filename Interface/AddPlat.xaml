@@ -6,78 +6,358 @@
       mc:Ignorable="d"
       Title="AddPlat">
 
-        <Grid>
-                <TextBlock Text="Ajouter un plat"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Top"
-                           FontSize="24"
-                           FontWeight="Bold"/>
+        <DockPanel LastChildFill="True">
 
-                <StackPanel HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Margin="20">
-                        <TextBlock Text="Nom du plat :"
-                                   Margin="5,0,0,5"/>
-                        <TextBox x:Name="NomPlatTextBox"
-                                 Width="200"
-                                 Margin="5"/>
+                <Grid DockPanel.Dock="Top"
+                      Height="50"
+                      Background="Black">
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Type de plat :"
-                                   Margin="5,0,0,5"/>
-                        <ComboBox x:Name="TypePlatComboBox"
-                                  Width="200"
-                                  Margin="5">
-                                <ComboBoxItem Content="Entrée"/>
-                                <ComboBoxItem Content="Plat"/>
-                                <ComboBoxItem Content="Dessert"/>
-                        </ComboBox>
+                        <Button Grid.Column="0"
+                                Content="🌙 Mode"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnMode_Click"/>
 
-                        <TextBlock Text="Nationalité :"
-                                   Margin="5,0,0,5"/>
-                        <TextBox x:Name="NationaliteTextBox"
-                                 Width="200"
-                                 Margin="5"/>
+                        <Button Grid.Column="1"
+                                Content="🏠 Accueil"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="BtnAccueil_Click"/>
 
-                        <TextBlock Text="Régime alimentaire :"
-                                   Margin="5,0,0,5"/>
-                        <TextBox x:Name="RegimeTextBox"
-                                 Width="200"
-                                 Margin="5"/>
+                        <StackPanel Grid.Column="2"/>
+
+                        <Button Grid.Column="3"
+                                Content="Commandes"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="AfficherCommandes_Click"/>
+
+                        <Button Grid.Column="4"
+                                Content="Avis"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="AfficherAvis_Click"/>
+
+                        <Button Grid.Column="5"
+                                Content="Plats"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="AfficherPlats_Click"/>
+
+                        <Button Grid.Column="6"
+                                Content="Clients"
+                                Foreground="White"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                Padding="10,0"
+                                Click="AfficherClients_Click"/>
+                </Grid>
+
+                <Grid DockPanel.Dock="Top"
+                      Height="50"
+                      Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,0,0">
+
+                                <!-- BACK -->
+                                <Button x:Name="BtnBack"
+                                        Width="32"
+                                        Height="32"
+                                        Margin="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        ToolTip="Précédent"
+                                        Click="BtnBack_Click">
+                                        <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border"
+                                                                Width="32"
+                                                                Height="32"
+                                                                CornerRadius="16"
+                                                                Background="Transparent"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                                <Viewbox Width="16"
+                                                                         Height="16">
+                                                                        <Grid Width="24"
+                                                                              Height="24">
+                                                                                <Path x:Name="backArrow"
+                                                                                      StrokeThickness="2"
+                                                                                      StrokeLineJoin="Round"
+                                                                                      StrokeStartLineCap="Round"
+                                                                                      StrokeEndLineCap="Round"
+                                                                                      Data="M14,4 L6,12 L14,20"
+                                                                                      HorizontalAlignment="Center"
+                                                                                      VerticalAlignment="Center"/>
+                                                                        </Grid>
+                                                                </Viewbox>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver"
+                                                                         Value="True">
+                                                                        <Setter TargetName="border"
+                                                                                Property="Background"
+                                                                                Value="#EEE"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="True">
+                                                                        <Setter TargetName="backArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Black"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="False">
+                                                                        <Setter TargetName="backArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Gray"/>
+                                                                </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                        </Button.Template>
+                                </Button>
+
+                                <!-- FORWARD -->
+                                <Button x:Name="BtnForward"
+                                        Width="32"
+                                        Height="32"
+                                        Margin="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        ToolTip="Suivant"
+                                        Click="BtnForward_Click">
+                                        <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="border"
+                                                                Width="32"
+                                                                Height="32"
+                                                                CornerRadius="16"
+                                                                Background="Transparent"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                                <Viewbox Width="16"
+                                                                         Height="16">
+                                                                        <Grid Width="24"
+                                                                              Height="24">
+                                                                                <Path x:Name="forwardArrow"
+                                                                                      StrokeThickness="2"
+                                                                                      StrokeLineJoin="Round"
+                                                                                      StrokeStartLineCap="Round"
+                                                                                      StrokeEndLineCap="Round"
+                                                                                      Data="M4,4 L12,12 L4,20"
+                                                                                      HorizontalAlignment="Center"
+                                                                                      VerticalAlignment="Center"/>
+                                                                        </Grid>
+                                                                </Viewbox>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver"
+                                                                         Value="True">
+                                                                        <Setter TargetName="border"
+                                                                                Property="Background"
+                                                                                Value="#EEE"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="True">
+                                                                        <Setter TargetName="forwardArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Black"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled"
+                                                                         Value="False">
+                                                                        <Setter TargetName="forwardArrow"
+                                                                                Property="Stroke"
+                                                                                Value="Gray"/>
+                                                                </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                        </Button.Template>
+                                </Button>
+                        </StackPanel>
+
+                        <TextBlock Text="Ajouter un plat"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Top"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Grid.Column="2"/>
+
+                        <Button Content="🚫"
+                                ToolTip="Vider le panier"
+                                FontSize="16"
+                                Width="32"
+                                Height="32"
+                                Margin="0,0,10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="BtnAnnulerPanier_Click"
+                                Grid.Column="3"/>
+
+                        <Button Content="✅"
+                                ToolTip="Valider la commande"
+                                FontSize="16"
+                                Width="32"
+                                Height="32"
+                                Margin="0,0,10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="BtnValiderPlat_Click"
+                                Grid.Column="4"/>
+                </Grid>
+                <Grid>
+                        <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0">
+
+                                <StackPanel HorizontalAlignment="Center"
+                                            VerticalAlignment="Top"
+                                            Margin="20">
+                                        <TextBlock Text="Nom du plat :"
+                                                   Margin="5,0,0,5"/>
+                                        <TextBox x:Name="NomPlatTextBox"
+                                                 Width="300"
+                                                 Margin="5"/>
+
+                                        <TextBlock Text="Type de plat :"
+                                                   Margin="5,0,0,5"/>
+                                        <ComboBox x:Name="TypePlatComboBox"
+                                                  Width="300"
+                                                  Margin="5">
+                                                <ComboBoxItem Content="Entrée"/>
+                                                <ComboBoxItem Content="Plat"/>
+                                                <ComboBoxItem Content="Dessert"/>
+                                        </ComboBox>
+
+                                        <TextBlock Text="Nationalité :"
+                                                   Margin="5,0,0,5"/>
+                                        <TextBox x:Name="NationaliteTextBox"
+                                                 Width="300"
+                                                 Margin="5"/>
+
+                                        <TextBlock Text="Régime alimentaire :"
+                                                   Margin="5,0,0,5"/>
+                                        <TextBox x:Name="RegimeTextBox"
+                                                 Width="300"
+                                                 Margin="5"/>
 
 
-                        <TextBlock Text="Prix du plat :"
-                                   Margin="5,0,0,5"/>
-                        <TextBox x:Name="PrixTextBox"
-                                 Width="200"
-                                 Margin="5"/>
+                                        <TextBlock Text="Prix du plat :"
+                                                   Margin="5,0,0,5"/>
+                                        <TextBox x:Name="PrixTextBox"
+                                                 Width="300"
+                                                 Margin="5"/>
 
-                        <TextBlock Text="Nombre de personnes :"
-                                   Margin="5,0,0,5"/>
-                        <TextBox x:Name="NombrePersonnesTextBox"
-                                 Width="200"
-                                 Margin="5"/>
+                                        <TextBlock Text="Nombre de personnes :"
+                                                   Margin="5,0,0,5"/>
+                                        <TextBox x:Name="NombrePersonnesTextBox"
+                                                 Width="300"
+                                                 Margin="5"/>
 
-                        <TextBlock Text="Date de péremption :"
-                                   Margin="5,0,0,5"/>
-                        <DatePicker x:Name="DatePeremptionDatePicker"
-                                    Width="200"
-                                    Margin="5"/>
+                                        <TextBlock Text="Date de péremption :"
+                                                   Margin="5,0,0,5"/>
+                                        <DatePicker x:Name="DatePeremptionDatePicker"
+                                                    Width="300"
+                                                    Margin="5"/>
+                                </StackPanel>
+                        </Grid>
 
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Ajouter le plat"
-                                Width="200"
-                                Margin="5"
-                                Click="BtnAjouterPlat_Click"/>
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Retour"
-                                Width="200"
-                                Margin="5"
-                                Click="BtnRetour_Click"/>
-                        <Button Style="{StaticResource MenuButtonStyle}"
-                                Content="Retour à l'accueil"
-                                Width="200"
-                                Margin="5"
-                                Click="BtnRetourAccueil_Click"/>
-                </StackPanel>
-        </Grid>
+                        <ScrollViewer Grid.Column="1">
+                                <ItemsControl ItemsSource="{Binding Ingredients_affiches}">
+                                        <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                        <WrapPanel HorizontalAlignment="Center"/>
+                                                </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                        <Border Margin="10"
+                                                                Padding="10"
+                                                                Width="200"
+                                                                Height="200"
+                                                                Background="White"
+                                                                CornerRadius="12"
+                                                                BorderBrush="#CCC"
+                                                                BorderThickness="1">
+
+                                                                <Grid>
+                                                                        <Button Content="➕"
+                                                                                ToolTip="Ajouter au panier"
+                                                                                FontSize="16"
+                                                                                Width="32"
+                                                                                Height="32"
+                                                                                HorizontalAlignment="Right"
+                                                                                VerticalAlignment="Top"
+                                                                                Margin="0,-12,-12,0"
+                                                                                Background="Transparent"
+                                                                                BorderThickness="0"
+                                                                                Click="BtnAjouterAuPlat_Click"
+                                                                                Tag="{Binding}"/>
+
+                                                                        <!-- Infos centrées -->
+                                                                        <StackPanel HorizontalAlignment="Center"
+                                                                                    VerticalAlignment="Center">
+                                                                                <TextBlock Text="{Binding Nom}"
+                                                                                           FontWeight="Bold"
+                                                                                           FontSize="14"
+                                                                                           TextAlignment="Center"
+                                                                                           Margin="5"/>
+                                                                                <Image Source="{Binding Photo}"
+                                                                                       Width="100"
+                                                                                       Height="100"
+                                                                                       Stretch="UniformToFill"
+                                                                                       IsHitTestVisible="False"
+                                                                                       Margin="5"/>
+                                                                        </StackPanel>
+                                                                </Grid>
+                                                        </Border>
+                                                </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                        </ScrollViewer>
+                </Grid>
+        </DockPanel>
 </Page>

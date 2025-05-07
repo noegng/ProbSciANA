@@ -60,17 +60,17 @@ INSERT INTO Plat (nom, prix, nb_portions, type_, regime, nationalite, date_perem
 --------------------------
 -- Table Ingredient
 --------------------------
-INSERT INTO Ingredient (nom, regime) VALUES
-('Tomate', 'végétarien'),
-('Laitue', 'végétarien'),
-('Fromage', 'végétarien'),
-('Pain', 'végétarien'),
-('Poulet', 'carnivore'),
-('Boeuf', 'carnivore'),
-('Oignon', 'végétarien'),
-('Ail', 'végétarien'),
-('Pâte', 'végétarien'),
-('Chocolat', 'végétarien');
+INSERT INTO Ingredient (nom, regime, photo) VALUES
+('Tomate', 'végétarien','Images/tomate.png'),
+('Laitue', 'végétarien','Images/laitue.png'),
+('Fromage', 'végétarien','Images/fromage.png'),
+('Pain', 'végétarien','Images/pain.png'),
+('Poulet', 'carnivore','Images/poulet.png'),
+('Boeuf', 'carnivore','Images/boeuf.png'),
+('Oignon', 'végétarien','Images/oignon.png'),
+('Ail', 'végétarien','Images/ail.png'),
+('Pâte', 'végétarien','Images/pate.png'),
+('Chocolat', 'végétarien','Images/chocolat.png');
 
 --------------------------
 -- Table Avis

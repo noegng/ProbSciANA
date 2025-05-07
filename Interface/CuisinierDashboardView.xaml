@@ -218,20 +218,6 @@
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
                        Grid.Column="1"/>
-
-            <!-- Bouton ➕ -->
-            <Button Content="➕"
-                    ToolTip="Ajouter un client"
-                    FontSize="16"
-                    Width="32"
-                    Height="32"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Grid.Column="2"/>
-
         </Grid>
 
     </DockPanel>
