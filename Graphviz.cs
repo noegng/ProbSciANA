@@ -73,12 +73,34 @@ namespace ProbSciANA
                     string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
                     dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\",shape=\"point\", fontsize=8];");
                 }
-                for (int i = 0; i < arcs.Count; i = i + 2)
+                for (int i = 0; i < arcs.Count; i++)
                 {
-                    var idPrevious = arcs[i].IdPrevious.Valeur.ToString();
-                    var idNext = arcs[i].IdNext.Valeur.ToString();
-                    var color = GetColor(arcs[i].IdLigne);
-                    dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\" [color=\"{color}\", penwidth=2, style=bold];");
+                    var arc = arcs[i];
+                    var idPrevious = arc.IdPrevious.Valeur.ToString();
+                    var idNext = arc.IdNext.Valeur.ToString();
+
+                    /// Si l'arc n'est pas à sens unique, vérifier si on l'a déjà traité
+                    if (!arc.SensUnique)
+                    {
+                        /// Chercher l'arc dans l'autre sens
+                        var arcRetour = arcs.Find(a =>
+                            a.IdPrevious.Valeur.ToString() == idNext &&
+                            a.IdNext.Valeur.ToString() == idPrevious &&
+                            a.IdLigne == arc.IdLigne);
+
+                        /// Si on trouve l'arc retour et qu'on ne l'a pas encore traité
+                        if (arcRetour != null && arcs.IndexOf(arcRetour) > i)
+                        {
+                            var color = GetColor(arc.IdLigne);
+                            dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\" [color=\"{color}\", penwidth=2, style=bold];");
+                        }
+                    }
+                    else
+                    {
+                        /// Pour les arcs à sens unique, toujours les afficher
+                        var color = GetColor(arc.IdLigne);
+                        dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\" [color=\"{color}\", penwidth=2, style=bold];");
+                    }
                 }
 
 
