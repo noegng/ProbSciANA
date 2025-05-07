@@ -5,6 +5,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:local="clr-namespace:ProbSciANA.Interface"
+      xmlns:models="clr-namespace:ProbSciANA"
       Title="CommandeView">
 
     <Page.Resources>
@@ -17,6 +18,42 @@
             <sys:String>en cours</sys:String>
             <sys:String>fait</sys:String>
         </x:Array>
+
+        <DataTemplate DataType="{x:Type models:Livraison}">
+            <Border Padding="10"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Margin="0,5">
+                <StackPanel>
+                    <TextBlock Text="Détail Livraison"
+                               FontWeight="Bold"
+                               FontSize="14"/>
+                    <TextBlock Text="{Binding Statut, StringFormat=Statut : {0}}"/>
+                    <TextBlock Text="{Binding Adresse, StringFormat=Adresse : {0}}"/>
+                    <TextBlock Text="{Binding Date_commande, StringFormat=Date : {0:dd/MM/yyyy}}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type models:Plat}">
+            <Border Padding="10"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Margin="0,5">
+                <StackPanel>
+                    <TextBlock Text="Détail Plat"
+                               FontWeight="Bold"
+                               FontSize="14"/>
+                    <TextBlock Text="{Binding Nom, StringFormat=Nom : {0}}"/>
+                    <TextBlock Text="{Binding Prix, StringFormat=Prix : {0}}"/>
+                    <TextBlock Text="{Binding Nb_portions, StringFormat=Nb_portions : {0}}"/>
+                    <TextBlock Text="{Binding Type, StringFormat=Type : {0}}"/>
+                    <TextBlock Text="{Binding Regime, StringFormat=Regime : {0}}"/>
+                    <TextBlock Text="{Binding Nationalite, StringFormat=Nationalite : {0}}"/>
+                    <TextBlock Text="{Binding Date_peremption, StringFormat=Date_peremption : {0:dd/MM/yyyy}}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
 
     </Page.Resources>
 
@@ -308,14 +345,14 @@
 
                 <!-- Carte d'aurelien -->
 
-                <!-- Les trois expanders pour naviguer dans les listes -->
+                <!-- Les deux expanders pour naviguer dans les listes -->
                 <StackPanel>
-                    <Expander Header="Adresses à desservir"
+                    <Expander Header="Livraisons à effectuer"
                               Margin="0,10,0,0">
-                        <ListBox x:Name="ListAdresses"
-                                 ItemsSource="{Binding Adresses_a_desservir}"
+                        <ListBox x:Name="ListLivraisons"
+                                 ItemsSource="{Binding Livraisons_a_effectuer}"
                                  DisplayMemberPath="Adresse"
-                                 SelectionChanged="OnListAdresses_Selected"/>
+                                 SelectionChanged="OnListLivraisons_Selected"/>
                     </Expander>
 
                     <Expander Header="Plats à préparer"
@@ -330,14 +367,11 @@
                     <ContentControl Margin="0,20,0,0">
                         <ContentControl.Content>
                             <MultiBinding Converter="{StaticResource FirstNonNullConverter}">
-                                <!-- On teste d’abord Avis -->
-                                <Binding ElementName="ListAvis"
+                                <!-- On teste d’abord Livraisons -->
+                                <Binding ElementName="ListLivraisons"
                                          Path="SelectedItem"/>
-                                <!-- puis Cuisiniers -->
-                                <Binding ElementName="ListCuisiniers"
-                                         Path="SelectedItem"/>
-                                <!-- et enfin Commandes -->
-                                <Binding ElementName="ListCommandes"
+                                <!-- puis Plats -->
+                                <Binding ElementName="ListPlats"
                                          Path="SelectedItem"/>
                             </MultiBinding>
                         </ContentControl.Content>

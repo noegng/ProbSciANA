@@ -634,26 +634,37 @@ namespace ProbSciANA.Interface
         }
         private void BtnValiderPanier_Click(object sender, RoutedEventArgs e)
         {
-            Commande c = new Commande("Commande " + (Commande.commandes.Count + 1), PrixTotal, SessionManager.CurrentUser.Id_utilisateur, Cuisinier.Id_utilisateur);
-            foreach (string adresse in Paniers.Keys)
+            if (Paniers != null && Paniers.Count > 0)
             {
-                Livraison l = new Livraison(c, adresse, Paniers[adresse].date);
-                Dictionary<Plat, int> Requierts = new Dictionary<Plat, int>();
-                foreach (Plat p in Paniers[adresse].plats)
+                Commande c = new Commande("Commande " + (Commande.commandes.Count + 1), PrixTotal, SessionManager.CurrentUser.Id_utilisateur, Cuisinier.Id_utilisateur);
+                foreach (string adresse in Paniers.Keys)
                 {
-                    if (!Requierts.Keys.Contains(p))
+                    if (Paniers[adresse].plats != null && Paniers[adresse].plats.Count > 0)
                     {
-                        Requierts.Add(p, 1);
-                    }
-                    else
-                    {
-                        Requierts[p]++;
+                        Livraison l = new Livraison(c, adresse, Paniers[adresse].date);
+                        Dictionary<Plat, int> Requierts = new Dictionary<Plat, int>();
+                        foreach (Plat p in Paniers[adresse].plats)
+                        {
+                            if (!Requierts.Keys.Contains(p))
+                            {
+                                Requierts.Add(p, 1);
+                            }
+                            else
+                            {
+                                Requierts[p]++;
+                            }
+                        }
+                        foreach (Plat p in Requierts.Keys)
+                        {
+                            new Requiert(p, l, Requierts[p]);
+                        }
+                        Paniers.Remove(adresse);
                     }
                 }
-                foreach (Plat p in Requierts.Keys)
-                {
-                    new Requiert(p, l, Requierts[p]);
-                }
+                CollectionViewSource.GetDefaultView(Paniers).Refresh();
+                PanierSelectionne = null;
+                DataContext = null;
+                DataContext = this;
             }
         }
         private void BtnAnnulerPanier_Click(object sender, RoutedEventArgs e)
@@ -717,14 +728,47 @@ namespace ProbSciANA.Interface
     #region Page Vue Commande
     public partial class CommandeView : Page
     {
-        public List<string> Adresses_a_desservir = new();
-        public List<string> Plats_a_cuisiner = new();
+        public List<Livraison> Livraisons_a_effectuer
+        {
+            get
+            {
+                List<Livraison> result = new();
+                if (dataGridCommandes.SelectedItem is Commande selected)
+                {
+                    foreach (Livraison l in selected.Livraisons)
+                    {
+                        result.Add(l);
+                    }
+                }
+                return result;
+            }
+        }
+        public List<Plat> Plats_a_cuisiner
+        {
+            get
+            {
+                List<Plat> result = new();
+                if (dataGridCommandes.SelectedItem is Commande selected)
+                {
+                    foreach (Livraison l in selected.Livraisons)
+                    {
+                        foreach (Requiert r in l.Requierts)
+                        {
+                            result.Add(r.Plat);
+                        }
+                    }
+                }
+                return result;
+            }
+        }
 
         public CommandeView()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
             Commande.RefreshList();
+            Livraison.RefreshList();
+            Requiert.RefreshList();
             dataGridCommandes.ItemsSource = null;
             dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Commandes_effectuees;
         }
@@ -732,16 +776,26 @@ namespace ProbSciANA.Interface
         {
             if (dataGridCommandes.SelectedItem is Commande selected)
             {
-                DataContext = selected;
+                DataContext = this;
+                ListLivraisons.ItemsSource = null;
+                ListLivraisons.ItemsSource = Livraisons_a_effectuer;
+
+                ListPlats.ItemsSource = null;
+                ListPlats.ItemsSource = Plats_a_cuisiner;
             }
         }
         private void BtnValider_Click(object sender, RoutedEventArgs e)
         {
-
+            if (dataGridCommandes.SelectedItem is Commande selectedCommande && selectedCommande.Statut == "en attente")
+            {
+                selectedCommande.Statut = "en attente";
+                dataGridCommandes.ItemsSource = null;
+                dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Commandes_effectuees;
+            }
         }
         private void BtnAnnuler_Click(object sender, RoutedEventArgs e)
         {
-            if (dataGridCommandes.SelectedItem is Commande selectedCommande)
+            if (dataGridCommandes.SelectedItem is Commande selectedCommande && selectedCommande.Statut == "en attente")
             {
                 selectedCommande.Delete();
                 dataGridCommandes.ItemsSource = null;
@@ -762,9 +816,9 @@ namespace ProbSciANA.Interface
             NavigationService?.Navigate(new AvisView());
         }
 
-        private void OnListAdresses_Selected(object s, SelectionChangedEventArgs e)
+        private void OnListLivraisons_Selected(object s, SelectionChangedEventArgs e)
         {
-            if (ListAdresses.SelectedItem != null)
+            if (ListLivraisons.SelectedItem != null)
             {
                 ListPlats.SelectedItem = null;
             }
@@ -773,7 +827,7 @@ namespace ProbSciANA.Interface
         {
             if (ListPlats.SelectedItem != null)
             {
-                ListAdresses.SelectedItem = null;
+                ListLivraisons.SelectedItem = null;
             }
         }
 
