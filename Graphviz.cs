@@ -49,7 +49,6 @@ namespace ProbSciANA
                 _ => "black", /// Couleur par défaut
             };
         }
-
         public static void GenerateGraphImageOG(List<Noeud<T>> noeuds, List<Arc<T>> arcs)
         {
             numéroImage++;
@@ -61,7 +60,7 @@ namespace ProbSciANA
             {
                 /// Création du fichier DOT
                 StringBuilder dot = new StringBuilder();
-                dot.AppendLine("digraph G {");
+                dot.AppendLine("graph G {");
                 dot.AppendLine("    layout=neato;"); /// Utilise le moteur neato
                 dot.AppendLine("    overlap=false;");
                 dot.AppendLine("    graph [dpi=300];");
@@ -72,23 +71,14 @@ namespace ProbSciANA
                     var pos = vertex.Valeur.ToString();
                     string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
                     string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
-                    dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\",style =\"point\", fontsize=12];");
+                    dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\",shape=\"point\", fontsize=8];");
                 }
                 for (int i = 0; i < arcs.Count; i = i + 2)
                 {
                     var idPrevious = arcs[i].IdPrevious.Valeur.ToString();
                     var idNext = arcs[i].IdNext.Valeur.ToString();
                     var color = GetColor(arcs[i].IdLigne);
-                    string nonSensUnique = "";
-                    if (!arcs[i].SensUnique)
-                    {
-                        nonSensUnique = "dir=\"both\",";
-                    }
-                    dot.AppendLine($"    \"{idPrevious}\" -> \"{idNext}\" [{nonSensUnique} color=\"{color}\", penwidth=3, style=bold];");
-                    if (arcs[i].SensUnique)
-                    {
-                        i--;
-                    }
+                    dot.AppendLine($"    \"{idPrevious}\" -- \"{idNext}\" [color=\"{color}\", penwidth=2, style=bold];");
                 }
 
 

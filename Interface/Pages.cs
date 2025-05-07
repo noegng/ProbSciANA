@@ -1720,7 +1720,7 @@ namespace ProbSciANA.Interface
         }
         private void BtnGraphMétro(object sender, RoutedEventArgs e)
         {
-            Program.GrapheMétro.AffichageGrapheOrienté();
+            Program.GrapheMétro.AffichageAncienGraphe();
         }
 
         private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)

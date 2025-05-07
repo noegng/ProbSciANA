@@ -865,10 +865,11 @@ namespace ProbSciANA
 
         #endregion
         #region Affichage
-        public void AffichageGrapheOrienté()
+        public void AffichageAncienGraphe()
         {
             Graphviz<T>.GenerateGraphImageOG(Noeuds, Arcs);
         }
+
         public void AffichageGrapheNonOrienté()
         {
             Graphviz<T>.GenerateGraphNonOrienté(Noeuds, Arcs, Couleurs);
@@ -946,10 +947,6 @@ namespace ProbSciANA
         {
             List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée = TriListeAdjacence();
             int couleur = 0;
-            foreach (var noeud in couleurs.Keys)
-            {
-                couleurs[noeud] = 0; ///On réinitialise les couleurs à 0
-            }
             while (listeAdjacenceTriée.Count != 0)
             {
                 couleur++;
@@ -977,6 +974,7 @@ namespace ProbSciANA
                     listeAdjacenceTriée.Remove(s);
                 }
             }
+            Console.WriteLine("Moi");
             Console.WriteLine("Coloration du graphe avec " + couleur + " couleurs :");
             foreach (var noeud in couleurs.Keys)
             {
