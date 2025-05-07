@@ -404,5 +404,5 @@ obj/
 Metro_Arcs_Par_Station_IDs.xlsx
 graphe.png
 graphe.dot
-!Interface/images/graphes/
-!Interface/images/graphes/**
+!Interface/images/
+Interface/images/graphes/**
