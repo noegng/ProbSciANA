@@ -349,9 +349,18 @@
                             BorderThickness="0"
                             Click="BtnValider_Click"
                             DockPanel.Dock="Right"/>
-                </DockPanel>
 
-                <!-- Carte d'aurelien -->
+                    <Button Content="Chemin à suivre"
+                            FontSize="14"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="BtnAffichage_Djikstra"
+                            DockPanel.Dock="Right"/>
+                </DockPanel>
 
                 <!-- Les deux expanders pour naviguer dans les listes -->
                 <StackPanel>
@@ -384,7 +393,17 @@
                             </MultiBinding>
                         </ContentControl.Content>
                     </ContentControl>
+
+
                 </StackPanel>
+                <!-- Carte d'aurelien -->
+                <Image Source="{Binding cheminAcces}"
+                       Width="100"
+                       Height="100"
+                       Stretch="UniformToFill"
+                       IsHitTestVisible="False"
+                       Margin="5"/>
+
             </StackPanel>
 
         </Grid>

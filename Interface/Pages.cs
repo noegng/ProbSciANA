@@ -832,6 +832,7 @@ namespace ProbSciANA.Interface
     #region Page Vue Commande
     public partial class CommandeView : Page
     {
+        public string cheminAcces = "Interface'\'Images'\'graphes'\'grapheChemin1.png";
         public List<Livraison> Livraisons_a_effectuer
         {
             get
@@ -962,6 +963,15 @@ namespace ProbSciANA.Interface
             if (NavigationService.CanGoForward)
                 NavigationService.GoForward();
             UpdateNavButtons();
+        }
+        private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Commande selected)
+            {
+                (int tempsTrajet, cheminAcces) = Program.GrapheMétro.AffichageDijkstra(SessionManager.CurrentUser.Station, selected.Client.Station);
+                CollectionViewSource.GetDefaultView(cheminAcces).Refresh();
+                MessageBox.Show($"Temps de trajet entre {SessionManager.CurrentUser.Station.Valeur.nom} et {selected.Client.Station.Valeur.nom} : {tempsTrajet} minutes.");
+            }
         }
     }
     #endregion
@@ -1808,19 +1818,20 @@ namespace ProbSciANA.Interface
 
         private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
         {
-            int tempsTrajet = Program.GrapheMétro.AffichageDijkstra(Program.Stations[1], Program.Stations[100]);
+            (int tempsTrajet, string cheminAcces) = Program.GrapheMétro.AffichageDijkstra(Program.Stations[1], Program.Stations[100]);
             MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
         }
 
         private void BtnAffichage_BF(object sender, RoutedEventArgs e)
         {
-            int tempsTrajet = Program.GrapheMétro.AffichageBellmanFord(Program.Stations[1], Program.Stations[100]);
+            (int tempsTrajet, string cheminAcces) = Program.GrapheMétro.AffichageBellmanFord(Program.Stations[1], Program.Stations[100]);
             MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
         }
         private void BtnAffichage_Floyd(object sender, RoutedEventArgs e)
         {
-            int tempsTrajet = Program.GrapheMétro.AffichageFloydWarshall(Program.Stations[1], Program.Stations[100]);
+            (int tempsTrajet, string cheminAcces) = Program.GrapheMétro.AffichageFloydWarshall(Program.Stations[1], Program.Stations[100]);
             MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[100].Valeur.nom} : {tempsTrajet} minutes.");
+
         }
         private void BtnCheminOptimal(object sender, RoutedEventArgs e)
         {
