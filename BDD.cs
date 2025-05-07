@@ -50,6 +50,7 @@ namespace ProbSciANA
         private DateTime date_inscription;
         private string mdp;
         private string? nom_referent = null;
+        private string? photo = "Images/profil_defaut.png";
         public Utilisateur(int id_utilisateur)
         {
             this.id_utilisateur = id_utilisateur;
@@ -304,6 +305,11 @@ namespace ProbSciANA
         {
             get { return nom_referent; }
             set { nom_referent = value; Update("nom_referent", value); }
+        }
+        public string Photo
+        {
+            get { return photo; }
+            set { photo = value; Update("photo", value); }
         }
         public string Statut
         {
@@ -1130,21 +1136,21 @@ namespace ProbSciANA
         private string regime;
         private string nationalite;
         private DateTime date_peremption;
-        private string photo;
+        private string? photo = "Images/plat_defaut";
 
         public Plat(int id_plat)
         {
             this.id_plat = id_plat;
             Refresh();
         }
-        public Plat(string nom, double prix, int nb_portions, string type, string regime, string nationalite, DateTime date_peremption, string photo = "")
+        public Plat(string nom, double prix, int nb_portions, string type, string regime, string nationalite, DateTime date_peremption)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
                 connection.Open();
 
-                string query = @"INSERT INTO Plat (nom, prix, nb_portions, type_, regime, nationalite, date_peremption, photo)
-                                VALUES (@nom, @prix, @nbPortions, @type, @regime, @nationalite, @date_peremption, @photo);";
+                string query = @"INSERT INTO Plat (nom, prix, nb_portions, type_, regime, nationalite, date_peremption)
+                                VALUES (@nom, @prix, @nbPortions, @type, @regime, @nationalite, @date_peremption);";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -1155,14 +1161,6 @@ namespace ProbSciANA
                     command.Parameters.AddWithValue("@regime", regime);
                     command.Parameters.AddWithValue("@nationalite", nationalite);
                     command.Parameters.AddWithValue("@date_peremption", date_peremption.ToString("yyyy-MM-dd HH:mm:ss"));
-                    if (photo != null && photo != "")
-                    {
-                        command.Parameters.AddWithValue("@photo", photo);
-                    }
-                    else
-                    {
-                        command.Parameters.AddWithValue("@photo", "");
-                    }
                     command.ExecuteNonQuery();
                 }
                 string queryGetId = "SELECT LAST_INSERT_ID();";
@@ -1179,14 +1177,6 @@ namespace ProbSciANA
             this.regime = regime;
             this.nationalite = nationalite;
             this.date_peremption = date_peremption;
-            if (photo != null && photo != "")
-            {
-                this.photo = photo;
-            }
-            else
-            {
-                this.photo = "";
-            }
         }
 
         #region GetSet
@@ -1368,6 +1358,7 @@ namespace ProbSciANA
         private int id_ingredient;
         private string nom;
         private string regime;
+        private string? photo = "";
 
         public Ingredient(int id_ingredient)
         {
@@ -1428,6 +1419,11 @@ namespace ProbSciANA
         {
             get { return regime; }
             set { regime = value; Update("regime", value); }
+        }
+        public string Photo
+        {
+            get { return photo; }
+            set { photo = value; Update("photo", value); }
         }
         #endregion
         public void Update(string champ, string value)

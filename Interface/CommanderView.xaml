@@ -188,7 +188,7 @@
             </StackPanel>
 
             <!-- Titre -->
-            <TextBlock Text="Qu'est ce qui vous ferait plaisir ?"
+            <TextBlock Text="Choisissez un Cuisinier"
                        FontSize="24"
                        FontWeight="Bold"
                        VerticalAlignment="Center"
@@ -208,8 +208,8 @@
                     <DataTemplate>
                         <Border Margin="10"
                                 Padding="10"
-                                Width="150"
-                                Height="170"
+                                Width="200"
+                                Height="200"
                                 Background="White"
                                 CornerRadius="12"
                                 BorderBrush="#DDD"
@@ -226,6 +226,12 @@
                                            FontSize="12"
                                            TextAlignment="Center"
                                            Foreground="Gray"/>
+                                <Image Source="{Binding Photo}"
+                                       Width="100"
+                                       Height="100"
+                                       Stretch="UniformToFill"
+                                       IsHitTestVisible="False"
+                                       Margin="5"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

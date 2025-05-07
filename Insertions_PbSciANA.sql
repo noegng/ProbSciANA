@@ -46,16 +46,16 @@ INSERT INTO Entreprise (id_utilisateur, nom_referent) VALUES
 -- Table Plat
 --------------------------
 INSERT INTO Plat (nom, prix, nb_portions, type_, regime, nationalite, date_peremption, photo) VALUES
-('Salade de chèvre', 6.50, 2, 'entrée', 'Végétarien', 'Française', '2025-05-01', 'salade.jpg'),
-('Soupe de légumes', 4.00, 1, 'entrée', 'Végétarien', 'Française', '2025-04-15', 'soupe.jpg'),
-('Steak frites', 12.50, 1, 'plat', 'Standard', 'Française', '2025-06-01', 'steak.jpg'),
-('Pizza Margherita', 9.50, 1, 'plat', 'Standard', 'Italienne', '2025-06-10', 'pizza.jpg'),
-('Burger Classic', 8.00, 1, 'plat', 'Standard', 'Américaine', '2025-07-01', 'burger.jpg'),
-('Pâtes Carbonara', 10.00, 1, 'plat', 'Standard', 'Italienne', '2025-06-15', 'pates.jpg'),
-('Tarte aux pommes', 5.00, 1, 'dessert', 'Standard', 'Française', '2025-05-30', 'tarte.jpg'),
-('Crème brûlée', 6.00, 1, 'dessert', 'Standard', 'Française', '2025-05-25', 'creme.jpg'),
-('Mousse au chocolat', 5.50, 1, 'dessert', 'Standard', 'Française', '2025-06-05', 'mousse.jpg'),
-('Quiche Lorraine', 7.50, 1, 'plat', 'Standard', 'Française', '2025-06-20', 'quiche.jpg');
+('Salade de chèvre', 6.50, 2, 'entrée', 'Végétarien', 'Française', '2025-05-01', 'Images/salade.png'),
+('Paella', 4.00, 1, 'plat', 'Standard', 'Espagnole', '2025-04-15', 'Images/paella.png'),
+('Steak frites', 12.50, 1, 'plat', 'Standard', 'Française', '2025-06-01', 'Images/steak.png'),
+('Pizza Margherita', 9.50, 1, 'plat', 'Standard', 'Italienne', '2025-06-10', 'Images/pizza.png'),
+('Burger Classic', 8.00, 1, 'plat', 'Standard', 'Américaine', '2025-07-01', 'Images/burger.png'),
+('Pâtes Carbonara', 10.00, 1, 'plat', 'Standard', 'Italienne', '2025-06-15', 'Images/pates.png'),
+('Tarte aux pommes', 5.00, 1, 'dessert', 'Standard', 'Française', '2025-05-30', 'Images/tarte.png'),
+('Glace', 6.00, 1, 'dessert', 'Standard', 'Italienne', '2025-05-25', 'Images/glace.png'),
+('Sushis', 15, 1, 'plat', 'Standard', 'Japonaise', '2025-06-05', 'Images/sushis.png'),
+('Brunch', 13.50, 1, 'plat', 'Standard', 'Anglaise', '2025-06-20', 'Images/brunch.png');
 
 --------------------------
 -- Table Ingredient

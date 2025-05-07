@@ -10,7 +10,7 @@
     <Content Include="Graphviz\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Remove="Interface\images\fond.png" />
+
     <None Remove="Metro_Arcs_Par_Station_IDs.xlsx" />
 
     <PackageReference Include="EPPlus" Version="4.0.1.1" />
@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Interface\images\fond.png">
+    <Content Include="Interface\images\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
