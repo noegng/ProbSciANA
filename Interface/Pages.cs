@@ -1347,38 +1347,16 @@ namespace ProbSciANA.Interface
     #region Page Cuisiniers Admin
     public partial class CuisiniersViewAdmin : Page
     {
-        public object SelectedElement { get; set; }
+        //public object SelectedElement { get; set; }
 
         public CuisiniersViewAdmin()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
             Requetes.RefreshAllLists();
-            dataGridCuisiniers = FindName("dataGridCuisiniers") as DataGrid;
-            FicheCuisinier = FindName("FicheCuisinier") as FrameworkElement;
-            AddPane = FindName("AddPane") as FrameworkElement;
-            TxtPrenom = FindName("TxtPrenom") as TextBox;
-            TxtNom = FindName("TxtNom") as TextBox;
-            TxtAdresse = FindName("TxtAdresse") as TextBox;
-            TxtTel = FindName("TxtTel") as TextBox;
-            TxtEmail = FindName("TxtEmail") as TextBox;
-            CmbStatut = FindName("CmbStatut") as ComboBox;
-            TxtReferent = FindName("TxtReferent") as TextBox;
-
             dataGridCuisiniers.ItemsSource = null;
             dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
         }
-
-        //private DataGrid dataGridCuisiniers;
-        private FrameworkElement FicheCuisinier;
-        private FrameworkElement AddPane;
-        private TextBox TxtPrenom;
-        private TextBox TxtNom;
-        private TextBox TxtAdresse;
-        private TextBox TxtTel;
-        private TextBox TxtEmail;
-        private ComboBox CmbStatut;
-        private TextBox TxtReferent;
         private async void dataGridCuisiniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dataGridCuisiniers.SelectedItem is Utilisateur selected)
@@ -1441,11 +1419,6 @@ namespace ProbSciANA.Interface
         }
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new Register());
-        }
-        /*
-        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
-        {
             // Masquer la fiche client, afficher le bandeau
             FicheCuisinier.Visibility = Visibility.Collapsed;
             AddPane.Visibility = Visibility.Visible;
@@ -1463,6 +1436,7 @@ namespace ProbSciANA.Interface
             if (string.IsNullOrWhiteSpace(TxtPrenom.Text) ||
                 string.IsNullOrWhiteSpace(TxtNom.Text) ||
                 string.IsNullOrWhiteSpace(TxtAdresse.Text) ||
+                string.IsNullOrWhiteSpace(TxtTel.Text) ||
                 string.IsNullOrWhiteSpace(TxtEmail.Text))
             {
                 MessageBox.Show("Tous les champs obligatoires doivent être remplis.");
@@ -1471,9 +1445,6 @@ namespace ProbSciANA.Interface
 
             try
             {
-                bool estEntreprise = (CmbStatut.SelectedItem as ComboBoxItem)?
-                     .Content?.ToString() == "Entreprise";
-
                 var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(TxtAdresse.Text);
 
                 var nouveauClient = new Utilisateur(
@@ -1485,16 +1456,11 @@ namespace ProbSciANA.Interface
                     telephone: TxtTel.Text,
                     email: TxtEmail.Text,
                     mdp: "mdp1234",
-                    station: station,
-                    nom_referent: estEntreprise ? TxtReferent.Text : "",
-                    estEntreprise: estEntreprise);
+                    station: station);
 
-                // Rafraîchir la liste
-                Utilisateur.RefreshList();
                 dataGridCuisiniers.ItemsSource = null;
                 dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
 
-                // Fermer le bandeau
                 AddPane.Visibility = Visibility.Collapsed;
                 FicheCuisinier.Visibility = Visibility.Visible;
             }
@@ -1503,7 +1469,7 @@ namespace ProbSciANA.Interface
                 MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
             }
         }
-        */
+
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ClientsViewAdmin());
@@ -1551,9 +1517,20 @@ namespace ProbSciANA.Interface
     #endregion
 
     #region Page Commandes Admin
-
     public partial class CommandesViewAdmin : Page
     {
+        public double Moyenne
+        {
+            get
+            {
+                double result = 0;
+                foreach (Commande c in Commande.commandes)
+                {
+                    result += c.Prix;
+                }
+                return result;
+            }
+        }
         public CommandesViewAdmin()
         {
             InitializeComponent();
@@ -1627,7 +1604,6 @@ namespace ProbSciANA.Interface
             UpdateNavButtons();
         }
     }
-
     #endregion
 
     #region Page Statistiques Admin

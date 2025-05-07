@@ -364,6 +364,17 @@
                                                    FontWeight="Bold"
                                                    DockPanel.Dock="Left"/>
 
+                                        <Grid DockPanel.Dock="Top"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center">
+                                                <Image Source="{Binding Photo}"
+                                                       Width="100"
+                                                       Height="100"
+                                                       Stretch="UniformToFill"
+                                                       IsHitTestVisible="False"
+                                                       Margin="0,10,0,0"/>
+                                        </Grid>
+
                                         <Button Content="🗑️"
                                                 FontSize="14"
                                                 Width="30"
@@ -388,83 +399,84 @@
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
                                         <!-- Nom -->
                                         <TextBlock Text="Nom :"
                                                    FontWeight="Bold"
                                                    Margin="0 0 10 5"
-                                                   Grid.Row="0"
+                                                   Grid.Row="1"
                                                    Grid.Column="0"/>
                                         <TextBlock Text="{Binding Nom}"
                                                    HorizontalAlignment="Right"
-                                                   Grid.Row="0"
+                                                   Grid.Row="1"
                                                    Grid.Column="1"/>
 
                                         <!-- Prénom -->
                                         <TextBlock Text="Prénom :"
                                                    FontWeight="Bold"
                                                    Margin="0 0 10 5"
-                                                   Grid.Row="1"
+                                                   Grid.Row="2"
                                                    Grid.Column="0"/>
                                         <TextBlock Text="{Binding Prenom}"
                                                    HorizontalAlignment="Right"
-                                                   Grid.Row="1"
+                                                   Grid.Row="2"
                                                    Grid.Column="1"/>
 
                                         <!-- Email -->
                                         <TextBlock Text="Email :"
                                                    FontWeight="Bold"
                                                    Margin="0 0 10 5"
-                                                   Grid.Row="2"
+                                                   Grid.Row="3"
                                                    Grid.Column="0"/>
                                         <TextBlock Text="{Binding Email}"
                                                    HorizontalAlignment="Right"
-                                                   Grid.Row="2"
+                                                   Grid.Row="3"
                                                    Grid.Column="1"/>
 
                                         <!-- Adresse -->
                                         <TextBlock Text="Adresse :"
                                                    FontWeight="Bold"
                                                    Margin="0 0 10 5"
-                                                   Grid.Row="3"
+                                                   Grid.Row="4"
                                                    Grid.Column="0"/>
                                         <TextBlock Text="{Binding Adresse}"
                                                    HorizontalAlignment="Right"
-                                                   Grid.Row="3"
+                                                   Grid.Row="4"
                                                    Grid.Column="1"/>
 
                                         <!-- Téléphone -->
                                         <TextBlock Text="Téléphone :"
                                                    FontWeight="Bold"
                                                    Margin="0 0 10 5"
-                                                   Grid.Row="4"
+                                                   Grid.Row="5"
                                                    Grid.Column="0"/>
                                         <TextBlock Text="{Binding Telephone}"
                                                    HorizontalAlignment="Right"
-                                                   Grid.Row="4"
+                                                   Grid.Row="5"
                                                    Grid.Column="1"/>
 
                                         <!-- Statut -->
                                         <TextBlock Text="Statut :"
                                                    FontWeight="Bold"
                                                    Margin="0 0 10 5"
-                                                   Grid.Row="5"
+                                                   Grid.Row="6"
                                                    Grid.Column="0"/>
                                         <TextBlock Text="{Binding Statut}"
                                                    HorizontalAlignment="Right"
-                                                   Grid.Row="5"
+                                                   Grid.Row="6"
                                                    Grid.Column="1"/>
 
                                         <!-- Station -->
                                         <TextBlock Text="Station :"
                                                    FontWeight="Bold"
                                                    Margin="0 0 10 0"
-                                                   Grid.Row="6"
+                                                   Grid.Row="7"
                                                    Grid.Column="0"/>
                                         <TextBlock Text="{Binding NomStation}"
                                                    HorizontalAlignment="Right"
-                                                   Grid.Row="6"
+                                                   Grid.Row="7"
                                                    Grid.Column="1"/>
                                 </Grid>
 
