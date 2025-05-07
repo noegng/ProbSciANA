@@ -308,7 +308,6 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
         }
-
         private void Commander_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new CommanderView());
@@ -325,7 +324,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstCuisinier)
+            {
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -377,7 +379,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -402,18 +407,24 @@ namespace ProbSciANA.Interface
 
     public partial class AddPlat : Page
     {
-        public List<Ingredient> Ingredients_affiches
-        {
-            get { return Ingredient.ingredients; }
-        }
         public Dictionary<Ingredient, int> Ingredients_selectionnes { get; set; } = new();
+
         public AddPlat()
         {
             InitializeComponent();
-            DataContext = this;
+            RefreshIngredients();
             //Loaded += (s, e) => UpdateNavButtons();
         }
 
+        private void RefreshIngredients()
+        {
+            foreach (Ingredient i in Ingredient.ingredients)
+            {
+                Ingredients_selectionnes[i] = 0;
+            }
+            DataContext = null;
+            DataContext = this;
+        }
         private void BtnValiderPlat_Click(object sender, RoutedEventArgs e)
         {
             string nomPlat = NomPlatTextBox.Text;
@@ -453,7 +464,10 @@ namespace ProbSciANA.Interface
                 {
                     foreach (Ingredient i in Ingredients_selectionnes.Keys)
                     {
-                        new Compose(nouveauPlat, i, Ingredients_selectionnes[i]);
+                        if (Ingredients_selectionnes[i] != 0)
+                        {
+                            new Compose(nouveauPlat, i, Ingredients_selectionnes[i]);
+                        }
                     }
                 }
                 MessageBox.Show("Plat ajouté avec succès !");
@@ -466,23 +480,26 @@ namespace ProbSciANA.Interface
         }
         private void BtnAjouterAuPlat_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.Tag is Ingredient ingredient)
+            if (sender is Button button)
             {
-                if (!Ingredients_selectionnes.ContainsKey(ingredient))
+                try
                 {
-                    Ingredients_selectionnes.Add(ingredient, 1);
-                }
-                else
-                {
+                    Ingredient ingredient = (Ingredient)button.Tag;
                     Ingredients_selectionnes[ingredient]++;
+                    DataContext = null;
+                    DataContext = this;
+                    CollectionViewSource.GetDefaultView(Ingredients_selectionnes).Refresh();
                 }
-                DataContext = null;
-                DataContext = this;
+                catch (InvalidCastException ex)
+                {
+                    MessageBox.Show($"Erreur de cast : {ex.Message}");
+                }
             }
         }
         private void BtnAnnulerPanier_Click(object sender, RoutedEventArgs e)
         {
             Ingredients_selectionnes.Clear();
+            RefreshIngredients();
             DataContext = null;
             DataContext = this;
         }
@@ -511,7 +528,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -564,7 +584,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstCuisinier)
+            {
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -782,7 +805,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstCuisinier)
+            {
+                NavigationService?.Navigate(new CuisinierDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -916,7 +942,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -975,7 +1004,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -1049,7 +1081,10 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new AdminDashboardView());
+            if (SessionManager.CurrentUser.EstClient)
+            {
+                NavigationService?.Navigate(new UserDashboardView());
+            }
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
