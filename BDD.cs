@@ -16,15 +16,15 @@ namespace ProbSciANA
             Plat.RefreshList();
             Ingredient.RefreshList();
 
-            // 2 – Associations simples
+            /// 2 – Associations simples
             Compose.RefreshList();
             Cuisine.RefreshList();
 
-            // 3 – Conteneurs
+            /// 3 – Conteneurs
             Commande.RefreshList();
             Livraison.RefreshList();
 
-            // 4 – Associations complexes
+            /// 4 – Associations complexes
             Requiert.RefreshList();
             Avis.RefreshList();
         }
@@ -58,7 +58,7 @@ namespace ProbSciANA
         }
         public Utilisateur(bool estClient, bool estCuisinier, string nom, string prenom, string adresse, string telephone, string email, string mdp, Noeud<(int id, string nom)> station = null, bool estEntreprise = false, string nom_referent = "")
         {
-            //mdp = GetMDP(nom, prenom);
+            ///mdp = GetMDP(nom, prenom);
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
                 connection.Open();
@@ -414,7 +414,7 @@ namespace ProbSciANA
         {
             if (obj is Utilisateur other)
             {
-                return this.id_utilisateur == other.id_utilisateur; // Comparaison basée sur l'Id
+                return this.id_utilisateur == other.id_utilisateur; /// Comparaison basée sur l'Id
             }
             return false;
         }
@@ -1668,7 +1668,7 @@ namespace ProbSciANA
             }
             avis.Remove(this);
         }
-        public void Refresh() // Refreshes the information of the avis
+        public void Refresh() /// Refreshes the information of the avis
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -1697,7 +1697,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void RefreshList() // Refreshes the list of avis
+        public static void RefreshList() /// Refreshes the list of avis
         {
             avis.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -1837,7 +1837,7 @@ namespace ProbSciANA
             cuisines.Remove(this);
             cuisinier.Cuisines.Remove(this);
         }
-        public void Refresh() // Refreshes the information of the cuisine
+        public void Refresh() /// Refreshes the information of the cuisine
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -1883,7 +1883,7 @@ namespace ProbSciANA
                 }
             }
         }
-        public static void RefreshList() // Refreshes the list of cuisines
+        public static void RefreshList() /// Refreshes the list of cuisines
         {
             cuisines.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -1992,7 +1992,7 @@ namespace ProbSciANA
             }
             requierts.Remove(this);
         }
-        public void Refresh() // Refreshes the information of the requiert
+        public void Refresh() /// Refreshes the information of the requiert
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -2015,7 +2015,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void RefreshList() // Refreshes the list of requierts
+        public static void RefreshList() /// Refreshes the list of requierts
         {
             requierts.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
@@ -2124,7 +2124,7 @@ namespace ProbSciANA
             }
             composes.Remove(this);
         }
-        public void Refresh() // Refreshes the information of the compose
+        public void Refresh() /// Refreshes the information of the compose
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
@@ -2147,7 +2147,7 @@ namespace ProbSciANA
                 connection.Close();
             }
         }
-        public static void RefreshList() // Refreshes the list of composes
+        public static void RefreshList() /// Refreshes the list of composes
         {
             composes.Clear();
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))

@@ -946,10 +946,18 @@ namespace ProbSciANA
             TriListeAdjacenceDecroissant(listeAdjacenceTriée, j + 1, fin);
             return listeAdjacenceTriée;
         }
+        private void ClearCouleurs()
+        {
+            foreach (var couleur in couleurs.Keys)
+            {
+                couleurs[couleur] = 0;
+            }
+        }
         public int WelshPowell()
         {
             List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée = TriListeAdjacence();
             int couleur = 0;
+            ClearCouleurs();    /// Obligé de réinitalisté les couleurs pour que l'algo se déroule bien.
             while (listeAdjacenceTriée.Count != 0)
             {
                 couleur++;
@@ -976,12 +984,6 @@ namespace ProbSciANA
                 {
                     listeAdjacenceTriée.Remove(s);
                 }
-            }
-            Console.WriteLine("Moi");
-            Console.WriteLine("Coloration du graphe avec " + couleur + " couleurs :");
-            foreach (var noeud in couleurs.Keys)
-            {
-                Console.WriteLine($"Noeud {noeud} : Couleur {couleurs[noeud]}");
             }
             return couleur;
         }
