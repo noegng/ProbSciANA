@@ -1718,6 +1718,11 @@ namespace ProbSciANA.Interface
                 NavigationService.GoForward();
             UpdateNavButtons();
         }
+        private void BtnGraphMétro(object sender, RoutedEventArgs e)
+        {
+            Program.GrapheMétro.AffichageGrapheOrienté();
+        }
+
         private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
         {
             int tempsTrajet = Program.GrapheMétro.AffichageDijkstra(Program.Stations[1], Program.Stations[100]);

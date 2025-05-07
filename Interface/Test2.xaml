@@ -173,6 +173,11 @@
                        FontSize="20"
                        Margin="0,0,0,20"/>
             <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Graph Métro"
+                    Width="200"
+                    Margin="5"
+                    Click="BtnGraphMétro"/>
+            <Button Style="{StaticResource MenuButtonStyle}"
                     Content="Test affichage Dijkstra"
                     Width="200"
                     Margin="5"
