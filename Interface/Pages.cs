@@ -932,8 +932,6 @@ namespace ProbSciANA.Interface
             Requetes.RefreshAllLists();
             dataGridPlats.ItemsSource = null;
             dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
-            Console.WriteLine(SessionManager.CurrentUser.Cuisines.Count);
-            Console.WriteLine(SessionManager.CurrentUser.Cuisines[0].Plat.Composes.Count);
         }
         private void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
