@@ -10,6 +10,10 @@ namespace ProbSciANA
 {
     public static class Graphviz<T>
     {
+        private static readonly string ProjectDirectory = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\"));
+        private static readonly string GraphvizPath = Path.Combine(ProjectDirectory, "Graphviz", "bin", "dot.exe");
+        private static readonly string ImagesPath = Path.Combine(ProjectDirectory, "Interface", "images", "graphes");
+
         private static int numéroImage = 0; ///Pour pouvoir créer plusieurs images en meme temps si nécessaire
         private static int numéroImageChemin = 0;
         /// <summary>
@@ -50,8 +54,8 @@ namespace ProbSciANA
         {
             numéroImage++;
             /// Chemins pour le fichier DOT et l'image PNG
-            string dotFilePath = "graphe" + numéroImage + ".dot";
-            string pngFilePath = "graphe" + numéroImage + ".png";
+            string dotFilePath = Path.Combine(ImagesPath, $"graphe{numéroImage}.dot");
+            string pngFilePath = Path.Combine(ImagesPath, $"graphe{numéroImage}.png");
             /// Générer le fichier DOT et l'image PNG
             try
             {
@@ -103,7 +107,7 @@ namespace ProbSciANA
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Graphviz", "bin", "dot.exe"),
+                        FileName = GraphvizPath,
                         Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
@@ -134,8 +138,8 @@ namespace ProbSciANA
         public static void GenerateChemin(List<Arc<T>> arcsChemin, List<Noeud<T>> noeuds)
         {
             numéroImageChemin++;
-            string dotFilePath = "grapheChemin" + numéroImageChemin + ".dot";
-            string pngFilePath = "grapheChemin" + numéroImageChemin + ".png";
+            string dotFilePath = Path.Combine(ImagesPath, $"grapheChemin{numéroImageChemin}.dot");
+            string pngFilePath = Path.Combine(ImagesPath, $"grapheChemin{numéroImageChemin}.png");
             try
             {
                 /// Création du fichier DOT
@@ -143,7 +147,7 @@ namespace ProbSciANA
                 dot.AppendLine("digraph G {");
                 dot.AppendLine("    layout=neato;"); /// Utilise le moteur neato
                 dot.AppendLine("    overlap=false;");
-                dot.AppendLine("    graph [dpi=300];");
+                dot.AppendLine("    graph [dpi=200];");
                 ///Creation du premier sommet (impossible dans la boucle foreach)
                 foreach (Noeud<T> vertex in noeuds)
                 {
@@ -196,7 +200,7 @@ namespace ProbSciANA
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Graphviz", "bin", "dot.exe"),
+                        FileName = GraphvizPath,
                         Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
@@ -217,11 +221,17 @@ namespace ProbSciANA
                 }
 
                 Console.WriteLine($"Image PNG générée : {pngFilePath}");
-                Process.Start(new ProcessStartInfo(pngFilePath) { UseShellExecute = true });
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = pngFilePath,
+                    UseShellExecute = true,
+                    WorkingDirectory = Path.GetDirectoryName(pngFilePath)
+                };
+                Process.Start(startInfo);
             }
             catch (Exception ex)
             {
-                throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
+                throw new Exception($"Une erreur est survenue lors de la génération de l'image du graphe. Chemin: {pngFilePath}", ex);
             }
 
         }
@@ -239,8 +249,8 @@ namespace ProbSciANA
 
             /// Chemins pour le fichier DOT et l'image PNG
             numéroImage++;
-            string dotFilePath = "grapheNonOriente" + numéroImage + ".dot";
-            string pngFilePath = "grapheNonOriente" + numéroImage + ".png";
+            string dotFilePath = Path.Combine(ImagesPath, $"grapheNonOriente{numéroImage}.dot");
+            string pngFilePath = Path.Combine(ImagesPath, $"grapheNonOriente{numéroImage}.png");
 
             try
             {
@@ -272,7 +282,7 @@ namespace ProbSciANA
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Graphviz", "bin", "dot.exe"),
+                        FileName = GraphvizPath,
                         Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
                         UseShellExecute = false,
                         RedirectStandardOutput = true,

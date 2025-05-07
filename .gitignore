@@ -401,4 +401,5 @@ FodyWeavers.xsd
 Metro_Arcs_Par_Station_IDs.xlsx
 graphe.png
 graphe.dot
+Interface/images/graphes/*
 !obj/Debug/net9.0-windows/Interface/
