@@ -1199,66 +1199,71 @@ namespace ProbSciANA.Interface
                 dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
             }
         }
-
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
-            // Masquer la fiche client, afficher le bandeau
-            FicheCuisinier.Visibility = Visibility.Collapsed;
-            AddPane.Visibility = Visibility.Visible;
-
-            // Réinitialiser les champs
-            TxtPrenom.Text = TxtNom.Text = TxtAdresse.Text = TxtTel.Text = TxtEmail.Text = "";
+            NavigationService?.Navigate(new Register());
         }
-        private void BtnAnnulerAjout_Click(object sender, RoutedEventArgs e)
-        {
-            AddPane.Visibility = Visibility.Collapsed;
-            FicheCuisinier.Visibility = Visibility.Visible;
-        }
-        private async void BtnValiderAjout_Click(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(TxtPrenom.Text) ||
-                string.IsNullOrWhiteSpace(TxtNom.Text) ||
-                string.IsNullOrWhiteSpace(TxtAdresse.Text) ||
-                string.IsNullOrWhiteSpace(TxtEmail.Text))
-            {
-                MessageBox.Show("Tous les champs obligatoires doivent être remplis.");
-                return;
-            }
+        /*
+                private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+                {
+                    // Masquer la fiche client, afficher le bandeau
+                    FicheCuisinier.Visibility = Visibility.Collapsed;
+                    AddPane.Visibility = Visibility.Visible;
 
-            try
-            {
-                bool estEntreprise = (CmbStatut.SelectedItem as ComboBoxItem)?
-                     .Content?.ToString() == "Entreprise";
+                    // Réinitialiser les champs
+                    TxtPrenom.Text = TxtNom.Text = TxtAdresse.Text = TxtTel.Text = TxtEmail.Text = "";
+                }
+                private void BtnAnnulerAjout_Click(object sender, RoutedEventArgs e)
+                {
+                    AddPane.Visibility = Visibility.Collapsed;
+                    FicheCuisinier.Visibility = Visibility.Visible;
+                }
+                private async void BtnValiderAjout_Click(object sender, RoutedEventArgs e)
+                {
+                    if (string.IsNullOrWhiteSpace(TxtPrenom.Text) ||
+                        string.IsNullOrWhiteSpace(TxtNom.Text) ||
+                        string.IsNullOrWhiteSpace(TxtAdresse.Text) ||
+                        string.IsNullOrWhiteSpace(TxtEmail.Text))
+                    {
+                        MessageBox.Show("Tous les champs obligatoires doivent être remplis.");
+                        return;
+                    }
 
-                var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(TxtAdresse.Text);
+                    try
+                    {
+                        bool estEntreprise = (CmbStatut.SelectedItem as ComboBoxItem)?
+                             .Content?.ToString() == "Entreprise";
 
-                var nouveauClient = new Utilisateur(
-                    estClient: false,
-                    estCuisinier: true,
-                    nom: TxtNom.Text,
-                    prenom: TxtPrenom.Text,
-                    adresse: TxtAdresse.Text,
-                    telephone: TxtTel.Text,
-                    email: TxtEmail.Text,
-                    mdp: "mdp1234",
-                    station: station,
-                    nom_referent: estEntreprise ? TxtReferent.Text : "",
-                    estEntreprise: estEntreprise);
+                        var station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(TxtAdresse.Text);
 
-                // Rafraîchir la liste
-                Utilisateur.RefreshList();
-                dataGridCuisiniers.ItemsSource = null;
-                dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
+                        var nouveauClient = new Utilisateur(
+                            estClient: false,
+                            estCuisinier: true,
+                            nom: TxtNom.Text,
+                            prenom: TxtPrenom.Text,
+                            adresse: TxtAdresse.Text,
+                            telephone: TxtTel.Text,
+                            email: TxtEmail.Text,
+                            mdp: "mdp1234",
+                            station: station,
+                            nom_referent: estEntreprise ? TxtReferent.Text : "",
+                            estEntreprise: estEntreprise);
 
-                // Fermer le bandeau
-                AddPane.Visibility = Visibility.Collapsed;
-                FicheCuisinier.Visibility = Visibility.Visible;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
-            }
-        }
+                        // Rafraîchir la liste
+                        Utilisateur.RefreshList();
+                        dataGridCuisiniers.ItemsSource = null;
+                        dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
+
+                        // Fermer le bandeau
+                        AddPane.Visibility = Visibility.Collapsed;
+                        FicheCuisinier.Visibility = Visibility.Visible;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
+                    }
+                }
+                */
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ClientsViewAdmin());
