@@ -865,11 +865,14 @@ namespace ProbSciANA
 
         #endregion
         #region Affichage
+        public void AffichageGrapheOrienté()
+        {
+            Graphviz<T>.GenerateGraphImage(Noeuds, Arcs);
+        }
         public void AffichageAncienGraphe()
         {
             Graphviz<T>.GenerateGraphImageOG(Noeuds, Arcs);
         }
-
         public void AffichageGrapheNonOrienté()
         {
             Graphviz<T>.GenerateGraphNonOrienté(Noeuds, Arcs, Couleurs);

@@ -178,6 +178,11 @@
                     Margin="5"
                     Click="BtnGraphMétro"/>
             <Button Style="{StaticResource MenuButtonStyle}"
+                    Content="Graph Métro Point"
+                    Width="200"
+                    Margin="5"
+                    Click="BtnGraphMétroAncien"/>
+            <Button Style="{StaticResource MenuButtonStyle}"
                     Content="Test affichage Dijkstra"
                     Width="200"
                     Margin="5"
