@@ -396,10 +396,13 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Toujours ignorer les dossiers de build
+bin/
+obj/
 
 *.sln.iml
 Metro_Arcs_Par_Station_IDs.xlsx
 graphe.png
 graphe.dot
-Interface/images/graphes/*
-!obj/Debug/net9.0-windows/Interface/
+!Interface/images/graphes/
+!Interface/images/graphes/**
