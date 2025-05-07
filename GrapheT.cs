@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System.IO;
 
 namespace ProbSciANA
 {
@@ -19,6 +20,9 @@ namespace ProbSciANA
         private Dictionary<Noeud<T>, int> couleurs;
         private List<Arc<T>> arcs;
         private int nbCycles = -1; //// étecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
+
+        private static readonly string ProjectDirectory = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\"));
+
 
         public Graphe(List<Arc<T>> arcs, List<Noeud<T>> noeudsIsolés = null)
         {
@@ -1043,5 +1047,250 @@ namespace ProbSciANA
             }
             return result;
         }
+        #region Classes pour la sérialisation
+        [Serializable]
+        public class NoeudExport
+        {
+            public int Id { get; set; }
+            public string Nom { get; set; }
+        }
+
+        [Serializable]
+        public class ArcExport
+        {
+            public int Source { get; set; }
+            public int Destination { get; set; }
+        }
+
+        [Serializable]
+        public class PropriétésExport
+        {
+            public bool EstConnexe { get; set; }
+            public bool ContientCycle { get; set; }
+            public int NombreCouleurs { get; set; }
+        }
+
+        [Serializable]
+        public class DonnéesGraphe
+        {
+            public List<NoeudExport> Noeuds { get; set; }
+            public List<ArcExport> Arcs { get; set; }
+            public List<NoeudExport> NoeudsIsolés { get; set; }
+            public PropriétésExport Propriétés { get; set; }
+        }
+        #endregion
+
+        #region Méthodes d'exportation
+        /// <summary>
+        /// Exporte les données du graphe au format JSON
+        /// </summary>
+        /// <param name="nomFichier">Chemin du fichier où sauvegarder les données</param>
+        public void ExporterVersJSON(Graphe<Utilisateur> graphU, string nomFichier)
+        {
+            Utilisateur.RefreshList();
+            var donnees = new DonnéesGraphe
+            {
+                Propriétés = new PropriétésExport
+                {
+                    EstConnexe = EstConnexe(),
+                    ContientCycle = ContientCycle(),
+                    NombreCouleurs = graphU.WelshPowell()
+                },
+                Noeuds = Utilisateur.utilisateurs.Select(n => new NoeudExport
+                {
+                    Id = n.Id_utilisateur,
+                    Nom = n.Nom
+                }).ToList(),
+
+                Arcs = graphU.Arcs.Select(a => new ArcExport
+                {
+                    Source = a.IdPrevious.Id,
+                    Destination = a.IdNext.Id
+                }).ToList(),
+
+                NoeudsIsolés = graphU.NoeudsIsolés?.Select(n => new NoeudExport
+                {
+                    Id = n.Id,
+                    Nom = n.Valeur.Nom
+                }).ToList()
+            };
+
+
+            /// Sérialisation en JSON
+            string json = System.Text.Json.JsonSerializer.Serialize(donnees,
+        new System.Text.Json.JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+
+            System.IO.File.WriteAllText(nomFichier, json);
+            Console.WriteLine($"Données exportées avec succès vers {nomFichier}");
+        }
+
+        /// <summary>
+        /// Exporte les données du graphe au format XML
+        /// </summary>
+        /// <param name="nomFichier">Chemin du fichier où sauvegarder les données</param>
+        public void ExporterVersXML(Graphe<Utilisateur> graphU, string nomFichier)
+        {
+            Utilisateur.RefreshList();
+            var donnees = new DonnéesGraphe
+            {
+                Propriétés = new PropriétésExport
+                {
+                    EstConnexe = EstConnexe(),
+                    ContientCycle = ContientCycle(),
+                    NombreCouleurs = graphU.WelshPowell()
+                },
+                Noeuds = Utilisateur.utilisateurs.Select(n => new NoeudExport
+                {
+                    Id = n.Id_utilisateur,
+                    Nom = n.Nom
+                }).ToList(),
+
+                Arcs = graphU.Arcs.Select(a => new ArcExport
+                {
+                    Source = a.IdPrevious.Id,
+                    Destination = a.IdNext.Id
+                }).ToList(),
+
+                NoeudsIsolés = graphU.NoeudsIsolés?.Select(n => new NoeudExport
+                {
+                    Id = n.Id,
+                    Nom = n.Valeur.Nom
+                }).ToList()
+            };
+
+            var serializer = new System.Xml.Serialization.XmlSerializer(typeof(DonnéesGraphe));
+            using (var writer = new StreamWriter(nomFichier))
+            {
+                serializer.Serialize(writer, donnees);
+            }
+            Console.WriteLine($"Données exportées avec succès vers {nomFichier}");
+        }
+
+
+        /// <summary>
+        /// Trouve les groupes indépendants dans le graphe basés sur la coloration
+        /// </summary>
+        /// <returns>Liste des groupes indépendants</returns>
+        public List<List<Noeud<T>>> TrouverGroupesIndépendants()
+        {
+            Dictionary<Noeud<T>, int> couleurs = new Dictionary<Noeud<T>, int>();
+
+            // Initialiser toutes les couleurs à 0 (non coloré)
+            foreach (var noeud in noeuds)
+            {
+                couleurs[noeud] = 0;
+            }
+
+            // Trier les noeuds par degré décroissant
+            var noeudsTries = noeuds.OrderByDescending(n => listeAdjacence[n].Count).ToList();
+
+            int nombreCouleurs = 0;
+
+            foreach (var noeud in noeudsTries)
+            {
+                if (couleurs[noeud] == 0)
+                {
+                    // Trouver la première couleur disponible
+                    var couleursVoisins = new HashSet<int>();
+                    foreach (var voisin in listeAdjacence[noeud])
+                    {
+                        if (couleurs[voisin] != 0)
+                        {
+                            couleursVoisins.Add(couleurs[voisin]);
+                        }
+                    }
+
+                    int couleurDisponible = 1;
+                    while (couleursVoisins.Contains(couleurDisponible))
+                    {
+                        couleurDisponible++;
+                    }
+
+                    couleurs[noeud] = couleurDisponible;
+                    nombreCouleurs = Math.Max(nombreCouleurs, couleurDisponible);
+
+                    // Colorer tous les autres noeuds non adjacents avec la même couleur
+                    foreach (var autreNoeud in noeudsTries)
+                    {
+                        if (couleurs[autreNoeud] == 0 && !listeAdjacence[noeud].Contains(autreNoeud) && !listeAdjacence[autreNoeud].Contains(noeud))
+                        {
+                            bool peutColorier = true;
+                            foreach (var voisin in listeAdjacence[autreNoeud])
+                            {
+                                if (couleurs[voisin] == couleurDisponible)
+                                {
+                                    peutColorier = false;
+                                    break;
+                                }
+                            }
+
+                            if (peutColorier)
+                            {
+                                couleurs[autreNoeud] = couleurDisponible;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Créer les groupes indépendants basés sur les couleurs
+            var groupes = new List<List<Noeud<T>>>();
+            for (int i = 1; i <= nombreCouleurs; i++)
+            {
+                var groupe = noeuds.Where(n => couleurs[n] == i).ToList();
+                groupes.Add(groupe);
+            }
+
+            return groupes;
+        }
+
+        /// <summary>
+        /// Affiche les propriétés du graphe et les exporte si demandé
+        /// </summary>
+        /// <param name="exporterJSON">Indique si les données doivent être exportées en JSON</param>
+        /// <param name="exporterXML">Indique si les données doivent être exportées en XML</param>
+        /// <param name="cheminJSON">Chemin du fichier JSON (optionnel)</param>
+        /// <param name="cheminXML">Chemin du fichier XML (optionnel)</param>
+        public void PropriétésGraphe(Graphe<Utilisateur> graphU, bool exporterJSON = false, bool exporterXML = false, string cheminJSON = "graphe.json", string cheminXML = "graphe.xml")
+        {
+            Console.WriteLine("Propriétés du graphe :");
+            Console.WriteLine($"Nombre de noeuds : {noeuds.Count}");
+            Console.WriteLine($"Nombre d'arcs : {arcs.Count}");
+            Console.WriteLine($"Est connexe : {EstConnexe()}");
+            Console.WriteLine($"Contient un cycle : {ContientCycle()}");
+
+            int nombreChromatique = graphU.WelshPowell();
+            Console.WriteLine($"Nombre chromatique (Welsh-Powell) : {nombreChromatique}");
+
+            Console.WriteLine($"Est biparti : {EstBiparti()}");
+            Console.WriteLine($"Est planaire : {EstPlanaire()}");
+
+            //var groupesIndépendants = TrouverGroupesIndépendants();
+            // Console.WriteLine($"Groupes indépendants : {groupesIndépendants.Count}");
+            // for (int i = 0; i < groupesIndépendants.Count; i++)
+            // {
+            //     Console.Write($"Groupe {i + 1} : ");
+            //     foreach (var noeud in groupesIndépendants[i])
+            //     {
+            //         Console.Write($"{noeud.ToString()} ");
+            //     }
+            //     Console.WriteLine();
+            // }
+
+            if (exporterJSON)
+            {
+                ExporterVersJSON(graphU, cheminJSON);
+            }
+
+            if (exporterXML)
+            {
+                ExporterVersXML(graphU, cheminXML);
+            }
+        }
+        #endregion
     }
 }

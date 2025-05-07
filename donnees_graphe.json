@@ -1,0 +1,96 @@
+{
+  "Noeuds": [
+    {
+      "Id": 1,
+      "Nom": "Dupont"
+    },
+    {
+      "Id": 2,
+      "Nom": "Martin"
+    },
+    {
+      "Id": 3,
+      "Nom": "Durand"
+    },
+    {
+      "Id": 4,
+      "Nom": "Leroy"
+    },
+    {
+      "Id": 5,
+      "Nom": "Moreau"
+    },
+    {
+      "Id": 6,
+      "Nom": "Simon"
+    },
+    {
+      "Id": 7,
+      "Nom": "Laurent"
+    },
+    {
+      "Id": 8,
+      "Nom": "Garnier"
+    },
+    {
+      "Id": 9,
+      "Nom": "Roux"
+    },
+    {
+      "Id": 10,
+      "Nom": "Morel"
+    }
+  ],
+  "Arcs": [
+    {
+      "Source": 1,
+      "Destination": 2
+    },
+    {
+      "Source": 1,
+      "Destination": 8
+    },
+    {
+      "Source": 2,
+      "Destination": 3
+    },
+    {
+      "Source": 3,
+      "Destination": 5
+    },
+    {
+      "Source": 4,
+      "Destination": 7
+    },
+    {
+      "Source": 5,
+      "Destination": 8
+    },
+    {
+      "Source": 6,
+      "Destination": 10
+    },
+    {
+      "Source": 7,
+      "Destination": 2
+    },
+    {
+      "Source": 8,
+      "Destination": 3
+    },
+    {
+      "Source": 9,
+      "Destination": 5
+    },
+    {
+      "Source": 10,
+      "Destination": 7
+    }
+  ],
+  "NoeudsIsolés": [],
+  "Propriétés": {
+    "EstConnexe": true,
+    "ContientCycle": true,
+    "NombreCouleurs": 3
+  }
+}

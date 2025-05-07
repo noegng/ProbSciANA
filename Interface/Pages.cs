@@ -1889,6 +1889,9 @@ namespace ProbSciANA.Interface
         }
         private void BtnPropriétéGraphe(object sender, RoutedEventArgs e)
         {
+            /// Afficher les propriétés et exporter en JSON et XML
+            graphU.ExporterVersJSON(graphU, "donnees_graphe.json");
+            graphU.ExporterVersXML(graphU, "donnees_graphe.xml");
             string propriétés = graphU.PropriétésGraphe();
             MessageBox.Show(propriétés);
         }
