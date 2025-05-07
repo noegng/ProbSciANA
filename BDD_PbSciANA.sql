@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS Utilisateur(
    email VARCHAR(50) UNIQUE,
    station VARCHAR(50),
    date_inscription DATETIME DEFAULT NOW(),
-   mdp VARCHAR(15)
+   mdp VARCHAR(15),
+   photo VARCHAR(50)
 );
 
 DROP TABLE IF EXISTS Client_;
@@ -57,7 +58,8 @@ DROP TABLE IF EXISTS Ingredient;
 CREATE TABLE IF NOT EXISTS Ingredient(
    id_ingredient INT PRIMARY KEY AUTO_INCREMENT,
    nom VARCHAR(50) UNIQUE,
-   regime VARCHAR(50)
+   regime VARCHAR(50),
+   photo VARCHAR(50)
 );
 
 DROP TABLE IF EXISTS Avis;
@@ -103,6 +105,7 @@ CREATE TABLE IF NOT EXISTS Cuisine(
    plat_du_jour BOOL,
    date_cuisine DATETIME,
    statut ENUM('à faire','en cours','fait','livré'),
+   photo VARCHAR(50),
    PRIMARY KEY(id_cuisinier, id_plat, date_cuisine),
    FOREIGN KEY(id_cuisinier) REFERENCES Cuisinier(id_utilisateur) ON DELETE CASCADE,
    FOREIGN KEY(id_plat) REFERENCES Plat(id_plat) ON DELETE CASCADE
