@@ -31,9 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Interface\images\fond.png">
+    <Content Include="Interface\images\fond.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
 
 </Project>
