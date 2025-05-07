@@ -183,6 +183,7 @@ Select * from Livraison;
 Select * from Requiert;
 Select * from Cuisine;
 Select * from compose;
+Select * from ingredient;
 
 #****************** MODULE CLIENT *****************#
                     

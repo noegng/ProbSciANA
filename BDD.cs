@@ -91,10 +91,12 @@ namespace ProbSciANA
             if (estClient)
             {
                 InsertClient();
+                clients.Add(this);
             }
             if (estCuisinier)
             {
                 InsertCuisinier();
+                cuisiniers.Add(this);
             }
             if (!estEntreprise && estClient)
             {
@@ -104,6 +106,7 @@ namespace ProbSciANA
             {
                 InsertEntreprise();
             }
+            utilisateurs.Add(this);
         }
 
         #region GetSet
@@ -741,6 +744,7 @@ namespace ProbSciANA
                 connection.Close();
             }
             Refresh();
+            commandes.Add(this);
         }
 
         #region GetSet
@@ -1007,6 +1011,7 @@ namespace ProbSciANA
             this.date_livraison = date_livraison;
             this.statut = statut;
             this.commande = commande;
+            livraisons.Add(this);
         }
 
         #region GetSet
@@ -1181,6 +1186,7 @@ namespace ProbSciANA
             this.regime = regime;
             this.nationalite = nationalite;
             this.date_peremption = date_peremption;
+            plats.Add(this);
         }
 
         #region GetSet
@@ -1395,6 +1401,7 @@ namespace ProbSciANA
                 connection.Close();
             }
             this.nom = nom;
+            ingredients.Add(this);
         }
 
         #region GetSet
@@ -1553,6 +1560,7 @@ namespace ProbSciANA
                 connection.Close();
             }
             Refresh();
+            avis.Add(this);
         }
 
         #region GetSet
@@ -1731,19 +1739,20 @@ namespace ProbSciANA
             this.plat = plat;
             Refresh();
         }
-        public Cuisine(Utilisateur cuisinier, Plat plat, bool plat_du_jour, DateTime date_cuisine, string statut)
+        public Cuisine(Utilisateur cuisinier, Plat plat, bool plat_du_jour, DateTime date_cuisine, string statut, int quantite = 1)
         {
             using (MySqlConnection connection = new MySqlConnection(Requetes.connectionString))
             {
                 connection.Open();
 
-                string query = @"INSERT INTO Cuisine (id_cuisinier, id_plat, plat_du_jour, date_cuisine, statut)
-                                VALUES (@id_cuisinier, @id_plat, @plat_du_jour, @date_cuisine, @statut);";
+                string query = @"INSERT INTO Cuisine (id_cuisinier, id_plat, quantite, plat_du_jour, date_cuisine, statut)
+                                VALUES (@id_cuisinier, @id_plat, @quantite, @plat_du_jour, @date_cuisine, @statut);";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@id_cuisinier", cuisinier.Id_utilisateur);
                     command.Parameters.AddWithValue("@id_plat", plat.Id_plat);
+                    command.Parameters.AddWithValue("@quantite", quantite);
                     command.Parameters.AddWithValue("@plat_du_jour", plat_du_jour);
                     command.Parameters.AddWithValue("@date_cuisine", date_cuisine.ToString("yyyy-MM-dd HH:mm:ss"));
                     command.Parameters.AddWithValue("@statut", statut);
@@ -1753,9 +1762,11 @@ namespace ProbSciANA
             }
             this.cuisinier = cuisinier;
             this.plat = plat;
+            this.quantite = quantite;
             this.plat_du_jour = plat_du_jour;
             this.date_cuisine = date_cuisine;
             this.statut = statut;
+            cuisines.Add(this);
         }
 
         #region GetSet
@@ -1931,6 +1942,7 @@ namespace ProbSciANA
             this.plat = plat;
             this.livraison = livraison;
             this.quantite = quantite;
+            requierts.Add(this);
         }
 
         #region GetSet
@@ -2062,6 +2074,7 @@ namespace ProbSciANA
             this.plat = plat;
             this.ingredient = ingredient;
             this.quantite = quantite;
+            composes.Add(this);
         }
 
         #region GetSet

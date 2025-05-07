@@ -402,13 +402,19 @@ namespace ProbSciANA.Interface
 
     public partial class AddPlat : Page
     {
+        public List<Ingredient> Ingredients_affiches
+        {
+            get { return Ingredient.ingredients; }
+        }
+        public Dictionary<Ingredient, int> Ingredients_selectionnes { get; set; } = new();
         public AddPlat()
         {
             InitializeComponent();
+            DataContext = this;
             //Loaded += (s, e) => UpdateNavButtons();
         }
 
-        private void BtnAjouterPlat_Click(object sender, RoutedEventArgs e)
+        private void BtnValiderPlat_Click(object sender, RoutedEventArgs e)
         {
             string nomPlat = NomPlatTextBox.Text;
             string prixPlat = PrixTextBox.Text;
@@ -442,7 +448,14 @@ namespace ProbSciANA.Interface
                     nationalitePlat,
                     datePeremption
                 );
-
+                new Cuisine(SessionManager.CurrentUser, nouveauPlat, false, DateTime.Now, "à faire");
+                if (Ingredients_selectionnes != null && Ingredients_selectionnes.Count > 0)
+                {
+                    foreach (Ingredient i in Ingredients_selectionnes.Keys)
+                    {
+                        new Compose(nouveauPlat, i, Ingredients_selectionnes[i]);
+                    }
+                }
                 MessageBox.Show("Plat ajouté avec succès !");
                 NavigationService?.GoBack();
             }
@@ -451,16 +464,71 @@ namespace ProbSciANA.Interface
                 MessageBox.Show("Erreur lors de l'ajout du plat : " + ex.Message);
             }
         }
-
-        private void BtnRetour_Click(object sender, RoutedEventArgs e)
+        private void BtnAjouterAuPlat_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.GoBack();
+            if (sender is Button button && button.Tag is Ingredient ingredient)
+            {
+                if (!Ingredients_selectionnes.ContainsKey(ingredient))
+                {
+                    Ingredients_selectionnes.Add(ingredient, 1);
+                }
+                else
+                {
+                    Ingredients_selectionnes[ingredient]++;
+                }
+                DataContext = null;
+                DataContext = this;
+            }
         }
-        private void BtnRetourAccueil_Click(object sender, RoutedEventArgs e)
+        private void BtnAnnulerPanier_Click(object sender, RoutedEventArgs e)
+        {
+            Ingredients_selectionnes.Clear();
+            DataContext = null;
+            DataContext = this;
+        }
+
+        private void AfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new CommandeView());
+        }
+        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new PlatView());
+        }
+        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AvisView());
+        }
+
+        private void UpdateNavButtons()
+        {
+            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
+            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
+        }
+        private void BtnMode_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new AdminDashboardView());
+        }
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new StartView());
         }
-
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            UpdateNavButtons();
+        }
+        private void BtnForward_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            UpdateNavButtons();
+        }
     }
     #endregion
 
