@@ -404,5 +404,4 @@ obj/
 Metro_Arcs_Par_Station_IDs.xlsx
 Interface/images/graphes/**
 !Interface/images/*.png
-!Interface/images/*.jpg
-!Interface/images/*.jpeg
+/Interface/images/graphes
