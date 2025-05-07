@@ -50,6 +50,92 @@ namespace ProbSciANA
             };
         }
 
+        public static void GenerateGraphImageOG(List<Noeud<T>> noeuds, List<Arc<T>> arcs)
+        {
+            numéroImage++;
+            /// Chemins pour le fichier DOT et l'image PNG
+            string dotFilePath = Path.Combine(ImagesPath, $"graphe{numéroImage}.dot");
+            string pngFilePath = Path.Combine(ImagesPath, $"graphe{numéroImage}.png");
+            /// Générer le fichier DOT et l'image PNG
+            try
+            {
+                /// Création du fichier DOT
+                StringBuilder dot = new StringBuilder();
+                dot.AppendLine("digraph G {");
+                dot.AppendLine("    layout=neato;"); /// Utilise le moteur neato
+                dot.AppendLine("    overlap=false;");
+                dot.AppendLine("    graph [dpi=300];");
+
+                /// Creation de chaque sommet avec sa position   
+                foreach (Noeud<T> vertex in noeuds)
+                {
+                    var pos = vertex.Valeur.ToString();
+                    string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
+                    string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
+                    dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\",style =\"point\", fontsize=12];");
+                }
+                for (int i = 0; i < arcs.Count; i = i + 2)
+                {
+                    var idPrevious = arcs[i].IdPrevious.Valeur.ToString();
+                    var idNext = arcs[i].IdNext.Valeur.ToString();
+                    var color = GetColor(arcs[i].IdLigne);
+                    string nonSensUnique = "";
+                    if (!arcs[i].SensUnique)
+                    {
+                        nonSensUnique = "dir=\"both\",";
+                    }
+                    dot.AppendLine($"    \"{idPrevious}\" -> \"{idNext}\" [{nonSensUnique} color=\"{color}\", penwidth=3, style=bold];");
+                    if (arcs[i].SensUnique)
+                    {
+                        i--;
+                    }
+                }
+
+
+
+
+
+                dot.AppendLine("}");
+                File.WriteAllText(dotFilePath, dot.ToString());
+                ///  Pour déboguer, afficher le contenu du fichier DOT
+                /// Console.WriteLine("Contenu du fichier DOT :");
+                /// Console.WriteLine(dot.ToString());
+
+
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = GraphvizPath,
+                        Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                {
+                    string errorOutput = process.StandardError.ReadToEnd();
+                    Console.WriteLine("Erreur lors de l'exécution de dot.exe :");
+                    Console.WriteLine(errorOutput);
+                    throw new Exception($"Le processus dot.exe a renvoyé le code {process.ExitCode}. Erreur : {errorOutput}");
+                }
+
+                Console.WriteLine($"Image PNG générée : {pngFilePath}");
+                Process.Start(new ProcessStartInfo(pngFilePath) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Une erreur est survenue lors de la génération de l'image du graphe.", ex);
+            }
+        }
+
         public static void GenerateGraphImage(List<Noeud<T>> noeuds, List<Arc<T>> arcs)
         {
             numéroImage++;
