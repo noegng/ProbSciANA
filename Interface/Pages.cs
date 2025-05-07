@@ -1278,7 +1278,11 @@ namespace ProbSciANA.Interface
                 dataGridCuisiniers.ItemsSource = Utilisateur.cuisiniers;
             }
         }
-
+        private void BtnAjouter_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new Register());
+        }
+        /*
         private void BtnAjouter_Click(object sender, RoutedEventArgs e)
         {
             // Masquer la fiche client, afficher le bandeau
@@ -1338,6 +1342,7 @@ namespace ProbSciANA.Interface
                 MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
             }
         }
+        */
         private void BtnClients_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new ClientsViewAdmin());
