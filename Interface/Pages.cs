@@ -140,9 +140,10 @@ namespace ProbSciANA.Interface
                 var Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
                                                                                                      /// recherche de la station la plus proche avec haversine
 
+
                 var nouvelUtilisateur = new Utilisateur(
-                    estClient: role == "Client",
-                    estCuisinier: role == "Cuisinier",
+                    estClient: role == "Client" || role == "Client et Cuisinier",
+                    estCuisinier: role == "Cuisinier" || role == "Client et Cuisinier",
                     nom,
                     prenom,
                     adresse,
@@ -158,6 +159,8 @@ namespace ProbSciANA.Interface
                 if (role == "Client")
                     NavigationService?.Navigate(new UserDashboardView());
                 else if (role == "Cuisinier")
+                    NavigationService?.Navigate(new CuisinierDashboardView());
+                else if (role == "Client et Cuisinier")
                     NavigationService?.Navigate(new CuisinierDashboardView());
             }
             catch (HttpRequestException ex)
@@ -884,10 +887,6 @@ namespace ProbSciANA.Interface
                 DataContext = selected;
             }
         }
-        private void Ajouter_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AddPlat());
-        }
         private void AfficherClients_Click(object sender, RoutedEventArgs e)
         {
 
@@ -939,8 +938,6 @@ namespace ProbSciANA.Interface
             Requetes.RefreshAllLists();
             dataGridPlats.ItemsSource = null;
             dataGridPlats.ItemsSource = SessionManager.CurrentUser.Cuisines;
-            Console.WriteLine(SessionManager.CurrentUser.Cuisines.Count);
-            Console.WriteLine(SessionManager.CurrentUser.Cuisines[0].Plat.Composes.Count);
         }
         private void dataGridPlats_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
