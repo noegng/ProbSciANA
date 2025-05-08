@@ -350,6 +350,17 @@
                                 BorderThickness="0"
                                 Click="BtnAffichage_Djikstra"
                                 DockPanel.Dock="Right"/>
+
+                        <Button Content="Opti"
+                                FontSize="14"
+                                Width="30"
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="BtnCheminOptimal"
+                                DockPanel.Dock="Right"/>
                     </DockPanel>
 
                     <!-- Les deux expanders pour naviguer dans les listes -->

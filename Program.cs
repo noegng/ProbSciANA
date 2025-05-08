@@ -111,18 +111,34 @@ namespace ProbSciANA
                 Console.WriteLine("Impossible de récupérer les coordonnées.");
             }
         }
-
-        public static Noeud<(int, string)> AssocierNoeud(Noeud<string> noeudString, List<Noeud<(int, string)>> noeudsExistants)
+        public static async Task<Noeud<(int id, string nom)>> GetNoeud(string addresse, List<Noeud<(int, string)>> noeudsExistants)
         {
-            foreach (var noeud in noeudsExistants)
+            Console.WriteLine("Rechercher de la station la plus proche.");
+            var noeudString = await GetCoordonnees<string>(addresse); /// Il faut attendre la réponse de la fonction.
+            Console.WriteLine("Fin de la recherche.");
+            return AssocierNoeud(noeudString, noeudsExistants);
+        }
+
+        public static Noeud<(int id, string nom)> AssocierNoeud(Noeud<string> noeudString, List<Noeud<(int, string)>> noeudsExistants)
+        {
+            double longitude = 0.00001;
+            double latitude = 0.00001;
+            Noeud<(int, string)> noeud = null;
+            while (noeud == null)
             {
-                if (Math.Abs(noeud.Longitude - noeudString.Longitude) < 0.00001 &&
-                    Math.Abs(noeud.Latitude - noeudString.Latitude) < 0.00001)
+                foreach (var noeudActuel in noeudsExistants)
                 {
-                    return noeud; /// Retourne le noeud correspondant
+                    if (Math.Abs(noeudActuel.Longitude - noeudString.Longitude) < longitude &&
+                        Math.Abs(noeudActuel.Latitude - noeudString.Latitude) < latitude)
+                    {
+                        noeud = noeudActuel; /// Retourne le noeud correspondant
+                    }
                 }
+                longitude += 0.00001;
+                latitude += 0.00001;
             }
-            return null; /// Aucun noeud correspondant trouvé
+
+            return noeud; /// Aucun noeud correspondant trouvé
         }
 
         public static async Task<Noeud<string>> GetCoordonnees<T>(string address)

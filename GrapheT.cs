@@ -334,16 +334,17 @@ namespace ProbSciANA
         //// </summary>
         //// <param name="sommetDepart"></param>
         //// <returns></returns>
-        public Dictionary<Noeud<T>, int> Dijkstra(Noeud<T> sommetDepart)   //// envoie un dictionnaire avec les distances entre le sommet de départ et tous les autres sommets
+        public Dictionary<Noeud<T>, int> Dijkstra(Noeud<T> sommetDepart)
         {
-            Dictionary<Noeud<T>, int> distances = new Dictionary<Noeud<T>, int>();
-            HashSet<Noeud<T>> visites = new HashSet<Noeud<T>>();
-            PriorityQueue<Noeud<T>, int> filePriorite = new PriorityQueue<Noeud<T>, int>(); //// On utilise une priority queue pour gérer les sommets à explorer
-            string idLignePrécédent = ""; //// On initialise l'id de la ligne précédente à une chaîne vide
+            var distances = new Dictionary<Noeud<T>, int>();
+            var visites = new HashSet<Noeud<T>>();
+            var filePriorite = new PriorityQueue<Noeud<T>, int>(); //// On utilise une priority queue pour gérer les sommets à explorer
+            var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>(); //// Pour suivre les arcs utilisés
 
+            //// On initialise les distances à l'infini
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
-                distances[sommet] = int.MaxValue; //// On initialise les distances à l'infini
+                distances[sommet] = int.MaxValue;
             }
 
             distances[sommetDepart] = 0;
@@ -353,34 +354,46 @@ namespace ProbSciANA
             {
                 Noeud<T> sommetActuel = filePriorite.Dequeue(); //// On prend le sommet avec la distance la plus courte
                 visites.Add(sommetActuel);
-                int i = 0;
-                foreach (Arc<T> arcVoisin in arcs) //// On parcourt les voisins du sommet actuel
+
+                //// Parcours des arcs sortants du sommet actuel
+                foreach (Arc<T> arc in arcs)
                 {
-                    if (arcVoisin.IdPrevious == sommetActuel) //// On vérifie si le voisin est bien un voisin du sommet actuel
+                    if (arc.IdPrevious.Equals(sommetActuel)) //// On vérifie si le voisin est bien un voisin du sommet actuel
                     {
-                        int tempsChangement = 0;
-                        if (idLignePrécédent != arcVoisin.IdLigne && i != 0) //// On vérifie si on change de ligne
+                        Noeud<T> voisin = arc.IdNext;
+                        if (visites.Contains(voisin))
                         {
-                            tempsChangement = arcVoisin.IdPrevious.TempsChangement; //// On met à jour le temps de changement
+                            continue;
                         }
 
-                        if (!visites.Contains(arcVoisin.IdNext)) //// On vérifie si le voisin n'a pas déjà été visité
+                        //// Ligne précédente = ligne de l'arc ayant permis d’arriver au sommet actuel
+                        string idLignePrecedente = null;
+                        if (predecesseurs.ContainsKey(sommetActuel) && predecesseurs[sommetActuel] != null)
                         {
-                            //// On met à jour la distance si on trouve un chemin plus court
-                            int nouvelleDistance = distances[sommetActuel] + arcVoisin.Poids + tempsChangement; //// On cast les sommets en Noeud<T> pour utiliser la classe Arc<T>
-                            if (nouvelleDistance < distances[arcVoisin.IdNext])
-                            {
-                                distances[arcVoisin.IdNext] = nouvelleDistance;
-                                filePriorite.Enqueue(arcVoisin.IdNext, nouvelleDistance);
-                            }
+                            idLignePrecedente = predecesseurs[sommetActuel].IdLigne;
                         }
-                        idLignePrécédent = arcVoisin.IdLigne; //// On mémorise l'id de la ligne pour le prochain sommet
+
+                        int tempsChangement = 0;
+                        if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne) //// On vérifie si on change de ligne
+                        {
+                            tempsChangement = sommetActuel.TempsChangement; //// On met à jour le temps de changement
+                        }
+
+                        //// On met à jour la distance si on trouve un chemin plus court
+                        int nouvelleDistance = distances[sommetActuel] + arc.Poids + tempsChangement;
+                        if (nouvelleDistance < distances[voisin])
+                        {
+                            distances[voisin] = nouvelleDistance;
+                            predecesseurs[voisin] = arc;
+                            filePriorite.Enqueue(voisin, nouvelleDistance);
+                        }
                     }
                 }
             }
 
             return distances;
         }
+
         //// Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
         public (List<Arc<T>>, int) DijkstraChemin(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
         {
@@ -406,7 +419,7 @@ namespace ProbSciANA
                     break;
                 }
                 //// Parcours des arcs sortants du sommet actuel
-                foreach (Arc<T> arc in arcs)
+                foreach (Arc<T> arc in arcs) //// On parcourt les voisins du sommet actuel
                 {
                     if (arc.IdPrevious.Equals(sommetActuel))//// On vérifie si le voisin est bien un voisin du sommet actuel
                     {
@@ -422,7 +435,7 @@ namespace ProbSciANA
                             idLignePrecedente = predecesseurs[sommetActuel].IdLigne;
                         }
                         int tempsChangement = 0;
-                        if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne)
+                        if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne) //// On vérifie si on change de ligne
                         {
                             tempsChangement = sommetActuel.TempsChangement;
                         }
