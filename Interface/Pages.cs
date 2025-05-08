@@ -1655,16 +1655,17 @@ namespace ProbSciANA.Interface
         }
         private void BtnCheminOptimal(object sender, RoutedEventArgs e)
         {
-            List<Noeud<(int id, string nom)>> Liste = new List<Noeud<(int id, string nom)>>();
-            Liste.Add(Program.Stations[1]);
-            Liste.Add(Program.Stations[20]);
-            Liste.Add(Program.Stations[40]);
-            Liste.Add(Program.Stations[60]);
-            Liste.Add(Program.Stations[80]);
-            Liste.Add(Program.Stations[100]);
-            Liste.Add(Program.Stations[120]);
-            var programInstance = new Program();
-            int tempsTrajet = programInstance.CheminOptimal(Program.GrapheMétro, Liste);
+            List<Noeud<(int id, string nom)>> Liste =
+            [
+                Program.Stations[1],
+                Program.Stations[20],
+                Program.Stations[40],
+                Program.Stations[60],
+                Program.Stations[80],
+                Program.Stations[100],
+                Program.Stations[120],
+            ];
+            int tempsTrajet = Program.GrapheMétro.AffichageCheminOptimal(Liste).tempsMinimal;
             MessageBox.Show($"Temps de trajet entre {Program.Stations[1].Valeur.nom} et {Program.Stations[120].Valeur.nom} en passant par {Program.Stations[20].Valeur.nom}; {Program.Stations[40].Valeur.nom} ;{Program.Stations[60].Valeur.nom}; {Program.Stations[80].Valeur.nom}; {Program.Stations[100].Valeur.nom} est de : {tempsTrajet} minutes.");
         }
         private void BtnTri(object sender, RoutedEventArgs e)
