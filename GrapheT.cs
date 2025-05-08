@@ -908,12 +908,12 @@ namespace ProbSciANA
         {
             (int tempsMinimal, List<Noeud<T>> cheminLePlusCourt) = CheminOptimal(stationAVisité); /// Calcul du chemin le plus court entre ttes les stations
             List<Arc<T>> cheminOptiArcs = new List<Arc<T>>();
-            for (int i = 0; i < cheminLePlusCourt.Count - 2; i++)
+            for (int i = 0; i < cheminLePlusCourt.Count - 1; i++)
             {
                 (var listArc, int temps) = DijkstraChemin(cheminLePlusCourt[i], cheminLePlusCourt[i + 1]);
                 cheminOptiArcs.AddRange(listArc);
             }
-            string cheminAcces = Graphviz<T>.GenerateCheminOptimal(cheminOptiArcs, noeuds, stationAVisité);
+            string cheminAcces = Graphviz<T>.GenerateCheminOptimal(cheminOptiArcs, noeuds, cheminLePlusCourt);
             return (tempsMinimal, cheminAcces);
         }
         #endregion
@@ -932,7 +932,7 @@ namespace ProbSciANA
         {
             int valeurMin = int.MaxValue;
             Noeud<T> stationDépart = stations[0];    /// La première station est forcément celle de départ
-            List<Noeud<T>> cheminLePlusCourt = null;
+            List<Noeud<T>> cheminLePlusCourt = new List<Noeud<T>>();
             stations.RemoveAt(0);
             List<List<Noeud<T>>> listCheminPossible = Permutations(stations);
             foreach (List<Noeud<T>> chemin in listCheminPossible)
@@ -949,7 +949,7 @@ namespace ProbSciANA
                 }
                 Console.WriteLine("Temps :" + valeurMin);   /// Visualiser la progression et pour le débug
             }
-            Console.Write(stationDépart);
+            cheminLePlusCourt.Insert(0, stationDépart); /// On remet la station de départ au début du chemin
             foreach (Noeud<T> station in cheminLePlusCourt)
             {
                 Console.Write(" -> " + station);

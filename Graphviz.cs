@@ -357,7 +357,12 @@ namespace ProbSciANA
                     string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
                     var color = "";
                     var style = "";
-                    if (stationAVisité.Contains(vertex))
+                    if (stationAVisité[0] == vertex)
+                    {
+                        style = "filled";
+                        color = "blue";
+                    }
+                    else if (stationAVisité.Contains(vertex))
                     {
                         style = "filled";
                         color = "red";
