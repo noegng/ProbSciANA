@@ -944,6 +944,26 @@ namespace ProbSciANA.Interface
                 MessageBox.Show($"Temps de trajet entre {SessionManager.CurrentUser.Station.Valeur.nom} et {selected.Client.Station.Valeur.nom} : {tempsTrajet} minutes.");
             }
         }
+        private async void BtnCheminOptimal(object sender, RoutedEventArgs e)
+        {
+            if (dataGridCommandes.SelectedItem is Commande selected)
+            {
+                var listeLieux = new List<Noeud<(int id, string nom)>> { SessionManager.CurrentUser.Station };
+                foreach (var livraison in selected.Livraisons)
+                {
+                    var noeud = await Program.GetNoeud(livraison.Adresse, Program.GrapheMétro.Noeuds);
+                    listeLieux.Add(noeud);
+                }
+                (int tempsTrajet, cheminAcces) = Program.GrapheMétro.AffichageCheminOptimal(listeLieux);
+                CollectionViewSource.GetDefaultView(cheminAcces).Refresh();
+                string listStations = "";
+                foreach (var station in listeLieux)
+                {
+                    listStations += station.Valeur.nom + ", ";
+                }
+                MessageBox.Show($"Temps de trajet depuis {SessionManager.CurrentUser.Station.Valeur.nom} vers {listStations} est de : {tempsTrajet} minutes.");
+            }
+        }
     }
     #endregion
 
