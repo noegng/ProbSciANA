@@ -886,25 +886,36 @@ namespace ProbSciANA
             return cheminAcces;
 
         }
-        public (int plusPetiteDistance, string cheminAcces) AffichageDijkstra(Noeud<T> depart, Noeud<T> arrivee)
+        public (int tempsMinimal, string cheminAcces) AffichageDijkstra(Noeud<T> depart, Noeud<T> arrivee)
         {
-            (List<Arc<T>> chemin, int plusPetiteDistance) = DijkstraChemin(depart, arrivee); /// Calcul du chemin le plus court
+            (List<Arc<T>> chemin, int tempsMinimal) = DijkstraChemin(depart, arrivee); /// Calcul du chemin le plus court
             string cheminAcces = Graphviz<T>.GenerateChemin(chemin, noeuds);
-            return (plusPetiteDistance, cheminAcces);
+            return (tempsMinimal, cheminAcces);
         }
-        public (int plusPetiteDistance, string cheminAcces) AffichageBellmanFord(Noeud<T> depart, Noeud<T> arrivee)
+        public (int tempsMinimal, string cheminAcces) AffichageBellmanFord(Noeud<T> depart, Noeud<T> arrivee)
         {
-            (List<Arc<T>> chemin, int plusPetiteDistance) = BellmanFordChemin(depart, arrivee); /// Calcul du chemin le plus court
+            (List<Arc<T>> chemin, int tempsMinimal) = BellmanFordChemin(depart, arrivee); /// Calcul du chemin le plus court
             string cheminAcces = Graphviz<T>.GenerateChemin(chemin, noeuds);
-            return (plusPetiteDistance, cheminAcces);
+            return (tempsMinimal, cheminAcces);
         }
-        public (int plusPetiteDistance, string cheminAcces) AffichageFloydWarshall(Noeud<T> depart, Noeud<T> arrivee)
+        public (int tempsMinimal, string cheminAcces) AffichageFloydWarshall(Noeud<T> depart, Noeud<T> arrivee)
         {
-            (List<Arc<T>> chemin, int plusPetiteDistance) = FloydWarshallChemin(depart, arrivee); /// Calcul du chemin le plus court
+            (List<Arc<T>> chemin, int tempsMinimal) = FloydWarshallChemin(depart, arrivee); /// Calcul du chemin le plus court
             string cheminAcces = Graphviz<T>.GenerateChemin(chemin, noeuds);
-            return (plusPetiteDistance, cheminAcces);
+            return (tempsMinimal, cheminAcces);
         }
-
+        public (int tempsMinimal, string cheminAcces) AffichageCheminOptimal(List<Noeud<T>> stationAVisité)
+        {
+            (int tempsMinimal, List<Noeud<T>> cheminLePlusCourt) = CheminOptimal(stationAVisité); /// Calcul du chemin le plus court entre ttes les stations
+            List<Arc<T>> cheminOptiArcs = new List<Arc<T>>();
+            for (int i = 0; i < cheminLePlusCourt.Count - 2; i++)
+            {
+                (var listArc, int temps) = DijkstraChemin(cheminLePlusCourt[i], cheminLePlusCourt[i + 1]);
+                cheminOptiArcs.AddRange(listArc);
+            }
+            string cheminAcces = Graphviz<T>.GenerateCheminOptimal(cheminOptiArcs, noeuds, stationAVisité);
+            return (tempsMinimal, cheminAcces);
+        }
         #endregion
         public List<(Noeud<T> noeud, List<Noeud<T>> successeur)> TriListeAdjacence()
         {
@@ -916,6 +927,57 @@ namespace ProbSciANA
 
             return TriListeAdjacenceDecroissant(listeAdjacenceATriée, 0, listeAdjacenceATriée.Count - 1);
         }
+        #region Chemin optimal
+        public (int valeurMin, List<Noeud<T>> cheminLePlusCourt) CheminOptimal(List<Noeud<T>> stations)
+        {
+            int valeurMin = int.MaxValue;
+            Noeud<T> stationDépart = stations[0];    /// La première station est forcément celle de départ
+            List<Noeud<T>> cheminLePlusCourt = null;
+            stations.RemoveAt(0);
+            List<List<Noeud<T>>> listCheminPossible = Permutations(stations);
+            foreach (List<Noeud<T>> chemin in listCheminPossible)
+            {
+                int tempsTraj = Dijkstra(stationDépart)[chemin[0]];
+                for (int j = 0; j < chemin.Count - 1; j++)
+                {
+                    tempsTraj += Dijkstra(chemin[j])[chemin[j + 1]];
+                }
+                if (tempsTraj < valeurMin)
+                {
+                    valeurMin = tempsTraj;
+                    cheminLePlusCourt = chemin;
+                }
+                Console.WriteLine("Temps :" + valeurMin);   /// Visualiser la progression et pour le débug
+            }
+            Console.Write(stationDépart);
+            foreach (Noeud<T> station in cheminLePlusCourt)
+            {
+                Console.Write(" -> " + station);
+            }
+            return (valeurMin, cheminLePlusCourt);
+        }
+        private static List<List<Noeud<T>>> Permutations(List<Noeud<T>> liste)
+        {
+            var resultats = new List<List<Noeud<T>>>();
+            Permuter(liste, 0, resultats);
+            return resultats;
+        }
+        private static void Permuter(List<Noeud<T>> liste, int index, List<List<Noeud<T>>> resultats)
+        {
+            if (index == liste.Count)
+            {
+                resultats.Add(new List<Noeud<T>>(liste));
+                return;
+            }
+
+            for (int i = index; i < liste.Count; i++)
+            {
+                (liste[index], liste[i]) = (liste[i], liste[index]); // change de place
+                Permuter(liste, index + 1, resultats);
+                (liste[index], liste[i]) = (liste[i], liste[index]); // inverse le changement
+            }
+        }
+        #endregion
         private List<(Noeud<T> noeud, List<Noeud<T>> successeur)> TriListeAdjacenceDecroissant(List<(Noeud<T> noeud, List<Noeud<T>> successeur)> listeAdjacenceTriée, int début, int fin)
         {
             if (début >= fin)

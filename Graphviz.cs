@@ -336,6 +336,107 @@ namespace ProbSciANA
             return pngFilePath;
 
         }
+        public static string GenerateCheminOptimal(List<Arc<T>> arcsChemin, List<Noeud<T>> noeuds, List<Noeud<T>> stationAVisité)
+        {
+            numéroImageChemin++;
+            string dotFilePath = Path.Combine(ImagesPath, $"grapheCheminOptimal{numéroImageChemin}.dot");
+            string pngFilePath = Path.Combine(ImagesPath, $"grapheCheminOptimal{numéroImageChemin}.png");
+            try
+            {
+                /// Création du fichier DOT
+                StringBuilder dot = new StringBuilder();
+                dot.AppendLine("digraph G {");
+                dot.AppendLine("    layout=neato;"); /// Utilise le moteur neato
+                dot.AppendLine("    overlap=false;");
+                dot.AppendLine("    graph [dpi=200];");
+                ///Creation du premier sommet (impossible dans la boucle foreach)
+                foreach (Noeud<T> vertex in noeuds)
+                {
+                    var pos = vertex.Valeur.ToString();
+                    string longitude = vertex.Longitude.ToString(CultureInfo.InvariantCulture);
+                    string latitude = vertex.Latitude.ToString(CultureInfo.InvariantCulture);
+                    var color = "";
+                    var style = "";
+                    if (stationAVisité.Contains(vertex))
+                    {
+                        style = "filled";
+                        color = "red";
+                    }
+                    else
+                    {
+                        for (int i = 1; i < arcsChemin.Count; i++)
+                        {
+                            if (vertex == arcsChemin[i].IdPrevious)
+                            {
+                                style = "bold";
+                                color = "red";
+                            }
+                        }
+                    }
+                    dot.AppendLine($"    \"{pos}\" [pos=\"{longitude},{latitude}!\", color=\"{color}\",label=\"{pos}\",style=\"{style}\", fontsize=12];");
+                }
+
+                for (int i = 0; i < arcsChemin.Count; i++)
+                {
+                    var idPrevious = arcsChemin[i].IdPrevious.Valeur.ToString();
+                    var idNext = arcsChemin[i].IdNext.Valeur.ToString();
+                    var color = GetColor(arcsChemin[i].IdLigne);
+                    string nonSensUnique = "";
+                    dot.AppendLine($"    \"{idPrevious}\" -> \"{idNext}\" [{nonSensUnique} color=\"{color}\", penwidth=3, style=bold];");
+                }
+
+
+
+
+
+                dot.AppendLine("}");
+                File.WriteAllText(dotFilePath, dot.ToString());
+                ///Pour déboguer, afficher le contenu du fichier DOT
+                ///Console.WriteLine("Contenu du fichier DOT :");
+                ///Console.WriteLine(dot.ToString());
+
+
+                /// Exécuter dot.exe pour générer l'image PNG
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = GraphvizPath,
+                        Arguments = $"-Tpng -o \"{pngFilePath}\" \"{dotFilePath}\"",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                {
+                    string errorOutput = process.StandardError.ReadToEnd();
+                    Console.WriteLine("Erreur lors de l'exécution de dot.exe :");
+                    Console.WriteLine(errorOutput);
+                    throw new Exception($"Le processus dot.exe a renvoyé le code {process.ExitCode}. Erreur : {errorOutput}");
+                }
+
+                Console.WriteLine($"Image PNG générée : {pngFilePath}");
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = pngFilePath,
+                    UseShellExecute = true,
+                    WorkingDirectory = Path.GetDirectoryName(pngFilePath)
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Une erreur est survenue lors de la génération de l'image du graphe. Chemin: {pngFilePath}", ex);
+            }
+            return pngFilePath;
+
+        }
         public static string GenerateGraphNonOrienté(List<Noeud<T>> noeuds, List<Arc<T>> arcs, Dictionary<Noeud<T>, int> couleurs = null)
         {
             /// Si la liste des couleurs est nulle, on initialise une couleur par défaut

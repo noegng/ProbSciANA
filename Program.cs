@@ -65,7 +65,7 @@ namespace ProbSciANA
           }
         */
         #region Graphe Utilisateur
-        public static Graphe<Utilisateur> CreationGrapheU()
+        public static Graphe<Utilisateur> CreationGrapheU() /// Création du graph des utilisateurs
         {
             Commande.RefreshList();
             var hashSetUtilisateursParCommande = new HashSet<Utilisateur>(); /// On ne veut pas de doublon
@@ -244,56 +244,7 @@ namespace ProbSciANA
             }
             return (noeuds, arcs);
         }
-        public int CheminOptimal(Graphe<(int id, string nom)> graphe, List<Noeud<(int id, string nom)>> stations)
-        {
-            int valeurMin = int.MaxValue;
-            Noeud<(int id, string nom)> stationDépart = stations[0];
-            List<Noeud<(int id, string nom)>> cheminLePlusCourt = null;
-            stations.RemoveAt(0);
-            List<List<Noeud<(int id, string nom)>>> listCheminPossible = Permutations(stations);
-            foreach (List<Noeud<(int id, string nom)>> chemin in listCheminPossible)
-            {
-                int tempsTraj = graphe.Dijkstra(stationDépart)[chemin[0]];
-                for (int j = 0; j < chemin.Count - 1; j++)
-                {
-                    tempsTraj += graphe.Dijkstra(chemin[j])[chemin[j + 1]];
-                }
-                if (tempsTraj < valeurMin)
-                {
-                    valeurMin = tempsTraj;
-                    cheminLePlusCourt = chemin;
-                }
-                Console.WriteLine("Temps :" + valeurMin);
-            }
-            Console.Write(stationDépart);
-            foreach (Noeud<(int id, string nom)> station in cheminLePlusCourt)
-            {
-                Console.Write(" -> " + station);
-            }
-            return valeurMin;
-        }
-        public static List<List<Noeud<(int id, string nom)>>> Permutations(List<Noeud<(int id, string nom)>> liste)
-        {
-            var resultats = new List<List<Noeud<(int id, string nom)>>>();
-            Permuter(liste, 0, resultats);
-            return resultats;
-        }
 
-        private static void Permuter(List<Noeud<(int id, string nom)>> liste, int index, List<List<Noeud<(int id, string nom)>>> resultats)
-        {
-            if (index == liste.Count)
-            {
-                resultats.Add(new List<Noeud<(int id, string nom)>>(liste));
-                return;
-            }
-
-            for (int i = index; i < liste.Count; i++)
-            {
-                (liste[index], liste[i]) = (liste[i], liste[index]); // change de place
-                Permuter(liste, index + 1, resultats);
-                (liste[index], liste[i]) = (liste[i], liste[index]); // inverse le changement
-            }
-        }
         #endregion
         #region Etape 1
         static void Etape1()
