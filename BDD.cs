@@ -1145,7 +1145,7 @@ namespace ProbSciANA
         private string regime;
         private string nationalite;
         private DateTime date_peremption;
-        private string? photo = "Images/plat_defaut";
+        private string? photo = "Images/plat_defaut.png";
 
         public Plat(int id_plat)
         {
@@ -1371,7 +1371,7 @@ namespace ProbSciANA
         private int id_ingredient;
         private string nom;
         private string regime;
-        private string? photo = "Images/ingredient_defaut";
+        private string? photo = "Images/ingredient_defaut.png";
 
         public Ingredient(int id_ingredient)
         {
