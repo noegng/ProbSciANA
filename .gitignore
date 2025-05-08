@@ -408,3 +408,5 @@ Interface/images/*.dot
 /Interface/images/graphes
 *.json
 *.xml
+donnees_graphe.json
+donnees_graphe.xml

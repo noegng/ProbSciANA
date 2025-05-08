@@ -52,6 +52,10 @@
       <Destination>8</Destination>
     </ArcExportOfUtilisateur>
     <ArcExportOfUtilisateur>
+      <Source>1</Source>
+      <Destination>10</Destination>
+    </ArcExportOfUtilisateur>
+    <ArcExportOfUtilisateur>
       <Source>2</Source>
       <Destination>3</Destination>
     </ArcExportOfUtilisateur>
@@ -62,10 +66,6 @@
     <ArcExportOfUtilisateur>
       <Source>4</Source>
       <Destination>7</Destination>
-    </ArcExportOfUtilisateur>
-    <ArcExportOfUtilisateur>
-      <Source>5</Source>
-      <Destination>8</Destination>
     </ArcExportOfUtilisateur>
     <ArcExportOfUtilisateur>
       <Source>6</Source>
@@ -92,6 +92,6 @@
   <Propriétés>
     <EstConnexe>true</EstConnexe>
     <ContientCycle>true</ContientCycle>
-    <NombreCouleurs>3</NombreCouleurs>
+    <NombreCouleurs>2</NombreCouleurs>
   </Propriétés>
 </DonnéesGrapheOfUtilisateur>
