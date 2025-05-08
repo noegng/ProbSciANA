@@ -32,7 +32,7 @@ namespace ProbSciANA.Interface
         }
 
 
-        private void BtnModeTest_Click(object sender, RoutedEventArgs e)
+        private void BtnTest_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Test());
         }
@@ -74,10 +74,6 @@ namespace ProbSciANA.Interface
             NavigationService?.Navigate(new StartView());
 
             MessageBox.Show("Vous avez été déconnecté.");
-        }
-        private void BtnModeTest2_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new Test2());
         }
         private void BtnConnexion_Click(object sender, RoutedEventArgs e)
         {
@@ -312,10 +308,6 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new CommanderView());
         }
-        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void UpdateNavButtons()
         {
@@ -354,10 +346,6 @@ namespace ProbSciANA.Interface
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();
-        }
-        private void AfficherClients_Click(object sender, RoutedEventArgs e)
-        {
-
         }
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
@@ -408,7 +396,6 @@ namespace ProbSciANA.Interface
     public partial class AddPlat : Page
     {
         public Dictionary<Ingredient, int> Ingredients_selectionnes { get; set; } = new();
-
         public AddPlat()
         {
             InitializeComponent();
@@ -504,10 +491,6 @@ namespace ProbSciANA.Interface
             DataContext = this;
         }
 
-        private void AfficherClients_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new CommandeView());
@@ -572,10 +555,6 @@ namespace ProbSciANA.Interface
                 NavigationService.Navigate(new RestoView(cuisinier));
             }
         }
-        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void UpdateNavButtons()
         {
@@ -615,25 +594,18 @@ namespace ProbSciANA.Interface
         public List<Plat> Plats { get; set; } = new();
         public string? PanierSelectionne { get; set; }
         public Plat? SelectedPlat { get; set; }
-        public List<Plat> PlatsDuPanierSelectionne
-        {
-            get
-            {
-                if (PanierSelectionne != null && Paniers.ContainsKey(PanierSelectionne))
-                {
-                    return Paniers[PanierSelectionne].plats;
-                }
-                return new List<Plat>();
-            }
-        }
+
         public double PrixTotalPanierSelectionne
         {
             get
             {
                 double result = 0;
-                foreach (Plat p in PlatsDuPanierSelectionne)
+                if (PanierSelectionne != null)
                 {
-                    result += p.Prix;
+                    foreach (Plat p in Paniers[PanierSelectionne].plats.Keys)
+                    {
+                        result += p.Prix * Paniers[PanierSelectionne].plats[p];
+                    }
                 }
                 return result;
             }
@@ -645,15 +617,15 @@ namespace ProbSciANA.Interface
                 double result = 0;
                 foreach (string s in Paniers.Keys)
                 {
-                    foreach (Plat p in Paniers[s].plats)
+                    foreach (Plat p in Paniers[s].plats.Keys)
                     {
-                        result += p.Prix;
+                        result += p.Prix * Paniers[s].plats[p];
                     }
                 }
                 return result;
             }
         }
-        public Dictionary<string, (List<Plat> plats, DateTime date)> Paniers { get; set; } = new();
+        public Dictionary<string, (Dictionary<Plat, int> plats, DateTime date)> Paniers { get; set; } = new();
 
         public RestoView(Utilisateur cuisinier_select)
         {
@@ -665,12 +637,22 @@ namespace ProbSciANA.Interface
             {
                 Plats.Add(c.Plat);
             }
+            DataContext = null;
             DataContext = this;
         }
 
-        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
+        private void RefreshPanier()
         {
-
+            if (PanierSelectionne == null)
+            {
+                return;
+            }
+            foreach (Plat p in Plats)
+            {
+                Paniers[PanierSelectionne].plats[p] = 0;
+            }
+            DataContext = null;
+            DataContext = this;
         }
         private void PlatCard_Click(object sender, MouseButtonEventArgs e)
         {
@@ -701,7 +683,9 @@ namespace ProbSciANA.Interface
                 }
                 if (!Paniers.ContainsKey(adresse))
                 {
-                    Paniers.Add(adresse, (new List<Plat>(), date));
+                    Paniers.Add(adresse, (new Dictionary<Plat, int>(), date));
+                    PanierSelectionne = adresse;
+                    RefreshPanier();
                 }
 
                 else
@@ -716,7 +700,6 @@ namespace ProbSciANA.Interface
             DataContext = null;
             DataContext = this;
             CollectionViewSource.GetDefaultView(Paniers).Refresh();
-            MessageBox.Show(Paniers.Count.ToString());
         }
         private void BtnAjouterAuPanier_Click(object sender, RoutedEventArgs e)
         {
@@ -728,7 +711,7 @@ namespace ProbSciANA.Interface
                     return;
                 }
 
-                Paniers[PanierSelectionne].plats.Add(plat);
+                Paniers[PanierSelectionne].plats[plat]++;
                 DataContext = null;
                 DataContext = this;
             }
@@ -743,21 +726,13 @@ namespace ProbSciANA.Interface
                     if (Paniers[adresse].plats != null && Paniers[adresse].plats.Count > 0)
                     {
                         Livraison l = new Livraison(c, adresse, Paniers[adresse].date);
-                        Dictionary<Plat, int> Requierts = new Dictionary<Plat, int>();
-                        foreach (Plat p in Paniers[adresse].plats)
+
+                        foreach (Plat p in Paniers[adresse].plats.Keys)
                         {
-                            if (!Requierts.Keys.Contains(p))
+                            if (Paniers[adresse].plats[p] > 0)
                             {
-                                Requierts.Add(p, 1);
+                                new Requiert(p, l, Paniers[adresse].plats[p]);
                             }
-                            else
-                            {
-                                Requierts[p]++;
-                            }
-                        }
-                        foreach (Plat p in Requierts.Keys)
-                        {
-                            new Requiert(p, l, Requierts[p]);
                         }
                         Paniers.Remove(adresse);
                     }
@@ -781,7 +756,7 @@ namespace ProbSciANA.Interface
         }
         private void Expander_Expanded(object sender, RoutedEventArgs e)
         {
-            if (sender is Expander exp && exp.DataContext is KeyValuePair<string, (List<Plat> plats, DateTime date)> kvp)
+            if (sender is Expander exp && exp.DataContext is KeyValuePair<string, (Dictionary<Plat, int>, DateTime)> kvp)
             {
                 PanierSelectionne = kvp.Key;
                 DataContext = null;
@@ -790,7 +765,7 @@ namespace ProbSciANA.Interface
         }
         private void ListePaniers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is ListBox listBox && listBox.SelectedItem is KeyValuePair<string, (List<Plat>, DateTime)> kvp)
+            if (sender is ListBox listBox && listBox.SelectedItem is KeyValuePair<string, (Dictionary<Plat, int>, DateTime)> kvp)
             {
                 PanierSelectionne = kvp.Key;
                 DataContext = null;
@@ -908,10 +883,6 @@ namespace ProbSciANA.Interface
             }
         }
 
-        private void AfficherClients_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         private void AfficherPlats_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new PlatView());
@@ -994,10 +965,7 @@ namespace ProbSciANA.Interface
                 DataContext = selected;
             }
         }
-        private void AfficherClients_Click(object sender, RoutedEventArgs e)
-        {
 
-        }
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new CommandeView());
@@ -1071,10 +1039,6 @@ namespace ProbSciANA.Interface
             }
         }
 
-        private void AfficherClients_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new CommandeView());
@@ -1135,10 +1099,6 @@ namespace ProbSciANA.Interface
         private void BtnCommandes_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new CommandesViewAdmin());
-        }
-        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StatistiquesViewAdmin());
         }
 
         private void UpdateNavButtons()
@@ -1259,10 +1219,7 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new CommandesViewAdmin());
         }
-        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StatistiquesViewAdmin());
-        }
+
         private void UpdateNavButtons()
         {
             BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
@@ -1492,10 +1449,6 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new CommandesViewAdmin());
         }
-        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StatistiquesViewAdmin());
-        }
 
         private void UpdateNavButtons()
         {
@@ -1583,10 +1536,6 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new CommandesViewAdmin());
         }
-        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StatistiquesViewAdmin());
-        }
 
         private void UpdateNavButtons()
         {
@@ -1614,62 +1563,6 @@ namespace ProbSciANA.Interface
             UpdateNavButtons();
         }
     }
-    #endregion
-
-    #region Page Statistiques Admin
-
-    public partial class StatistiquesViewAdmin : Page
-    {
-        public StatistiquesViewAdmin()
-        {
-            InitializeComponent();
-            Loaded += (s, e) => UpdateNavButtons();
-        }
-
-        private void BtnClients_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new ClientsViewAdmin());
-        }
-        private void BtnCuisiniers_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new CuisiniersViewAdmin());
-        }
-        private void BtnCommandes_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new CommandesViewAdmin());
-        }
-        private void BtnStatistiques_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StatistiquesViewAdmin());
-        }
-
-        private void UpdateNavButtons()
-        {
-            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
-            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
-        }
-        private void BtnMode_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StartView());
-        }
-        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AdminDashboardView());
-        }
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoBack)
-                NavigationService.GoBack();
-            UpdateNavButtons();
-        }
-        private void BtnForward_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoForward)
-                NavigationService.GoForward();
-            UpdateNavButtons();
-        }
-    }
-
     #endregion
 
     #region SessionManager
@@ -1699,85 +1592,12 @@ namespace ProbSciANA.Interface
     #endregion
 
     #region Test
+
     public partial class Test : Page
-    {
-        public Test()
-        {
-            InitializeComponent();
-            Loaded += (s, e) => UpdateNavButtons();
-        }
-        private void Btn1(object sender, RoutedEventArgs e)
-        {
-            // Logique pour le bouton 1
-            MessageBox.Show("Bouton 1 cliqué !");
-        }
-        private void Btn2(object sender, RoutedEventArgs e)
-        {
-            // Logique pour le bouton 2
-            MessageBox.Show("Bouton 2 cliqué !");
-        }
-        private void Btn3(object sender, RoutedEventArgs e)
-        {
-            // Logique pour le bouton 3
-            MessageBox.Show("Bouton 3 cliqué !");
-            Utilisateur.RefreshList();
-            Console.WriteLine(Utilisateur.clients[1].Avis_laisses[0].Commentaire);
-        }
-
-        private void Commander_Click(object sender, RoutedEventArgs e)
-        {
-            // Naviguer vers la page de commande
-            MessageBox.Show("Page Commander à implémenter.");
-        }
-
-        private void SuiviCommandes_Click(object sender, RoutedEventArgs e)
-        {
-            // Naviguer vers la page de suivi
-            MessageBox.Show("Page Suivi des commandes à implémenter.");
-        }
-        private void UpdateNavButtons()
-        {
-            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
-            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
-        }
-        private void BtnMode_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Changer de mode (sombre / clair) à implémenter !");
-        }
-        private void BtnConnexion_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new ConnexionView());
-        }
-        private void BtnInscription_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new Register());
-        }
-        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StartView());
-        }
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoBack)
-                NavigationService.GoBack();
-            UpdateNavButtons();
-        }
-        private void BtnForward_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoForward)
-                NavigationService.GoForward();
-            UpdateNavButtons();
-        }
-    }
-    #endregion
-
-    #region Test2
-
-    public partial class Test2 : Page
     {
         Graphe<Utilisateur> graphU = Program.CreationGrapheU();
 
-        public Test2()
+        public Test()
         {
             InitializeComponent();
             Loaded += (s, e) => UpdateNavButtons();

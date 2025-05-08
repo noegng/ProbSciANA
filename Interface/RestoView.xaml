@@ -10,390 +10,401 @@
         <iface:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
     </Page.Resources>
 
-    <DockPanel LastChildFill="True">
+    <Grid>
+        <Image Source="Images/.png"
+               Stretch="Fill"
+               IsHitTestVisible="False"
+               Opacity="0.3"/>
 
-        <!-- BANDEAU STYLE UBER -->
-        <Grid DockPanel.Dock="Top"
-              Height="50"
-              Background="Black">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <DockPanel LastChildFill="True">
 
-            <Button Grid.Column="0"
-                    Content="👨‍🍳 Mode"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="BtnMode_Click"/>
+            <!-- BANDEAU STYLE UBER -->
+            <Grid DockPanel.Dock="Top"
+                  Height="50"
+                  Background="Black">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1"
-                    Content="🏠 Accueil"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="BtnAccueil_Click"/>
-
-            <StackPanel Grid.Column="2"/>
-
-            <Button Grid.Column="3"
-                    Content="Historique commandes"
-                    Foreground="White"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"
-                    Click="AfficherCommandes_Click"/>
-
-            <Button Grid.Column="4"
-                    Content="Commander"
-                    Foreground="White"
-                    Background="#BEE6FD"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    Padding="10,0"/>
-        </Grid>
-
-        <Grid DockPanel.Dock="Top"
-              Height="50"
-              Background="Transparent">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal"
-                        Grid.Column="0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Margin="10,0,0,0">
-
-                <!-- BACK -->
-                <Button x:Name="BtnBack"
-                        Width="32"
-                        Height="32"
-                        Margin="2"
+                <Button Grid.Column="0"
+                        Content="👨‍🍳 Mode"
+                        Foreground="White"
                         Background="Transparent"
                         BorderThickness="0"
-                        Cursor="Hand"
-                        ToolTip="Précédent"
-                        Click="BtnBack_Click">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="border"
-                                    Width="32"
-                                    Height="32"
-                                    CornerRadius="16"
-                                    Background="Transparent"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center">
-                                <Viewbox Width="16"
-                                         Height="16">
-                                    <Grid Width="24"
-                                          Height="24">
-                                        <Path x:Name="backArrow"
-                                              StrokeThickness="2"
-                                              StrokeLineJoin="Round"
-                                              StrokeStartLineCap="Round"
-                                              StrokeEndLineCap="Round"
-                                              Data="M14,4 L6,12 L14,20"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                                    </Grid>
-                                </Viewbox>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter TargetName="border"
-                                            Property="Background"
-                                            Value="#EEE"/>
-                                </Trigger>
-                                <Trigger Property="IsEnabled"
-                                         Value="True">
-                                    <Setter TargetName="backArrow"
-                                            Property="Stroke"
-                                            Value="Black"/>
-                                </Trigger>
-                                <Trigger Property="IsEnabled"
-                                         Value="False">
-                                    <Setter TargetName="backArrow"
-                                            Property="Stroke"
-                                            Value="Gray"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
+                        FontWeight="Bold"
+                        Padding="10,0"
+                        Click="BtnMode_Click"/>
 
-                <!-- FORWARD -->
-                <Button x:Name="BtnForward"
-                        Width="32"
-                        Height="32"
-                        Margin="2"
+                <Button Grid.Column="1"
+                        Content="🏠 Accueil"
+                        Foreground="White"
                         Background="Transparent"
                         BorderThickness="0"
-                        Cursor="Hand"
-                        ToolTip="Suivant"
-                        Click="BtnForward_Click">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="border"
-                                    Width="32"
-                                    Height="32"
-                                    CornerRadius="16"
-                                    Background="Transparent"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center">
-                                <Viewbox Width="16"
-                                         Height="16">
-                                    <Grid Width="24"
-                                          Height="24">
-                                        <Path x:Name="forwardArrow"
-                                              StrokeThickness="2"
-                                              StrokeLineJoin="Round"
-                                              StrokeStartLineCap="Round"
-                                              StrokeEndLineCap="Round"
-                                              Data="M4,4 L12,12 L4,20"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                                    </Grid>
-                                </Viewbox>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter TargetName="border"
-                                            Property="Background"
-                                            Value="#EEE"/>
-                                </Trigger>
-                                <Trigger Property="IsEnabled"
-                                         Value="True">
-                                    <Setter TargetName="forwardArrow"
-                                            Property="Stroke"
-                                            Value="Black"/>
-                                </Trigger>
-                                <Trigger Property="IsEnabled"
-                                         Value="False">
-                                    <Setter TargetName="forwardArrow"
-                                            Property="Stroke"
-                                            Value="Gray"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-            </StackPanel>
+                        FontWeight="Bold"
+                        Padding="10,0"
+                        Click="BtnAccueil_Click"/>
 
-            <!-- Titre -->
-            <TextBlock FontSize="24"
-                       FontWeight="Bold"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Grid.Column="1">
+                <StackPanel Grid.Column="2"/>
+
+                <Button Grid.Column="3"
+                        Content="Commander"
+                        Foreground="White"
+                        Background="#BEE6FD"
+                        BorderThickness="0"
+                        FontWeight="Bold"
+                        Padding="10,0"/>
+            </Grid>
+
+            <Grid DockPanel.Dock="Top"
+                  Height="50"
+                  Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="10,0,0,0">
+
+                    <!-- BACK -->
+                    <Button x:Name="BtnBack"
+                            Width="32"
+                            Height="32"
+                            Margin="2"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            ToolTip="Précédent"
+                            Click="BtnBack_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border"
+                                        Width="32"
+                                        Height="32"
+                                        CornerRadius="16"
+                                        Background="Transparent"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                    <Viewbox Width="16"
+                                             Height="16">
+                                        <Grid Width="24"
+                                              Height="24">
+                                            <Path x:Name="backArrow"
+                                                  StrokeThickness="2"
+                                                  StrokeLineJoin="Round"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round"
+                                                  Data="M14,4 L6,12 L14,20"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Viewbox>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver"
+                                             Value="True">
+                                        <Setter TargetName="border"
+                                                Property="Background"
+                                                Value="#EEE"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled"
+                                             Value="True">
+                                        <Setter TargetName="backArrow"
+                                                Property="Stroke"
+                                                Value="Black"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled"
+                                             Value="False">
+                                        <Setter TargetName="backArrow"
+                                                Property="Stroke"
+                                                Value="Gray"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- FORWARD -->
+                    <Button x:Name="BtnForward"
+                            Width="32"
+                            Height="32"
+                            Margin="2"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            ToolTip="Suivant"
+                            Click="BtnForward_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border"
+                                        Width="32"
+                                        Height="32"
+                                        CornerRadius="16"
+                                        Background="Transparent"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                    <Viewbox Width="16"
+                                             Height="16">
+                                        <Grid Width="24"
+                                              Height="24">
+                                            <Path x:Name="forwardArrow"
+                                                  StrokeThickness="2"
+                                                  StrokeLineJoin="Round"
+                                                  StrokeStartLineCap="Round"
+                                                  StrokeEndLineCap="Round"
+                                                  Data="M4,4 L12,12 L4,20"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Viewbox>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver"
+                                             Value="True">
+                                        <Setter TargetName="border"
+                                                Property="Background"
+                                                Value="#EEE"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled"
+                                             Value="True">
+                                        <Setter TargetName="forwardArrow"
+                                                Property="Stroke"
+                                                Value="Black"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled"
+                                             Value="False">
+                                        <Setter TargetName="forwardArrow"
+                                                Property="Stroke"
+                                                Value="Gray"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+
+                <!-- Titre -->
+                <TextBlock FontSize="24"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Grid.Column="1">
                 <Run Text="Plats disponibles chez"/>
                 <Run Text="{Binding Cuisinier.Prenom}"/>
                 <Run Text="{Binding Cuisinier.Nom}"/>
-            </TextBlock>
-            <TextBox x:Name="AdresseInput"
-                     Grid.Column="2"
-                     Width="180"
-                     Height="36"
-                     VerticalContentAlignment="Center"/>
+                </TextBlock>
+                <TextBox x:Name="AdresseInput"
+                         Grid.Column="2"
+                         Width="180"
+                         Height="36"
+                         VerticalContentAlignment="Center"/>
 
-            <!-- Date -->
-            <DatePicker x:Name="DateInput"
-                        Grid.Column="3"
-                        Width="160"
-                        Height="36"
-                        VerticalContentAlignment="Center"/>
+                <!-- Date -->
+                <DatePicker x:Name="DateInput"
+                            Grid.Column="3"
+                            Width="160"
+                            Height="36"
+                            VerticalContentAlignment="Center"/>
 
-            <Button Content="➕"
-                    ToolTip="Ajouter un panier"
-                    FontSize="16"
-                    Width="32"
-                    Height="32"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Click="BtnAjouterPanier_Click"
-                    Grid.Column="4"/>
+                <Button Content="➕"
+                        ToolTip="Ajouter un panier"
+                        FontSize="16"
+                        Width="32"
+                        Height="32"
+                        Margin="0,0,10,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="BtnAjouterPanier_Click"
+                        Grid.Column="4"/>
 
-            <Button Content="🚫"
-                    ToolTip="Vider le panier"
-                    FontSize="16"
-                    Width="32"
-                    Height="32"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Click="BtnAnnulerPanier_Click"
-                    Grid.Column="5"/>
+                <Button Content="🚫"
+                        ToolTip="Vider le panier"
+                        FontSize="16"
+                        Width="32"
+                        Height="32"
+                        Margin="0,0,10,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="BtnAnnulerPanier_Click"
+                        Grid.Column="5"/>
 
-            <Button Content="✅"
-                    ToolTip="Valider la commande"
-                    FontSize="16"
-                    Width="32"
-                    Height="32"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Click="BtnValiderPanier_Click"
-                    Grid.Column="6"/>
-        </Grid>
+                <Button Content="✅"
+                        ToolTip="Valider la commande"
+                        FontSize="16"
+                        Width="32"
+                        Height="32"
+                        Margin="0,0,10,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="BtnValiderPanier_Click"
+                        Grid.Column="6"/>
+            </Grid>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Text="{Binding PrixTotal, StringFormat='Total : {0} €'}"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Top"
-                       Margin="20,10,0,0"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Foreground="DarkGreen"/>
+                <TextBlock Text="{Binding PrixTotal, StringFormat='Total : {0} €'}"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           Margin="20,10,0,0"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           Foreground="DarkGreen"/>
 
-            <!-- ✅ Colonne de gauche : les plats -->
-            <ScrollViewer Grid.Column="0">
-                <ItemsControl ItemsSource="{Binding Plats}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel HorizontalAlignment="Center"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="10"
-                                    Padding="10"
-                                    Width="200"
-                                    Height="200"
-                                    Background="White"
-                                    CornerRadius="12"
-                                    BorderBrush="#CCC"
-                                    BorderThickness="1"
-                                    MouseLeftButtonUp="PlatCard_Click">
-
-                                <Grid>
-                                    <Button Content="🛒"
-                                            ToolTip="Ajouter au panier"
-                                            FontSize="16"
-                                            Width="32"
-                                            Height="32"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Top"
-                                            Margin="0,-12,-12,0"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            Click="BtnAjouterAuPanier_Click"
-                                            Tag="{Binding}"/>
-
-                                    <!-- Infos centrées -->
-                                    <StackPanel HorizontalAlignment="Center"
-                                                VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Nom}"
-                                                   FontWeight="Bold"
-                                                   FontSize="14"
-                                                   TextAlignment="Center"
-                                                   Margin="5"/>
-                                        <TextBlock Text="{Binding Prix, StringFormat={}{0} €}"
-                                                   FontSize="12"
-                                                   Foreground="Green"
-                                                   TextAlignment="Center"/>
-                                        <Image Source="{Binding Photo}"
-                                               Width="100"
-                                               Height="100"
-                                               Stretch="UniformToFill"
-                                               IsHitTestVisible="False"
-                                               Margin="5"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-
-            <!-- ✅ Colonne de droite : fiche + bouton -->
-            <Grid Grid.Column="1"
-                  Background="#FAFAFA">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <!-- === SECTION : LISTE DES PANIERS ============================ -->
-                <Expander Grid.Row="0"
-                          Header="Liste des paniers"
-                          Expanded="Expander_Expanded"
-                          Padding="8"
-                          Margin="0,4">
-                    <ListBox ItemsSource="{Binding Paniers}"
-                             DisplayMemberPath="Key"
-                             SelectedValuePath="Key"
-                             SelectedValue="{Binding PanierSelectionne}"
-                             SelectionChanged="ListePaniers_SelectionChanged"
-                             Margin="0,4,0,0"/>
-                </Expander>
-
-
-
-                <StackPanel Grid.Row="1"
-                            Margin="0,20,0,0"
-                            Visibility="{Binding PanierSelectionne,Converter={StaticResource NullToVisibilityConverter}}">
-
-                    <!-- Adresse du panier -->
-                    <TextBlock FontSize="16"
-                               FontWeight="Bold"
-                               Text="{Binding PanierSelectionne,StringFormat='Fiche du panier : {0}'}"/>
-
-                    <!-- Date de livraison -->
-                    <TextBlock Margin="4,6"
-                               Text="{Binding Paniers[PanierSelectionne].date,StringFormat='Date de livraison : {0:dd/MM/yyyy}'}"/>
-
-                    <!-- Total -->
-                    <TextBlock Margin="0,0,0,6"
-                               FontWeight="SemiBold"
-                               Foreground="DarkGreen"
-                               Text="{Binding PrixTotalPanierSelectionne,StringFormat='Total : {0} €'}"/>
-
-                    <!-- Liste des plats du panier -->
-                    <ItemsControl ItemsSource="{Binding PlatsDuPanierSelectionne}">
+                <!-- ✅ Colonne de gauche : les plats -->
+                <ScrollViewer Grid.Column="0">
+                    <ItemsControl ItemsSource="{Binding Plats}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="0,2">
-                                    <TextBlock Text="{Binding Nom}"
-                                               Width="200"/>
-                                    <TextBlock Text="{Binding Prix,StringFormat='{}{0} €'}"/>
-                                </StackPanel>
+                                <Border Margin="10"
+                                        Padding="10"
+                                        Width="200"
+                                        Height="200"
+                                        Background="White"
+                                        CornerRadius="12"
+                                        BorderBrush="#CCC"
+                                        BorderThickness="1"
+                                        MouseLeftButtonUp="PlatCard_Click">
+
+                                    <Grid>
+                                        <TextBlock Text="{Binding Paniers[PanierSelectionne].plats[SelectedPlat]}"
+                                                   FontWeight="Bold"
+                                                   TextAlignment="Center"
+                                                   FontSize="16"
+                                                   Width="32"
+                                                   Height="32"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Top"
+                                                   Margin="-12,-7,0,0"
+                                                   Background="Transparent"/>
+
+                                        <Button Content="🛒"
+                                                ToolTip="Ajouter au panier"
+                                                FontSize="16"
+                                                Width="32"
+                                                Height="32"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top"
+                                                Margin="0,-12,-12,0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Click="BtnAjouterAuPanier_Click"
+                                                Tag="{Binding}"/>
+
+                                        <!-- Infos centrées -->
+                                        <StackPanel HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Nom}"
+                                                       FontWeight="Bold"
+                                                       FontSize="14"
+                                                       TextAlignment="Center"
+                                                       Margin="5"/>
+                                            <Image Source="{Binding Photo}"
+                                                   Width="100"
+                                                   Height="100"
+                                                   Stretch="UniformToFill"
+                                                   IsHitTestVisible="False"
+                                                   Margin="5"/>
+                                            <TextBlock Text="{Binding Prix, StringFormat={}{0} €}"
+                                                       FontSize="20"
+                                                       Foreground="Green"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Bottom"
+                                                       Margin="0,0,-12,-7"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                </ScrollViewer>
 
-                </StackPanel>
+                <!-- ✅ Colonne de droite : fiche + bouton -->
+                <Grid Grid.Column="1"
+                      Background="#FAFAFA">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- === SECTION : LISTE DES PANIERS ============================ -->
+                    <Expander Grid.Row="0"
+                              Header="Liste des paniers"
+                              Expanded="Expander_Expanded"
+                              Padding="8"
+                              Margin="0,4">
+                        <ListBox ItemsSource="{Binding Paniers}"
+                                 DisplayMemberPath="Key"
+                                 SelectedValuePath="Key"
+                                 SelectedValue="{Binding PanierSelectionne}"
+                                 SelectionChanged="ListePaniers_SelectionChanged"
+                                 Margin="0,4,0,0"/>
+                    </Expander>
+
+
+
+                    <StackPanel Grid.Row="1"
+                                Margin="0,20,0,0"
+                                Visibility="{Binding PanierSelectionne,Converter={StaticResource NullToVisibilityConverter}}">
+
+                        <!-- Adresse du panier -->
+                        <TextBlock FontSize="16"
+                                   FontWeight="Bold"
+                                   Text="{Binding PanierSelectionne,StringFormat='Fiche du panier : {0}'}"/>
+
+                        <!-- Date de livraison -->
+                        <TextBlock Margin="4,6"
+                                   Text="{Binding Paniers[PanierSelectionne].date,StringFormat='Date de livraison : {0:dd/MM/yyyy}'}"/>
+
+                        <!-- Total -->
+                        <TextBlock Margin="0,0,0,6"
+                                   FontWeight="SemiBold"
+                                   Foreground="DarkGreen"
+                                   Text="{Binding PrixTotalPanierSelectionne,StringFormat='Total : {0} €'}"/>
+
+                        <!-- Liste des plats du panier -->
+                        <ItemsControl ItemsSource="{Binding Paniers[PanierSelectionne].plats[SelectedPlat]}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,2">
+                                        <TextBlock Text="{Binding Nom}"
+                                                   Width="200"/>
+                                        <TextBlock Text="{Binding Prix,StringFormat='{}{0} €'}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+                </Grid>
             </Grid>
-        </Grid>
 
-    </DockPanel>
+        </DockPanel>
+    </Grid>
 </Page>
