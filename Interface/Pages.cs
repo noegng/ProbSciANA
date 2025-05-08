@@ -1629,7 +1629,7 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Changer de mode (sombre / clair) à implémenter !");
+            NavigationService?.Navigate(new StartView());
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {

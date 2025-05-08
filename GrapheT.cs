@@ -1312,7 +1312,7 @@ namespace ProbSciANA
                 }
             }
 
-            // Créer les groupes indépendants basés sur les couleurs
+            /// Créer les groupes indépendants basés sur les couleurs
             var groupes = new List<List<Noeud<T>>>();
             for (int i = 1; i <= nombreCouleurs; i++)
             {
@@ -1323,49 +1323,6 @@ namespace ProbSciANA
             return groupes;
         }
 
-        /// <summary>
-        /// Affiche les propriétés du graphe et les exporte si demandé
-        /// </summary>
-        /// <param name="exporterJSON">Indique si les données doivent être exportées en JSON</param>
-        /// <param name="exporterXML">Indique si les données doivent être exportées en XML</param>
-        /// <param name="cheminJSON">Chemin du fichier JSON (optionnel)</param>
-        /// <param name="cheminXML">Chemin du fichier XML (optionnel)</param>
-        public void PropriétésGraphe(Graphe<Utilisateur> graphU, bool exporterJSON = false, bool exporterXML = false, string cheminJSON = "graphe.json", string cheminXML = "graphe.xml")
-        {
-            Console.WriteLine("Propriétés du graphe :");
-            Console.WriteLine($"Nombre de noeuds : {noeuds.Count}");
-            Console.WriteLine($"Nombre d'arcs : {arcs.Count}");
-            Console.WriteLine($"Est connexe : {EstConnexe()}");
-            Console.WriteLine($"Contient un cycle : {ContientCycle()}");
-
-            int nombreChromatique = graphU.WelshPowell();
-            Console.WriteLine($"Nombre chromatique (Welsh-Powell) : {nombreChromatique}");
-
-            Console.WriteLine($"Est biparti : {EstBiparti()}");
-            Console.WriteLine($"Est planaire : {EstPlanaire()}");
-
-            //var groupesIndépendants = TrouverGroupesIndépendants();
-            // Console.WriteLine($"Groupes indépendants : {groupesIndépendants.Count}");
-            // for (int i = 0; i < groupesIndépendants.Count; i++)
-            // {
-            //     Console.Write($"Groupe {i + 1} : ");
-            //     foreach (var noeud in groupesIndépendants[i])
-            //     {
-            //         Console.Write($"{noeud.ToString()} ");
-            //     }
-            //     Console.WriteLine();
-            // }
-
-            if (exporterJSON)
-            {
-                ExporterVersJSON(graphU, cheminJSON);
-            }
-
-            if (exporterXML)
-            {
-                ExporterVersXML(graphU, cheminXML);
-            }
-        }
         #endregion
     }
 }

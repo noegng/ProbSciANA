@@ -80,6 +80,10 @@
       <Destination>3</Destination>
     </ArcExportOfUtilisateur>
     <ArcExportOfUtilisateur>
+      <Source>8</Source>
+      <Destination>5</Destination>
+    </ArcExportOfUtilisateur>
+    <ArcExportOfUtilisateur>
       <Source>9</Source>
       <Destination>5</Destination>
     </ArcExportOfUtilisateur>
@@ -92,6 +96,6 @@
   <Propriétés>
     <EstConnexe>true</EstConnexe>
     <ContientCycle>true</ContientCycle>
-    <NombreCouleurs>2</NombreCouleurs>
+    <NombreCouleurs>3</NombreCouleurs>
   </Propriétés>
 </DonnéesGrapheOfUtilisateur>
