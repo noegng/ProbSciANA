@@ -406,3 +406,5 @@ Interface/images/graphes/*.png
 Interface/images/*.dot
 !Interface/images/*.png
 /Interface/images/graphes
+*.json
+*.xml
