@@ -1168,7 +1168,7 @@ namespace ProbSciANA.Interface
             string pxMoyen = "Le prix moyen par commande est de : " + prixMoyenParCommande / Convert.ToDouble(Commande.commandes.Count());
             string nbCuisinier = "Nombre de cuisinier : " + Utilisateur.cuisiniers.Count();
             string nbClient = "Nombre de client : " + Utilisateur.clients.Count();
-            MessageBox.Show($"Le nombre totale de commande est de : Commande.commandes.Count() \n {pxMoyen} \n {nbCuisinier} \n{nbClient} \n {commandeParCuisinier}");
+            MessageBox.Show($"Le nombre totale de commande est de : {Commande.commandes.Count()} \n {pxMoyen} \n {nbCuisinier} \n{nbClient} \n {commandeParCuisinier}");
 
         }
     }
