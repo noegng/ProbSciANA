@@ -12,9 +12,10 @@
 
     <Grid>
         <Image Source="Images/.png"
-               Stretch="Fill"
-               IsHitTestVisible="False"
-               Opacity="0.3"/>
+               Stretch="UniformToFill"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               IsHitTestVisible="False"/>
 
         <DockPanel LastChildFill="True">
 

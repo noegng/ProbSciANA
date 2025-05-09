@@ -935,14 +935,19 @@ namespace ProbSciANA.Interface
                 NavigationService.GoForward();
             UpdateNavButtons();
         }
-        private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
+        private async void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
         {
-            if (dataGridCommandes.SelectedItem is Commande selected)
+            Noeud<(int id, string nom)> stationArrivee = null;
+            if (ListLivraisons.SelectedItem is Livraison selectedLivraison)
             {
-                (int tempsTrajet, cheminAcces) = Program.GrapheMétro.AffichageDijkstra(SessionManager.CurrentUser.Station, selected.Client.Station);
-                CollectionViewSource.GetDefaultView(cheminAcces).Refresh();
-                MessageBox.Show($"Temps de trajet entre {SessionManager.CurrentUser.Station.Valeur.nom} et {selected.Client.Station.Valeur.nom} : {tempsTrajet} minutes.");
+                stationArrivee = await Program.GetNoeud(selectedLivraison.Adresse);
             }
+            else if (dataGridCommandes.SelectedItem is Commande selected)
+            {
+                stationArrivee = selected.Client.Station;
+            }
+            (int tempsTrajet, cheminAcces) = Program.GrapheMétro.AffichageDijkstra(SessionManager.CurrentUser.Station, stationArrivee);
+            MessageBox.Show($"Temps de trajet entre {SessionManager.CurrentUser.Station.Valeur.nom} et {stationArrivee.Valeur.nom} : {tempsTrajet} minutes.");
         }
         private async void BtnCheminOptimal(object sender, RoutedEventArgs e)
         {
@@ -951,7 +956,7 @@ namespace ProbSciANA.Interface
                 var listeLieux = new List<Noeud<(int id, string nom)>> { SessionManager.CurrentUser.Station };
                 foreach (var livraison in selected.Livraisons)
                 {
-                    var noeud = await Program.GetNoeud(livraison.Adresse, Program.GrapheMétro.Noeuds);
+                    var noeud = await Program.GetNoeud(livraison.Adresse);
                     listeLieux.Add(noeud);
                 }
                 (int tempsTrajet, cheminAcces) = Program.GrapheMétro.AffichageCheminOptimal(listeLieux);
@@ -1142,6 +1147,36 @@ namespace ProbSciANA.Interface
             if (NavigationService.CanGoForward)
                 NavigationService.GoForward();
             UpdateNavButtons();
+        }
+        private void BtnStat_Click(object sender, RoutedEventArgs e)
+        {
+            Utilisateur.RefreshList();
+            Commande.RefreshList();
+            double prixMoyenParCommande = 0;
+            foreach (var commande in Commande.commandes)
+            {
+                prixMoyenParCommande += commande.Prix;
+            }
+            prixMoyenParCommande = (int)prixMoyenParCommande * 1000 / 1000;  ///Pour arrondire au 0,001 près
+            string commandeParCuisinier = "";
+            foreach (var cuisinier in Utilisateur.cuisiniers)
+            {
+                commandeParCuisinier += cuisinier.Prenom + " " + cuisinier.Nom + " : ";
+                string s = "";
+                foreach (var commande in cuisinier.Commandes_effectuees)
+                {
+                    if (!s.Contains(commande.NomClient))
+                    {
+                        s += commande.NomClient + ", ";
+                    }
+                }
+                commandeParCuisinier += s + "\n";
+            }
+            string pxMoyen = "Le prix moyen par commande est de : " + prixMoyenParCommande / Convert.ToDouble(Commande.commandes.Count());
+            string nbCuisinier = "Nombre de cuisinier : " + Utilisateur.cuisiniers.Count();
+            string nbClient = "Nombre de client : " + Utilisateur.clients.Count();
+            MessageBox.Show($"Le nombre totale de commande est de : {Commande.commandes.Count()}\n{pxMoyen}\n{nbCuisinier}\n{nbClient}\nListe des cuisiniers avec les personnes qui leur ont fait une commande :\n{commandeParCuisinier}");
+
         }
     }
     #endregion

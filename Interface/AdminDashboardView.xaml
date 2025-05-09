@@ -4,10 +4,11 @@
       Title="AdminDashboardView">
 
     <Grid>
-        <Image Source="Images/fond.png"
-               Stretch="Fill"
-               IsHitTestVisible="False"
-               Opacity="0.3"/>
+        <Image Source="Images/.png"
+               Stretch="UniformToFill"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               IsHitTestVisible="False"/>
 
         <DockPanel LastChildFill="True">
 
@@ -198,6 +199,12 @@
                     </Button>
 
                 </StackPanel>
+
+                <Button Style="{StaticResource MenuButtonStyle}"
+                        Content="Statistiques"
+                        Width="150"
+                        Margin="1"
+                        Click="BtnStat_Click"/>
             </Grid>
 
             <StackPanel VerticalAlignment="Center"

@@ -59,9 +59,10 @@
 
     <Grid>
         <Image Source="Images/.png"
-               Stretch="Fill"
-               IsHitTestVisible="False"
-               Opacity="0.3"/>
+               Stretch="UniformToFill"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               IsHitTestVisible="False"/>
 
         <DockPanel LastChildFill="True">
 
@@ -269,6 +270,9 @@
             </Grid>
 
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1.5*"/>
                     <ColumnDefinition Width="1.5*"/>
@@ -279,7 +283,7 @@
                           CanUserAddRows="False"
                           HeadersVisibility="Column"
                           HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch"
+                          VerticalAlignment="Top"
                           Margin="10"
                           SelectionChanged="dataGridCommandes_SelectionChanged"
                           ColumnWidth="*">
@@ -340,27 +344,36 @@
                                 Click="BtnValider_Click"
                                 DockPanel.Dock="Right"/>
 
-                        <Button Content="Chemin à suivre"
-                                FontSize="14"
-                                Width="30"
-                                Height="30"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Click="BtnAffichage_Djikstra"
-                                DockPanel.Dock="Right"/>
+                        <Border BorderBrush="Gray"
+                                BorderThickness="1"
+                                CornerRadius="5"
+                                Padding="5"
+                                DockPanel.Dock="Right">
+                            <Button Content="Chemin Unique"
+                                    FontSize="14"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Click="BtnAffichage_Djikstra"
+                                    DockPanel.Dock="Right"/>
+                        </Border>
 
-                        <Button Content="Opti"
-                                FontSize="14"
-                                Width="30"
-                                Height="30"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Click="BtnCheminOptimal"
-                                DockPanel.Dock="Right"/>
+                        <Border BorderBrush="Gray"
+                                BorderThickness="1"
+                                CornerRadius="5"
+                                Padding="5"
+                                DockPanel.Dock="Right">
+                            <Button Content="Adresses Multiples"
+                                    FontSize="14"
+                                    Height="30"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Click="BtnCheminOptimal"/>
+                        </Border>
                     </DockPanel>
 
                     <!-- Les deux expanders pour naviguer dans les listes -->
