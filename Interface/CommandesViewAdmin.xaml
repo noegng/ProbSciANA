@@ -270,115 +270,123 @@
                                             IsReadOnly="True"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                <StackPanel Grid.Column="1"
-                            Margin="10"
-                            Background="#FFF3F3F3"
-                            VerticalAlignment="Top">
-                    <DockPanel LastChildFill="True"
-                               Margin="0 0 0 10">
-                        <TextBlock Text="Fiche Commande"
-                                   FontSize="18"
-                                   FontWeight="Bold"
-                                   DockPanel.Dock="Left"/>
 
-                        <TextBlock Text="{Binding Moyenne}"
-                                   FontSize="24"
-                                   FontWeight="Bold"
-                                   VerticalAlignment="Top"
-                                   HorizontalAlignment="Center"/>
+                <Border Grid.Column="1"
+                        Margin="10"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Background="Transparent">
 
-                        <Button Content="🗑️"
-                                FontSize="14"
-                                Width="30"
-                                Height="30"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
+                    <StackPanel Margin="10"
                                 Background="Transparent"
-                                BorderThickness="0"
-                                Click="BtnSupprimer_Click"
-                                DockPanel.Dock="Right"/>
-                    </DockPanel>
-                    <Grid Margin="0 0 0 10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                                VerticalAlignment="Top">
+                        <DockPanel LastChildFill="True"
+                                   Margin="0 0 0 10">
+                            <TextBlock Text="Fiche Commande"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       DockPanel.Dock="Left"/>
 
-                        <!-- Nom -->
-                        <TextBlock Text="Nom :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="0"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Nom}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="0"
-                                   Grid.Column="1"/>
+                            <TextBlock Text="{Binding Moyenne}"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       HorizontalAlignment="Center"/>
 
-                        <!-- Statut -->
-                        <TextBlock Text="Statut :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="1"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Statut}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="1"
-                                   Grid.Column="1"/>
+                            <Button Content="🗑️"
+                                    FontSize="14"
+                                    Width="30"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Click="BtnSupprimer_Click"
+                                    DockPanel.Dock="Right"/>
+                        </DockPanel>
+                        <Grid Margin="0 0 0 10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <!-- Prix -->
-                        <TextBlock Text="Prix :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="2"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Prix}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="2"
-                                   Grid.Column="1"/>
+                            <!-- Nom -->
+                            <TextBlock Text="Nom :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="0"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Nom}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="0"
+                                       Grid.Column="1"/>
 
-                        <!-- Client -->
-                        <TextBlock Text="Client :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="3"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding NomClient}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="3"
-                                   Grid.Column="1"/>
+                            <!-- Statut -->
+                            <TextBlock Text="Statut :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="1"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Statut}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="1"
+                                       Grid.Column="1"/>
 
-                        <!-- Cuisinier -->
-                        <TextBlock Text="Cuisinier :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="4"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding NomCuisinier}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="4"
-                                   Grid.Column="1"/>
+                            <!-- Prix -->
+                            <TextBlock Text="Prix :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="2"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Prix}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="2"
+                                       Grid.Column="1"/>
 
-                        <!-- Date Commande -->
-                        <TextBlock Text="Date :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="5"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Date_commande}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="5"
-                                   Grid.Column="1"/>
-                    </Grid>
-                </StackPanel>
+                            <!-- Client -->
+                            <TextBlock Text="Client :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="3"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding NomClient}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="3"
+                                       Grid.Column="1"/>
+
+                            <!-- Cuisinier -->
+                            <TextBlock Text="Cuisinier :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="4"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding NomCuisinier}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="4"
+                                       Grid.Column="1"/>
+
+                            <!-- Date Commande -->
+                            <TextBlock Text="Date :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="5"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Date_commande}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="5"
+                                       Grid.Column="1"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
             </Grid>
 
         </DockPanel>

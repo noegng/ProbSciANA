@@ -310,115 +310,122 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <StackPanel x:Name="FicheCommande"
-                            Grid.Column="1"
-                            Margin="10"
-                            Background="#FFF3F3F3"
-                            VerticalAlignment="Top">
-                    <DockPanel LastChildFill="True"
-                               Margin="0 0 0 10">
-                        <TextBlock Text="Fiche Commande"
-                                   FontSize="18"
-                                   FontWeight="Bold"
-                                   DockPanel.Dock="Left"/>
+                <Border Grid.Column="1"
+                        Margin="10"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Background="Transparent">
 
-                        <Button Content="❌"
-                                FontSize="14"
-                                Width="30"
-                                Height="30"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
+                    <StackPanel x:Name="FicheCommande"
+                                Margin="10"
                                 Background="Transparent"
-                                BorderThickness="0"
-                                Click="BtnAnnuler_Click"
-                                DockPanel.Dock="Right"/>
+                                VerticalAlignment="Top">
+                        <DockPanel LastChildFill="True"
+                                   Margin="0 0 0 10">
+                            <TextBlock Text="Fiche Commande"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       DockPanel.Dock="Left"/>
 
-                        <Button Content="✅"
-                                FontSize="14"
-                                Width="30"
-                                Height="30"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Click="BtnValider_Click"
-                                DockPanel.Dock="Right"/>
-
-                        <Border BorderBrush="Gray"
-                                BorderThickness="1"
-                                CornerRadius="5"
-                                Padding="5"
-                                DockPanel.Dock="Right">
-                            <Button Content="Chemin Unique"
+                            <Button Content="❌"
                                     FontSize="14"
+                                    Width="30"
                                     Height="30"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
                                     Background="Transparent"
                                     BorderThickness="0"
-                                    Click="BtnAffichage_Djikstra"
+                                    Click="BtnAnnuler_Click"
                                     DockPanel.Dock="Right"/>
-                        </Border>
 
-                        <Border BorderBrush="Gray"
-                                BorderThickness="1"
-                                CornerRadius="5"
-                                Padding="5"
-                                DockPanel.Dock="Right">
-                            <Button Content="Adresses Multiples"
+                            <Button Content="✅"
                                     FontSize="14"
+                                    Width="30"
                                     Height="30"
-                                    HorizontalAlignment="Center"
+                                    HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
                                     Background="Transparent"
                                     BorderThickness="0"
-                                    Click="BtnCheminOptimal"/>
-                        </Border>
-                    </DockPanel>
+                                    Click="BtnValider_Click"
+                                    DockPanel.Dock="Right"/>
 
-                    <!-- Les deux expanders pour naviguer dans les listes -->
-                    <StackPanel>
-                        <Expander Header="Livraisons à effectuer"
-                                  Margin="0,10,0,0">
-                            <ListBox x:Name="ListLivraisons"
-                                     ItemsSource="{Binding Livraisons_a_effectuer}"
-                                     DisplayMemberPath="Adresse"
-                                     SelectionChanged="OnListLivraisons_Selected"/>
-                        </Expander>
+                            <Border BorderBrush="Gray"
+                                    BorderThickness="1"
+                                    CornerRadius="5"
+                                    Padding="5"
+                                    DockPanel.Dock="Right">
+                                <Button Content="Chemin Unique"
+                                        FontSize="14"
+                                        Height="30"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="BtnAffichage_Djikstra"
+                                        DockPanel.Dock="Right"/>
+                            </Border>
 
-                        <Expander Header="Plats à préparer"
-                                  Margin="0,10,0,0">
-                            <ListBox x:Name="ListPlats"
-                                     ItemsSource="{Binding Plats_a_cuisiner}"
-                                     DisplayMemberPath="Nom"
-                                     SelectionChanged="OnListPlats_Selected"/>
-                        </Expander>
+                            <Border BorderBrush="Gray"
+                                    BorderThickness="1"
+                                    CornerRadius="5"
+                                    Padding="5"
+                                    DockPanel.Dock="Right">
+                                <Button Content="Adresses Multiples"
+                                        FontSize="14"
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="BtnCheminOptimal"/>
+                            </Border>
+                        </DockPanel>
 
-                        <!-- Le détail unique qui se met à jour selon la sélection -->
-                        <ContentControl Margin="0,20,0,0">
-                            <ContentControl.Content>
-                                <MultiBinding Converter="{StaticResource FirstNonNullConverter}">
-                                    <!-- On teste d’abord Livraisons -->
-                                    <Binding ElementName="ListLivraisons"
-                                             Path="SelectedItem"/>
-                                    <!-- puis Plats -->
-                                    <Binding ElementName="ListPlats"
-                                             Path="SelectedItem"/>
-                                </MultiBinding>
-                            </ContentControl.Content>
-                        </ContentControl>
+                        <!-- Les deux expanders pour naviguer dans les listes -->
+                        <StackPanel>
+                            <Expander Header="Livraisons à effectuer"
+                                      Margin="0,10,0,0">
+                                <ListBox x:Name="ListLivraisons"
+                                         ItemsSource="{Binding Livraisons_a_effectuer}"
+                                         DisplayMemberPath="Adresse"
+                                         SelectionChanged="OnListLivraisons_Selected"/>
+                            </Expander>
 
+                            <Expander Header="Plats à préparer"
+                                      Margin="0,10,0,0">
+                                <ListBox x:Name="ListPlats"
+                                         ItemsSource="{Binding Plats_a_cuisiner}"
+                                         DisplayMemberPath="Nom"
+                                         SelectionChanged="OnListPlats_Selected"/>
+                            </Expander>
+
+                            <!-- Le détail unique qui se met à jour selon la sélection -->
+                            <ContentControl Margin="0,20,0,0">
+                                <ContentControl.Content>
+                                    <MultiBinding Converter="{StaticResource FirstNonNullConverter}">
+                                        <!-- On teste d’abord Livraisons -->
+                                        <Binding ElementName="ListLivraisons"
+                                                 Path="SelectedItem"/>
+                                        <!-- puis Plats -->
+                                        <Binding ElementName="ListPlats"
+                                                 Path="SelectedItem"/>
+                                    </MultiBinding>
+                                </ContentControl.Content>
+                            </ContentControl>
+
+
+                        </StackPanel>
+                        <!-- Carte d'aurelien -->
+                        <Image Source="{Binding cheminAcces}"
+                               Width="100"
+                               Height="100"
+                               Stretch="UniformToFill"
+                               IsHitTestVisible="False"
+                               Margin="5"/>
 
                     </StackPanel>
-                    <!-- Carte d'aurelien -->
-                    <Image Source="{Binding cheminAcces}"
-                           Width="100"
-                           Height="100"
-                           Stretch="UniformToFill"
-                           IsHitTestVisible="False"
-                           Margin="5"/>
-
-                </StackPanel>
+                </Border>
 
             </Grid>
 

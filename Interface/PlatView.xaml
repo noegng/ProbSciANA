@@ -245,7 +245,6 @@
                         BorderThickness="0"
                         Click="Ajouter_Click"
                         Grid.Column="2"/>
-
             </Grid>
 
             <Grid>
@@ -286,128 +285,134 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <StackPanel x:Name="FichePlat"
-                            Grid.Column="1"
-                            Margin="10"
-                            Background="#FFF3F3F3"
-                            VerticalAlignment="Top">
-                    <DockPanel LastChildFill="True"
-                               Margin="0 0 0 10">
-                        <TextBlock Text="Fiche plat"
-                                   FontSize="18"
-                                   FontWeight="Bold"
-                                   DockPanel.Dock="Left"/>
+                <Border Grid.Column="1"
+                        Margin="10"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Background="Transparent">
 
-                        <Button Content="🗑️"
-                                FontSize="14"
-                                Width="30"
-                                Height="30"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
+                    <StackPanel x:Name="FichePlat"
+                                Margin="10"
                                 Background="Transparent"
-                                BorderThickness="0"
-                                Click="BtnSupprimer_Click"
-                                DockPanel.Dock="Right"/>
-                    </DockPanel>
-                    <Grid Margin="0 0 0 10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                                VerticalAlignment="Top">
+                        <DockPanel LastChildFill="True"
+                                   Margin="0 0 0 10">
+                            <TextBlock Text="Fiche plat"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       DockPanel.Dock="Left"/>
 
-                        <!-- Nom -->
-                        <TextBlock Text="Nom :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="0"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Plat.Nom}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="0"
-                                   Grid.Column="1"/>
+                            <Button Content="🗑️"
+                                    FontSize="14"
+                                    Width="30"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Click="BtnSupprimer_Click"
+                                    DockPanel.Dock="Right"/>
+                        </DockPanel>
+                        <Grid Margin="0 0 0 10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Text="Prix :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="1"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Plat.Prix}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="1"
-                                   Grid.Column="1"/>
+                            <!-- Nom -->
+                            <TextBlock Text="Nom :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="0"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Plat.Nom}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="0"
+                                       Grid.Column="1"/>
 
-                        <TextBlock Text="Nombre de portions :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="2"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Plat.Nb_portions}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="2"
-                                   Grid.Column="1"/>
+                            <TextBlock Text="Prix :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="1"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Plat.Prix}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="1"
+                                       Grid.Column="1"/>
 
-                        <TextBlock Text="Type :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="3"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Plat.Type}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="3"
-                                   Grid.Column="1"/>
+                            <TextBlock Text="Nombre de portions :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="2"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Plat.Nb_portions}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="2"
+                                       Grid.Column="1"/>
 
-                        <TextBlock Text="Régime :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="4"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Plat.Regime}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="4"
-                                   Grid.Column="1"/>
+                            <TextBlock Text="Type :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="3"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Plat.Type}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="3"
+                                       Grid.Column="1"/>
 
-                        <TextBlock Text="Nationalité :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="5"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Plat.Nationalite}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="5"
-                                   Grid.Column="1"/>
+                            <TextBlock Text="Régime :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="4"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Plat.Regime}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="4"
+                                       Grid.Column="1"/>
 
-                        <TextBlock Text="Date de péremption :"
-                                   FontWeight="Bold"
-                                   Margin="0 0 10 5"
-                                   Grid.Row="6"
-                                   Grid.Column="0"/>
-                        <TextBlock Text="{Binding Plat.Date_peremption}"
-                                   HorizontalAlignment="Right"
-                                   Grid.Row="6"
-                                   Grid.Column="1"/>
+                            <TextBlock Text="Nationalité :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="5"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Plat.Nationalite}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="5"
+                                       Grid.Column="1"/>
 
-                    </Grid>
+                            <TextBlock Text="Date de péremption :"
+                                       FontWeight="Bold"
+                                       Margin="0 0 10 5"
+                                       Grid.Row="6"
+                                       Grid.Column="0"/>
+                            <TextBlock Text="{Binding Plat.Date_peremption}"
+                                       HorizontalAlignment="Right"
+                                       Grid.Row="6"
+                                       Grid.Column="1"/>
+                        </Grid>
 
-                    <!-- Expander Ingredients -->
-                    <StackPanel>
-                        <Expander Header="Ingrédients"
-                                  Margin="0,10,0,0">
-                            <ListBox x:Name="ListIngredients"
-                                     ItemsSource="{Binding Plat.Composes}"
-                                     DisplayMemberPath="Ingredient.Nom"/>
-                        </Expander>
+                        <!-- Expander Ingredients -->
+                        <StackPanel>
+                            <Expander Header="Ingrédients"
+                                      Margin="0,10,0,0">
+                                <ListBox x:Name="ListIngredients"
+                                         ItemsSource="{Binding Plat.Composes}"
+                                         DisplayMemberPath="Ingredient.Nom"/>
+                            </Expander>
+                        </StackPanel>
+
                     </StackPanel>
-
-                </StackPanel>
+                </Border>
 
             </Grid>
 

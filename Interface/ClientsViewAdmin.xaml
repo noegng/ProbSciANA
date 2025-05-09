@@ -322,7 +322,6 @@
                                         <ColumnDefinition Width="1.5*"/>
                                 </Grid.ColumnDefinitions>
                                 <DataGrid x:Name="dataGridClients"
-                                          Background="Transparent"
                                           Grid.Column="0"
                                           AutoGenerateColumns="False"
                                           CanUserAddRows="False"
@@ -362,178 +361,185 @@
                                         </DataGrid.Columns>
                                 </DataGrid>
 
-                                <StackPanel x:Name="FicheClient"
-                                            Grid.Column="1"
-                                            Margin="10"
-                                            Background="#FFF3F3F3"
-                                            VerticalAlignment="Top">
-                                        <DockPanel LastChildFill="True"
-                                                   Margin="0 0 0 10">
-                                                <TextBlock Text="Fiche Client"
-                                                           FontSize="18"
-                                                           FontWeight="Bold"
-                                                           DockPanel.Dock="Left"/>
+                                <Border Grid.Column="1"
+                                        Margin="10"
+                                        BorderBrush="Black"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Background="Transparent">
 
-                                                <Grid DockPanel.Dock="Top"
-                                                      HorizontalAlignment="Center"
-                                                      VerticalAlignment="Center">
-                                                        <Image Source="{Binding Photo}"
-                                                               Width="100"
-                                                               Height="100"
-                                                               Stretch="UniformToFill"
-                                                               IsHitTestVisible="False"
-                                                               Margin="0,10,0,0"/>
+                                        <StackPanel x:Name="FicheClient"
+                                                    Background="Transparent"
+                                                    Margin="10"
+                                                    VerticalAlignment="Top">
+                                                <DockPanel LastChildFill="True"
+                                                           Margin="0 0 0 10">
+                                                        <TextBlock Text="Fiche Client"
+                                                                   FontSize="18"
+                                                                   FontWeight="Bold"
+                                                                   DockPanel.Dock="Left"/>
+
+                                                        <Grid DockPanel.Dock="Top"
+                                                              HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center">
+                                                                <Image Source="{Binding Photo}"
+                                                                       Width="100"
+                                                                       Height="100"
+                                                                       Stretch="UniformToFill"
+                                                                       IsHitTestVisible="False"
+                                                                       Margin="0,10,0,0"/>
+                                                        </Grid>
+
+                                                        <Button Content="🗑️"
+                                                                FontSize="14"
+                                                                Width="30"
+                                                                Height="30"
+                                                                HorizontalAlignment="Right"
+                                                                VerticalAlignment="Top"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Click="BtnSupprimer_Click"
+                                                                DockPanel.Dock="Right"/>
+                                                </DockPanel>
+                                                <Grid Margin="0 0 0 10">
+                                                        <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <!-- Nom -->
+                                                        <TextBlock Text="Nom :"
+                                                                   FontWeight="Bold"
+                                                                   Margin="0 0 10 5"
+                                                                   Grid.Row="1"
+                                                                   Grid.Column="0"/>
+                                                        <TextBlock Text="{Binding Nom}"
+                                                                   HorizontalAlignment="Right"
+                                                                   Grid.Row="1"
+                                                                   Grid.Column="1"/>
+
+                                                        <!-- Prénom -->
+                                                        <TextBlock Text="Prénom :"
+                                                                   FontWeight="Bold"
+                                                                   Margin="0 0 10 5"
+                                                                   Grid.Row="2"
+                                                                   Grid.Column="0"/>
+                                                        <TextBlock Text="{Binding Prenom}"
+                                                                   HorizontalAlignment="Right"
+                                                                   Grid.Row="2"
+                                                                   Grid.Column="1"/>
+
+                                                        <!-- Email -->
+                                                        <TextBlock Text="Email :"
+                                                                   FontWeight="Bold"
+                                                                   Margin="0 0 10 5"
+                                                                   Grid.Row="3"
+                                                                   Grid.Column="0"/>
+                                                        <TextBlock Text="{Binding Email}"
+                                                                   HorizontalAlignment="Right"
+                                                                   Grid.Row="3"
+                                                                   Grid.Column="1"/>
+
+                                                        <!-- Adresse -->
+                                                        <TextBlock Text="Adresse :"
+                                                                   FontWeight="Bold"
+                                                                   Margin="0 0 10 5"
+                                                                   Grid.Row="4"
+                                                                   Grid.Column="0"/>
+                                                        <TextBlock Text="{Binding Adresse}"
+                                                                   HorizontalAlignment="Right"
+                                                                   Grid.Row="4"
+                                                                   Grid.Column="1"/>
+
+                                                        <!-- Téléphone -->
+                                                        <TextBlock Text="Téléphone :"
+                                                                   FontWeight="Bold"
+                                                                   Margin="0 0 10 5"
+                                                                   Grid.Row="5"
+                                                                   Grid.Column="0"/>
+                                                        <TextBlock Text="{Binding Telephone}"
+                                                                   HorizontalAlignment="Right"
+                                                                   Grid.Row="5"
+                                                                   Grid.Column="1"/>
+
+                                                        <!-- Statut -->
+                                                        <TextBlock Text="Statut :"
+                                                                   FontWeight="Bold"
+                                                                   Margin="0 0 10 5"
+                                                                   Grid.Row="6"
+                                                                   Grid.Column="0"/>
+                                                        <TextBlock Text="{Binding Statut}"
+                                                                   HorizontalAlignment="Right"
+                                                                   Grid.Row="6"
+                                                                   Grid.Column="1"/>
+
+                                                        <!-- Station -->
+                                                        <TextBlock Text="Station :"
+                                                                   FontWeight="Bold"
+                                                                   Margin="0 0 10 0"
+                                                                   Grid.Row="7"
+                                                                   Grid.Column="0"/>
+                                                        <TextBlock Text="{Binding NomStation}"
+                                                                   HorizontalAlignment="Right"
+                                                                   Grid.Row="7"
+                                                                   Grid.Column="1"/>
                                                 </Grid>
 
-                                                <Button Content="🗑️"
-                                                        FontSize="14"
-                                                        Width="30"
-                                                        Height="30"
-                                                        HorizontalAlignment="Right"
-                                                        VerticalAlignment="Top"
-                                                        Background="Transparent"
-                                                        BorderThickness="0"
-                                                        Click="BtnSupprimer_Click"
-                                                        DockPanel.Dock="Right"/>
-                                        </DockPanel>
-                                        <Grid Margin="0 0 0 10">
-                                                <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
+                                                <!-- Les trois expanders pour naviguer dans les listes -->
+                                                <StackPanel>
+                                                        <Expander Header="Commandes passées"
+                                                                  Margin="0,10,0,0">
+                                                                <ListBox x:Name="ListCommandes"
+                                                                         ItemsSource="{Binding Commandes_passees}"
+                                                                         DisplayMemberPath="Nom"
+                                                                         SelectionChanged="OnListCommandes_Selected"/>
+                                                        </Expander>
 
-                                                <!-- Nom -->
-                                                <TextBlock Text="Nom :"
-                                                           FontWeight="Bold"
-                                                           Margin="0 0 10 5"
-                                                           Grid.Row="1"
-                                                           Grid.Column="0"/>
-                                                <TextBlock Text="{Binding Nom}"
-                                                           HorizontalAlignment="Right"
-                                                           Grid.Row="1"
-                                                           Grid.Column="1"/>
+                                                        <Expander Header="Avis laissés"
+                                                                  Margin="0,10,0,0">
+                                                                <ListBox x:Name="ListAvis"
+                                                                         ItemsSource="{Binding Avis_laisses}"
+                                                                         DisplayMemberPath="Commentaire"
+                                                                         SelectionChanged="OnListAvis_Selected"/>
+                                                        </Expander>
 
-                                                <!-- Prénom -->
-                                                <TextBlock Text="Prénom :"
-                                                           FontWeight="Bold"
-                                                           Margin="0 0 10 5"
-                                                           Grid.Row="2"
-                                                           Grid.Column="0"/>
-                                                <TextBlock Text="{Binding Prenom}"
-                                                           HorizontalAlignment="Right"
-                                                           Grid.Row="2"
-                                                           Grid.Column="1"/>
+                                                        <Expander Header="Cuisiniers associés"
+                                                                  Margin="0,10,0,0">
+                                                                <ListBox x:Name="ListCuisiniers"
+                                                                         ItemsSource="{Binding SesCuisiniers}"
+                                                                         DisplayMemberPath="Prenom"
+                                                                         SelectionChanged="OnListCuisiniers_Selected"/>
+                                                        </Expander>
 
-                                                <!-- Email -->
-                                                <TextBlock Text="Email :"
-                                                           FontWeight="Bold"
-                                                           Margin="0 0 10 5"
-                                                           Grid.Row="3"
-                                                           Grid.Column="0"/>
-                                                <TextBlock Text="{Binding Email}"
-                                                           HorizontalAlignment="Right"
-                                                           Grid.Row="3"
-                                                           Grid.Column="1"/>
-
-                                                <!-- Adresse -->
-                                                <TextBlock Text="Adresse :"
-                                                           FontWeight="Bold"
-                                                           Margin="0 0 10 5"
-                                                           Grid.Row="4"
-                                                           Grid.Column="0"/>
-                                                <TextBlock Text="{Binding Adresse}"
-                                                           HorizontalAlignment="Right"
-                                                           Grid.Row="4"
-                                                           Grid.Column="1"/>
-
-                                                <!-- Téléphone -->
-                                                <TextBlock Text="Téléphone :"
-                                                           FontWeight="Bold"
-                                                           Margin="0 0 10 5"
-                                                           Grid.Row="5"
-                                                           Grid.Column="0"/>
-                                                <TextBlock Text="{Binding Telephone}"
-                                                           HorizontalAlignment="Right"
-                                                           Grid.Row="5"
-                                                           Grid.Column="1"/>
-
-                                                <!-- Statut -->
-                                                <TextBlock Text="Statut :"
-                                                           FontWeight="Bold"
-                                                           Margin="0 0 10 5"
-                                                           Grid.Row="6"
-                                                           Grid.Column="0"/>
-                                                <TextBlock Text="{Binding Statut}"
-                                                           HorizontalAlignment="Right"
-                                                           Grid.Row="6"
-                                                           Grid.Column="1"/>
-
-                                                <!-- Station -->
-                                                <TextBlock Text="Station :"
-                                                           FontWeight="Bold"
-                                                           Margin="0 0 10 0"
-                                                           Grid.Row="7"
-                                                           Grid.Column="0"/>
-                                                <TextBlock Text="{Binding NomStation}"
-                                                           HorizontalAlignment="Right"
-                                                           Grid.Row="7"
-                                                           Grid.Column="1"/>
-                                        </Grid>
-
-                                        <!-- Les trois expanders pour naviguer dans les listes -->
-                                        <StackPanel>
-                                                <Expander Header="Commandes passées"
-                                                          Margin="0,10,0,0">
-                                                        <ListBox x:Name="ListCommandes"
-                                                                 ItemsSource="{Binding Commandes_passees}"
-                                                                 DisplayMemberPath="Nom"
-                                                                 SelectionChanged="OnListCommandes_Selected"/>
-                                                </Expander>
-
-                                                <Expander Header="Avis laissés"
-                                                          Margin="0,10,0,0">
-                                                        <ListBox x:Name="ListAvis"
-                                                                 ItemsSource="{Binding Avis_laisses}"
-                                                                 DisplayMemberPath="Commentaire"
-                                                                 SelectionChanged="OnListAvis_Selected"/>
-                                                </Expander>
-
-                                                <Expander Header="Cuisiniers associés"
-                                                          Margin="0,10,0,0">
-                                                        <ListBox x:Name="ListCuisiniers"
-                                                                 ItemsSource="{Binding SesCuisiniers}"
-                                                                 DisplayMemberPath="Prenom"
-                                                                 SelectionChanged="OnListCuisiniers_Selected"/>
-                                                </Expander>
-
-                                                <!-- Le détail unique qui se met à jour selon la sélection -->
-                                                <ContentControl Margin="0,20,0,0">
-                                                        <ContentControl.Content>
-                                                                <MultiBinding Converter="{StaticResource FirstNonNullConverter}">
-                                                                        <!-- On teste d’abord Avis -->
-                                                                        <Binding ElementName="ListAvis"
-                                                                                 Path="SelectedItem"/>
-                                                                        <!-- puis Cuisiniers -->
-                                                                        <Binding ElementName="ListCuisiniers"
-                                                                                 Path="SelectedItem"/>
-                                                                        <!-- et enfin Commandes -->
-                                                                        <Binding ElementName="ListCommandes"
-                                                                                 Path="SelectedItem"/>
-                                                                </MultiBinding>
-                                                        </ContentControl.Content>
-                                                </ContentControl>
+                                                        <!-- Le détail unique qui se met à jour selon la sélection -->
+                                                        <ContentControl Margin="0,20,0,0">
+                                                                <ContentControl.Content>
+                                                                        <MultiBinding Converter="{StaticResource FirstNonNullConverter}">
+                                                                                <!-- On teste d’abord Avis -->
+                                                                                <Binding ElementName="ListAvis"
+                                                                                         Path="SelectedItem"/>
+                                                                                <!-- puis Cuisiniers -->
+                                                                                <Binding ElementName="ListCuisiniers"
+                                                                                         Path="SelectedItem"/>
+                                                                                <!-- et enfin Commandes -->
+                                                                                <Binding ElementName="ListCommandes"
+                                                                                         Path="SelectedItem"/>
+                                                                        </MultiBinding>
+                                                                </ContentControl.Content>
+                                                        </ContentControl>
+                                                </StackPanel>
                                         </StackPanel>
-                                </StackPanel>
+                                </Border>
 
                                 <Border x:Name="AddPane"
                                         Grid.Column="2"
@@ -595,7 +601,6 @@
                                                 </StackPanel>
                                         </StackPanel>
                                 </Border>
-
                         </Grid>
                 </DockPanel>
         </Grid>
