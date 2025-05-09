@@ -868,7 +868,7 @@ namespace ProbSciANA.Interface
         {
             if (dataGridCommandes.SelectedItem is Commande selectedCommande && selectedCommande.Statut == "en attente")
             {
-                selectedCommande.Statut = "en attente";
+                selectedCommande.Statut = "en cours";
                 dataGridCommandes.ItemsSource = null;
                 dataGridCommandes.ItemsSource = SessionManager.CurrentUser.Commandes_effectuees;
             }
