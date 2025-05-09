@@ -935,14 +935,19 @@ namespace ProbSciANA.Interface
                 NavigationService.GoForward();
             UpdateNavButtons();
         }
-        private void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
+        private async void BtnAffichage_Djikstra(object sender, RoutedEventArgs e)
         {
-            if (dataGridCommandes.SelectedItem is Commande selected)
+            Noeud<(int id, string nom)> stationArrivee = null;
+            if (ListLivraisons.SelectedItem is Livraison selectedLivraison)
             {
-                (int tempsTrajet, cheminAcces) = Program.GrapheMétro.AffichageDijkstra(SessionManager.CurrentUser.Station, selected.Client.Station);
-                CollectionViewSource.GetDefaultView(cheminAcces).Refresh();
-                MessageBox.Show($"Temps de trajet entre {SessionManager.CurrentUser.Station.Valeur.nom} et {selected.Client.Station.Valeur.nom} : {tempsTrajet} minutes.");
+                stationArrivee = await Program.GetNoeud(selectedLivraison.Adresse, Program.GrapheMétro.Noeuds);
             }
+            else if (dataGridCommandes.SelectedItem is Commande selected)
+            {
+                stationArrivee = selected.Client.Station;
+            }
+            (int tempsTrajet, cheminAcces) = Program.GrapheMétro.AffichageDijkstra(SessionManager.CurrentUser.Station, stationArrivee);
+            MessageBox.Show($"Temps de trajet entre {SessionManager.CurrentUser.Station.Valeur.nom} et {stationArrivee.Valeur.nom} : {tempsTrajet} minutes.");
         }
         private async void BtnCheminOptimal(object sender, RoutedEventArgs e)
         {
