@@ -940,7 +940,7 @@ namespace ProbSciANA.Interface
             Noeud<(int id, string nom)> stationArrivee = null;
             if (ListLivraisons.SelectedItem is Livraison selectedLivraison)
             {
-                stationArrivee = await Program.GetNoeud(selectedLivraison.Adresse, Program.GrapheMétro.Noeuds);
+                stationArrivee = await Program.GetNoeud(selectedLivraison.Adresse);
             }
             else if (dataGridCommandes.SelectedItem is Commande selected)
             {
@@ -956,7 +956,7 @@ namespace ProbSciANA.Interface
                 var listeLieux = new List<Noeud<(int id, string nom)>> { SessionManager.CurrentUser.Station };
                 foreach (var livraison in selected.Livraisons)
                 {
-                    var noeud = await Program.GetNoeud(livraison.Adresse, Program.GrapheMétro.Noeuds);
+                    var noeud = await Program.GetNoeud(livraison.Adresse);
                     listeLieux.Add(noeud);
                 }
                 (int tempsTrajet, cheminAcces) = Program.GrapheMétro.AffichageCheminOptimal(listeLieux);

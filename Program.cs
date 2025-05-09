@@ -111,22 +111,22 @@ namespace ProbSciANA
                 Console.WriteLine("Impossible de récupérer les coordonnées.");
             }
         }
-        public static async Task<Noeud<(int id, string nom)>> GetNoeud(string addresse, List<Noeud<(int, string)>> noeudsExistants)
+        public static async Task<Noeud<(int id, string nom)>> GetNoeud(string addresse)
         {
             Console.WriteLine("Rechercher de la station la plus proche.");
             var noeudString = await GetCoordonnees<string>(addresse); /// Il faut attendre la réponse de la fonction.
             Console.WriteLine("Fin de la recherche.");
-            return AssocierNoeud(noeudString, noeudsExistants);
+            return AssocierNoeud(noeudString);
         }
 
-        public static Noeud<(int id, string nom)> AssocierNoeud(Noeud<string> noeudString, List<Noeud<(int, string)>> noeudsExistants)
+        public static Noeud<(int id, string nom)> AssocierNoeud(Noeud<string> noeudString)
         {
             double longitude = 0.00001;
             double latitude = 0.00001;
             Noeud<(int, string)> noeud = null;
             while (noeud == null)
             {
-                foreach (var noeudActuel in noeudsExistants)
+                foreach (var noeudActuel in Stations)
                 {
                     if (Math.Abs(noeudActuel.Longitude - noeudString.Longitude) < longitude &&
                         Math.Abs(noeudActuel.Latitude - noeudString.Latitude) < latitude)
