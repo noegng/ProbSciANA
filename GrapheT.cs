@@ -11,7 +11,7 @@ using System.IO;
 
 namespace ProbSciANA
 {
-    public class Graphe<T> //// Graphe de noeuds
+    public class Graphe<T> /// Graphe de noeuds
     {
         private Dictionary<Noeud<T>, List<Noeud<T>>> listeAdjacence;
         private int[,] matriceAdjacence;
@@ -19,7 +19,7 @@ namespace ProbSciANA
         private List<Noeud<T>> noeudsIsolés;
         private Dictionary<Noeud<T>, int> couleurs;
         private List<Arc<T>> arcs;
-        private int nbCycles = -1; //// étecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
+        private int nbCycles = -1; /// étecter une erreur de cycle | on déclare la variable ici pour que l'incrémentation se fasse dans la méthode récursive DFS (sinon impossible de l'incrémenter)
 
         private static readonly string ProjectDirectory = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\"));
 
@@ -85,24 +85,24 @@ namespace ProbSciANA
 
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
-                couleurs[sommet] = 0; //// blanc
+                couleurs[sommet] = 0; /// blanc
             }
 
             file.Enqueue(sommetDepart);
-            couleurs[sommetDepart] = 1; //// jaune
+            couleurs[sommetDepart] = 1; /// jaune
 
             while (file.Count > 0)
             {
                 Noeud<T> sommet = file.Dequeue();
                 foreach (Noeud<T> voisin in listeAdjacence[sommet])
                 {
-                    if (couleurs[voisin] == 0) //// blanc
+                    if (couleurs[voisin] == 0) /// blanc
                     {
                         file.Enqueue(voisin);
-                        couleurs[voisin] = 1; //// jaune
+                        couleurs[voisin] = 1; /// jaune
                     }
                 }
-                couleurs[sommet] = 2; //// rouge
+                couleurs[sommet] = 2; /// rouge
                 visite.Add(sommet);
             }
 
@@ -117,11 +117,11 @@ namespace ProbSciANA
 
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
-                couleurs[sommet] = 0; //// blanc
+                couleurs[sommet] = 0; /// blanc
             }
 
             pile.Push(sommetDepart);
-            couleurs[sommetDepart] = 1; //// jaune
+            couleurs[sommetDepart] = 1; /// jaune
 
             while (pile.Count > 0)
             {
@@ -130,10 +130,10 @@ namespace ProbSciANA
 
                 foreach (Noeud<T> voisin in listeAdjacence[sommet])
                 {
-                    if (couleurs[voisin] == 0) //// blanc
+                    if (couleurs[voisin] == 0) /// blanc
                     {
                         pile.Push(voisin);
-                        couleurs[voisin] = 1; //// jaune
+                        couleurs[voisin] = 1; /// jaune
                         aExploréUnVoisin = true;
                         break;
                     }
@@ -141,7 +141,7 @@ namespace ProbSciANA
 
                 if (!aExploréUnVoisin)
                 {
-                    couleurs[sommet] = 2; //// rouge
+                    couleurs[sommet] = 2; /// rouge
                     pile.Pop();
                     visite.Add(sommet);
                 }
@@ -157,7 +157,7 @@ namespace ProbSciANA
             nbCycles = 0;
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
-                couleurs[sommet] = 0; //// blanc
+                couleurs[sommet] = 0; /// blanc
             }
 
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
@@ -173,7 +173,7 @@ namespace ProbSciANA
 
         private void DFSrec(Noeud<T> sommet, HashSet<Noeud<T>> visite, bool rechercheCycle)
         {
-            couleurs[sommet] = 1; //// jaune
+            couleurs[sommet] = 1; /// jaune
             visite.Add(sommet);
 
             foreach (Noeud<T> voisin in listeAdjacence[sommet])
@@ -189,7 +189,7 @@ namespace ProbSciANA
                 }
             }
 
-            couleurs[sommet] = 2; //// rouge
+            couleurs[sommet] = 2; /// rouge
         }
 
         public bool EstConnexe()
@@ -329,19 +329,19 @@ namespace ProbSciANA
         }
         #endregion
         #region Méthodes de recherche de chemin
-        //// <summary>
-        //// Renvoie le temps minimal d'un noeud par rapport au sommet de départ.
-        //// </summary>
-        //// <param name="sommetDepart"></param>
-        //// <returns></returns>
+        /// <summary>
+        /// Renvoie le temps minimal d'un noeud par rapport au sommet de départ.
+        /// </summary>
+        /// <param name="sommetDepart"></param>
+        /// <returns></returns>
         public Dictionary<Noeud<T>, int> Dijkstra(Noeud<T> sommetDepart)
         {
             var distances = new Dictionary<Noeud<T>, int>();
             var visites = new HashSet<Noeud<T>>();
-            var filePriorite = new PriorityQueue<Noeud<T>, int>(); //// On utilise une priority queue pour gérer les sommets à explorer
-            var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>(); //// Pour suivre les arcs utilisés
+            var filePriorite = new PriorityQueue<Noeud<T>, int>(); /// On utilise une priority queue pour gérer les sommets à explorer
+            var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>(); /// Pour suivre les arcs utilisés
 
-            //// On initialise les distances à l'infini
+            /// On initialise les distances à l'infini
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
                 distances[sommet] = int.MaxValue;
@@ -352,13 +352,13 @@ namespace ProbSciANA
 
             while (filePriorite.Count > 0)
             {
-                Noeud<T> sommetActuel = filePriorite.Dequeue(); //// On prend le sommet avec la distance la plus courte
+                Noeud<T> sommetActuel = filePriorite.Dequeue(); /// On prend le sommet avec la distance la plus courte
                 visites.Add(sommetActuel);
 
-                //// Parcours des arcs sortants du sommet actuel
+                /// Parcours des arcs sortants du sommet actuel
                 foreach (Arc<T> arc in arcs)
                 {
-                    if (arc.IdPrevious.Equals(sommetActuel)) //// On vérifie si le voisin est bien un voisin du sommet actuel
+                    if (arc.IdPrevious.Equals(sommetActuel)) /// On vérifie si le voisin est bien un voisin du sommet actuel
                     {
                         Noeud<T> voisin = arc.IdNext;
                         if (visites.Contains(voisin))
@@ -366,7 +366,7 @@ namespace ProbSciANA
                             continue;
                         }
 
-                        //// Ligne précédente = ligne de l'arc ayant permis d’arriver au sommet actuel
+                        /// Ligne précédente = ligne de l'arc ayant permis d’arriver au sommet actuel
                         string idLignePrecedente = null;
                         if (predecesseurs.ContainsKey(sommetActuel) && predecesseurs[sommetActuel] != null)
                         {
@@ -374,12 +374,12 @@ namespace ProbSciANA
                         }
 
                         int tempsChangement = 0;
-                        if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne) //// On vérifie si on change de ligne
+                        if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne) /// On vérifie si on change de ligne
                         {
-                            tempsChangement = sommetActuel.TempsChangement; //// On met à jour le temps de changement
+                            tempsChangement = sommetActuel.TempsChangement; /// On met à jour le temps de changement
                         }
 
-                        //// On met à jour la distance si on trouve un chemin plus court
+                        /// On met à jour la distance si on trouve un chemin plus court
                         int nouvelleDistance = distances[sommetActuel] + arc.Poids + tempsChangement;
                         if (nouvelleDistance < distances[voisin])
                         {
@@ -394,7 +394,7 @@ namespace ProbSciANA
             return distances;
         }
 
-        //// Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
+        /// Déterminer le chemin le plus court entre deux sommets avec l'algorithme de Dijkstra
         public (List<Arc<T>>, int) DijkstraChemin(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
         {
             var distances = new Dictionary<Noeud<T>, int>();
@@ -402,7 +402,7 @@ namespace ProbSciANA
             var filePriorite = new PriorityQueue<Noeud<T>, int>();
             var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
 
-            //// Initialisation des sommet a l'infini.
+            /// Initialisation des sommet a l'infini.
             foreach (Noeud<T> sommet in listeAdjacence.Keys)
             {
                 distances[sommet] = int.MaxValue;
@@ -418,24 +418,24 @@ namespace ProbSciANA
                 {
                     break;
                 }
-                //// Parcours des arcs sortants du sommet actuel
-                foreach (Arc<T> arc in arcs) //// On parcourt les voisins du sommet actuel
+                /// Parcours des arcs sortants du sommet actuel
+                foreach (Arc<T> arc in arcs) /// On parcourt les voisins du sommet actuel
                 {
-                    if (arc.IdPrevious.Equals(sommetActuel))//// On vérifie si le voisin est bien un voisin du sommet actuel
+                    if (arc.IdPrevious.Equals(sommetActuel))/// On vérifie si le voisin est bien un voisin du sommet actuel
                     {
                         Noeud<T> voisin = arc.IdNext;
                         if (visites.Contains(voisin))
                         {
                             continue;
                         }
-                        //// Ligne précédente = ligne de l'arc ayant permis d'arriver au sommet actuel
+                        /// Ligne précédente = ligne de l'arc ayant permis d'arriver au sommet actuel
                         string idLignePrecedente = null;
                         if (predecesseurs.ContainsKey(sommetActuel) && predecesseurs[sommetActuel] != null)
                         {
                             idLignePrecedente = predecesseurs[sommetActuel].IdLigne;
                         }
                         int tempsChangement = 0;
-                        if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne) //// On vérifie si on change de ligne
+                        if (idLignePrecedente != null && idLignePrecedente != arc.IdLigne) /// On vérifie si on change de ligne
                         {
                             tempsChangement = sommetActuel.TempsChangement;
                         }
@@ -450,7 +450,7 @@ namespace ProbSciANA
                 }
             }
 
-            //// Reconstruction du chemin
+            /// Reconstruction du chemin
             List<Arc<T>> cheminAretes = new List<Arc<T>>();
             Noeud<T> courant = sommetArrivee;
             while (predecesseurs.ContainsKey(courant) && predecesseurs[courant] != null)
@@ -463,13 +463,13 @@ namespace ProbSciANA
             return (cheminAretes, distances[sommetArrivee]);
         }
 
-        //// Calculer le chemin le plus court entre un sommet de départ et tous les autres sommets avec l'algorithme de Bellman-Ford
+        /// Calculer le chemin le plus court entre un sommet de départ et tous les autres sommets avec l'algorithme de Bellman-Ford
         public Dictionary<Noeud<T>, int> BellmanFord(Noeud<T> sommetDepart)
         {
             var distances = new Dictionary<Noeud<T>, int>();
             var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
 
-            //// Initialisation des distances et prédécesseurs à l'infini
+            /// Initialisation des distances et prédécesseurs à l'infini
             foreach (var sommet in listeAdjacence.Keys)
             {
                 distances[sommet] = int.MaxValue;
@@ -488,7 +488,7 @@ namespace ProbSciANA
                         continue;
                     }
 
-                    //// Ligne précédente = ligne de l'arc ayant permis d'arriver au sommet actuel
+                    /// Ligne précédente = ligne de l'arc ayant permis d'arriver au sommet actuel
                     string idLignePrecedente = null;
                     if (predecesseurs.ContainsKey(noeudPrécédent) && predecesseurs[noeudPrécédent] != null)
                     {
@@ -509,13 +509,13 @@ namespace ProbSciANA
             }
             return distances;
         }
-        //// Calculer et Renvoie le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
+        /// Calculer et Renvoie le chemin le plus court entre deux sommets avec l'algorithme de Bellman-Ford
         public (List<Arc<T>>, int) BellmanFordChemin(Noeud<T> sommetDepart, Noeud<T> sommetArrivee)
         {
             var distances = new Dictionary<Noeud<T>, int>();
             var predecesseurs = new Dictionary<Noeud<T>, Arc<T>>();
 
-            //// Initialisation des distances et prédécesseurs à l'infini
+            /// Initialisation des distances et prédécesseurs à l'infini
             foreach (var sommet in listeAdjacence.Keys)
             {
                 distances[sommet] = int.MaxValue;
@@ -534,7 +534,7 @@ namespace ProbSciANA
                         continue;
                     }
 
-                    //// Ligne précédente = ligne de l'arc ayant permis d'arriver au sommet actuel
+                    /// Ligne précédente = ligne de l'arc ayant permis d'arriver au sommet actuel
                     string idLignePrecedente = null;
                     if (predecesseurs.ContainsKey(noeudPrécédent) && predecesseurs[noeudPrécédent] != null)
                     {
@@ -567,7 +567,7 @@ namespace ProbSciANA
             return (chemin, distances[sommetArrivee]);
         }
 
-        //// Calculer le chemin le plus court entre deux sommets avec l'algorithme de Floyd-Warshall
+        /// Calculer le chemin le plus court entre deux sommets avec l'algorithme de Floyd-Warshall
         public Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>> FloydWarshall()
         {
             Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>> distances = new Dictionary<Noeud<T>, Dictionary<Noeud<T>, int>>();
@@ -592,7 +592,7 @@ namespace ProbSciANA
             {
                 foreach (var voisin in listeAdjacence[sommet])
                 {
-                    distances[sommet][voisin] = 1; //// On suppose que chaque arête a un poids de 1
+                    distances[sommet][voisin] = 1; /// On suppose que chaque arête a un poids de 1
                 }
             }
 
@@ -860,7 +860,7 @@ namespace ProbSciANA
             if (courant == null)
                 return (new List<Arc<T>>(), int.MaxValue);
 
-            cheminNoeuds.Insert(0, sommetDepart);////On met le sommet de départ au début
+            cheminNoeuds.Insert(0, sommetDepart);///On met le sommet de départ au début
 
             /// Traduction Noeuds → Arcs
             var cheminArcs = new List<Arc<T>>();
@@ -985,9 +985,9 @@ namespace ProbSciANA
 
             for (int i = index; i < liste.Count; i++)
             {
-                (liste[index], liste[i]) = (liste[i], liste[index]); // change de place
+                (liste[index], liste[i]) = (liste[i], liste[index]); /// change de place
                 Permuter(liste, index + 1, resultats);
-                (liste[index], liste[i]) = (liste[i], liste[index]); // inverse le changement
+                (liste[index], liste[i]) = (liste[i], liste[index]); /// inverse le changement
             }
         }
         #endregion
@@ -1159,7 +1159,6 @@ namespace ProbSciANA
         /// <summary>
         /// Exporte les données du graphe au format JSON
         /// </summary>
-        /// <param name="nomFichier">Chemin du fichier où sauvegarder les données</param>
         public void ExporterVersJSON(Graphe<Utilisateur> graphU, string nomFichier)
         {
             Utilisateur.RefreshList();
@@ -1206,7 +1205,6 @@ namespace ProbSciANA
         /// <summary>
         /// Exporte les données du graphe au format XML
         /// </summary>
-        /// <param name="nomFichier">Chemin du fichier où sauvegarder les données</param>
         public void ExporterVersXML(Graphe<Utilisateur> graphU, string nomFichier)
         {
             Utilisateur.RefreshList();
@@ -1245,83 +1243,6 @@ namespace ProbSciANA
             Console.WriteLine($"Données exportées avec succès vers {nomFichier}");
         }
 
-
-        /// <summary>
-        /// Trouve les groupes indépendants dans le graphe basés sur la coloration
-        /// </summary>
-        /// <returns>Liste des groupes indépendants</returns>
-        public List<List<Noeud<T>>> TrouverGroupesIndépendants()
-        {
-            Dictionary<Noeud<T>, int> couleurs = new Dictionary<Noeud<T>, int>();
-
-            // Initialiser toutes les couleurs à 0 (non coloré)
-            foreach (var noeud in noeuds)
-            {
-                couleurs[noeud] = 0;
-            }
-
-            // Trier les noeuds par degré décroissant
-            var noeudsTries = noeuds.OrderByDescending(n => listeAdjacence[n].Count).ToList();
-
-            int nombreCouleurs = 0;
-
-            foreach (var noeud in noeudsTries)
-            {
-                if (couleurs[noeud] == 0)
-                {
-                    // Trouver la première couleur disponible
-                    var couleursVoisins = new HashSet<int>();
-                    foreach (var voisin in listeAdjacence[noeud])
-                    {
-                        if (couleurs[voisin] != 0)
-                        {
-                            couleursVoisins.Add(couleurs[voisin]);
-                        }
-                    }
-
-                    int couleurDisponible = 1;
-                    while (couleursVoisins.Contains(couleurDisponible))
-                    {
-                        couleurDisponible++;
-                    }
-
-                    couleurs[noeud] = couleurDisponible;
-                    nombreCouleurs = Math.Max(nombreCouleurs, couleurDisponible);
-
-                    // Colorer tous les autres noeuds non adjacents avec la même couleur
-                    foreach (var autreNoeud in noeudsTries)
-                    {
-                        if (couleurs[autreNoeud] == 0 && !listeAdjacence[noeud].Contains(autreNoeud) && !listeAdjacence[autreNoeud].Contains(noeud))
-                        {
-                            bool peutColorier = true;
-                            foreach (var voisin in listeAdjacence[autreNoeud])
-                            {
-                                if (couleurs[voisin] == couleurDisponible)
-                                {
-                                    peutColorier = false;
-                                    break;
-                                }
-                            }
-
-                            if (peutColorier)
-                            {
-                                couleurs[autreNoeud] = couleurDisponible;
-                            }
-                        }
-                    }
-                }
-            }
-
-            /// Créer les groupes indépendants basés sur les couleurs
-            var groupes = new List<List<Noeud<T>>>();
-            for (int i = 1; i <= nombreCouleurs; i++)
-            {
-                var groupe = noeuds.Where(n => couleurs[n] == i).ToList();
-                groupes.Add(groupe);
-            }
-
-            return groupes;
-        }
 
         #endregion
     }
