@@ -70,9 +70,10 @@
 
         <Grid>
                 <Image Source="Images/.png"
-                       Stretch="Fill"
-                       IsHitTestVisible="False"
-                       Opacity="0.3"/>
+                       Stretch="UniformToFill"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       IsHitTestVisible="False"/>
 
                 <DockPanel LastChildFill="True">
 
@@ -296,6 +297,9 @@
 
                         <!-- Liste des cuisiniers -->
                         <Grid>
+                                <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1.5*"/>
                                         <ColumnDefinition Width="1.5*"/>
@@ -306,7 +310,7 @@
                                           CanUserAddRows="False"
                                           HeadersVisibility="Column"
                                           HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
+                                          VerticalAlignment="Top"
                                           Margin="10"
                                           SelectionChanged="dataGridCuisiniers_SelectionChanged"
                                           ColumnWidth="*"
