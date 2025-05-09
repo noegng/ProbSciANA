@@ -23,17 +23,17 @@ namespace ProbSciANA
         ///Chaîne de connexion SQL
         public static string ConnectionString { get; } = "server=localhost;port=3306;user=root;password=root;database=pbsciana;";
 
-        // Liste des stations et des arêtes
+        /// Liste des stations et des arêtes
         public static List<Noeud<(int id, string nom)>> Stations { get; set; }
         public static List<Arc<(int id, string nom)>> Arcs { get; set; }
         public static Graphe<(int id, string nom)> GrapheMétro { get; set; }
 
-        // Méthode pour initialiser les données
+        /// Méthode pour initialiser les données
         public static Graphe<(int id, string nom)> InitializeData(string excelFilePath)
         {
-            // Charger les données depuis le fichier Excel
+            /// Charger les données depuis le fichier Excel
             (Stations, Arcs) = LectureFichierExcel(excelFilePath);
-            GrapheMétro = new Graphe<(int id, string nom)>(Arcs); // Créer le graphe à partir des arêtes
+            GrapheMétro = new Graphe<(int id, string nom)>(Arcs); /// Créer le graphe à partir des arêtes
             return GrapheMétro;
         }
 
@@ -65,7 +65,7 @@ namespace ProbSciANA
           }
         */
         #region Graphe Utilisateur
-        public static Graphe<Utilisateur> CreationGrapheU() /// Création du graph des utilisateurs
+        public static Graphe<Utilisateur> CreationGrapheU() /// Création du graphe des utilisateurs
         {
             Commande.RefreshList();
             var hashSetUtilisateursParCommande = new HashSet<Utilisateur>(); /// On ne veut pas de doublon
@@ -99,7 +99,7 @@ namespace ProbSciANA
         {
             string adresse = "10 rue de Rivoli, Paris";
             Console.WriteLine($"Adresse : {adresse}");
-            // Appel de la méthode statique
+            /// Appel de la méthode statique asynchrone
             var noeud = await Program.GetCoordonnees<string>(adresse);
             Console.WriteLine("Recherche des coordonnées");
             if (noeud != null)
@@ -111,22 +111,22 @@ namespace ProbSciANA
                 Console.WriteLine("Impossible de récupérer les coordonnées.");
             }
         }
-        public static async Task<Noeud<(int id, string nom)>> GetNoeud(string addresse, List<Noeud<(int, string)>> noeudsExistants)
+        public static async Task<Noeud<(int id, string nom)>> GetNoeud(string addresse)
         {
             Console.WriteLine("Rechercher de la station la plus proche.");
             var noeudString = await GetCoordonnees<string>(addresse); /// Il faut attendre la réponse de la fonction.
             Console.WriteLine("Fin de la recherche.");
-            return AssocierNoeud(noeudString, noeudsExistants);
+            return AssocierNoeud(noeudString);
         }
 
-        public static Noeud<(int id, string nom)> AssocierNoeud(Noeud<string> noeudString, List<Noeud<(int, string)>> noeudsExistants)
+        public static Noeud<(int id, string nom)> AssocierNoeud(Noeud<string> noeudString)
         {
             double longitude = 0.00001;
             double latitude = 0.00001;
             Noeud<(int, string)> noeud = null;
             while (noeud == null)
             {
-                foreach (var noeudActuel in noeudsExistants)
+                foreach (var noeudActuel in Stations)
                 {
                     if (Math.Abs(noeudActuel.Longitude - noeudString.Longitude) < longitude &&
                         Math.Abs(noeudActuel.Latitude - noeudString.Latitude) < latitude)
@@ -167,7 +167,7 @@ namespace ProbSciANA
                 double latitude = double.Parse(result.Lat, System.Globalization.CultureInfo.InvariantCulture);
                 double longitude = double.Parse(result.Lon, System.Globalization.CultureInfo.InvariantCulture);
 
-                // Créer un Noeud<T> avec les coordonnées récupérées
+                /// Créer un Noeud<T> avec les coordonnées récupérées
                 return new Noeud<string>(address, 1, 0, longitude, latitude);
             }
 
@@ -176,8 +176,8 @@ namespace ProbSciANA
 
         public class NominatimResult
         {
-            public string Lat { get; set; } // Latitude
-            public string Lon { get; set; } // Longitude
+            public string Lat { get; set; } /// Latitude
+            public string Lon { get; set; } /// Longitude
 
         }
         #endregion
@@ -270,8 +270,8 @@ namespace ProbSciANA
             (listeLien, int noeudMax, int nbLiens) = LectureFichier();
             /// est(listeLien, noeudMax, nbLiens);
             int départ = NoeudDépart(noeudMax);
-            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();    /// iste d'adjacence
-            int[,] matrice = new int[noeudMax, noeudMax];    /// atrice d'adjacence
+            Dictionary<int, List<int>> adjacence = new Dictionary<int, List<int>>();    /// liste d'adjacence
+            int[,] matrice = new int[noeudMax, noeudMax];    /// Matrice d'adjacence
             Graphe graphe1 = null;
             if (mode == 1)
             {
@@ -336,7 +336,7 @@ namespace ProbSciANA
             {
                 if (tab[i][0] != '%')
                 {
-                    if (a == 0)         /// our avoir seulement la 1ere ligne
+                    if (a == 0)         /// Pour avoir seulement la 1ere ligne
                     {
                         noeudMax = Convert.ToInt32(tab[i].Substring(0, tab[i].IndexOf(' ')));
                         nbLiens = Convert.ToInt32(tab[i].Substring(tab[i].LastIndexOf(' ') + 1));

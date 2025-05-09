@@ -47,14 +47,6 @@
       "Destination": 2
     },
     {
-      "Source": 1,
-      "Destination": 8
-    },
-    {
-      "Source": 1,
-      "Destination": 10
-    },
-    {
       "Source": 2,
       "Destination": 3
     },
@@ -65,6 +57,10 @@
     {
       "Source": 4,
       "Destination": 7
+    },
+    {
+      "Source": 5,
+      "Destination": 8
     },
     {
       "Source": 6,
@@ -91,6 +87,6 @@
   "Propriétés": {
     "EstConnexe": true,
     "ContientCycle": true,
-    "NombreCouleurs": 2
+    "NombreCouleurs": 3
   }
 }

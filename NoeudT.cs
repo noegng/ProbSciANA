@@ -18,7 +18,7 @@ namespace ProbSciANA
         public double Latitude { get; set; } /// Latitude de la station
 
         /// Constructeur de la classe Station
-        public Noeud(T valeur, int id, int temps = 0) // valeur par défaut
+        public Noeud(T valeur, int id, int temps = 0) /// valeur par défaut
         {
             this.valeur = valeur;
             this.id = id;
@@ -54,7 +54,7 @@ namespace ProbSciANA
         {
             if (obj is Noeud<T> autre)
             {
-                return Id == autre.Id; // Comparaison basée sur l'Id
+                return Id == autre.Id; /// Comparaison basée sur l'Id
             }
             return false;
         }

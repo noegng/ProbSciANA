@@ -940,7 +940,7 @@ namespace ProbSciANA.Interface
             Noeud<(int id, string nom)> stationArrivee = null;
             if (ListLivraisons.SelectedItem is Livraison selectedLivraison)
             {
-                stationArrivee = await Program.GetNoeud(selectedLivraison.Adresse, Program.GrapheMétro.Noeuds);
+                stationArrivee = await Program.GetNoeud(selectedLivraison.Adresse);
             }
             else if (dataGridCommandes.SelectedItem is Commande selected)
             {
@@ -956,7 +956,7 @@ namespace ProbSciANA.Interface
                 var listeLieux = new List<Noeud<(int id, string nom)>> { SessionManager.CurrentUser.Station };
                 foreach (var livraison in selected.Livraisons)
                 {
-                    var noeud = await Program.GetNoeud(livraison.Adresse, Program.GrapheMétro.Noeuds);
+                    var noeud = await Program.GetNoeud(livraison.Adresse);
                     listeLieux.Add(noeud);
                 }
                 (int tempsTrajet, cheminAcces) = Program.GrapheMétro.AffichageCheminOptimal(listeLieux);
@@ -1148,6 +1148,36 @@ namespace ProbSciANA.Interface
                 NavigationService.GoForward();
             UpdateNavButtons();
         }
+        private void BtnStat_Click(object sender, RoutedEventArgs e)
+        {
+            Utilisateur.RefreshList();
+            Commande.RefreshList();
+            double prixMoyenParCommande = 0;
+            foreach (var commande in Commande.commandes)
+            {
+                prixMoyenParCommande += commande.Prix;
+            }
+            prixMoyenParCommande = (int)prixMoyenParCommande * 1000 / 1000;  ///Pour arrondire au 0,001 près
+            string commandeParCuisinier = "";
+            foreach (var cuisinier in Utilisateur.cuisiniers)
+            {
+                commandeParCuisinier += cuisinier.Prenom + " " + cuisinier.Nom + " : ";
+                string s = "";
+                foreach (var commande in cuisinier.Commandes_effectuees)
+                {
+                    if (!s.Contains(commande.NomClient))
+                    {
+                        s += commande.NomClient + ", ";
+                    }
+                }
+                commandeParCuisinier += s + "\n";
+            }
+            string pxMoyen = "Le prix moyen par commande est de : " + prixMoyenParCommande / Convert.ToDouble(Commande.commandes.Count());
+            string nbCuisinier = "Nombre de cuisinier : " + Utilisateur.cuisiniers.Count();
+            string nbClient = "Nombre de client : " + Utilisateur.clients.Count();
+            MessageBox.Show($"Le nombre totale de commande est de : {Commande.commandes.Count()}\n{pxMoyen}\n{nbCuisinier}\n{nbClient}\nListe des cuisiniers avec les personnes qui leur ont fait une commande :\n{commandeParCuisinier}");
+
+        }
     }
     #endregion
 
@@ -1270,7 +1300,36 @@ namespace ProbSciANA.Interface
                 NavigationService.GoForward();
             UpdateNavButtons();
         }
+        private void BtnStat_Click(object sender, RoutedEventArgs e)
+        {
+            Utilisateur.RefreshList();
+            Commande.RefreshList();
+            double prixMoyenParCommande = 0;
+            foreach (var commande in Commande.commandes)
+            {
+                prixMoyenParCommande += commande.Prix;
+            }
+            prixMoyenParCommande = (int)prixMoyenParCommande * 1000 / 1000;  ///Pour arrondire au 0,001 près
+            string commandeParCuisinier = "";
+            foreach (var cuisinier in Utilisateur.cuisiniers)
+            {
+                commandeParCuisinier += cuisinier.Prenom + " " + cuisinier.Nom + " : ";
+                string s = "";
+                foreach (var commande in cuisinier.Commandes_effectuees)
+                {
+                    if (!s.Contains(commande.NomClient))
+                    {
+                        s += commande.NomClient + ", ";
+                    }
+                }
+                commandeParCuisinier += s + "\n";
+            }
+            string pxMoyen = "Le prix moyen par commande est de : " + prixMoyenParCommande / Convert.ToDouble(Commande.commandes.Count());
+            string nbCuisinier = "Nombre de cuisinier : " + Utilisateur.cuisiniers.Count();
+            string nbClient = "Nombre de client : " + Utilisateur.clients.Count();
+            MessageBox.Show($"Le nombre totale de commande est de : {Commande.commandes.Count()}\n{pxMoyen}\n{nbCuisinier}\n{nbClient}\nListe des cuisiniers avec les personnes qui leur ont fait une commande :\n{commandeParCuisinier}");
 
+        }
         private void dataGridClients_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dataGridClients.SelectedItem is Utilisateur selected)
@@ -1500,6 +1559,36 @@ namespace ProbSciANA.Interface
                 NavigationService.GoForward();
             UpdateNavButtons();
         }
+        private void BtnStat_Click(object sender, RoutedEventArgs e)
+        {
+            Utilisateur.RefreshList();
+            Commande.RefreshList();
+            double prixMoyenParCommande = 0;
+            foreach (var commande in Commande.commandes)
+            {
+                prixMoyenParCommande += commande.Prix;
+            }
+            prixMoyenParCommande = (int)prixMoyenParCommande * 1000 / 1000;  ///Pour arrondire au 0,001 près
+            string commandeParCuisinier = "";
+            foreach (var cuisinier in Utilisateur.cuisiniers)
+            {
+                commandeParCuisinier += cuisinier.Prenom + " " + cuisinier.Nom + " : ";
+                string s = "";
+                foreach (var commande in cuisinier.Commandes_effectuees)
+                {
+                    if (!s.Contains(commande.NomClient))
+                    {
+                        s += commande.NomClient + ", ";
+                    }
+                }
+                commandeParCuisinier += s + "\n";
+            }
+            string pxMoyen = "Le prix moyen par commande est de : " + prixMoyenParCommande / Convert.ToDouble(Commande.commandes.Count());
+            string nbCuisinier = "Nombre de cuisinier : " + Utilisateur.cuisiniers.Count();
+            string nbClient = "Nombre de client : " + Utilisateur.clients.Count();
+            MessageBox.Show($"Le nombre totale de commande est de : {Commande.commandes.Count()}\n{pxMoyen}\n{nbCuisinier}\n{nbClient}\nListe des cuisiniers avec les personnes qui leur ont fait une commande :\n{commandeParCuisinier}");
+
+        }
     }
 
     #endregion
@@ -1587,6 +1676,36 @@ namespace ProbSciANA.Interface
                 NavigationService.GoForward();
             UpdateNavButtons();
         }
+        private void BtnStat_Click(object sender, RoutedEventArgs e)
+        {
+            Utilisateur.RefreshList();
+            Commande.RefreshList();
+            double prixMoyenParCommande = 0;
+            foreach (var commande in Commande.commandes)
+            {
+                prixMoyenParCommande += commande.Prix;
+            }
+            prixMoyenParCommande = (int)prixMoyenParCommande * 1000 / 1000;  ///Pour arrondire au 0,001 près
+            string commandeParCuisinier = "";
+            foreach (var cuisinier in Utilisateur.cuisiniers)
+            {
+                commandeParCuisinier += cuisinier.Prenom + " " + cuisinier.Nom + " : ";
+                string s = "";
+                foreach (var commande in cuisinier.Commandes_effectuees)
+                {
+                    if (!s.Contains(commande.NomClient))
+                    {
+                        s += commande.NomClient + ", ";
+                    }
+                }
+                commandeParCuisinier += s + "\n";
+            }
+            string pxMoyen = "Le prix moyen par commande est de : " + prixMoyenParCommande / Convert.ToDouble(Commande.commandes.Count());
+            string nbCuisinier = "Nombre de cuisinier : " + Utilisateur.cuisiniers.Count();
+            string nbClient = "Nombre de client : " + Utilisateur.clients.Count();
+            MessageBox.Show($"Le nombre totale de commande est de : {Commande.commandes.Count()}\n{pxMoyen}\n{nbCuisinier}\n{nbClient}\nListe des cuisiniers avec les personnes qui leur ont fait une commande :\n{commandeParCuisinier}");
+
+        }
     }
     #endregion
 
@@ -1634,7 +1753,7 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Changer de mode (sombre / clair) à implémenter !");
+            NavigationService?.Navigate(new StartView());
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
@@ -1735,11 +1854,16 @@ namespace ProbSciANA.Interface
         }
         private void BtnPropriétéGraphe(object sender, RoutedEventArgs e)
         {
-            /// Afficher les propriétés et exporter en JSON et XML
-            graphU.ExporterVersJSON(graphU, "donnees_graphe.json");
-            graphU.ExporterVersXML(graphU, "donnees_graphe.xml");
+            /// Afficher les propriétés
             string propriétés = graphU.PropriétésGraphe();
             MessageBox.Show(propriétés);
+        }
+        private void Serialisation(object sender, RoutedEventArgs e)
+        {
+            /// Sérialiser le graphe en JSON et XML
+            graphU.ExporterVersJSON(graphU, "donnees_graphe.json");
+            graphU.ExporterVersXML(graphU, "donnees_graphe.xml");
+            MessageBox.Show("Sérialisation en JSON et XML terminée.");
         }
     }
     #endregion

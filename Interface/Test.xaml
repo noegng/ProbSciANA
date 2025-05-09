@@ -224,9 +224,15 @@
                                         Width="200"
                                         Margin="5"
                                         Click="BtnPropriétéGraphe"/>
+                                <Button Style="{StaticResource MenuButtonStyle}"
+                                        Content="Sérialiser les données"
+                                        Width="200"
+                                        Margin="5"
+                                        Click="Serialisation"/>
                                 <TextBlock x:Name="TxtProprietesGraphe"
                                            FontSize="18"
                                            Margin="10"/>
+
                         </StackPanel>
 
                 </DockPanel>

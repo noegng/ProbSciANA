@@ -1,5 +1,3 @@
-/*
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using ProbSciANA;
@@ -25,7 +23,7 @@ namespace ProbSciANATests
         [TestMethod]
         public void TestEstCycle()
         {
-             Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
+            Dictionary<int, List<int>> grapheAvecCycle = new Dictionary<int, List<int>>()
             {
                 { 1, new List<int> { 2, 3 } },
                 { 2, new List<int> { 1, 3 } },
@@ -54,7 +52,7 @@ namespace ProbSciANATests
 
         [TestMethod]
         public void TestEstPasCycle()
-        {        
+        {
             Dictionary<int, List<int>> grapheSansCycle = new Dictionary<int, List<int>>()
             {
                 { 1, new List<int> { 2, 3 } },
@@ -69,5 +67,3 @@ namespace ProbSciANATests
         }
     }
 }
-
-*/
