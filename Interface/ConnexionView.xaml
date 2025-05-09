@@ -4,7 +4,7 @@
       Title="ConnexionView">
 
     <Grid>
-        <Image Source="Images/.png"
+        <Image Source="Images/gray.png"
                Stretch="UniformToFill"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch"

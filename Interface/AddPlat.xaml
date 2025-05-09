@@ -7,7 +7,7 @@
       Title="AddPlat">
 
         <Grid>
-                <Image Source="Images/.png"
+                <Image Source="Images/gray.png"
                        Stretch="UniformToFill"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
@@ -22,7 +22,6 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
@@ -57,15 +56,6 @@
                                         Click="AfficherCommandes_Click"/>
 
                                 <Button Grid.Column="4"
-                                        Content="Avis"
-                                        Foreground="White"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        FontWeight="Bold"
-                                        Padding="10,0"
-                                        Click="AfficherAvis_Click"/>
-
-                                <Button Grid.Column="5"
                                         Content="Plats"
                                         Foreground="White"
                                         Background="Transparent"

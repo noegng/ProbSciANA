@@ -51,7 +51,7 @@
 
                 <Button x:Name="BtnTest"
                         Grid.Column="2"
-                        Content="Test"
+                        Content="🧪 Test"
                         Foreground="White"
                         Background="Transparent"
                         BorderThickness="0"

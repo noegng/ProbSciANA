@@ -355,10 +355,6 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new PlatView());
         }
-        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AvisView());
-        }
 
         private void UpdateNavButtons()
         {
@@ -498,10 +494,6 @@ namespace ProbSciANA.Interface
         private void AfficherPlats_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new PlatView());
-        }
-        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AvisView());
         }
 
         private void UpdateNavButtons()
@@ -887,10 +879,6 @@ namespace ProbSciANA.Interface
         {
             NavigationService?.Navigate(new PlatView());
         }
-        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AvisView());
-        }
 
         private void OnListLivraisons_Selected(object s, SelectionChangedEventArgs e)
         {
@@ -972,65 +960,6 @@ namespace ProbSciANA.Interface
     }
     #endregion
 
-    #region Page Vue Avis
-    public partial class AvisView : Page
-    {
-        public AvisView()
-        {
-            InitializeComponent();
-            Loaded += (s, e) => UpdateNavButtons();
-            Requetes.RefreshAllLists();
-            dataGridAvis.ItemsSource = null;
-            dataGridAvis.ItemsSource = SessionManager.CurrentUser.Cuisines;
-        }
-        private async void dataGridAvis_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dataGridAvis.SelectedItem is Cuisine selected)
-            {
-                DataContext = selected;
-            }
-        }
-
-        private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new CommandeView());
-        }
-        private void AfficherPlats_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new PlatView());
-        }
-
-        private void UpdateNavButtons()
-        {
-            BtnBack.IsEnabled = NavigationService?.CanGoBack == true;
-            BtnForward.IsEnabled = NavigationService?.CanGoForward == true;
-        }
-        private void BtnMode_Click(object sender, RoutedEventArgs e)
-        {
-            if (SessionManager.CurrentUser.EstClient)
-            {
-                NavigationService?.Navigate(new UserDashboardView());
-            }
-        }
-        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new StartView());
-        }
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoBack)
-                NavigationService.GoBack();
-            UpdateNavButtons();
-        }
-        private void BtnForward_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavigationService.CanGoForward)
-                NavigationService.GoForward();
-            UpdateNavButtons();
-        }
-    }
-    #endregion
-
     #region Page Vue Plat
     public partial class PlatView : Page
     {
@@ -1067,10 +996,6 @@ namespace ProbSciANA.Interface
         private void AfficherCommandes_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new CommandeView());
-        }
-        private void AfficherAvis_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService?.Navigate(new AvisView());
         }
 
         private void UpdateNavButtons()
@@ -1753,7 +1678,7 @@ namespace ProbSciANA.Interface
         }
         private void BtnMode_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new StartView());
+            NavigationService?.Navigate(new AdminDashboardView());
         }
         private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
