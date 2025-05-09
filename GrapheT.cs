@@ -1169,34 +1169,55 @@ namespace ProbSciANA
                     EstConnexe = EstConnexe(),
                     ContientCycle = ContientCycle(),
                     NombreCouleurs = graphU.WelshPowell()
-                },
-                Noeuds = Utilisateur.utilisateurs.Select(n => new NoeudExport
-                {
-                    Id = n.Id_utilisateur,
-                    Nom = n.Nom
-                }).ToList(),
-
-                Arcs = graphU.Arcs.Select(a => new ArcExport
-                {
-                    Source = a.IdPrevious.Id,
-                    Destination = a.IdNext.Id
-                }).ToList(),
-
-                NoeudsIsolés = graphU.NoeudsIsolés?.Select(n => new NoeudExport
-                {
-                    Id = n.Id,
-                    Nom = n.Valeur.Nom
-                }).ToList()
+                }
             };
 
+            /// Conversion des noeuds
+            donnees.Noeuds = new List<NoeudExport>();
+            foreach (var utilisateur in Utilisateur.utilisateurs)
+            {
+                var noeudExport = new NoeudExport
+                {
+                    Id = utilisateur.Id_utilisateur,
+                    Nom = utilisateur.Nom
+                };
+                donnees.Noeuds.Add(noeudExport);
+            }
+
+            /// Conversion des arcs
+            donnees.Arcs = new List<ArcExport>();
+            foreach (var arc in graphU.Arcs)
+            {
+                var arcExport = new ArcExport
+                {
+                    Source = arc.IdPrevious.Id,
+                    Destination = arc.IdNext.Id
+                };
+                donnees.Arcs.Add(arcExport);
+            }
+
+            /// Conversion des noeuds isolés
+            donnees.NoeudsIsolés = new List<NoeudExport>();
+            if (graphU.NoeudsIsolés != null)
+            {
+                foreach (var noeud in graphU.NoeudsIsolés)
+                {
+                    var noeudIsoléExport = new NoeudExport
+                    {
+                        Id = noeud.Id,
+                        Nom = noeud.Valeur.Nom
+                    };
+                    donnees.NoeudsIsolés.Add(noeudIsoléExport);
+                }
+            }
 
             /// Sérialisation en JSON
             string json = System.Text.Json.JsonSerializer.Serialize(donnees,
-        new System.Text.Json.JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        });
+                new System.Text.Json.JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                });
 
             System.IO.File.WriteAllText(nomFichier, json);
             Console.WriteLine($"Données exportées avec succès vers {nomFichier}");
@@ -1208,33 +1229,56 @@ namespace ProbSciANA
         public void ExporterVersXML(Graphe<Utilisateur> graphU, string nomFichier)
         {
             Utilisateur.RefreshList();
-            var donnees = new DonnéesGraphe
+            var donnees = new DonnéesGraphe();
+
+            /// Propriétés du graphe
+            donnees.Propriétés = new PropriétésExport
             {
-                Propriétés = new PropriétésExport
-                {
-                    EstConnexe = EstConnexe(),
-                    ContientCycle = ContientCycle(),
-                    NombreCouleurs = graphU.WelshPowell()
-                },
-                Noeuds = Utilisateur.utilisateurs.Select(n => new NoeudExport
-                {
-                    Id = n.Id_utilisateur,
-                    Nom = n.Nom
-                }).ToList(),
-
-                Arcs = graphU.Arcs.Select(a => new ArcExport
-                {
-                    Source = a.IdPrevious.Id,
-                    Destination = a.IdNext.Id
-                }).ToList(),
-
-                NoeudsIsolés = graphU.NoeudsIsolés?.Select(n => new NoeudExport
-                {
-                    Id = n.Id,
-                    Nom = n.Valeur.Nom
-                }).ToList()
+                EstConnexe = EstConnexe(),
+                ContientCycle = ContientCycle(),
+                NombreCouleurs = graphU.WelshPowell()
             };
 
+            /// Conversion des noeuds
+            donnees.Noeuds = new List<NoeudExport>();
+            foreach (var utilisateur in Utilisateur.utilisateurs)
+            {
+                var noeudExport = new NoeudExport
+                {
+                    Id = utilisateur.Id_utilisateur,
+                    Nom = utilisateur.Nom
+                };
+                donnees.Noeuds.Add(noeudExport);
+            }
+
+            /// Conversion des arcs
+            donnees.Arcs = new List<ArcExport>();
+            foreach (var arc in graphU.Arcs)
+            {
+                var arcExport = new ArcExport
+                {
+                    Source = arc.IdPrevious.Id,
+                    Destination = arc.IdNext.Id
+                };
+                donnees.Arcs.Add(arcExport);
+            }
+
+            /// Conversion des noeuds isolés
+            donnees.NoeudsIsolés = new List<NoeudExport>();
+            if (graphU.NoeudsIsolés != null)
+            {
+                foreach (var noeud in graphU.NoeudsIsolés)
+                {
+                    var noeudIsoléExport = new NoeudExport
+                    {
+                        Id = noeud.Id,
+                        Nom = noeud.Valeur.Nom
+                    };
+                    donnees.NoeudsIsolés.Add(noeudIsoléExport);
+                }
+            }
+
+            /// Sérialisation en XML
             var serializer = new System.Xml.Serialization.XmlSerializer(typeof(DonnéesGraphe));
             using (var writer = new StreamWriter(nomFichier))
             {
@@ -1242,8 +1286,6 @@ namespace ProbSciANA
             }
             Console.WriteLine($"Données exportées avec succès vers {nomFichier}");
         }
-
-
         #endregion
     }
 }
