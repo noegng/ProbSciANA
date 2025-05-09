@@ -402,10 +402,7 @@ obj/
 
 *.sln.iml
 Metro_Arcs_Par_Station_IDs.xlsx
-Interface/Images/graphes/*.png
-Interface/Images/*.dot
-!Interface/Images/*.png
-/Interface/Images/graphes
+Interface/Images/graphes/
 *.json
 *.xml
 donnees_graphe.json
