@@ -23,6 +23,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Column="0"
@@ -71,6 +72,15 @@
                         FontWeight="Bold"
                         Padding="10,0"
                         Click="BtnCommandes_Click"/>
+
+                <Button Grid.Column="6"
+                        Content="Statistiques"
+                        Foreground="White"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontWeight="Bold"
+                        Padding="10,0"
+                        Click="BtnStat_Click"/>
             </Grid>
 
             <!-- FLÈCHES NAVIGATION (Chrome style) -->
@@ -199,12 +209,6 @@
                     </Button>
 
                 </StackPanel>
-
-                <Button Style="{StaticResource MenuButtonStyle}"
-                        Content="Statistiques"
-                        Width="150"
-                        Margin="1"
-                        Click="BtnStat_Click"/>
             </Grid>
 
             <StackPanel VerticalAlignment="Center"
