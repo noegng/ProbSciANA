@@ -3,7 +3,7 @@
 --------------------------
 
 INSERT INTO Utilisateur (nom, prenom, adresse, telephone, email, station, date_inscription, mdp, photo) VALUES
-('Dupont', 'Jean', '10 Rue de Paris, 75001 Paris', '0102030405', 'jean.dupont@example.com', 'Station A', '2025-02-25 10:00:00', 'mdp1234','Images/jean.png'),
+('Dupont', 'Jean', '10 Rue de Rivoli, 75001 Paris', '0102030405', 'jean.dupont@example.com', 'Station A', '2025-02-25 10:00:00', 'mdp1234','Images/jean.png'),
 ('Martin', 'Alice', '15 Avenue de la République, 75011 Paris', '0102030406', 'alice.martin@example.com', 'Station B', '2025-02-26 11:00:00', 'mdp1234','Images/alice.png'),
 ('Durand', 'Pierre', '20 Boulevard Voltaire, 75012 Paris', '0102030407', 'pierre.durand@example.com', 'Station C', '2025-02-27 12:00:00', 'mdp1234','Images/pierre.png'),
 ('Leroy', 'Sophie', '5 Avenue Victor Hugo, Paris', '0102030408', 'sophie.leroy@example.com', 'Station D', '2025-02-28 13:00:00', 'mdp1234','Images/sophie.png'),
