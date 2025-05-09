@@ -10,9 +10,9 @@ namespace ProbSciANA
 {
     public static class Graphviz<T>
     {
-        private static readonly string ProjectDirectory = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\"));
-        private static readonly string GraphvizPath = Path.Combine(ProjectDirectory, "Graphviz", "bin", "dot.exe");
-        private static readonly string ImagesPath = Path.Combine(ProjectDirectory, "Interface", "images", "graphes");
+        private static readonly string ProjectDirectory = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\")); /// Chemin vers le répertoire du projet
+        private static readonly string GraphvizPath = Path.Combine(ProjectDirectory, "Graphviz", "bin", "dot.exe"); /// Chemin vers l'exécutable Graphviz
+        private static readonly string ImagesPath = Path.Combine(ProjectDirectory, "Interface", "images", "graphes"); /// Chemin vers le répertoire où les images seront enregistrées
 
         private static int numéroImage = 0; ///Pour pouvoir créer plusieurs images en meme temps si nécessaire
         private static int numéroImageChemin = 0;
@@ -26,7 +26,7 @@ namespace ProbSciANA
 
         private static string GetColor(string idLigne)
         {
-            // Définir les couleurs pour chaque ligne
+            /// Définir les couleurs pour chaque ligne de métro
             return idLigne switch
             {
                 "1" => "#F2C931", /// Bouton d'Or
@@ -450,7 +450,7 @@ namespace ProbSciANA
                 couleurs = new Dictionary<Noeud<T>, int>();
                 foreach (Noeud<T> vertex in noeuds)
                 {
-                    couleurs[vertex] = 0; // Couleur par défaut
+                    couleurs[vertex] = 0; /// Couleur par défaut
                 }
             }
 

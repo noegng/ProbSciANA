@@ -1,4 +1,4 @@
-#****************** MODULE AUTRE *****************#
+#****************** REQUETES *****************#
 USE PbSciANA;
 
 SELECT u.*,
@@ -185,14 +185,3 @@ Select * from Cuisine;
 Select * from compose;
 Select * from ingredient;
 
-#****************** MODULE CLIENT *****************#
-                    
-
-
-#****************** MODULE CUISINIER *****************#
-
-
-#****************** MODULE COMMANDES *****************#
-
-
-#****************** MODULE STATISTIQUES *****************#

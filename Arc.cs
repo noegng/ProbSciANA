@@ -93,20 +93,20 @@ namespace ProbSciANA
         }
         public double CalculerDistance()
         {
-            double R = 6371; // Rayon de la Terre en km
+            double R = 6371; /// Rayon de la Terre en km
             double dLat = Convert.ToDouble((IdNext.Latitude - IdPrevious.Latitude) * Math.PI / 180.0);
             double dLon = Convert.ToDouble((IdNext.Longitude - IdPrevious.Longitude) * Math.PI / 180.0);
             double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
                        Math.Cos(Convert.ToDouble(IdPrevious.Latitude * Math.PI / 180.0)) * Math.Cos(Convert.ToDouble(IdNext.Latitude * Math.PI / 180.0)) *
                        Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return R * c; // Distance en km
+            return R * c; /// Distance en km
         }
 
 
         public static double CalculerDistanceHaversine(double lat1, double lon1, double lat2, double lon2)
         {
-            double R = 6371; // Rayon de la Terre en km
+            double R = 6371; /// Rayon de la Terre en km
             double dLat = (lat2 - lat1) * Math.PI / 180.0;
             double dLon = (lon2 - lon1) * Math.PI / 180.0;
 
@@ -115,15 +115,15 @@ namespace ProbSciANA
                        Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
 
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return R * c; // Distance en km
+            return R * c; /// Distance en km
         }
-        //Calcul et met a jour la variabl temps ( temps de trajet entre deux stations)
+        ///Calcul et met a jour la variabl temps ( temps de trajet entre deux stations)
         public int CalculerTempsTrajet(Dictionary<string, double> VitessesMoyennes, string idLigne)
         {
-            // calcul de la distance entre idPrevious et idNext avec la formule de Haversine
+            /// calcul de la distance entre idPrevious et idNext avec la formule de Haversine
             double distance = CalculerDistance();
             double t = distance / VitessesMoyennes[idLigne];
-            poids = (int)t + 1; // +1 pour eviter d'avoir un temps de trajet nul et pour arrondir a l'entier superieur
+            poids = (int)t + 1; /// +1 pour eviter d'avoir un temps de trajet nul et pour arrondir a l'entier superieur
             return poids;
         }
 
