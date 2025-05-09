@@ -312,6 +312,7 @@
                                         <ColumnDefinition Width="1.5*"/>
                                 </Grid.ColumnDefinitions>
                                 <DataGrid x:Name="dataGridClients"
+                                          Background="Transparent"
                                           Grid.Column="0"
                                           AutoGenerateColumns="False"
                                           CanUserAddRows="False"
