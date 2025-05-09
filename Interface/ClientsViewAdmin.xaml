@@ -78,7 +78,7 @@
         </Page.Resources>
 
         <Grid>
-                <Image Source="Images/.png"
+                <Image Source="Images/gray.png"
                        Stretch="UniformToFill"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
@@ -94,6 +94,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
@@ -145,6 +146,15 @@
                                         FontWeight="Bold"
                                         Padding="10,0"
                                         Click="BtnCommandes_Click"/>
+
+                                <Button Grid.Column="6"
+                                        Content="Statistiques"
+                                        Foreground="White"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        FontWeight="Bold"
+                                        Padding="10,0"
+                                        Click="BtnStat_Click"/>
                         </Grid>
 
                         <Grid DockPanel.Dock="Top"
