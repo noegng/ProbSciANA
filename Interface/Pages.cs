@@ -133,9 +133,12 @@ namespace ProbSciANA.Interface
 
             try
             {
-                var Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
-                                                                                                     /// recherche de la station la plus proche avec haversine
-
+                var Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse);
+                if (!Program.Stations.Contains(Station))
+                {
+                    MessageBox.Show("Adresse non trouvée. Veuillez vérifier l'adresse saisie.");
+                    return;
+                }
 
                 var nouvelUtilisateur = new Utilisateur(
                     estClient: role == "Client" || role == "Client et Cuisinier",
@@ -143,7 +146,7 @@ namespace ProbSciANA.Interface
                     nom,
                     prenom,
                     adresse,
-                    "", // téléphone
+                    "", /// téléphone
                     email,
                     mdp,
                     Station,

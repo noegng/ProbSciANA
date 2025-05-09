@@ -82,6 +82,8 @@ namespace ProbSciANA
             Noeud<(int, string)> stationLaPlusProche = null;
             double distanceMinimale = double.MaxValue;
 
+            const double DISTANCE_MAX_KM = 2.0;
+
             foreach (var station in Program.Stations)
             {
                 double distance = Arc<T>.CalculerDistanceHaversine(
@@ -94,6 +96,10 @@ namespace ProbSciANA
                     distanceMinimale = distance;
                     stationLaPlusProche = station;
                 }
+            }
+            if (distanceMinimale > DISTANCE_MAX_KM)
+            {
+                return new Noeud<(int, string)>((0, "Aucune station à proximité raisonnable"), 0);
             }
             return stationLaPlusProche;
         }
