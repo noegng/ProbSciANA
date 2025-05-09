@@ -136,28 +136,35 @@ namespace ProbSciANA.Interface
                 var Station = await Noeud<(int id, string nom)>.TrouverStationLaPlusProche(adresse); /// TODO : à revoir, car pas de station la plus proche dans le cas d'une adresse non trouvée
                                                                                                      /// recherche de la station la plus proche avec haversine
 
+                if (!Program.Stations.Contains(Station))
+                {
+                    MessageBox.Show("Adresse non trouvée.");
+                    return;
+                }
+                else
+                {
+                    var nouvelUtilisateur = new Utilisateur(
+                        estClient: role == "Client" || role == "Client et Cuisinier",
+                        estCuisinier: role == "Cuisinier" || role == "Client et Cuisinier",
+                        nom,
+                        prenom,
+                        adresse,
+                        "", // téléphone
+                        email,
+                        mdp,
+                        Station,
+                        estEntreprise: role == "Entreprise");
+                    SessionManager.CurrentUser = nouvelUtilisateur;
 
-                var nouvelUtilisateur = new Utilisateur(
-                    estClient: role == "Client" || role == "Client et Cuisinier",
-                    estCuisinier: role == "Cuisinier" || role == "Client et Cuisinier",
-                    nom,
-                    prenom,
-                    adresse,
-                    "", // téléphone
-                    email,
-                    mdp,
-                    Station,
-                    estEntreprise: role == "Entreprise");
-                SessionManager.CurrentUser = nouvelUtilisateur;
+                    MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
 
-                MessageBox.Show($"Bienvenue {prenom} {nom} !\nRôle : {role}");
-
-                if (role == "Client")
-                    NavigationService?.Navigate(new UserDashboardView());
-                else if (role == "Cuisinier")
-                    NavigationService?.Navigate(new CuisinierDashboardView());
-                else if (role == "Client et Cuisinier")
-                    NavigationService?.Navigate(new CuisinierDashboardView());
+                    if (role == "Client")
+                        NavigationService?.Navigate(new UserDashboardView());
+                    else if (role == "Cuisinier")
+                        NavigationService?.Navigate(new CuisinierDashboardView());
+                    else if (role == "Client et Cuisinier")
+                        NavigationService?.Navigate(new CuisinierDashboardView());
+                }
             }
             catch (HttpRequestException ex)
             {
