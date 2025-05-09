@@ -143,7 +143,7 @@ namespace ProbSciANA
 
         public static async Task<Noeud<string>> GetCoordonnees<T>(string address)
         {
-            string url = $"https:///nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
+            string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=json&limit=1";
 
             using HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.UserAgent.ParseAdd("MyGeoApp/1.0 (noe.guenego@gmail.com)");
