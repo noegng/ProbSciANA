@@ -198,6 +198,12 @@
                     </Button>
 
                 </StackPanel>
+
+                <Button Style="{StaticResource MenuButtonStyle}"
+                        Content="Statistiques"
+                        Width="150"
+                        Margin="1"
+                        Click="BtnStat_Click"/>
             </Grid>
 
             <StackPanel VerticalAlignment="Center"

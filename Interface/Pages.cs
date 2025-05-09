@@ -1148,6 +1148,29 @@ namespace ProbSciANA.Interface
                 NavigationService.GoForward();
             UpdateNavButtons();
         }
+        private void BtnStat_Click(object sender, RoutedEventArgs e)
+        {
+            double prixMoyenParCommande = 0;
+            foreach (var commande in Commande.commandes)
+            {
+                prixMoyenParCommande += commande.Prix;
+            }
+            string commandeParCuisinier = "";
+            foreach (var cuisinier in Utilisateur.cuisiniers)
+            {
+                commandeParCuisinier += cuisinier.Prenom + " " + cuisinier.Nom + " : ";
+                foreach (var commande in cuisinier.Commandes_effectuees)
+                {
+                    commandeParCuisinier += commande.NomClient + ", ";
+                }
+                commandeParCuisinier += "\n";
+            }
+            string pxMoyen = "Le prix moyen par commande est de : " + prixMoyenParCommande / Convert.ToDouble(Commande.commandes.Count());
+            string nbCuisinier = "Nombre de cuisinier : " + Utilisateur.cuisiniers.Count();
+            string nbClient = "Nombre de client : " + Utilisateur.clients.Count();
+            MessageBox.Show($"Le nombre totale de commande est de : Commande.commandes.Count() \n {pxMoyen} \n {nbCuisinier} \n{nbClient} \n {commandeParCuisinier}");
+
+        }
     }
     #endregion
 
