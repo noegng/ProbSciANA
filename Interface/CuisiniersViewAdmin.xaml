@@ -69,11 +69,12 @@
         </Page.Resources>
 
         <Grid>
-                <Image Source="Images/.png"
+                <Image Source="Images/fondgridrouge.jpg"
                        Stretch="UniformToFill"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
-                       IsHitTestVisible="False"/>
+                       IsHitTestVisible="False"
+                       Opacity="0.25"/>
 
                 <DockPanel LastChildFill="True">
 
